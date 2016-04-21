@@ -1,3 +1,5 @@
+# "fixate" at draw start; show image (maintain "fixation"; draw after SOA
+
 import klibs
 
 __author__ = "Jonathan Mulle"
@@ -80,12 +82,12 @@ class TraceLab(klibs.Experiment):
 		self.instructions_2 = "Now draw the figure you have just seen.\n - Start by placing the cursor on the red dot. \n - End by placing the cursor on the green dot. \n\nPress any key to proceed."
 
 
-	def block(self, block_num):
+	def block(self):
 		self.fill()
 		self.message(self.instructions_1, 'instructions', registration=5, location=Params.screen_c, flip=True)
 		self.any_key()
 
-	def setup_response_collector(self, trial_factors):
+	def setup_response_collector(self):
 		self.rc.uses(RC_DRAW)
 		cb_xy1 = Params.screen_c[0] - self.canvas_size // 2
 		cb_xy2 = Params.screen_c[0] + self.canvas_size // 2
@@ -106,13 +108,13 @@ class TraceLab(klibs.Experiment):
 		self.rc.display_callback = self.display_refresh
 		self.rc.display_callback_args = [True]
 
-	def trial_prep(self, trial_factors):
+	def trial_prep(self):
 		self.fill()
 		self.figure, self.figure_segments, self.figure_dots = self.generate_figure()
 		Params.clock.register_events([ET('end_exposure', self.sample_exposure_time)])
 		self.show_figure()
 
-	def trial(self, trial_factors):
+	def trial(self):
 		while self.evi.before('end_exposure', True):
 			self.show_figure()
 		self.fill()
@@ -132,7 +134,7 @@ class TraceLab(klibs.Experiment):
 			"rt": self.rc.draw_listener.responses[0][1]
 		}
 
-	def trial_clean_up(self, trial_id, trial_factors):
+	def trial_clean_up(self):
 		pass
 
 	def clean_up(self):
@@ -219,8 +221,8 @@ class TraceLab(klibs.Experiment):
 		segments = []
 		# surf = FreeDraw(800, 800, [1, RED, STROKE_INNER], initial)
 		# segments.append([KLD_MOVE,initial])
-		min_segments_per_q = 2
-		max_segments_per_q = 4
+		min_segments_per_q = 5
+		max_segments_per_q = 10
 		q_intersects = [(from_range(50, 350), 400), (400, from_range(50, 350)), (from_range(450, 750), 400), initial]
 		avg_dist = 150
 		dist_variance = 50
@@ -294,109 +296,107 @@ class TraceLab(klibs.Experiment):
 		return [aggdraw_to_array(surf), p_str,  dots]
 
 
-
-
-	def generate_segment_positions(seg_count, x_offset, y_offset, avg_dist, dist_variance):
-		min_pt_dist = avg_dist - dist_variance
-		max_pt_dist = avg_dist + dist_variance
-		q_pts_x = []
-		q_pts_y = []
-
-		while not len(q_pts_x) == seg_count:
-			x = from_range(x_offset, x_offset + 400)
-			try:
-				if not (x in range(q_pts_x[-1] - min_pt_dist, q_pts_x[-1] + min_pt_dist)):
-					q_pts_x.append(x)
-			except IndexError:
-				q_pts_x.append(x)
-		while not len(q_pts_y) == seg_count:
-			y = from_range(y_offset, y_offset + 400)
-			try:
-				if not (y in range(q_pts_y[-1] - min_pt_dist, q_pts_y[-1] + min_pt_dist)):
-					q_pts_y.append(y)
-			except IndexError:
-				q_pts_y.append(y)
-		q_points = []
-		for p in q_pts_x:
-			q_points.append((p, q_pts_y[q_pts_x.index(p)]))
-		return q_points
-
-	def generate_arc_controls(self, dest, origin, quadrant):
-		m = midpoint(dest, origin)
-		rotation = int(angle_between(dest, origin))
-		angle_1 =  int(np.random.normal(90, 10)) + rotation
-		angle_2 =  int(np.random.normal(90, 10)) + rotation
-		quad_offset = 0
-		if quadrant == 0:
-			quad_offset = 180
-		if quadrant == 1:
-			quad_offset = 90
-		if quadrant == 3:
-			quad_offset += 270
-		angle_1 += quad_offset
-		angle_2 += quad_offset
-		mp_len = int(line_segment_len(dest, m))
-		amplitude_1 = from_range(mp_len // 2, mp_len)
-		amplitude_2 = from_range(mp_len // 2, mp_len)
-		c1 = point_pos(dest[0], dest[1], amplitude_1, angle_1)
-		c2 = point_pos(origin[0], origin[1], amplitude_2, angle_2)
-		if any(i for i in c1 + c2) < 0:
-			return self.generate_arc_controls(dest, origin, quadrant)
-		d_dest_c1 = line_segment_len(dest, c1)
-		d_dest_c2 = line_segment_len(dest, c2)
-		return [c1, c2] if d_dest_c1 > d_dest_c2 else [c2, c1]
-
-	def generate_figure(self):
-		BOT_L = 0
-		TOP_L = 1
-		TOP_R = 2
-		initial_position = (400, from_range(450, 750))
-		segments = []
-		# surf = FreeDraw(800, 800, [1, RED, STROKE_INNER], initial)
-		# segments.append([KLD_MOVE,initial])
-		min_segments_per_q = 2
-		max_segments_per_q = 4
-		quadrant_intersects = [(random.choice(range(50, 350)), 400),
-						(400, random.choice(range(50, 350))),
-						(random.choice(range(450, 750)), 400), initial_position]
-		avg_dist = 150		# used to give some control
-		dist_variance = 50	# over the points I later join
-		for quad in range(0,4):
-			seg_count = from_range(min_segments_per_q, max_segments_per_q)
-			x_offset = 0 if quad in [BOT_L, TOP_L] else 400
-			y_offset = 0 if quad in [TOP_L, TOP_R] else 400
-			origin = None
-			for j in range(0, seg_count):
-				# generate start and end points for each segment in the quadrant
-				q_points = self.generate_segment_positions(seg_count, x_offset, y_offset, avg_dist, dist_variance)
-
-				# set origin to the destination of previous segment
-				o = initial_position if origin is None else origin
-
-				# assign destination point; quadrant intersect for last segment of each quadrant
-				d = q_points[j] if j < seg_count - 1 else quadrant_intersects[quad]
-
-				# choose a segment type
-				s = random.choice([KLD_ARC, KLD_LINE])
-				# surf.move(o)
-				if s == KLD_LINE:
-					# surf.line(d, o)
-					segments.append([KLD_LINE, [d, o]])
-				if s == KLD_ARC:
-					c = self.generate_arc_controls(d, o, quad)
-					# surf.arc(d, c, o)
-					segments.append([KLD_ARC, [c[0], c[1], d]])
-				origin = d
-
-		surf = aggdraw.Draw("RGBA", (800, 800), (255,255,255,255))
-		p_str = "M{0} {1}".format(*initial_position)
-		for s in segments:
-			if s[0] == KLD_LINE:
-				p_str += " L{0} {1}".format(*s[1][0])
-			if s[0] ==  KLD_ARC:
-				pts = s[1][0] + s[1][2]
-				p_str += " Q {0} {1} {2} {3}".format(*pts)
-		sym = aggdraw.Symbol(p_str)
-		surf.symbol((0,0), sym, aggdraw.Pen((255,0,0), 1, 255))
-
-		return surf
+	# def generate_segment_positions(self, seg_count, x_offset, y_offset, avg_dist, dist_variance):
+	# 	min_pt_dist = avg_dist - dist_variance
+	# 	max_pt_dist = avg_dist + dist_variance
+	# 	q_pts_x = []
+	# 	q_pts_y = []
+	#
+	# 	while not len(q_pts_x) == seg_count:
+	# 		x = from_range(x_offset, x_offset + 400)
+	# 		try:
+	# 			if not (x in range(q_pts_x[-1] - min_pt_dist, q_pts_x[-1] + min_pt_dist)):
+	# 				q_pts_x.append(x)
+	# 		except IndexError:
+	# 			q_pts_x.append(x)
+	# 	while not len(q_pts_y) == seg_count:
+	# 		y = from_range(y_offset, y_offset + 400)
+	# 		try:
+	# 			if not (y in range(q_pts_y[-1] - min_pt_dist, q_pts_y[-1] + min_pt_dist)):
+	# 				q_pts_y.append(y)
+	# 		except IndexError:
+	# 			q_pts_y.append(y)
+	# 	q_points = []
+	# 	for p in q_pts_x:
+	# 		q_points.append((p, q_pts_y[q_pts_x.index(p)]))
+	# 	return q_points
+	#
+	# def generate_arc_controls(self, dest, origin, quadrant):
+	# 	m = midpoint(dest, origin)
+	# 	rotation = int(angle_between(dest, origin))
+	# 	angle_1 =  int(np.random.normal(90, 10)) + rotation
+	# 	angle_2 =  int(np.random.normal(90, 10)) + rotation
+	# 	quad_offset = 0
+	# 	if quadrant == 0:
+	# 		quad_offset = 180
+	# 	if quadrant == 1:
+	# 		quad_offset = 90
+	# 	if quadrant == 3:
+	# 		quad_offset += 270
+	# 	angle_1 += quad_offset
+	# 	angle_2 += quad_offset
+	# 	mp_len = int(line_segment_len(dest, m))
+	# 	amplitude_1 = from_range(mp_len // 2, mp_len)
+	# 	amplitude_2 = from_range(mp_len // 2, mp_len)
+	# 	c1 = point_pos(dest[0], dest[1], amplitude_1, angle_1)
+	# 	c2 = point_pos(origin[0], origin[1], amplitude_2, angle_2)
+	# 	if any(i for i in c1 + c2) < 0:
+	# 		return self.generate_arc_controls(dest, origin, quadrant)
+	# 	d_dest_c1 = line_segment_len(dest, c1)
+	# 	d_dest_c2 = line_segment_len(dest, c2)
+	# 	return [c1, c2] if d_dest_c1 > d_dest_c2 else [c2, c1]
+	#
+	# def generate_figure(self):
+	# 	BOT_L = 0
+	# 	TOP_L = 1
+	# 	TOP_R = 2
+	# 	initial_position = (400, from_range(450, 750))
+	# 	segments = []
+	# 	# surf = FreeDraw(800, 800, [1, RED, STROKE_INNER], initial)
+	# 	# segments.append([KLD_MOVE,initial])
+	# 	min_segments_per_q = 2
+	# 	max_segments_per_q = 4
+	# 	quadrant_intersects = [(random.choice(range(50, 350)), 400),
+	# 					(400, random.choice(range(50, 350))),
+	# 					(random.choice(range(450, 750)), 400), initial_position]
+	# 	avg_dist = 150		# used to give some control
+	# 	dist_variance = 50	# over the points I later join
+	# 	for quad in range(0,4):
+	# 		seg_count = from_range(min_segments_per_q, max_segments_per_q)
+	# 		x_offset = 0 if quad in [BOT_L, TOP_L] else 400
+	# 		y_offset = 0 if quad in [TOP_L, TOP_R] else 400
+	# 		origin = None
+	# 		for j in range(0, seg_count):
+	# 			# generate start and end points for each segment in the quadrant
+	# 			q_points = self.generate_segment_positions(seg_count, x_offset, y_offset, avg_dist, dist_variance)
+	#
+	# 			# set origin to the destination of previous segment
+	# 			o = initial_position if origin is None else origin
+	#
+	# 			# assign destination point; quadrant intersect for last segment of each quadrant
+	# 			d = q_points[j] if j < seg_count - 1 else quadrant_intersects[quad]
+	#
+	# 			# choose a segment type
+	# 			s = random.choice([KLD_ARC, KLD_LINE])
+	# 			# surf.move(o)
+	# 			if s == KLD_LINE:
+	# 				# surf.line(d, o)
+	# 				segments.append([KLD_LINE, [d, o]])
+	# 			if s == KLD_ARC:
+	# 				c = self.generate_arc_controls(d, o, quad)
+	# 				# surf.arc(d, c, o)
+	# 				segments.append([KLD_ARC, [c[0], c[1], d]])
+	# 			origin = d
+	#
+	# 	surf = aggdraw.Draw("RGBA", (800, 800), (255,255,255,255))
+	# 	p_str = "M{0} {1}".format(*initial_position)
+	# 	for s in segments:
+	# 		if s[0] == KLD_LINE:
+	# 			p_str += " L{0} {1}".format(*s[1][0])
+	# 		if s[0] ==  KLD_ARC:
+	# 			pts = s[1][0] + s[1][2]
+	# 			p_str += " Q {0} {1} {2} {3}".format(*pts)
+	# 	sym = aggdraw.Symbol(p_str)
+	# 	surf.symbol((0,0), sym, aggdraw.Pen((255,0,0), 1, 255))
+	#
+	# 	return surf
