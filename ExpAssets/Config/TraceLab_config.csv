@@ -1,5 +1,7 @@
 # Config file for TraceLab
-animate_time.param, column_2.param, trial_count
-10,factor_3,,
-8,factor_4,,
-5,
+speed.param  , shape.param,
+3            , practice_1,
+2            , practice_2,
+1            , practice_3
+4             , random,
+5
