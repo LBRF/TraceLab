@@ -66,6 +66,12 @@ CREATE TABLE trials (
 	figure text not null,
 	drawing text not null,
 	rt float not null,
+	training_1 integer not null,
+	testing_1 integer not null,
+	training_2 integer not null,
+	testing_2 integer not null,
+	training_3   integer not null,
+	testing_3 integer not null,
 	block_num integer not null,
 	trial_num integer not null
 );
