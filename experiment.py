@@ -25,36 +25,6 @@ BOT_L = 0
 TOP_L = 1
 TOP_R = 2
 
-"""
- Everything involved in the bezier function is patched together from various stack overflow investigations. The linear
- one is my own.
-
- I'm using these to create an animation of a dot following through a path of connected linear and bezier segments; the
- full script creates a big list of segments where each end point is the beginning of the next segment's start point.
- The problem, isn't that this don't work; it does, and quite well, really. The problem is that I have:
-
- a) made no effort to control the resolution of the output, so I have a very different delta d, per point, between large
- curves vs small curves, and either vs lines. The amounts to an extremely variously paced animation if each point is
- treated as a frame.
-
- b) don't really know *how* to control said resolution—especially in the bezier condition, where the path is closer to
- magic to me than something I really understand (I mean, roughly and abstractly I actually do understand it, but not in
- a practically useful way).
-
- One solution I tried to to use was to create an algorithm for "dropping frames", or rather only including frames at
- every n distance; this improved things a lot, but not enough, because the apparent speed around a curve is still much
- slower than over a line, even if those curves are nothing but little lines themselves. I included that solution here.
-
- What I think would be the ideal case is to reverse-engineer these functions—to make them output points that correspond
- to a certain frame rate. But any solution would really work for me.
-
- If you wanted to see this in action you could clone https://github.com/jmwmulle/TraceLab, but you'd need the newest
- version of klibs which will require you to brew a few dependencies first and possibly install some business with pip.
- it might be more useful to do so, becuse the animate() method of the DrawFigure class (of which the included def is
- a modification) will also overlay the path the dot is traversing, which I, at least, found much more informative.
- It will also generate the path itself, which is useful because the problems I've described don't rally surface until
- you're joining a variety of segments together.
-"""
 def pascal_row(n):
 	# This returns the nth row of Pascal's Triangle
 	result = [1]
@@ -95,83 +65,84 @@ def bezier_interpolation(origin, destination, control_o, control_d=None):
 		return [ (int(p[0]), int(p[1])) for p in bezier([0.01 * t for t in range(101)])]
 
 
-def linear_interpolation(origin, destination, segmented=True):
-	d_x = destination[0] - origin[0]
-	d_y = destination[1] - origin[1]
-	theta = angle_between(origin, destination)
-	steps = abs(d_x) if abs(d_x) < abs(d_y) else abs(d_y)
+# def linear_interpolation(origin, destination, segmented=True):
+# 	d_x = destination[0] - origin[0]
+# 	d_y = destination[1] - origin[1]
+# 	theta = angle_between(origin, destination)
+# 	steps = abs(d_x) if abs(d_x) < abs(d_y) else abs(d_y)
+# 	points = [origin]
+# 	for i in range(steps):
+# 		points.append(point_pos(origin, i, theta))
+# 	points.append(destination)
+# 	if segmented:
+# 		segments = list(chunk(points, 2))
+# 		return segments if len(segments[-1]) == 2 else segments[:-1]
+# 	else:
+# 		return points
+
+"""
+Velocity is measured in (whatever units your distance function uses)/(draw call)
+dt is time between draw calls
+"""
+def linear_interpolation(origin, destination, velocity=5, dt=0.01666667):
+	#Ensure the point travels along straight segments at the expected velocity
+	angle = angle_between(origin, destination)
+	distance = line_segment_len(origin, destination)
+	time_to_complete = distance/velocity
+	###
+	steps = int(time_to_complete/dt) #abs(d_x) if abs(d_x) < abs(d_y) else abs(d_y)
+	step_size = distance / steps
 	points = [origin]
 	for i in range(steps):
-		points.append(point_pos(origin, i, theta))
+		points.append(point_pos(origin, i * step_size, angle))
 	points.append(destination)
-	if segmented:
-		segments = list(chunk(points, 2))
-		return segments if len(segments[-1]) == 2 else segments[:-1]
-	else:
-		return points
+	# if segmented:
+	# 	segments = list(chunk(points, 2))
+	# 	return segments if len(segments[-1]) == 2 else segments[:-1]
+	# else:
+	return points
 
+# """
+# Velocity is measured in (whatever units your distance function uses)/(draw call)
+# dt is time between draw calls
+# """
+# def bezier_interpolation(origin, destination, control_o, control_d=None, velocity=5, dt=0.016):
+# 		destination = tuple(destination)
+# 		origin = tuple(origin)
+# 		control_o = tuple(control_o)
+# 		if control_d:
+# 			control_d = tuple(control_d)
+# 		points = [origin, control_o, control_d, destination] if control_d else [origin, control_o, destination]
+# 		n = len(points)
+#
+# 		def bezier(transitions):
+# 			combinations = pascal_row(n - 1)
+# 			result = []
+# 			for t in transitions:
+# 				t_powers = (t ** i for i in range(n))
+# 				u_powers = reversed([(1 - t) ** i for i in range(n)])
+# 				coefficients = [c * a * b for c, a, b in zip(combinations, t_powers, u_powers)]
+# 				result.append(list(sum([coef * p for coef, p in zip(coefficients, ps)]) for ps in zip(*points)))
+# 			return result
+#
+# 		# Estimate the length of the curve
+# 		first_guess = bezier([0.01 * t for t in range(101)])
+# 		length_of_first_guess = path_len(first_guess)
+# 		# Calculate the time to traverse the curve at expected velocity
+# 		time_to_completion = length_of_first_guess/velocity
+# 		# The ceil call here biases long
+# 		# If you want to resolve issues of dt not dividing time to complete
+# 		# another way, feel free. The shorter the lines relative to the
+# 		# velocity, the more error this introduces.
+# 		steps = int(math.ceil(time_to_completion/dt))
+#
+# 		# The +1 ensures we get to the end
+# 		final_curve = bezier([t/steps for t in range(steps+1)])
+#
+# 		return [ (int(p[0]), int(p[1])) for p in final_curve]
+#
+#
 
-def path_len(frames):
-	# where frames is a list of coordinate tuples
-	path_len = 0
-	for i in range(0, len(frames)):
-		try:
-			p1 = [1.0 * frames[i][0], 1.0 * frames[i][1]]
-			p2 = [1.0 * frames[i + 1][0], 1.0 * frames[i + 1][1]]
-			path_len += line_segment_len(p1, p2)
-		except IndexError:
-			p1 = [1.0 * frames[i][0], 1.0 * frames[i][1]]
-			p2 = [1.0 * frames[0][0], 1.0 * frames[0][1]]
-			path_len += line_segment_len(p1, p2)
-	return path_len
-
-
-def animate(self, duration):
-		surface = self.render()
-		draw_in = float(duration)
-		rate = 0.01666666667
-		max_frames = int(draw_in / rate)
-		delta_d = self.path_len / max_frames
-		print draw_in, self.path_len, delta_d
-		a_frames = [self.frames[0]]
-		seg_len = 0
-		for i in range(0, len(self.frames)):
-			try:
-				p1 = [1.0 * self.frames[i][0], 1.0 * self.frames[i][1]]
-				p2 = [1.0 * self.frames[i + 1][0], 1.0 * self.frames[i + 1][1]]
-				seg_len += line_segment_len(p1, p2)
-			except IndexError:
-				p1 = [1.0 * self.frames[i][0], 1.0 * self.frames[i][1]]
-				p2 = [1.0 * self.frames[0][0], 1.0 * self.frames[0][1]]
-				seg_len += line_segment_len(p1, p2)
-			if seg_len >= delta_d:
-				a_frames.append(self.frames[i])
-				seg_len = 0
-
-		# skip_frame = int(len(frames) / max_frames)
-		# removed = 0
-		# while len(frames) > max_frames:
-		# 	removed += 1
-		# 	try:
-		# 		frames.remove(frames[removed * skip_frame])
-		# 	except IndexError:
-		# 		break
-		# trunc_frames = [item for index, item in enumerate(frames) if (index + 1) % skip_frame != 0]
-
-		last_f = time.time()
-		f = 0
-		frame_start = time.time()
-		for f in a_frames:
-			while time.time() < rate + last_f:
-				pump()
-			# f += 1
-			# pos = a_frames[f]
-			self.exp.fill()
-			self.exp.blit(surface, 5, Params.screen_c)
-			self.exp.blit(self.exp.tracker_dot, 5, f)
-			self.exp.flip()
-			last_f = time.time()
-		print time.time() - frame_start
 
 
 class TraceLab(klibs.Experiment):
@@ -243,7 +214,7 @@ class TraceLab(klibs.Experiment):
 		self.text_manager.add_style('instructions', 32, [255, 255, 255, 255])
 		self.text_manager.add_style('tiny', 12, [255, 255,255, 255])
 		self.figure = DrawFigure(self)
-		self.figure.animate(10)
+		self.figure.animate(5)
 		self.quit()
 		self.origin_proto.fill = self.origin_active_color
 		self.origin_active = self.origin_proto.render()
@@ -400,7 +371,6 @@ class DrawFigure(object):
 		self.__gen_real_points__()
 		self.__gen_segments__()
 
-
 	def __generate_null_points__(self):
 		# make sure minimums won't exceed randomly generated total
 		while 4 * self.min_spq >= self.total_spf <= self.max_spf:
@@ -439,7 +409,6 @@ class DrawFigure(object):
 		self.points[2][0] = (s_c[0], randrange(o_mv, s_c[1] - i_m))
 		self.points[3][0] = (randrange(s_c[0] + i_m, s_x - o_mh), s_c[1])
 
-
 	def __gen_real_points__(self):
 		for i in range(0, 4):
 			for j in range(1, len(self.points[i])):
@@ -454,9 +423,9 @@ class DrawFigure(object):
 			lines = int(Params.angularity * 10) * [True]
 			if choice(curves+lines):
 				try:
-					self.segments.append(linear_interpolation(self.points[i], self.points[i + 1], segmented=False))
+					self.segments.append([False, self.points[i], self.points[i+1]])
 				except IndexError:
-					self.segments.append(linear_interpolation(self.points[i], self.points[0], segmented=False))
+					self.segments.append([False, self.points[i], self.points[0]])
 			else:
 				try:
 					amp = line_segment_len(self.points[i], self.points[i + 1])
@@ -467,17 +436,28 @@ class DrawFigure(object):
 					amp = line_segment_len(self.points[i], self.points[0])
 					c = point_pos(midpoint(self.points[i], self.points[0]), amp, 90)
 					self.segments.append(bezier_interpolation(self.points[i], self.points[0], c))
+		bezier_path_lens = []
+		bezier_densities = []
+		for s in self.segments:
+			if s[0] is not False:
+				p_len = interpolated_path_len(s)
+				bezier_path_lens.append(p_len)
+				bezier_densities.append(p_len / len(s))
+		avg_density = sum(bezier_densities) / len(bezier_densities)
+		v = 0.001
+		while v / 0.016 < avg_density:
+			v+=0.1
+		for i in range(0, len(self.segments)):
+			if self.segments[i][0] is False:
+				# print self.segments[i]
+				# continue
+				self.segments[i] = linear_interpolation(self.segments[i][1], self.segments[i][2], v)
+				# print self.segments[i]
+				# self.exp.quit()
+				# try:
+				# except IndexError:
+				# 	self.segments[i] = linear_interpolation(self.points[i], self.points[0], v)
 		self.frames = list(chain(*self.segments))
-		for i in range(0, len(self.frames)):
-			try:
-				p1 = [1.0 * self.frames[i][0], 1.0 * self.frames[i][1]]
-				p2 = [1.0 * self.frames[i + 1][0], 1.0 * self.frames[i + 1][1]]
-				self.path_len += line_segment_len(p1, p2)
-			except IndexError:
-				p1 = [1.0 * self.frames[i][0], 1.0 * self.frames[i][1]]
-				p2 = [1.0 * self.frames[0][0], 1.0 * self.frames[0][1]]
-				self.path_len += line_segment_len(p1, p2)
-
 
 	def render(self):
 		surf = aggdraw.Draw("RGBA", Params.screen_x_y, Params.default_fill_color)
@@ -488,7 +468,7 @@ class DrawFigure(object):
 			except IndexError:
 				pass
 		sym = aggdraw.Symbol(p_str)
-		surf.symbol((0, 0), sym, aggdraw.Pen((35, 35, 35), 0.5, 255))
+		surf.symbol((0, 0), sym, aggdraw.Pen((75, 75, 75), 1, 255))
 		return aggdraw_to_array(surf)
 
 	def draw(self, dots=True, flip=True):
@@ -503,15 +483,16 @@ class DrawFigure(object):
 
 
 	def animate(self, duration):
-
+		self.path_len = interpolated_path_len(self.frames)
 		surface = self.render()
 		draw_in = float(duration)
 		rate = 0.01666666667
 		max_frames = int(draw_in / rate)
-		delta_d = self.path_len / max_frames
+		delta_d = math.floor(self.path_len / max_frames)
 		print draw_in, self.path_len, delta_d
 		a_frames = [self.frames[0]]
 		seg_len = 0
+		mouse = []
 		for i in range(0, len(self.frames)):
 			try:
 				p1 = [1.0 * self.frames[i][0], 1.0 * self.frames[i][1]]
@@ -524,7 +505,7 @@ class DrawFigure(object):
 			if seg_len >= delta_d:
 				a_frames.append(self.frames[i])
 				seg_len = 0
-
+		#
 		# skip_frame = int(len(frames) / max_frames)
 		# removed = 0
 		# while len(frames) > max_frames:
@@ -539,8 +520,11 @@ class DrawFigure(object):
 		f = 0
 		frame_start = time.time()
 		for f in a_frames:
-			while time.time() < rate + last_f:
-				pump()
+			self.exp.ui_request()
+			if Params.trace_mode:
+				mouse.append(mouse_pos())
+			# while time.time() < rate + last_f:
+			# 	pump()
 			# f += 1
 			# pos = a_frames[f]
 			self.exp.fill()

@@ -58,12 +58,14 @@ dm_auto_threshold = True
 outer_margin_v = 400
 outer_margin_h = 800
 inner_margin = 300
-avg_seg_per_f = (12, 2)  # (avg number, variance)
-avg_seg_per_q = (3, 1)  # (avg number, variance)
+trace_mode = False
+# inner_margin = 300 #todo: v + h for inner margins
+avg_seg_per_f = (9, 2)  # (avg number, variance)
+avg_seg_per_q = (2, 1)  # (avg number, variance)
 angularity = 0.5  # 0 = all curves, 1 = all lines
-sharpness = 0.5  # 0 = bell curves & obtuse angle, 1 = sheer, elliptical curves & acute angles
 
 # these three not implemented yet because math is hard
+sharpness = 0  # 0 = bell curves & obtuse angle, 1 = sheer, elliptical curves & acute angles
 path_length = -1  # length in px; -1 ignores this parameter; path length will override seg_length params if they conflict
 avg_segment_length = 50  # in px
 segment_length_variance = 0.25  # ie. percent of avg_segment_length
