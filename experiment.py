@@ -497,6 +497,7 @@ class DrawFigure(object):
 	def draw(self, dots=True, flip=True):
 		self.exp.fill()
 		self.exp.blit(self.render())
+		self.exp.message("Path Length: {0}".format(interpolated_path_len(self.frames), "default", location=(25,50)))
 		if dots:
 			for p in self.points:
 				self.exp.blit(self.r_dot, 5, p)
