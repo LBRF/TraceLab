@@ -183,36 +183,15 @@ class TraceLab(klibs.Experiment):
 	def __init__(self, *args, **kwargs):
 		super(TraceLab, self).__init__(*args, **kwargs)
 
-
 	def setup(self):
-		# c = bezier_interpolation( (10,10), (100,100), (10, 500), segmented=False)
-		# print c
-		# surf = aggdraw.Draw("RGBA", (800, 800), (255, 255, 255, 255))
-		# p_str = "M10 10"
-		# for i in range(0, len(c)):
-		# 	try:
-		# 		p_str += " L{0} {1} {2} {3}".format(*(list(c[i]) + list(c[i+1])))
-		# 	except IndexError:
-		# 		pass
-		# sym = aggdraw.Symbol(p_str)
-		# surf.symbol((0, 0), sym, aggdraw.Pen((255, 0, 0), 1, 255))
-		# surf = aggdraw_to_array(surf)
-		# self.fill()
-		# # for p in c:
-		# # 	self.blit(self.tracker_dot)
-		# self.blit(surf)
-		# self.flip()
-		#
-		# self.any_key()
-		# self.quit()
-		#
-		# self.canvas = Rectangle(self.canvas_size, fill=self.canvas_color, stroke=[2, self.canvas_border, STROKE_INNER])
 		self.origin_proto = Ellipse(self.origin_size)
 		self.tracker_dot_proto = Ellipse(self.tracker_dot_size)
 		self.tracker_dot_proto.fill = [255, 0, 0]
 		self.tracker_dot = self.tracker_dot_proto.render()
 		self.text_manager.add_style('instructions', 32, [255, 255, 255, 255])
 		self.text_manager.add_style('tiny', 12, [255, 255,255, 255])
+		if Params.capture_figures_mode:
+			self.capture_figures()
 		self.figure = DrawFigure(self)
 		self.figure.animate(5)
 		self.quit()
@@ -346,6 +325,50 @@ class TraceLab(klibs.Experiment):
 			self.blit(self.tracker_dot, 5, pos)
 			self.flip()
 
+	def capture_figures(self):
+		self.fill()
+		self.message("Press command+q at any time to exit.\nPress any key to continue.", "default", registration=5, location=Params.screen_c, flip=True)
+		self.any_key()
+		finished = False
+		while not finished:
+			finished = self.__review_figure()
+		self.quit()
+
+	def __review_figure(self):
+		import cPickle
+		import png
+
+		if not self.figure:
+			self.figure = DrawFigure(self)
+		self.figure.draw(dots=True, flip=False)
+		self.message("When finished reviewing figure, press any key.")
+		self.flip()
+		self.any_key()
+		resp = self.query("(s)ave, (d)iscard, (r)eplay or (q)uit?", accepted=['s', 'd', 'r', 'q'])
+		if resp == "q":
+			return True
+		if resp == "r":
+			return False
+		if resp == "d":
+			self.figure = None
+			return False
+		if resp == "s":
+			self.fill()
+			self.message("Saving... ", flip=True)
+			fname = "figure_" + str(now(True)) + ".fig"
+			fname_thumb = "figure_" + str(now(True)) + ".png"
+			path = os.path.join(Params.resource_dir, "figures", fname)
+			path_thumb = os.path.join(Params.resource_dir, "figures", fname_thumb)
+			png.from_array(self.figure.render(), 'RGBA').save(path_thumb)
+			f = open(path, "w+")
+			self.figure.experiment = None
+			for k, v in self.figure.__dict__.iteritems():
+				f.write("{0} = {1}\n".format(k, v))
+			f.close()
+
+			self.figure=None
+			return False
+
 
 
 class DrawFigure(object):
@@ -459,7 +482,7 @@ class DrawFigure(object):
 				# 	self.segments[i] = linear_interpolation(self.points[i], self.points[0], v)
 		self.frames = list(chain(*self.segments))
 
-	def render(self):
+	def render(self,np=True):
 		surf = aggdraw.Draw("RGBA", Params.screen_x_y, Params.default_fill_color)
 		p_str = "M{0} {1}".format(*self.frames[0])
 		for s in chunk(self.frames, 2):
@@ -469,7 +492,7 @@ class DrawFigure(object):
 				pass
 		sym = aggdraw.Symbol(p_str)
 		surf.symbol((0, 0), sym, aggdraw.Pen((75, 75, 75), 1, 255))
-		return aggdraw_to_array(surf)
+		return aggdraw_to_array(surf) if np else Image.frombytes(surf.mode, surf.size, surf.tostring())
 
 	def draw(self, dots=True, flip=True):
 		self.exp.fill()
@@ -533,3 +556,4 @@ class DrawFigure(object):
 			self.exp.flip()
 			last_f = time.time()
 		print time.time() - frame_start
+

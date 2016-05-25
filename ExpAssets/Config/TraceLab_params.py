@@ -55,6 +55,10 @@ dm_auto_threshold = True
 ########################################
 # Figure Controls
 ########################################
+capture_figures_mode = True
+
+figures = {"figure_name":"file_name.fig"}
+
 outer_margin_v = 400
 outer_margin_h = 800
 inner_margin = 300
