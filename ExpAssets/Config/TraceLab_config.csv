@@ -1,7 +1,3 @@
 # Config file for TraceLab
-speed.param  , shape.param,
-3            , practice_1,
-2            , practice_2,
-1            , practice_3
-4             , random,
-5
+speed.param  , figure.param,
+5            , figure_1

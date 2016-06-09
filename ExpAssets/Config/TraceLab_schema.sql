@@ -37,22 +37,27 @@ CREATE TABLE participants (
 	random_seed text not null,
 	sex text not null,
 	age integer not null,
-	group_condition,
 	handedness text not null,
 	created text not null,
 	klibs_commit text not null
 );
 
+CREATE TABLE sessions (
+	id integer primary key autoincrement not null,
+	participant_id integer key not null,
+  exp_condition text not null,
+  sessions_completed integer not null
+);
+
 CREATE TABLE trials (
 	id integer primary key autoincrement not null,
 	participant_id integer key not null,
-	session_num integer not null,
+	block_num integer not null,
+	trial_num integer not null,
 	figure text not null,
 	drawing text not null,
 	seg_estimate integer not null,
-	rt float not null,
-	block_num integer not null,
-	trial_num integer not null
+	rt float not null
 );
 
 

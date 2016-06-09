@@ -36,6 +36,7 @@ cue_back_size = 1 # deg of visual angle
 #########################################
 # Experiment Structure
 #########################################
+multi_session_project = True
 collect_demographics = True
 run_practice_blocks = False
 trials_per_block = 200
@@ -45,6 +46,7 @@ practice_blocks_per_experiment = 0
 trials_per_participant = 0
 pre_render_block_messages = False
 show_practice_messages = True
+table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA")]}
 
 #########################################
 # Development Mode Settings
@@ -55,14 +57,13 @@ dm_auto_threshold = True
 ########################################
 # Figure Controls
 ########################################
-capture_figures_mode = True
-
-figures = {"figure_name":"file_name.fig"}
+capture_figures_mode = False
 
 outer_margin_v = 400
 outer_margin_h = 800
 inner_margin = 300
 trace_mode = False
+
 # inner_margin = 300 #todo: v + h for inner margins
 avg_seg_per_f = (9, 2)  # (avg number, variance)
 avg_seg_per_q = (2, 1)  # (avg number, variance)
@@ -73,3 +74,6 @@ sharpness = 0  # 0 = bell curves & obtuse angle, 1 = sheer, elliptical curves & 
 path_length = -1  # length in px; -1 ignores this parameter; path length will override seg_length params if they conflict
 avg_segment_length = 50  # in px
 segment_length_variance = 0.25  # ie. percent of avg_segment_length
+seg_report_fuzz = (2, 4)
+# seg_count_fuzz_width
+# seg_answer_pos
