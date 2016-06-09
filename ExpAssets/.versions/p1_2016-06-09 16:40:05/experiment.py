@@ -4,20 +4,39 @@ import klibs
 
 __author__ = "Jonathan Mulle"
 import imp
-import sys
-sys.path.append("ExpAssets/Resources/code/")
 from klibs.KLDraw import *
 from klibs.KLUtilities import *
 from klibs.KLConstants import *
 from klibs.KLEventInterface import EventTicket as ET
 from klibs.KLExceptions import TrialException
+# df = imp.load_source('TraceLabObjects.DrawFigure', 'ExpAssets/Resources/code/TraceLabObjects')
+# sld = imp.load_source('TraceLabObjects.Slider', 'ExpAssets/Resources/code/TraceLabObjects')
+# tlo = imp.load_source('TraceLabObjects.TLSlider', 'ExpAssets/Resources/code/TraceLabObjects')
 
-import DrawFigure, Slider
+import sys
+sys.path.append("ExpAssets/Resources/code/")
+from TraceLabObjects import DrawFigure, Slider
+
+
 from klibs import BoundaryInspector
 import os
 
 from hashlib import sha1
-
+def import_file(full_path_to_module):
+    try:
+        import os
+        module_dir, module_file = os.path.split(full_path_to_module)
+        module_name, module_ext = os.path.splitext(module_file)
+        save_cwd = os.getcwd()
+        os.chdir(module_dir)
+        module_obj = __import__(module_name)
+        module_obj.__file__ = full_path_to_module
+        globals()[module_name] = module_obj
+        os.chdir(save_cwd)
+    except:
+        raise ImportError
+import_file("/Users/jono/Documents/Clients/TraceLab/ExpAssets/Resources/code/TraceLabObjects")
+test = TraceLabObjects
 WHITE = (255, 255, 255, 255)
 BLACK = (0, 0, 0, 255)
 RED = (255,0,0,255)
@@ -37,6 +56,10 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	fig_dir = None
 	# graphical elements
 	value_slider = None
+	canvas = None
+	canvas_size = 800  #px
+	canvas_color = WHITE
+	canvas_border = BLACK
 	origin_proto = None
 	origin_active = None
 	origin_inactive = None
@@ -105,7 +128,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.origin_active = self.origin_proto.render()
 		self.origin_proto.fill = self.origin_inactive_color
 		self.origin_inactive = self.origin_proto.render()
-		self.origin_pos = (Params.screen_c[0], int(Params.screen_c[1] * 1.5))
+		self.origin_pos = (Params.screen_c[0], Params.screen_c[1] + self.canvas_size // 2)
 		self.add_boundary("origin", [self.origin_pos, self.origin_size // 2], CIRCLE_BOUNDARY)
 		half_or = self.origin_size // 2
 		ob_x1 = self.origin_pos[0] - half_or
@@ -127,15 +150,20 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	def setup_response_collector(self):
 
 		self.rc.uses(RC_DRAW)
-
+		cb_xy1 = Params.screen_c[0] - self.canvas_size // 2
+		cb_xy2 = Params.screen_c[0] + self.canvas_size // 2
 		self.rc.end_collection_event = 'response_period_end'
 		self.rc.draw_listener.add_boundaries([('start', self.origin_boundary, CIRCLE_BOUNDARY),
 											  ('stop', self.origin_boundary, CIRCLE_BOUNDARY),
-											  ('canvas', [(0,0), (Params.screen_x_y)], RECT_BOUNDARY)])
+											  ('canvas', [(cb_xy1, cb_xy1), (cb_xy2, cb_xy2)], RECT_BOUNDARY)])
+		self.rc.draw_listener.canvas_size = Params.screen_x_y
 		self.rc.draw_listener.start_boundary = 'start'
 		self.rc.draw_listener.stop_boundary = 'stop'
+		self.rc.draw_listener.canvas_boundary = 'canvas'
 		self.rc.draw_listener.show_active_cursor = False
 		self.rc.draw_listener.show_inactive_cursor = True
+		self.rc.draw_listener.x_offset = Params.screen_c[0] - self.canvas_size // 2
+		self.rc.draw_listener.y_offset = Params.screen_c[1] - self.canvas_size // 2
 		self.rc.draw_listener.origin = self.origin_pos
 		self.rc.draw_listener.interrupts = True
 		self.rc.display_callback = self.display_refresh
@@ -187,6 +215,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 	def display_refresh(self, flip=True):
 		self.fill()
+		self.blit(self.canvas, 5, Params.screen_c)
 		origin = self.origin_active  if self.rc.draw_listener.active else self.origin_inactive
 		self.blit(origin, 5, self.origin_pos)
 		if self.show_drawing:
@@ -299,6 +328,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 				f += 1
 			pos = self.figure_segments[f]
 			self.fill()
+			self.blit(self.canvas, 5, Params.screen_c)
 			self.blit(surf, 5, Params.screen_c)
 			self.blit(self.tracker_dot, 5, pos)
 			self.flip()

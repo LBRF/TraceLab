@@ -3,16 +3,16 @@
 import klibs
 
 __author__ = "Jonathan Mulle"
+
 import imp
-import sys
-sys.path.append("ExpAssets/Resources/code/")
 from klibs.KLDraw import *
 from klibs.KLUtilities import *
 from klibs.KLConstants import *
 from klibs.KLEventInterface import EventTicket as ET
 from klibs.KLExceptions import TrialException
+df = imp.load_source('TraceLabObjects.DrawFigure', 'ExpAssets/Resources/code/TraceLabObjects')
+sld = imp.load_source('TraceLabObjects.Slider', 'ExpAssets/Resources/code/TraceLabObjects')
 
-import DrawFigure, Slider
 from klibs import BoundaryInspector
 import os
 
@@ -37,6 +37,10 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	fig_dir = None
 	# graphical elements
 	value_slider = None
+	canvas = None
+	canvas_size = 800  #px
+	canvas_color = WHITE
+	canvas_border = BLACK
 	origin_proto = None
 	origin_active = None
 	origin_inactive = None
@@ -77,6 +81,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	def __init__(self, *args, **kwargs):
 		super(TraceLab, self).__init__(*args, **kwargs)
 
+
 	def setup(self):
 		try:
 			if Params.session_number == 1 :
@@ -99,13 +104,13 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 		if Params.capture_figures_mode:
 			self.capture_figures()
-		self.value_slider = Slider.Slider(self, 950, 800, 15, 20, (75,75,75), RED)
+		self.value_slider = sld(self, 950, 800, 15, 20, (75,75,75), RED)
 		self.use_random_figures = Params.session_number not in (1, 5)
 		self.origin_proto.fill = self.origin_active_color
 		self.origin_active = self.origin_proto.render()
 		self.origin_proto.fill = self.origin_inactive_color
 		self.origin_inactive = self.origin_proto.render()
-		self.origin_pos = (Params.screen_c[0], int(Params.screen_c[1] * 1.5))
+		self.origin_pos = (Params.screen_c[0], Params.screen_c[1] + self.canvas_size // 2)
 		self.add_boundary("origin", [self.origin_pos, self.origin_size // 2], CIRCLE_BOUNDARY)
 		half_or = self.origin_size // 2
 		ob_x1 = self.origin_pos[0] - half_or
@@ -127,15 +132,20 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	def setup_response_collector(self):
 
 		self.rc.uses(RC_DRAW)
-
+		cb_xy1 = Params.screen_c[0] - self.canvas_size // 2
+		cb_xy2 = Params.screen_c[0] + self.canvas_size // 2
 		self.rc.end_collection_event = 'response_period_end'
 		self.rc.draw_listener.add_boundaries([('start', self.origin_boundary, CIRCLE_BOUNDARY),
 											  ('stop', self.origin_boundary, CIRCLE_BOUNDARY),
-											  ('canvas', [(0,0), (Params.screen_x_y)], RECT_BOUNDARY)])
+											  ('canvas', [(cb_xy1, cb_xy1), (cb_xy2, cb_xy2)], RECT_BOUNDARY)])
+		self.rc.draw_listener.canvas_size = Params.screen_x_y
 		self.rc.draw_listener.start_boundary = 'start'
 		self.rc.draw_listener.stop_boundary = 'stop'
+		self.rc.draw_listener.canvas_boundary = 'canvas'
 		self.rc.draw_listener.show_active_cursor = False
 		self.rc.draw_listener.show_inactive_cursor = True
+		self.rc.draw_listener.x_offset = Params.screen_c[0] - self.canvas_size // 2
+		self.rc.draw_listener.y_offset = Params.screen_c[1] - self.canvas_size // 2
 		self.rc.draw_listener.origin = self.origin_pos
 		self.rc.draw_listener.interrupts = True
 		self.rc.display_callback = self.display_refresh
@@ -148,14 +158,14 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.blit(self.loading_msg, 5, Params.screen_c)
 		self.flip()
 
-		self.figure = DrawFigure.DrawFigure(self)
+		self.figure = df(self)
 		self.value_slider.update_range(self.figure.seg_count)
 
 	def trial(self):
 		# while self.evi.before('end_exposure', True):
 		self.figure.animate(self.speed)
 		if Params.exp_condition == IMAGERY_MODE:
-			self.imagery_trial()
+			self.motor_imagery_trial()
 		if Params.exp_condition == PHYSICAL_MODE:
 			self.physical_trial()
 		if Params.exp_condition == CONTROL_MODE:
@@ -187,6 +197,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 	def display_refresh(self, flip=True):
 		self.fill()
+		self.blit(self.canvas, 5, Params.screen_c)
 		origin = self.origin_active  if self.rc.draw_listener.active else self.origin_inactive
 		self.blit(origin, 5, self.origin_pos)
 		if self.show_drawing:
@@ -253,14 +264,14 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.drawing = self.rc.draw_listener.responses[0][0]
 		self.rt = self.rc.draw_listener.responses[0][1]
 
-	def imagery_trial(self):
+	def motor_imagery_trial(self):
 		self.rt = -1
 		self.drawing = NA
 		while not self.vertices_reported:
 			self.seg_estimate = self.value_slider.slide()
 		cont = self.query("You reported {0} segments. Is that correct? \n(y)es or (n)o", accepted=['y', 'n', 'Y','N'])
 
-		return self.imagery_trial() if cont in ['n', 'N'] else None
+		return self.motor_imagery_trial() if cont in ['n', 'N'] else None
 
 	def show_figure(self):
 		surf = aggdraw.Draw("RGBA", (800, 800), (255, 255, 255, 255))
@@ -299,6 +310,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 				f += 1
 			pos = self.figure_segments[f]
 			self.fill()
+			self.blit(self.canvas, 5, Params.screen_c)
 			self.blit(surf, 5, Params.screen_c)
 			self.blit(self.tracker_dot, 5, pos)
 			self.flip()
@@ -315,7 +327,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	def __review_figure(self):
 		self.fill()
 		if not self.figure:
-			self.figure = DrawFigure.DrawFigure(self)
+			self.figure = df(self)
 		# self.figure.draw(dots=True, flip=False)
 		self.figure.animate()
 		self.flip()
