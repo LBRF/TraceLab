@@ -132,7 +132,7 @@ def linear_interpolation(origin, destination, velocity=5, dt=0.01666667):
 
 class DrawFigure(object):
 
-	def __init__(self, exp):
+	def __init__(self, exp, import_path=None):
 		self.exp = exp
 		self.seg_count = None
 		self.min_spq = Params.avg_seg_per_q[0] - Params.avg_seg_per_q[1]
@@ -149,8 +149,12 @@ class DrawFigure(object):
 		self.segments = []
 		self.frames = None
 		self.path_len = 0
-		fname_data = [Params.participant_id, Params.block_number,  Params.trial_number, now(True, "%Y-%m-%d")]
-		self.file_name = "p{0}_b{1}_t{2}_{3}.tlf".format(*fname_data)
+		if import_path:
+			self.__import_figure(import_path)
+			return
+		if not Params.capture_figures_mode:
+			fname_data = [Params.participant_id, Params.block_number,  Params.trial_number, now(True, "%Y-%m-%d"), Params.session_number]
+			self.file_name = "p{0}_s{4}_b{1}_t{2}_{3}.tlf".format(*fname_data)
 		self.__generate_null_points__()
 		self.__gen_quad_intersects__()
 		self.__gen_real_points__()
@@ -245,6 +249,17 @@ class DrawFigure(object):
 				# 	self.segments[i] = linear_interpolation(self.points[i], self.points[0], v)
 		self.frames = list(chain(*self.segments))
 
+	def __import_figure(self, path):
+		fig_archive = zipfile.ZipFile(path + ".zip")
+		figure = path.split("/")[-1]
+		fig_file = os.path.join(figure, figure + ".tlf")
+		print fig_file
+		print fig_archive.infolist()
+		print fig_archive.namelist()
+		for l in fig_archive.open(fig_file).readlines():
+			attr = l.split(" = ")
+			if len(attr):
+				setattr(self, attr[0], eval(attr[1]))
 
 	def render(self,np=True):
 		surf = aggdraw.Draw("RGBA", Params.screen_x_y, Params.default_fill_color)
@@ -277,7 +292,6 @@ class DrawFigure(object):
 		rate = 0.01666666667
 		max_frames = int(draw_in / rate)
 		delta_d = math.floor(self.path_len / max_frames)
-		print draw_in, self.path_len, delta_d
 		a_frames = [self.frames[0]]
 		seg_len = 0
 		mouse = []
@@ -320,25 +334,33 @@ class DrawFigure(object):
 			self.exp.blit(self.exp.tracker_dot, 5, f)
 			self.exp.flip()
 			f = list(f)
-			f.append(Params.clock.trial_time)
+			try:
+				f.append(Params.clock.trial_time)
+			except RuntimeError:
+				pass  # for capture mode
 			last_f = time.time()
 
-	def write_out(self, destination, file_name, trial_figure=True, drawing_data=None):
-		path = os.path.join(destination, file_name)
-		thumb_path = os.path.join(destination, file_name[:-4] + "_preview.png")
-		if not drawing_data:
-			png.from_array(self.render(), 'RGBA').save(thumb_path)
-		with zipfile.ZipFile(path[:-3] + "zip", "a") as fig_zip:
-			f = open(path, "w+")
-			if not trial_figure:
+	def write_out(self, file_name=None, drawing_data=None):
+		if not file_name:
+			file_name = self.file_name
+		thumb_file_name = file_name[:-4] + "_preview.png"
+		fig_path = os.path.join(self.exp.fig_dir, file_name)
+		thumb_path = os.path.join(self.exp.fig_dir, thumb_file_name)
+		with zipfile.ZipFile(fig_path[:-3] + "zip", "a", zipfile.ZIP_DEFLATED) as fig_zip:
+			f = open(fig_path, "w+")
+			if Params.capture_figures_mode:
 				for k, v in self.__dict__.iteritems():
-					if k == "experiment":
+					if k in ["dot", "r_dot", "exp"]:
 						continue
 					f.write("{0} = {1}\n".format(k, v))
 			elif drawing_data:
-				f.write(drawing_data)
+				f.write(str(drawing_data))
 			else:
-				f.write(self.frames)
+				f.write("frames = " + str(self.frames))
 			f.close()
-			fig_zip.write(path, "a")
-			os.remove(path)
+			if not drawing_data:
+				png.from_array(self.render(), 'RGBA').save(thumb_path)
+				fig_zip.write(thumb_path, thumb_file_name)
+				os.remove(thumb_path)
+			fig_zip.write(fig_path, file_name)
+			os.remove(fig_path)
