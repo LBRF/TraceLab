@@ -57,11 +57,11 @@ dm_auto_threshold = True
 ########################################
 # Figure Controls
 ########################################
-capture_figures_mode = False
+capture_figures_mode = True
 
-outer_margin_v = 400
-outer_margin_h = 800
-inner_margin = 300
+outer_margin_v = 150
+outer_margin_h = 200
+inner_margin = 150
 trace_mode = False
 
 # inner_margin = 300 #todo: v + h for inner margins

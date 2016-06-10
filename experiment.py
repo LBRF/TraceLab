@@ -1,8 +1,7 @@
 # "fixate" at draw start; show image (maintain "fixation"; draw after SOA
+__author__ = "Jonathan Mulle"
 
 import klibs
-
-__author__ = "Jonathan Mulle"
 import imp
 import sys
 sys.path.append("ExpAssets/Resources/code/")
@@ -64,9 +63,11 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	boundaries = {}
 	use_random_figures = False
 	drawing = []
+	drawing_name = None
 	rt = None
 	mode = None
 	seg_estimate = None
+	test_figures = {}
 	figure = None
 	figure_dots = None
 	figure_segments = None
@@ -79,15 +80,13 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 	def setup(self):
 		try:
-			if Params.session_number == 1 :
-				self.p_dir = os.path.join(Params.data_path, "p{0}_{1}".format(Params.user_data[0], Params.user_data[-2]))
-				self.fig_dir = os.path.join(self.p_dir, "random_figures")
-				if not os.path.exists(self.p_dir):
-					os.mkdir(self.p_dir)
-				if not os.path.exists(self.fig_dir):
-					os.mkdir(self.fig_dir)
-		except AttributeError:
-			pass
+			self.p_dir = os.path.join(Params.data_path, "p{0}_{1}".format(Params.user_data[0], Params.user_data[-2]))
+			session_type = "testing" if Params.session_number in (1,5) else "training"
+			self.fig_dir = os.path.join(self.p_dir, session_type, "session_" + str(Params.session_number))
+			os.makedirs(self.fig_dir)
+		except AttributeError:  # for capture-figure mode
+			self.fig_dir = os.path.join(Params.resource_dir, "figures")
+
 		self.origin_proto = Ellipse(self.origin_size)
 		self.tracker_dot_proto = Ellipse(self.tracker_dot_size)
 		self.tracker_dot_proto.fill = [255, 0, 0]
@@ -112,11 +111,17 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		ob_y1 = self.origin_pos[1] - half_or
 		ob_x2 = self.origin_pos[0] + half_or
 		ob_y2 = self.origin_pos[0] + half_or
-		self.origin_boundary = [(ob_x1, ob_y1), (ob_x2, ob_y2)]
+		self.origin_boundary = [self.origin_pos, self.origin_size // 2]
 		self.instructions_1 = "On each trial you will have {0} seconds to study a random figure.\nYou will later be asked to draw it.\nPress any key to begin.".format(self.sample_exposure_time // 1000)
 		self.instructions_2 = "Now draw the figure you have just seen.\n - Start by placing the cursor on the red dot. \n - End by placing the cursor on the green dot. \n\nPress any key to proceed."
 		self.loading_msg = self.message("Generating figure, just one moment...", "default", blit=False)
 		self.control_fail_msg = self.message("Please keep your finger on the start area for the complete duration.", 'error', blit=False )
+
+		# import figures for use during testing sessions
+		if Params.session_number in (1, 5):
+			for f in Params.figures:
+				self.test_figures[f] = DrawFigure.DrawFigure(self, os.path.join(Params.resource_dir, "figures", f))
+
 
 	def block(self):
 		self.fill()
@@ -130,8 +135,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 		self.rc.end_collection_event = 'response_period_end'
 		self.rc.draw_listener.add_boundaries([('start', self.origin_boundary, CIRCLE_BOUNDARY),
-											  ('stop', self.origin_boundary, CIRCLE_BOUNDARY),
-											  ('canvas', [(0,0), (Params.screen_x_y)], RECT_BOUNDARY)])
+											  ('stop', self.origin_boundary, CIRCLE_BOUNDARY)])
 		self.rc.draw_listener.start_boundary = 'start'
 		self.rc.draw_listener.stop_boundary = 'stop'
 		self.rc.draw_listener.show_active_cursor = False
@@ -148,7 +152,10 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.blit(self.loading_msg, 5, Params.screen_c)
 		self.flip()
 
-		self.figure = DrawFigure.DrawFigure(self)
+		if Params.session_number in (1,5):
+			self.figure = self.figures[self.figure_name]
+		else:
+			self.figure = DrawFigure.DrawFigure(self)
 		self.value_slider.update_range(self.figure.seg_count)
 
 	def trial(self):
@@ -167,7 +174,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		return {
 			"block_num": Params.block_number,
 			"trial_num": Params.trial_number,
-			"figure": self.figure.frames,
+			"figure": self.figure.file_name,
 			"drawing": self.drawing_name,
 			"seg_estimate": self.seg_estimate,
 			"rt": self.rt,
@@ -175,9 +182,9 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 	def trial_clean_up(self):
 		self.value_slider.reset()
-		self.figure.write_out(self.fig_dir, self.figure.file_name)
+		self.figure.write_out()
 		if Params.exp_condition == PHYSICAL_MODE:
-			pass
+			self.figure.write_out(self.drawing_name, self.drawing)
 			# draw_file =
 
 	def clean_up(self):
@@ -263,7 +270,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		return self.imagery_trial() if cont in ['n', 'N'] else None
 
 	def show_figure(self):
-		surf = aggdraw.Draw("RGBA", (800, 800), (255, 255, 255, 255))
+		surf = aggdraw.Draw("RGBA", Params.screen_x_y, (0, 0, 0, 0))
 		p_str = "M{0} {1}".format(*self.figure_segments[0])
 		for s in chunk(self.figure_segments, 2):
 			try:
@@ -317,7 +324,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		if not self.figure:
 			self.figure = DrawFigure.DrawFigure(self)
 		# self.figure.draw(dots=True, flip=False)
-		self.figure.animate()
+		self.figure.animate(3)
 		self.flip()
 		self.any_key()
 		resp = self.query("(s)ave, (d)iscard, (r)eplay or (q)uit?", accepted=['s', 'd', 'r', 'q'])
@@ -331,15 +338,14 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		if resp == "s":
 			self.fill()
 			self.message("Saving... ", flip=True)
-			f_name = "figure_" + str(now(True)) + ".tlf"
-			path = os.path.join(Params.resource_dir, "figures")
-			self.figure.write_out(path, f_name, False)
+			f_name = sha1("figure_" + str(now(True))).hex_digest() + ".tlf"
+			self.figure.write_out(f_name)
 
 
 	@property
 	def drawing_name(self):
-		fname_data = [Params.participant_id, Params.block_number, Params.trial_number, now(True, "%Y-%m-%d")]
-		return "p{0}_b{1}_t{2}_{3}.tld".format(*fname_data)
+		fname_data = [Params.participant_id, Params.block_number, Params.trial_number, now(True, "%Y-%m-%d"), Params.session_number]
+		return "p{0}_s{4}_b{1}_t{2}_{3}.tld".format(*fname_data)
 
 
 
