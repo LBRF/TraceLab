@@ -1,20 +1,18 @@
 # "fixate" at draw start; show image (maintain "fixation"; draw after SOA
 __author__ = "Jonathan Mulle"
 
-import klibs
-import imp
-import sys
+import imp, sys, shutil, os
 sys.path.append("ExpAssets/Resources/code/")
+from klibs.KLExperiment import Experiment
 from klibs.KLDraw import *
 from klibs.KLUtilities import *
 from klibs.KLConstants import *
 from klibs.KLEventInterface import EventTicket as ET
 from klibs.KLExceptions import TrialException
-
-import DrawFigure, Slider
+from TraceLabFigure import TraceLabFigure
+from Slider import Slider
 from klibs import BoundaryInspector
-import os
-
+import klibs.KLParams as P
 from hashlib import sha1
 
 WHITE = (255, 255, 255, 255)
@@ -30,12 +28,12 @@ PHYSICAL_MODE = "p"
 IMAGERY_MODE = "i"
 CONTROL_MODE = "c"
 
-class TraceLab(klibs.Experiment, BoundaryInspector):
+class TraceLab(Experiment, BoundaryInspector):
 
 	# session vars
 	p_dir = None
 	fig_dir = None
-	testing = None
+	training_session = None
 
 	# graphical elements
 	value_slider = None
@@ -51,12 +49,12 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	tracker_dot_size = 3
 	tracker_dot = None
 
-	instructions_1 = None
-	instructions_2 = None
+	instructions = None
 	loading_msg = None
 	control_fail_msg = None
+	next_trial_msg = None
 	response_window_extension = 1 # second
-	response_window = None  # speed + constant
+	response_window = None  # animate_time + constant
 
 	# debug & configuration
 	show_drawing = True
@@ -75,6 +73,9 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	figure_dots = None
 	figure_segments = None
 
+	# configured trial factors (dynamically loaded per-trial
+	animate_time = None
+	figure_name = None
 
 
 	def __init__(self, *args, **kwargs):
@@ -82,16 +83,13 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 	def setup(self):
 		try:
-			self.p_dir = os.path.join(Params.data_path, "p{0}_{1}".format(Params.user_data[0], Params.user_data[-2]))
-			session_type = "testing" if Params.session_number in (1,5) else "training"
-			self.fig_dir = os.path.join(self.p_dir, session_type, "session_" + str(Params.session_number))
-			# note: discuss this with Tony
+			self.p_dir = os.path.join(P.data_path, "p{0}_{1}".format(P.user_data[0], P.user_data[-2]))
+			self.fig_dir = os.path.join(self.p_dir, self.session_type, "session_" + str(P.session_number))
 			if os.path.exists(self.fig_dir):
-				os.remdir(self.fig_dir)
+				shutil.rmtree(self.fig_dir)
 			os.makedirs(self.fig_dir)
-
 		except AttributeError:  # for capture-figure mode
-			self.fig_dir = os.path.join(Params.resource_dir, "figures")
+			self.fig_dir = os.path.join(P.resources_dir, "figures")
 
 		self.origin_proto = Ellipse(self.origin_size)
 		self.tracker_dot_proto = Ellipse(self.tracker_dot_size)
@@ -102,47 +100,48 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.text_manager.add_style('tiny', 12, [255, 255,255, 255])
 		self.text_manager.add_style('small', 16, [255, 255,255, 255])
 
-		if Params.capture_figures_mode:
+		if P.capture_figures_mode:
 			self.capture_figures()
-		self.value_slider = Slider.Slider(self, 950, 800, 15, 20, (75,75,75), RED)
-		self.use_random_figures = Params.session_number not in (1, 5)
+		self.value_slider = Slider(self, int(P.screen_y * 0.75), int(P.screen_x * 0.5), 15, 20, (75,75,75), RED)
+		self.use_random_figures = P.session_number not in (1, 5)
 		self.origin_proto.fill = self.origin_active_color
 		self.origin_active = self.origin_proto.render()
 		self.origin_proto.fill = self.origin_inactive_color
 		self.origin_inactive = self.origin_proto.render()
-		self.origin_pos = (Params.screen_c[0], int(Params.screen_c[1] * 1.5))
+		self.origin_pos = (P.screen_c[0], int(P.screen_c[1] * 1.5))
 		self.add_boundary("origin", [self.origin_pos, self.origin_size // 2], CIRCLE_BOUNDARY)
-		half_or = self.origin_size // 2
-		ob_x1 = self.origin_pos[0] - half_or
-		ob_y1 = self.origin_pos[1] - half_or
-		ob_x2 = self.origin_pos[0] + half_or
-		ob_y2 = self.origin_pos[0] + half_or
 		self.origin_boundary = [self.origin_pos, self.origin_size // 2]
-		self.instructions_1 = "On each trial you will have {0} seconds to study a random figure.\nYou will later be asked to draw it.\nPress any key to begin.".format(self.sample_exposure_time // 1000)
-		self.instructions_2 = "Now draw the figure you have just seen.\n - Start by placing the cursor on the red dot. \n - End by placing the cursor on the green dot. \n\nPress any key to proceed."
-		if self.testing:
-			load_text = "Loading figure, just one moment..."
+		instructions_file = "{0}_group_instructions.txt"
+		if P.exp_condition == PHYSICAL_MODE:
+			instructions_file = instructions_file.format("physical")
+		elif P.exp_condition == IMAGERY_MODE:
+			instructions_file = instructions_file.format("imagery")
 		else:
-			load_text = "Generating figure, just one moment..."
+			instructions_file = instructions_file.format("control")
+		instructions_file = os.path.join(P.resources_dir, "Text", instructions_file)
+		self.instructions = self.message(open(instructions_file).read(), "instructions", blit=False)
+		load_text = "{0} figure, just one moment...".format("Generating" if self.training_session else "Loading")
 		self.loading_msg = self.message(load_text, "default", blit=False)
 		self.control_fail_msg = self.message("Please keep your finger on the start area for the complete duration.", 'error', blit=False )
+		self.next_trial_msg = self.message("Press any key to begin the trial.", 'default', blit=False)
 
 		# import figures for use during testing sessions
-		if self.testing:
-			for f in Params.figures:
-				self.test_figures[f] = DrawFigure.DrawFigure(self, os.path.join(Params.resource_dir, "figures", f))
-
+		if not self.training_session:
+			self.fill()
+			self.blit(self.loading_msg, 5, P.screen_c)
+			self.flip()
+			for f in P.figures:
+				self.ui_request()
+				self.test_figures[f] = TraceLabFigure(self, os.path.join(P.resources_dir, "figures", f))
 
 	def block(self):
 		self.fill()
-		self.message(self.instructions_1, 'instructions', registration=5, location=Params.screen_c)
+		self.blit(self.instructions, registration=5, location=P.screen_c)
 		self.flip()
 		self.any_key()
 
 	def setup_response_collector(self):
-
 		self.rc.uses(RC_DRAW)
-
 		self.rc.end_collection_event = 'response_period_end'
 		self.rc.draw_listener.add_boundaries([('start', self.origin_boundary, CIRCLE_BOUNDARY),
 											  ('stop', self.origin_boundary, CIRCLE_BOUNDARY)])
@@ -156,54 +155,60 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.rc.display_callback_args = [True]
 
 	def trial_prep(self):
-		if Params.exp_condition != PHYSICAL_MODE:
-			self.rt = -1.0
-		self.speed = int(self.speed)
+		self.animate_time = int(self.animate_time)
 		self.drawing = NA
 		self.seg_estimate = -1
 		self.fill()
-		self.blit(self.loading_msg, 5, Params.screen_c)
+		if self.training_session:
+			self.blit(self.loading_msg, 5, P.screen_c)
 		self.flip()
-
-		if self.testing:
-			self.figure = self.test_figures[self.figure_name]
-		else:
-			self.figure = DrawFigure.DrawFigure(self)
+		self.figure = TraceLabFigure(self) if self.training_session else self.test_figures[self.figure_name]
+		if P.demo_mode:
+			self.figure.render()
 		self.value_slider.update_range(self.figure.seg_count)
-
-	def trial(self):
-		# while self.evi.before('end_exposure', True):
-		self.figure.animate(self.speed)
-		if Params.exp_condition == IMAGERY_MODE:
-			self.imagery_trial()
-		if Params.exp_condition == PHYSICAL_MODE:
-			self.physical_trial()
-		if Params.exp_condition == CONTROL_MODE:
-			self.control_trial()
+		self.figure.prepare_animation()
+		# let participant self-initiate next trial
 		self.fill()
-		self.message("Press any key to begin the next trial.", 'instructions', registration=5, location=Params.screen_c, flip=True)
+		self.blit(self.next_trial_msg, 5, P.screen_c)
+		self.flip()
 		self.any_key()
 
+	def trial(self):
+		self.figure.animate()
+		if P.exp_condition == IMAGERY_MODE:
+			self.control_trial()
+		if P.exp_condition == PHYSICAL_MODE:
+			self.physical_trial()
+		if P.exp_condition == CONTROL_MODE:
+			self.imagery_trial()
+		self.fill()
+		self.flip()
+
 		return {
-			"block_num": Params.block_number,
-			"trial_num": Params.trial_number,
-			"figure": self.figure_name if self.testing else self.figure.file_name,
-			"drawing": self.drawing_name if Params.exp_condition != CONTROL_MODE else NA,
+			"block_num": P.block_number,
+			"trial_num": P.trial_number,
+			"session_num": P.session_number,
+			"condition": P.exp_condition,
+			"figure_file": self.figure.file_name if self.training_session else self.figure_name,
+			"animate_goal_time": self.animate_time,
+			"animate_real_time": self.figure.animate_time,
+			"avg_velocity": self.figure.avg_velocity,
+			"path_length": self.figure.path_length,
+			"trace_file": self.tracing_name if P.exp_condition != CONTROL_MODE else NA,
+			"seg_count": self.figure.seg_count,
 			"seg_estimate": self.seg_estimate,
 			"rt": self.rt,
 		}
 
 	def trial_clean_up(self):
 		self.value_slider.reset()
-		if not self.testing:
-			self.figure.write_out()
-		if Params.exp_condition == PHYSICAL_MODE:
-			self.figure.write_out(self.drawing_name, self.drawing)
+		self.figure.write_out()
+		self.figure.write_out(self.tracing_name, self.drawing)
 
 	def clean_up(self):
 		# if the entire experiment is successfully completed, update the sessions_completed column
-		q_str = "UPDATE `participants` SET `sessions_completed` = ? WHERE `id` = ?"
-		self.database.query(q_str, qvars = [Params.session_number, Params.participant_id])
+		q_str = "UPDATE `sessions` SET `sessions_completed` = ? WHERE `id` = ?"
+		self.database.query(q_str, QUERY_UPD, q_vars = [P.session_number, P.participant_id])
 
 	def display_refresh(self, flip=True):
 		self.fill()
@@ -212,25 +217,25 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		if self.show_drawing:
 			try:
 				drawing = self.rc.draw_listener.render_progress()
-				self.blit(drawing, 5, Params.screen_c)
+				self.blit(drawing, 5, P.screen_c)
 			except TypeError:
 				pass
 		if flip:
 			self.flip()
 
-	def set_session(self, id_str=None):
+	def init_session(self, id_str=None):
 		session_data_str = "SELECT * FROM `sessions` WHERE `participant_id` = ?"
 		if id_str:
 			try:
 				userhash = sha1(id_str).hexdigest()
 				user_data_str = "SELECT * FROM `participants` WHERE `userhash` = ?"
 				user_data = self.database.query(user_data_str, q_vars=[userhash]).fetchall()[0]
-				Params.participant_id = user_data[0]
-				Params.random_seed = str(user_data[2])
-				session_data = self.database.query(session_data_str, q_vars=[Params.participant_id]).fetchall()[0]
-				Params.session_id = session_data[0]
-				Params.exp_condition = session_data[2]
-				Params.session_number = session_data[3] + 1
+				P.participant_id = user_data[0]
+				P.random_seed = str(user_data[2])
+				session_data = self.database.query(session_data_str, q_vars=[P.participant_id]).fetchall()[0]
+				P.session_id = session_data[0]
+				P.exp_condition = session_data[2]
+				P.session_number = session_data[3] + 1
 			except IndexError:
 				retry = self.query("That identifier wasn't found. Do you wish to try another? (y)es or (n)o",
 								   accepted=['y', 'Y', 'n', 'N'])
@@ -238,77 +243,72 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 					return self.collect_demographics()
 				else:
 					self.fill()
-					self.message("Thanks for participating!", location=Params.screen_c)
+					self.message("Thanks for participating!", location=P.screen_c)
 					self.flip()
 					self.any_key()
 					self.quit()
 		else:
-			Params.session_number = 1
+			P.session_number = 1
 			q_str = "SELECT * FROM `participants` WHERE `id` = ?"
-			user_data = self.database.query(q_str, q_vars=[Params.participant_id]).fetchall()[0]
-		Params.user_data = user_data
+			user_data = self.database.query(q_str, q_vars=[P.participant_id]).fetchall()[0]
+		P.user_data = user_data
 
-		if Params.session_number == 1:
+		if P.session_number == 1:
 			try:
-				 session_data = self.database.query(session_data_str, q_vars=[Params.participant_id]).fetchall()[0]
-				 Params.exp_condition = session_data[2]
+				 session_data = self.database.query(session_data_str, q_vars=[P.participant_id]).fetchall()[0]
+				 P.exp_condition = session_data[2]
 			except IndexError:
-				Params.exp_condition = self.query("Please enter an experimental condition identifier:", accepted=('p', 'i', 'c'))
+				P.exp_condition = self.query("Please enter an experimental condition identifier:", accepted=('p', 'i', 'c'))
 				self.database.init_entry('sessions')
-				self.database.log('participant_id', Params.participant_id)
+				self.database.log('participant_id', P.participant_id)
 				self.database.log('sessions_completed', 0)
-				self.database.log('exp_condition', Params.exp_condition)
-				Params.session_id = self.database.insert()
-		self.testing = Params.session_number in (1,5)
-		Params.demographics_collected = True
+				self.database.log('exp_condition', P.exp_condition)
+				P.session_id = self.database.insert()
+		self.training_session = P.session_number not in (1,5)
+		self.session_type = "training" if self.training_session else "testing"
+		P.demographics_collected = True
 
-	def control_trial(self):
+	def imagery_trial(self):
 		self.fill()
 		self.blit(self.origin_inactive, 5, self.origin_pos)
 		self.flip()
-		if Params.demo_mode:
+		if P.demo_mode:
 			show_mouse_cursor()
 		while not self.within_boundary('origin', mouse_pos()):
 			self.ui_request()
-		Params.clock.register_events([ET('hold at origin', Params.origin_wait_time, relative=True),
-									  ET('end_exposure', self.speed + Params.origin_wait_time, relative=True)])
+		P.clock.register_event(ET('hold at origin', P.origin_wait_time, relative=True))
 		while self.evi.before('hold at origin', True):
 			for e in pump(True):
-				if not self.within_boundary('origin', mouse_pos()):
+				if not self.within_boundary('origin', mouse_pos()) or e.type == sdl2.SDL_MOUSEBUTTONUP:
 					self.fill()
-					self.blit(self.control_fail_msg, 5, Params.screen_c)
+					self.blit(self.control_fail_msg, 5, P.screen_c)
 					self.flip()
 					self.any_key()
 					raise TrialException("Moved too soon.")
 		self.fill()
 		self.blit(self.origin_active, 5, self.origin_pos)
 		self.flip()
-		while self.evi.before('end_exposure', True):
-			if not self.within_boundary('origin', mouse_pos()):
-				self.fill()
-				self.blit(self.control_fail_msg, 5, Params.screen_c)
-				self.flip()
-				self.any_key()
-				raise TrialException("Moved too soon.")
-		if Params.demo_mode:
+		P.tk.start("imaginary trace")
+		while not self.within_boundary('origin', mouse_pos()) or e.type == sdl2.SDL_MOUSEBUTTONUP:
+			pass
+		self.rt = P.tk.stop("imaginary trace").read("imaginary trace")
+		if P.demo_mode:
 			hide_mouse_cursor()
 
 	def physical_trial(self):
-		self.fill()
-		self.message(self.instructions_2, 'instructions', registration=5, location=Params.screen_c, flip=True)
-		self.any_key()
-		self.fill()
 		self.rc.collect()
 		self.drawing = self.rc.draw_listener.responses[0][0]
 		self.rt = self.rc.draw_listener.responses[0][1]
 
-	def imagery_trial(self):
+	def control_trial(self):
 		self.drawing = NA
+		P.tk.start("seg estimate")
 		while self.seg_estimate == -1:
 			self.seg_estimate = self.value_slider.slide()
+		self.rt = P.tk.stop("seg estimate").read("seg estimate")
 
 	def show_figure(self):
-		surf = aggdraw.Draw("RGBA", Params.screen_x_y, (0, 0, 0, 0))
+		surf = aggdraw.Draw("RGBA", P.screen_x_y, (0, 0, 0, 0))
 		p_str = "M{0} {1}".format(*self.figure_segments[0])
 		for s in chunk(self.figure_segments, 2):
 			try:
@@ -344,13 +344,13 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 				f += 1
 			pos = self.figure_segments[f]
 			self.fill()
-			self.blit(surf, 5, Params.screen_c)
+			self.blit(surf, 5, P.screen_c)
 			self.blit(self.tracker_dot, 5, pos)
 			self.flip()
 
 	def capture_figures(self):
 		self.fill()
-		self.message("Press command+q at any time to exit.\nPress any key to continue.", "default", registration=5, location=Params.screen_c, flip=True)
+		self.message("Press command+q at any time to exit.\nPress any key to continue.", "default", registration=5, location=P.screen_c, flip=True)
 		self.any_key()
 		finished = False
 		while not finished:
@@ -360,8 +360,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	def __review_figure(self):
 		self.fill()
 		if not self.figure:
-			self.figure = DrawFigure.DrawFigure(self)
-		# self.figure.draw(dots=True, flip=False)
+			self.figure = TraceLabFigure(self)
 		self.figure.animate(3)
 		self.flip()
 		self.any_key()
@@ -381,9 +380,9 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 
 	@property
-	def drawing_name(self):
-		fname_data = [Params.participant_id, Params.block_number, Params.trial_number, now(True, "%Y-%m-%d"), Params.session_number]
-		return "p{0}_s{4}_b{1}_t{2}_{3}.tld".format(*fname_data)
+	def tracing_name(self):
+		fname_data = [P.participant_id, P.block_number, P.trial_number, now(True, "%Y-%m-%d"), P.session_number]
+		return "p{0}_s{4}_b{1}_t{2}_{3}.tlt".format(*fname_data)
 
 
 
