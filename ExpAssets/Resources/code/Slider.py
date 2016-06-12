@@ -33,11 +33,23 @@ class Slider(BoundaryInspector):
 		self.add_boundary("handle", [(self.pos[0] + self.handle_radius, self.pos[1]), self.handle_radius],
 						  CIRCLE_BOUNDARY)
 		self.msg = self.exp.message("How many corners did the dot traverse?", "default", blit=False)
+		self.lb_msg = None
+		self.ub_msg = None
+		self.ok_text = self.exp.message("OK", blit=False)
+		self.ok_inactive_button = Rectangle(100, 50, (1, (255,255,255)), (125,125,125)).render()
+		self.ok_active_button = Rectangle(100, 50, (1, (255,255,255)), (5,175,45)).render()
+		self.button_active = False
+		self.button_pos = (Params.screen_c[0], y_pos + bar_height + 50)
+		button_upper_left = (self.button_pos[0] - 50, self.button_pos[1] - 25)
+		button_botton_right = (self.button_pos[0] + 50, self.button_pos[1] + 25)
+		self.add_boundary("button", (button_upper_left, button_botton_right), RECT_BOUNDARY)
+
+		self.response = None
 
 	def __build_increments(self):
-		self.increment_count = (self.upper_bound - self.lower_bound) // self.increment_by
+		self.increment_count = (self.upper_bound + 1 - self.lower_bound) // self.increment_by
 		inc_width = self.bar_size[0] // self.increment_count + 1  # w/o +1 final increment has a px width of 0
-		for i in range(0, self.increment_count + 1):
+		for i in range(0, self.increment_count):
 			i_range = [self.pos[0] + i * inc_width, self.pos[0] + inc_width + i * inc_width]
 			value = self.lower_bound + i * self.increment_by
 			self.increments.append([i_range, value])
@@ -58,25 +70,36 @@ class Slider(BoundaryInspector):
 	def slide(self):
 		show_mouse_cursor()
 		self.blit()
+
 		dragging = False
-		while not dragging:
+		while True:
 			for event in pump(True):
 				self.exp.ui_request(event)
 				if event.type == sdl2.SDL_MOUSEBUTTONDOWN:
-					dragging = self.within_boundary("handle", mouse_pos())
-
-		while dragging:
-			for event in pump(True):
-				self.exp.ui_request(event)
-				if event.type == sdl2.SDL_MOUSEBUTTONUP:
-					return self.handle_value()
-					break
-				self.handle_pos = mouse_pos()[0]
-				self.blit()
+					m_pos = mouse_pos()
+					within_button = self.within_boundary("button", m_pos)
+					if self.button_active and within_button:
+						return self.response
+					dragging = self.within_boundary("handle", m_pos)
+					if dragging:
+						break
+				time.sleep(0.1)
+			if dragging:
+				for event in pump(True):
+					self.exp.ui_request(event)
+					if event.type == sdl2.SDL_MOUSEBUTTONUP:
+						self.response =  self.handle_value()
+						self.button_active = True
+						flush()
+						return -1
+					self.handle_pos = mouse_pos()[0]
+					self.blit()
 		return False
 
 	def blit(self):
 		self.exp.fill()
+		self.exp.blit(self.ok_active_button if self.button_active else self.ok_inactive_button, 5, self.button_pos)
+		self.exp.blit(self.ok_text, 5, self.button_pos)
 		self.exp.blit(self.bar, 7, self.pos)
 		self.exp.blit(self.handle, 5, self.handle_pos)
 		self.exp.message(str(self.handle_value()), "default", registration=5, location=self.message_pos)
@@ -91,6 +114,8 @@ class Slider(BoundaryInspector):
 				return i[1]
 
 	def reset(self):
+		self.response = None
+		self.button_active = False
 		self.handle_pos = self.pos[0]
 
 	@property

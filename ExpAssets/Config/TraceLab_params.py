@@ -39,7 +39,7 @@ cue_back_size = 1 # deg of visual angle
 multi_session_project = True
 collect_demographics = True
 run_practice_blocks = False
-trials_per_block = 200
+trials_per_block = 1
 trials_per_practice_block = 0
 blocks_per_experiment = 1
 practice_blocks_per_experiment = 0
@@ -47,7 +47,9 @@ trials_per_participant = 0
 pre_render_block_messages = False
 show_practice_messages = True
 table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA")]}
-
+figures = ["figure_1"]
+origin_wait_time = 1000  # ms
+demo_mode = True
 #########################################
 # Development Mode Settings
 #########################################
@@ -57,7 +59,7 @@ dm_auto_threshold = True
 ########################################
 # Figure Controls
 ########################################
-capture_figures_mode = True
+capture_figures_mode = False
 
 outer_margin_v = 150
 outer_margin_h = 200
