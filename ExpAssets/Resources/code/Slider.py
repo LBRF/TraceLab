@@ -66,7 +66,6 @@ class Slider(BoundaryInspector):
 		self.ub_msg = self.exp.message(str(self.upper_bound), "small", blit=False)
 		self.__build_increments()
 
-
 	def slide(self):
 		show_mouse_cursor()
 		self.blit()

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 __author__ = 'jono'
-import klibs.KLParams as Params
+import klibs.KLParams as P
+import os
 from klibs.KLUtilities import *
 from klibs.KLDraw import Ellipse
 from random import randrange, choice
@@ -130,33 +131,38 @@ def linear_interpolation(origin, destination, velocity=5, dt=0.01666667):
 #
 
 
-class DrawFigure(object):
+class TraceLabFigure(object):
 
 	def __init__(self, exp, import_path=None):
 		self.exp = exp
 		self.seg_count = None
-		self.min_spq = Params.avg_seg_per_q[0] - Params.avg_seg_per_q[1]
-		self.max_spq = Params.avg_seg_per_q[0] + Params.avg_seg_per_q[1]
-		self.min_spf = Params.avg_seg_per_f[0] - Params.avg_seg_per_f[1]
-		self.max_spf = Params.avg_seg_per_f[0] + Params.avg_seg_per_f[1]
+		self.min_spq = P.avg_seg_per_q[0] - P.avg_seg_per_q[1]
+		self.max_spq = P.avg_seg_per_q[0] + P.avg_seg_per_q[1]
+		self.min_spf = P.avg_seg_per_f[0] - P.avg_seg_per_f[1]
+		self.max_spf = P.avg_seg_per_f[0] + P.avg_seg_per_f[1]
 		if self.min_spf > 4 * self.min_spq > self.max_spf:
 			raise ValueError("Impossible min/max values chosen for points per figure/quadrant.")
+		if P.outer_margin_h + P.inner_margin // 2 > Params.screen_c[0]:
+			raise ValueError("Margins too large; no drawable area remains.")
+		if P.outer_margin_v + P.inner_margin // 2 > Params.screen_c[1]:
+			raise ValueError("Margins too large; no drawable area remains.")
 		self.quad_ranges = None
 		self.dot = Ellipse(5, fill=(255,45,45))
 		self.r_dot = self.dot.render()
 		self.total_spf = 0
 		self.points = []
 		self.segments = []
-		self.frames = None
-		self.path_len = 0
-		self.width = Params.screen_x - (2 * Params.outer_margin_h)
-		self.height = Params.screen_y - (2 * Params.outer_margin_h)
+		self.frames = None  # complete interpolated path
+		self.a_frames = None  # interpolation minus dropped frames to ensure constant velocity
+		self.path_length = 0
+		self.width = P.screen_x - (2 * P.outer_margin_h)
+		self.height = P.screen_y - (2 * P.outer_margin_h)
+		self.avg_velocity = None  # last call to animate only
+		self.animate_time = None  # last call to animate only
+		self.rendered = False
 		if import_path:
 			self.__import_figure(import_path)
 			return
-		if not Params.capture_figures_mode:
-			fname_data = [Params.participant_id, Params.block_number,  Params.trial_number, now(True, "%Y-%m-%d"), Params.session_number]
-			self.file_name = "p{0}_s{4}_b{1}_t{2}_{3}.tlf".format(*fname_data)
 		self.__generate_null_points__()
 		self.__gen_quad_intersects__()
 		self.__gen_real_points__()
@@ -184,12 +190,12 @@ class DrawFigure(object):
 
 	def __gen_quad_intersects__(self):
 		# replaces the first index of each quadrant in self.points with a coordinate tuple
-		i_m = Params.inner_margin
-		o_mh = Params.outer_margin_h
-		o_mv = Params.outer_margin_v
-		s_c = Params.screen_c
-		s_x = Params.screen_x
-		s_y = Params.screen_y
+		i_m = P.inner_margin
+		o_mh = P.outer_margin_h
+		o_mv = P.outer_margin_v
+		s_c = P.screen_c
+		s_x = P.screen_x
+		s_y = P.screen_y
 		self.quad_ranges = [
 			[(o_mh, s_c[1] + i_m), (s_c[0] - i_m, s_y - o_mv)],
 			[(o_mh, o_mv), (s_c[0] - i_m, s_c[1] - i_m)],
@@ -211,8 +217,8 @@ class DrawFigure(object):
 
 	def __gen_segments__(self):
 		for i in range(0, len(self.points)):
-			curves = int((1.0 - Params.angularity) * 10) * [False]
-			lines = int(Params.angularity * 10) * [True]
+			curves = int((1.0 - P.angularity) * 10) * [False]
+			lines = int(P.angularity * 10) * [True]
 			if choice(curves+lines):
 				try:
 					self.segments.append([False, self.points[i], self.points[i+1]])
@@ -238,7 +244,7 @@ class DrawFigure(object):
 		avg_density = sum(bezier_densities) / len(bezier_densities)
 		v = 0.001
 		while v / 0.016 < avg_density:
-			v+=0.1
+			v += 0.001
 		for i in range(0, len(self.segments)):
 			if self.segments[i][0] is False:
 				# print self.segments[i]
@@ -261,7 +267,7 @@ class DrawFigure(object):
 				setattr(self, attr[0], eval(attr[1]))
 
 	def render(self,np=True):
-		surf = aggdraw.Draw("RGBA", (self.width, self.height), Params.default_fill_color)
+		surf = aggdraw.Draw("RGBA", (self.width, self.height), P.default_fill_color)
 		p_str = "M{0} {1}".format(*self.frames[0])
 		for s in chunk(self.frames, 2):
 			try:
@@ -270,7 +276,8 @@ class DrawFigure(object):
 				pass
 		sym = aggdraw.Symbol(p_str)
 		surf.symbol((0, 0), sym, aggdraw.Pen((75, 75, 75), 1, 255))
-		return aggdraw_to_array(surf) if np else Image.frombytes(surf.mode, surf.size, surf.tostring())
+		self.rendered = aggdraw_to_array(surf) if np else Image.frombytes(surf.mode, surf.size, surf.tostring())
+		return self.rendered
 
 	def draw(self, dots=True, flip=True):
 		self.exp.fill()
@@ -283,17 +290,14 @@ class DrawFigure(object):
 		if flip:
 			self.exp.flip()
 
-
-	def animate(self, duration):
-		self.path_len = interpolated_path_len(self.frames)
-		surface = self.render()
-		draw_in = duration * 0.001
-		rate = 0.01666666667
+	def prepare_animation(self):
+		self.path_length = interpolated_path_len(self.frames)
+		draw_in = self.exp.animate_time * 0.001
+		rate = 0.016666666666667
 		max_frames = int(draw_in / rate)
-		delta_d = math.floor(self.path_len / max_frames)
-		a_frames = [self.frames[0]]
+		delta_d = math.floor(self.path_length / max_frames)
+		self.a_frames = [self.frames[0]]
 		seg_len = 0
-		mouse = []
 		for i in range(0, len(self.frames)):
 			try:
 				p1 = [1.0 * self.frames[i][0], 1.0 * self.frames[i][1]]
@@ -304,9 +308,10 @@ class DrawFigure(object):
 				p2 = [1.0 * self.frames[0][0], 1.0 * self.frames[0][1]]
 				seg_len += line_segment_len(p1, p2)
 			if seg_len >= delta_d:
-				a_frames.append((self.frames[i][0] + Params.outer_margin_h, self.frames[i][1] + Params.outer_margin_v))
+				self.a_frames.append((self.frames[i][0], self.frames[i][1]))
 				seg_len = 0
 
+	def animate(self):
 		#
 		# skip_frame = int(len(frames) / max_frames)
 		# removed = 0
@@ -321,46 +326,51 @@ class DrawFigure(object):
 		last_f = time.time()
 		f = 0
 		frame_start = time.time()
-		for f in a_frames:
+		updated_a_frames = []
+		for f in self.a_frames:
 			self.exp.ui_request()
-			if Params.trace_mode:
-				mouse.append(mouse_pos())
-			# while time.time() < rate + last_f:
-			# 	pump()
-			# f += 1
-			# pos = a_frames[f]
 			self.exp.fill()
-			# self.exp.blit(surface, 5, Params.screen_c)
+			if P.demo_mode:
+				self.exp.blit(self.rendered, 5, P.screen_c)
 			self.exp.blit(self.exp.tracker_dot, 5, f)
 			self.exp.flip()
 			f = list(f)
 			try:
-				f.append(Params.clock.trial_time)
+				updated_a_frames.append((f[0], f[1], Params.clock.trial_time))
 			except RuntimeError:
 				pass  # for capture mode
-			last_f = time.time()
+		self.a_frames = updated_a_frames
+		self.animate_time = Params.clock.trial_time
+		self.avg_velocity = self.path_length / self.animate_time
 
-	def write_out(self, file_name=None, drawing_data=None):
+	def write_out(self, file_name=None, data=None):
+		write_png = False
 		if not file_name:
 			file_name = self.file_name
+		if not data:
+			write_png = True
+			data = self.a_frames
 		thumb_file_name = file_name[:-4] + "_preview.png"
 		fig_path = os.path.join(self.exp.fig_dir, file_name)
 		thumb_path = os.path.join(self.exp.fig_dir, thumb_file_name)
 		with zipfile.ZipFile(fig_path[:-3] + "zip", "a", zipfile.ZIP_DEFLATED) as fig_zip:
 			f = open(fig_path, "w+")
-			if Params.capture_figures_mode:
+			if P.capture_figures_mode:
 				for k, v in self.__dict__.iteritems():
 					if k in ["dot", "r_dot", "exp"]:
 						continue
 					f.write("{0} = {1}\n".format(k, v))
-			elif drawing_data:
-				f.write(str(drawing_data))
 			else:
-				f.write("frames = " + str(self.frames))
+				f.write(str(data))
 			f.close()
-			if not drawing_data:
+			if write_png:
 				png.from_array(self.render(), 'RGBA').save(thumb_path)
 				fig_zip.write(thumb_path, thumb_file_name)
 				os.remove(thumb_path)
 			fig_zip.write(fig_path, file_name)
 			os.remove(fig_path)
+
+	@property
+	def file_name(self):
+		f_name_data = [P.participant_id, P.block_number, P.trial_number, now(True, "%Y-%m-%d"), P.session_number]
+		return "p{0}_s{4}_b{1}_t{2}_{3}.tlf".format(*f_name_data)

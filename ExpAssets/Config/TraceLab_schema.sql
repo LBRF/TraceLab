@@ -53,9 +53,16 @@ CREATE TABLE trials (
 	id integer primary key autoincrement not null,
 	participant_id integer key not null,
 	block_num integer not null,
+	session_num integer not null,
+	condition text not null,
 	trial_num integer not null,
-	figure text not null,
-	drawing text not null,
+	figure_file text not null,
+	animate_goal_time float not null,
+	animate_real_time float not null,
+	avg_velocity float not null,
+	path_length float not null,
+	trace_file text not null,
+	seg_count integer not null,
 	seg_estimate integer not null,
 	rt float not null
 );
