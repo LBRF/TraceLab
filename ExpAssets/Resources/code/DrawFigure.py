@@ -149,6 +149,8 @@ class DrawFigure(object):
 		self.segments = []
 		self.frames = None
 		self.path_len = 0
+		self.width = Params.screen_x - (2 * Params.outer_margin_h)
+		self.height = Params.screen_y - (2 * Params.outer_margin_h)
 		if import_path:
 			self.__import_figure(import_path)
 			return
@@ -253,16 +255,13 @@ class DrawFigure(object):
 		fig_archive = zipfile.ZipFile(path + ".zip")
 		figure = path.split("/")[-1]
 		fig_file = os.path.join(figure, figure + ".tlf")
-		print fig_file
-		print fig_archive.infolist()
-		print fig_archive.namelist()
 		for l in fig_archive.open(fig_file).readlines():
 			attr = l.split(" = ")
 			if len(attr):
 				setattr(self, attr[0], eval(attr[1]))
 
 	def render(self,np=True):
-		surf = aggdraw.Draw("RGBA", Params.screen_x_y, Params.default_fill_color)
+		surf = aggdraw.Draw("RGBA", (self.width, self.height), Params.default_fill_color)
 		p_str = "M{0} {1}".format(*self.frames[0])
 		for s in chunk(self.frames, 2):
 			try:
@@ -288,7 +287,7 @@ class DrawFigure(object):
 	def animate(self, duration):
 		self.path_len = interpolated_path_len(self.frames)
 		surface = self.render()
-		draw_in = float(duration)
+		draw_in = duration * 0.001
 		rate = 0.01666666667
 		max_frames = int(draw_in / rate)
 		delta_d = math.floor(self.path_len / max_frames)
@@ -305,8 +304,9 @@ class DrawFigure(object):
 				p2 = [1.0 * self.frames[0][0], 1.0 * self.frames[0][1]]
 				seg_len += line_segment_len(p1, p2)
 			if seg_len >= delta_d:
-				a_frames.append(self.frames[i])
+				a_frames.append((self.frames[i][0] + Params.outer_margin_h, self.frames[i][1] + Params.outer_margin_v))
 				seg_len = 0
+
 		#
 		# skip_frame = int(len(frames) / max_frames)
 		# removed = 0
@@ -330,7 +330,7 @@ class DrawFigure(object):
 			# f += 1
 			# pos = a_frames[f]
 			self.exp.fill()
-			self.exp.blit(surface, 5, Params.screen_c)
+			# self.exp.blit(surface, 5, Params.screen_c)
 			self.exp.blit(self.exp.tracker_dot, 5, f)
 			self.exp.flip()
 			f = list(f)
