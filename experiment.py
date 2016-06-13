@@ -95,10 +95,10 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.tracker_dot_proto = Ellipse(self.tracker_dot_size)
 		self.tracker_dot_proto.fill = [255, 0, 0]
 		self.tracker_dot = self.tracker_dot_proto.render()
-		self.text_manager.add_style('instructions', 32, [255, 255, 255, 255])
-		self.text_manager.add_style('error', 32, [255, 0, 0, 255])
+		self.text_manager.add_style('instructions', 18, [255, 255, 255, 255])
+		self.text_manager.add_style('error', 18, [255, 0, 0, 255])
 		self.text_manager.add_style('tiny', 12, [255, 255,255, 255])
-		self.text_manager.add_style('small', 16, [255, 255,255, 255])
+		self.text_manager.add_style('small', 14, [255, 255,255, 255])
 
 		if P.capture_figures_mode:
 			self.capture_figures()
@@ -120,7 +120,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			instructions_file = instructions_file.format("control")
 		instructions_file = os.path.join(P.resources_dir, "Text", instructions_file)
 		self.instructions = self.message(open(instructions_file).read(), "instructions", blit=False)
-		load_text = "{0} figure, just one moment...".format("Generating" if self.training_session else "Loading")
+		load_text = "Loading..."
 		self.loading_msg = self.message(load_text, "default", blit=False)
 		self.control_fail_msg = self.message("Please keep your finger on the start area for the complete duration.", 'error', blit=False )
 		self.next_trial_msg = self.message("Press any key to begin the trial.", 'default', blit=False)
@@ -361,7 +361,10 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.fill()
 		if not self.figure:
 			self.figure = TraceLabFigure(self)
-		self.figure.animate(3)
+		self.animate_time = 5
+		self.figure.render()
+		self.figure.prepare_animation()
+		self.figure.animate()
 		self.flip()
 		self.any_key()
 		resp = self.query("(s)ave, (d)iscard, (r)eplay or (q)uit?", accepted=['s', 'd', 'r', 'q'])
