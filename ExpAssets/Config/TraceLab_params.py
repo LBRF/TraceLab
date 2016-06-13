@@ -17,7 +17,7 @@ default_fill_color = (0, 0, 0, 255)
 default_color = (255, 255, 255, 255)
 default_response_color = default_color
 default_input_color = default_color
-default_font_size = 28
+default_font_size = 16
 default_font_name = 'Frutiger'
 default_timeout_message = "Too slow!"
 
@@ -50,6 +50,7 @@ table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA"
 figures = ["figure_1"]
 origin_wait_time = 1000  # ms
 demo_mode = True
+
 #########################################
 # Development Mode Settings
 #########################################
@@ -64,7 +65,7 @@ capture_figures_mode = False
 outer_margin_v = 150
 outer_margin_h = 200
 inner_margin = 150
-trace_mode = False
+# trace_mode = False
 
 # inner_margin = 300 #todo: v + h for inner margins
 avg_seg_per_f = (9, 2)  # (avg number, variance)
@@ -79,3 +80,5 @@ segment_length_variance = 0.25  # ie. percent of avg_segment_length
 seg_report_fuzz = (2, 4)
 # seg_count_fuzz_width
 # seg_answer_pos
+
+ # NOTE VARIABLE SESSION COUNTS

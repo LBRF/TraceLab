@@ -26,6 +26,7 @@ class Slider(BoundaryInspector):
 		self.increment_count = None
 		self.increments = []
 		self.increment_by = 1
+		self.increment_surfs = {}
 		self.lower_bound = None
 		self.upper_bound = None
 		self.handle = Circle(self.handle_radius * 2, fill=self.handle_color, stroke=self.handle_stroke)
@@ -53,6 +54,8 @@ class Slider(BoundaryInspector):
 			i_range = [self.pos[0] + i * inc_width, self.pos[0] + inc_width + i * inc_width]
 			value = self.lower_bound + i * self.increment_by
 			self.increments.append([i_range, value])
+		for i in range(self.lower_bound, self.upper_bound + 1):
+			self.increment_surfs[i] = (self.exp.message(str(i), "small", blit=False))
 
 	def __update_handle_boundary(self):
 		if not self.handle_pos:
@@ -82,7 +85,6 @@ class Slider(BoundaryInspector):
 					dragging = self.within_boundary("handle", m_pos)
 					if dragging:
 						break
-				time.sleep(0.1)
 			if dragging:
 				for event in pump(True):
 					self.exp.ui_request(event)
@@ -101,7 +103,7 @@ class Slider(BoundaryInspector):
 		self.exp.blit(self.ok_text, 5, self.button_pos)
 		self.exp.blit(self.bar, 7, self.pos)
 		self.exp.blit(self.handle, 5, self.handle_pos)
-		self.exp.message(str(self.handle_value()), "default", registration=5, location=self.message_pos)
+		self.exp.blit(self.increment_surfs[self.handle_value()], registration=5, location=self.message_pos)
 		self.exp.blit(self.lb_msg, 5, (self.pos[0], self.pos[1] - 15))
 		self.exp.blit(self.ub_msg, 5, (self.pos[0] + self.bar_size[0], self.pos[1] - 15))
 		self.exp.blit(self.msg, 5, Params.screen_c)
