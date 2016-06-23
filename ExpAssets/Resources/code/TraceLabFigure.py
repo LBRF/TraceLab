@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
 __author__ = 'jono'
-import klibs.KLParams as P
+# import klibs.KLParams as P
 import os
+from klibs.KLExceptions import TrialException
+import klibs.KLParams as P
 from klibs.KLUtilities import *
 from klibs.KLDraw import Ellipse
-from random import randrange, choice
+from random import randrange, choice, shuffle
 from itertools import chain
 from PIL import ImagePath, ImageDraw, Image
 import png
 import zipfile
 import aggdraw
-from klibs.KLNumpySurface import aggdraw_to_array
+from klibs.KLDraw import aggdraw_to_array
+from math import ceil, floor
 
 def pascal_row(n):
 	# This returns the nth row of Pascal's Triangle
@@ -26,52 +29,52 @@ def pascal_row(n):
 		result.extend(reversed(result[:-1]) if n & 1 == 0 else reversed(result))
 	return result
 
+global drawable_area
 
-
-def bezier_interpolation(origin, destination, control_o, control_d=None):
-		destination = tuple(destination)
-		origin = tuple(origin)
-		control_o = tuple(control_o)
-		if control_d:
-			control_d = tuple(control_d)
-		points = [origin, control_o, control_d, destination] if control_d else [origin, control_o, destination]
-		break_next = False
-		segments = []
-		n = len(points)
-
-		def bezier(transitions):
-			combinations = pascal_row(n - 1)
-			result = []
-			for t in transitions:
-				t_powers = (t ** i for i in range(n))
-				u_powers = reversed([(1 - t) ** i for i in range(n)])
-				coefficients = [c * a * b for c, a, b in zip(combinations, t_powers, u_powers)]
-				result.append(list(sum([coef * p for coef, p in zip(coefficients, ps)]) for ps in zip(*points)))
-			return result
-
-		return [ (int(p[0]), int(p[1])) for p in bezier([0.01 * t for t in range(101)])]
-
-
-# def linear_interpolation(origin, destination, segmented=True):
-# 	d_x = destination[0] - origin[0]
-# 	d_y = destination[1] - origin[1]
-# 	theta = angle_between(origin, destination)
-# 	steps = abs(d_x) if abs(d_x) < abs(d_y) else abs(d_y)
-# 	points = [origin]
-# 	for i in range(steps):
-# 		points.append(point_pos(origin, i, theta))
-# 	points.append(destination)
-# 	if segmented:
-# 		segments = list(chunk(points, 2))
-# 		return segments if len(segments[-1]) == 2 else segments[:-1]
-# 	else:
-# 		return points
+# def bezier_interpolation(origin, destination, control_o, control_d=None):
+# 		destination = tuple(destination)
+# 		origin = tuple(origin)
+# 		control_o = tuple(control_o)
+# 		if control_d:
+# 			control_d = tuple(control_d)
+# 		points = [origin, control_o, control_d, destination] if control_d else [origin, control_o, destination]
+# 		break_next = False
+# 		segments = []
+# 		n = len(points)
+#
+# 		def bezier(transitions):
+# 			combinations = pascal_row(n - 1)
+# 			result = []
+# 			for t in transitions:
+# 				t_powers = (t ** i for i in range(n))
+# 				u_powers = reversed([(1 - t) ** i for i in range(n)])
+# 				coefficients = [c * a * b for c, a, b in zip(combinations, t_powers, u_powers)]
+# 				result.append(list(sum([coef * p for coef, p in zip(coefficients, ps)]) for ps in zip(*points)))
+# 			return result
+#
+# 		return [ (int(p[0]), int(p[1])) for p in bezier([0.01 * t for t in range(101)])]
+#
+#
+# # def linear_interpolation(origin, destination, segmented=True):
+# # 	d_x = destination[0] - origin[0]
+# # 	d_y = destination[1] - origin[1]
+# # 	theta = angle_between(origin, destination)
+# # 	steps = abs(d_x) if abs(d_x) < abs(d_y) else abs(d_y)
+# # 	points = [origin]
+# # 	for i in range(steps):
+# # 		points.append(point_pos(origin, i, theta))
+# # 	points.append(destination)
+# # 	if segmented:
+# # 		segments = list(chunk(points, 2))
+# # 		return segments if len(segments[-1]) == 2 else segments[:-1]
+# # 	else:
+# # 		return points
 
 """
 Velocity is measured in (whatever units your distance function uses)/(draw call)
 dt is time between draw calls
 """
-def linear_interpolation(origin, destination, velocity=5, dt=0.01666667):
+def linear_interpolation(origin, destination, velocity=None, dt=0.01666667):
 	#Ensure the point travels along straight segments at the expected velocity
 	angle = angle_between(origin, destination)
 	distance = line_segment_len(origin, destination)
@@ -89,46 +92,49 @@ def linear_interpolation(origin, destination, velocity=5, dt=0.01666667):
 	# else:
 	return points
 
-# """
-# Velocity is measured in (whatever units your distance function uses)/(draw call)
-# dt is time between draw calls
-# """
-# def bezier_interpolation(origin, destination, control_o, control_d=None, velocity=5, dt=0.016):
-# 		destination = tuple(destination)
-# 		origin = tuple(origin)
-# 		control_o = tuple(control_o)
-# 		if control_d:
-# 			control_d = tuple(control_d)
-# 		points = [origin, control_o, control_d, destination] if control_d else [origin, control_o, destination]
-# 		n = len(points)
-#
-# 		def bezier(transitions):
-# 			combinations = pascal_row(n - 1)
-# 			result = []
-# 			for t in transitions:
-# 				t_powers = (t ** i for i in range(n))
-# 				u_powers = reversed([(1 - t) ** i for i in range(n)])
-# 				coefficients = [c * a * b for c, a, b in zip(combinations, t_powers, u_powers)]
-# 				result.append(list(sum([coef * p for coef, p in zip(coefficients, ps)]) for ps in zip(*points)))
-# 			return result
-#
-# 		# Estimate the length of the curve
-# 		first_guess = bezier([0.01 * t for t in range(101)])
-# 		length_of_first_guess = path_len(first_guess)
-# 		# Calculate the time to traverse the curve at expected velocity
-# 		time_to_completion = length_of_first_guess/velocity
-# 		# The ceil call here biases long
-# 		# If you want to resolve issues of dt not dividing time to complete
-# 		# another way, feel free. The shorter the lines relative to the
-# 		# velocity, the more error this introduces.
-# 		steps = int(math.ceil(time_to_completion/dt))
-#
-# 		# The +1 ensures we get to the end
-# 		final_curve = bezier([t/steps for t in range(steps+1)])
-#
-# 		return [ (int(p[0]), int(p[1])) for p in final_curve]
-#
-#
+"""
+Velocity is measured in (whatever units your distance function uses)/(draw call)
+dt is time between draw calls
+"""
+def bezier_interpolation(origin, destination, control_o, control_d=None, velocity=None, dt=0.016666666667):
+	global drawable_area
+	destination = tuple(destination)
+	origin = tuple(origin)
+	control_o = tuple(control_o)
+	if control_d:
+		control_d = tuple(control_d)
+	points = [origin, control_o, control_d, destination] if control_d else [origin, control_o, destination]
+	n = len(points)
+
+	def bezier(transitions):
+		combinations = pascal_row(n - 1)
+		result = []
+		for t in transitions:
+			t_powers = (t ** i for i in range(n))
+			u_powers = reversed([(1 - t) ** i for i in range(n)])
+			coefficients = [c * a * b for c, a, b in zip(combinations, t_powers, u_powers)]
+			result.append(list(sum([coef * p for coef, p in zip(coefficients, ps)]) for ps in zip(*points)))
+		return result
+
+	# Estimate the length of the curve
+	first_guess = bezier([0.01 * t for t in range(101)])
+	for i in first_guess:
+		if i[0] < 0 or i[0] > P.screen_x or i[1] < 0 or i[1] > P.screen_y:
+			return False
+	length_of_first_guess = interpolated_path_len(first_guess)
+	if not velocity:
+		return [length_of_first_guess, [origin, destination, control_o, control_d]]
+	# Calculate the time to traverse the curve at expected velocity
+	time_to_completion = length_of_first_guess/velocity
+	# The ceil call here biases long
+	# If you want to resolve issues of dt not dividing time to complete
+	# another way, feel free. The shorter the lines relative to the
+	# velocity, the more error this introduces.
+	steps = int(math.ceil(time_to_completion/dt))
+	# The +1 ensures we get to the end
+	final_curve = bezier([t/float(steps) for t in range(steps+1)])
+
+	return [ (int(p[0]), int(p[1])) for p in final_curve]
 
 
 class TraceLabFigure(object):
@@ -140,6 +146,19 @@ class TraceLabFigure(object):
 		self.max_spq = P.avg_seg_per_q[0] + P.avg_seg_per_q[1]
 		self.min_spf = P.avg_seg_per_f[0] - P.avg_seg_per_f[1]
 		self.max_spf = P.avg_seg_per_f[0] + P.avg_seg_per_f[1]
+
+		# segment generation controls
+		self.min_lin_ang_width = P.min_linear_acuteness * 180
+		min_shift_size = int(P.peak_shift[0] * 1000)
+		max_shift_size = int(P.peak_shift[1] * 1000)
+		self.peak_shift_range = [i / 1000.0 for i in range(min_shift_size, max_shift_size)]
+
+		min_curve_sheer = int(P.curve_sheer[0] * 9000)
+		max_curve_sheer = int(P.curve_sheer[1] * 9000)
+		self.c_sheer_range = [i / 100.0 for i in range(min_curve_sheer, max_curve_sheer)]
+		self.curve_min_slope = int(floor(90.0 - P.slope_magnitude[0] * 90.0))
+		self.curve_max_slope = int(ceil(90.0 + P.slope_magnitude[0] * 90.0))
+
 		if self.min_spf > 4 * self.min_spq > self.max_spf:
 			raise ValueError("Impossible min/max values chosen for points per figure/quadrant.")
 		if P.outer_margin_h + P.inner_margin // 2 > Params.screen_c[0]:
@@ -189,6 +208,7 @@ class TraceLabFigure(object):
 				self.points[q].append(None)
 
 	def __gen_quad_intersects__(self):
+		global drawable_area
 		# replaces the first index of each quadrant in self.points with a coordinate tuple
 		i_m = P.inner_margin
 		o_mh = P.outer_margin_h
@@ -196,6 +216,8 @@ class TraceLabFigure(object):
 		s_c = P.screen_c
 		s_x = P.screen_x
 		s_y = P.screen_y
+		drawable_area = {"x": range(o_mh, P.screen_x - o_mh), "y":range(o_mv, P.screen_y - o_mv)}
+
 		self.quad_ranges = [
 			[(o_mh, s_c[1] + i_m), (s_c[0] - i_m, s_y - o_mv)],
 			[(o_mh, o_mv), (s_c[0] - i_m, s_c[1] - i_m)],
@@ -216,46 +238,218 @@ class TraceLabFigure(object):
 		self.seg_count = sum(len(i) for i in self.points)
 
 	def __gen_segments__(self):
-		for i in range(0, len(self.points)):
-			curves = int((1.0 - P.angularity) * 10) * [False]
-			lines = int(P.angularity * 10) * [True]
-			if choice(curves+lines):
-				try:
-					self.segments.append([False, self.points[i], self.points[i+1]])
-				except IndexError:
-					self.segments.append([False, self.points[i], self.points[0]])
+		# first generate the segments to establish a path length
+		first_pass_segs = []  # ie. raw interpolation unadjusted for velocity
+		p_len = 0
+		seg_type_dist = int((1.0 - P.angularity) * 10) * [False] + int(P.angularity * 10) * [True]
+		segment_types = [choice(seg_type_dist) for i in range(len(self.points))]
+
+		i = 0
+		i_linear_fail = False
+		i_curved_fail = False
+		while len(segment_types):
+			s = segment_types.pop()
+			print "Starting segment {0} of {2} ({1})".format(i, "curve" if s else "line", len(self.points))
+			p1 = self.points[i]
+			try:
+				p2 = self.points[i + 1]
+			except IndexError:
+				p2 = self.points[0]
+
+			try:
+				if not s:  # ie. not curve
+					try:
+						prev_seg = first_pass_segs[-1]
+					except IndexError:
+						prev_seg = None
+					seg_ok = False
+					while not seg_ok:
+						print "{0} of {1}".format(i+1, len(self.points))
+						self.exp.ui_request()
+						segment = self.__generate_linear_segment__(p1, p2, prev_seg)
+						if all(type(n) is int for n in segment):
+							if not len(segment_types):
+								raise TrialException("Can't change origin location.")
+							p2 = segment
+						else:
+							seg_ok = True
+					p_len += segment[0]
+					first_pass_segs.append(segment[1])
+				else:
+					segment = self.__generate_curved_segment__(p1, p2)
+					p_len += segment[0]
+					first_pass_segs.append(segment[1])
+				i += 1
+				i_curved_fail = False
+				i_linear_fail = False
+				print "Segment {0} done ({1})".format(i, "curve" if s else "line")
+			except TrialException:
+				e = "Generation failed on {0} segment.".format("curved" if s else "linear")
+				print e
+				if len(segment_types) > 0 and not all(t == s for t in segment_types):
+					if s:
+						i_curved_fail = True
+					else:
+						i_linear_fail = True
+					if i_curved_fail and i_linear_fail:
+						raise RuntimeError(e)  # no suitable segment can be drawn between these pts
+					segment_types.append(s)
+					shuffle(segment_types)
+				else:
+					raise RuntimeError(e)
+
+		# use path length and animation duration to establish a velocity and then do a second interpolation
+		velocity = p_len / self.exp.animate_time
+		for segment in first_pass_segs:
+			circle = segment[0]
+			try:
+				p1, p2, ctrl = segment[1]
+			except ValueError:
+				p1, p2 = segment[1]
+			if circle:
+				self.segments.append(bezier_interpolation(p1, p2, ctrl, None,  velocity))
 			else:
-				try:
-					amp = line_segment_len(self.points[i], self.points[i + 1])
-					r = angle_between(self.points[i], self.points[i + 1])
-					c = point_pos(midpoint(self.points[i], self.points[i + 1]), amp, 90, r)
-					self.segments.append(bezier_interpolation(self.points[i], self.points[i + 1], c))
-				except IndexError:
-					amp = line_segment_len(self.points[i], self.points[0])
-					c = point_pos(midpoint(self.points[i], self.points[0]), amp, 90)
-					self.segments.append(bezier_interpolation(self.points[i], self.points[0], c))
-		bezier_path_lens = []
-		bezier_densities = []
-		for s in self.segments:
-			if s[0] is not False:
-				p_len = interpolated_path_len(s)
-				bezier_path_lens.append(p_len)
-				bezier_densities.append(p_len / len(s))
-		avg_density = sum(bezier_densities) / len(bezier_densities)
-		v = 0.001
-		while v / 0.016 < avg_density:
-			v += 0.001
-		for i in range(0, len(self.segments)):
-			if self.segments[i][0] is False:
-				# print self.segments[i]
-				# continue
-				self.segments[i] = linear_interpolation(self.segments[i][1], self.segments[i][2], v)
-				# print self.segments[i]
-				# self.exp.quit()
-				# try:
-				# except IndexError:
-				# 	self.segments[i] = linear_interpolation(self.points[i], self.points[0], v)
+				self.segments.append(linear_interpolation(p1, p2, velocity))
 		self.frames = list(chain(*self.segments))
+		print "done generating segments"
+
+	def __generate_linear_segment__(self, p1, p2, prev_seg=None):
+		if prev_seg and prev_seg[0]:
+			p_prev = prev_seg[1][0]
+			#  if the angle is too acute, try to shift p2 a way from prev_seg until it's ok
+			seg_angle = acute_angle(p1, p_prev, p2)
+			if seg_angle < self.min_lin_ang_width:
+				print seg_angle, self.min_lin_ang_width, p1, p_prev, p2
+				p2 = list(p2)
+				# p2[0] += 1 if p_prev[0] - p2[0] > 0 else -1
+				# p2[1] += 1 if p_prev[1] - p2[1] > 0 else -1
+
+				a_p1_prev = angle_between(p1, p_prev)
+				a_prev_p2 = angle_between(p_prev, p2, a_p1_prev)
+				len_prev_p2 = line_segment_len(p_prev, p2)
+				p2 = point_pos(p_prev, len_prev_p2 + 1, a_prev_p2, a_p1_prev)
+				if p2[0] < 0 or p2[0] > P.screen_x or p2[1] < 0 or p2[1] > P.screen_y:
+					raise TrialException("No appropriate angle can be generated.")
+				else:
+					return p2
+		return [line_segment_len(p1, p2), [False, (p1, p2)]]
+
+
+	def __generate_curved_segment__(self, p1, p2):
+		# single letters here mean: r = rotation, c = control, p = point, q = quadrant, a = angle, v = vector
+		report = False
+		segment = None
+
+		#  reference p is the closer of p1, p2 to the screen center for the purposes of determining direction and angle
+		p_ref = p1
+		if line_segment_len(p1, P.screen_x_y) > line_segment_len(p2, P.screen_x_y):
+			p_ref = p2
+
+		#  gets the radial rotation between p1 and p2
+		r = angle_between(p_ref, p2 if p_ref == p1 else p1)
+
+		#  depending on the qudrant, p1->p2
+		q = self.__quadrant_from_point__(p1)
+		if len(q) > 1:  # if p1 is directly on an axis line an ambiguous answer is returned; check p2 instead
+			q = self.__quadrant_from_point__([p2])
+
+		#  decides the radial direction from p1->p2, clockwise or counterclockwise, from which the curve will extend
+		c_spin = choice([True, False])
+		if report: print "p_ref: {0}\nr: {1}\nq: {2}\n c_spin: {3}".format(p_ref, r, q, c_spin)
+
+		#  find linear distance between p1 and p2
+		d_p1p2 = line_segment_len(p1, p2)
+		if report: print "seg_line_len: {0}\nasym_max: {1}\nasym_min: {2}".format(d_p1p2, self.asym_max, self.asym_min)
+
+		#  next lines decide location of the perpendicular extension from control point and p1->p2
+		c_base_shift = choice(self.peak_shift_range) * d_p1p2
+		c_base_amp = c_base_shift if choice([1,0]) else d_p1p2 - c_base_shift #  ensure shift not always away from p_ref
+		p_c_base = point_pos(p_ref, c_base_amp, r)
+		if report: print "c_base_amp: {0}\np_c_base: {1}".format(c_base_amp, p_c_base)
+
+		#  the closer of p1, p2 to p_c_base will be p_c_ref when determining p_c_min
+		if c_base_amp > 0.5 * d_p1p2:
+			p_c_ref = p2 if p_ref == p1 else p1
+		else:
+			p_c_ref = p2 if p_ref == p2 else p1
+
+		#  choose an angle, deviating from 90 (+/-) by some random value, for p_c_ref -> p_c_base -> p_c
+		try:
+			sheer = choice(self.c_sheer_range)
+		except IndexError:
+			sheer = 0
+		a_c = 90 + sheer if choice([0,1]) else 90 - sheer
+
+		if report: print "P.curve_sheer: {3}, c_angle_max: {0}\nc_angle_min: {1}\nc_angle: {2}".format(self.a_c_min,self.a_c_max, a_c, P.curve_sheer)
+		#  get the range of x,y values for p_c
+		v_c_base = [p_c_base, a_c, r, c_spin]  # ie. p_c_base as origin
+		v_c_min = [p_c_ref, self.curve_min_slope, r, not c_spin]  # ie. p_c_ref as origin
+		v_c_max = [p_c_ref, self.curve_max_slope, r, not c_spin]  # ie. p_c_ref as origin
+		p_c_min = linear_intersection(v_c_min, v_c_base)
+		p_c_max = linear_intersection(v_c_max, v_c_base)
+		if report:  print "v_c_min: {0}\nv_c_maz: {1}\np_c_min: {2}\np_c_max: {3}".format(v_c_min, v_c_max, p_c_min, p_c_max)
+
+
+		#  choose an initial p_c; depending on quadrant, no guarantee x,y values in p_c_min are less than p_c_max
+		try:
+			p_c_x = randrange(p_c_min[0], p_c_max[0])
+		except ValueError:
+			try:
+				p_c_x = randrange(p_c_max[0], p_c_min[0])
+			except ValueError:
+				p_c_x = p_c_min[0]
+		try:
+			p_c = (p_c_x, randrange(p_c_min[1], p_c_max[1]))
+		except ValueError:
+			try:
+				p_c = (p_c_x, randrange(p_c_max[1], p_c_min[1]))
+			except ValueError:
+				p_c = (p_c_x, p_c_max[1])
+
+
+		v_c_b_len = line_segment_len(p_c_ref, p_c)
+		initial_v_c_b_len = v_c_b_len
+		flipped_spin = False
+		while not segment:
+			if not p_c:
+				v_c_b_len -= 1
+				if v_c_b_len == 0:
+					if flipped_spin:
+						e = "Curve failed, p1:{0}, p2: {1}, p_c: {2}, v_c_b_len: {3}".format(p1, p2, p_c, v_c_b_len)
+						print e
+						raise TrialException(e)
+					else:
+						flipped_spin = True
+						v_c_b_len = initial_v_c_b_len
+				p_c = point_pos(p_c_base, v_c_b_len, a_c, r, c_spin)
+			interpolation = bezier_interpolation(p1, p2, p_c)
+			if interpolation is False:
+				p_c = None
+			else:
+				return [interpolation[0], [True, [p1, p2, p_c]]]
+
+
+	def __quadrant_from_point__(self, point):
+		if len(point) == 1: point = point[0]
+		q = [True, True, True, True]
+		if point[0] > P.screen_c[0]:
+			q[0] = False
+			q[1] = False
+
+		if point[0] < P.screen_c[0]:
+			q[2] = False
+			q[3] = False
+
+		if point[1] > P.screen_c[1]:
+			q[1] = False
+			q[2] = False
+
+		if point[1] < P.screen_c[1]:
+			q[0] = False
+			q[3] = False
+
+		return indices_of(True, q, True)
+
 
 	def __import_figure(self, path):
 		fig_archive = zipfile.ZipFile(path + ".zip")
@@ -267,7 +461,7 @@ class TraceLabFigure(object):
 				setattr(self, attr[0], eval(attr[1]))
 
 	def render(self,np=True):
-		surf = aggdraw.Draw("RGBA", (self.width, self.height), P.default_fill_color)
+		surf = aggdraw.Draw("RGBA", P.screen_x_y, P.default_fill_color)
 		p_str = "M{0} {1}".format(*self.frames[0])
 		for s in chunk(self.frames, 2):
 			try:
@@ -296,36 +490,20 @@ class TraceLabFigure(object):
 		rate = 0.016666666666667
 		max_frames = int(draw_in / rate)
 		delta_d = math.floor(self.path_length / max_frames)
-		self.a_frames = [self.frames[0]]
+		self.a_frames = [list(self.frames[0])]
 		seg_len = 0
 		for i in range(0, len(self.frames)):
+			p1 = [float(p) for p in self.frames[i]]
 			try:
-				p1 = [1.0 * self.frames[i][0], 1.0 * self.frames[i][1]]
-				p2 = [1.0 * self.frames[i + 1][0], 1.0 * self.frames[i + 1][1]]
-				seg_len += line_segment_len(p1, p2)
+				p2 = [float(p) for p in self.frames[i+1]]
 			except IndexError:
-				p1 = [1.0 * self.frames[i][0], 1.0 * self.frames[i][1]]
-				p2 = [1.0 * self.frames[0][0], 1.0 * self.frames[0][1]]
-				seg_len += line_segment_len(p1, p2)
+				p2 = [float(p) for p in self.frames[0]]
+			seg_len += line_segment_len(p1, p2)
 			if seg_len >= delta_d:
-				self.a_frames.append((self.frames[i][0], self.frames[i][1]))
+				self.a_frames.append(list(self.frames[i]))
 				seg_len = 0
 
 	def animate(self):
-		#
-		# skip_frame = int(len(frames) / max_frames)
-		# removed = 0
-		# while len(frames) > max_frames:
-		# 	removed += 1
-		# 	try:
-		# 		frames.remove(frames[removed * skip_frame])
-		# 	except IndexError:
-		# 		break
-		# trunc_frames = [item for index, item in enumerate(frames) if (index + 1) % skip_frame != 0]
-
-		last_f = time.time()
-		f = 0
-		frame_start = time.time()
 		updated_a_frames = []
 		for f in self.a_frames:
 			self.exp.ui_request()

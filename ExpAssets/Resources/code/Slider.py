@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 __author__ = 'jono'
-
+import klibs.KLParams as P
 from klibs.KLDraw import Circle, Rectangle
 from klibs.KLMixins import BoundaryInspector
 from klibs.KLUtilities import *
@@ -10,8 +10,8 @@ class Slider(BoundaryInspector):
 	def __init__(self, experiment, y_pos, bar_length, bar_height, handle_radius, bar_fill, handle_fill):
 		self.boundaries = {}
 		self.exp = experiment
-		self.pos = (Params.screen_c[0] - bar_length // 2, y_pos)  # upper-left
-		self.message_pos = (Params.screen_c[0], y_pos - 50)
+		self.pos = (P.screen_c[0] - bar_length // 2, y_pos)  # upper-left
+		self.message_pos = (P.screen_c[0], y_pos - 50)
 		self.__handle_pos = (self.pos[0], self.pos[1] + bar_height // 2)
 		self.handle_color = handle_fill
 		self.handle_radius = handle_radius
@@ -40,7 +40,7 @@ class Slider(BoundaryInspector):
 		self.ok_inactive_button = Rectangle(100, 50, (1, (255,255,255)), (125,125,125)).render()
 		self.ok_active_button = Rectangle(100, 50, (1, (255,255,255)), (5,175,45)).render()
 		self.button_active = False
-		self.button_pos = (Params.screen_c[0], y_pos + bar_height + 50)
+		self.button_pos = (P.screen_c[0], y_pos + bar_height + 50)
 		button_upper_left = (self.button_pos[0] - 50, self.button_pos[1] - 25)
 		button_botton_right = (self.button_pos[0] + 50, self.button_pos[1] + 25)
 		self.add_boundary("button", (button_upper_left, button_botton_right), RECT_BOUNDARY)
@@ -63,8 +63,8 @@ class Slider(BoundaryInspector):
 		self.boundaries['handle'].bounds = [self.handle_pos, self.handle_radius]
 
 	def update_range(self, seg_count):
-		self.lower_bound = seg_count - randrange(*Params.seg_report_fuzz)
-		self.upper_bound = seg_count + randrange(*Params.seg_report_fuzz)
+		self.lower_bound = seg_count - randrange(*P.seg_report_fuzz)
+		self.upper_bound = seg_count + randrange(*P.seg_report_fuzz)
 		self.lb_msg = self.exp.message(str(self.lower_bound), "small", blit=False)
 		self.ub_msg = self.exp.message(str(self.upper_bound), "small", blit=False)
 		self.__build_increments()
@@ -106,7 +106,7 @@ class Slider(BoundaryInspector):
 		self.exp.blit(self.increment_surfs[self.handle_value()], registration=5, location=self.message_pos)
 		self.exp.blit(self.lb_msg, 5, (self.pos[0], self.pos[1] - 15))
 		self.exp.blit(self.ub_msg, 5, (self.pos[0] + self.bar_size[0], self.pos[1] - 15))
-		self.exp.blit(self.msg, 5, Params.screen_c)
+		self.exp.blit(self.msg, 5, P.screen_c)
 		self.exp.flip()
 
 	def handle_value(self):

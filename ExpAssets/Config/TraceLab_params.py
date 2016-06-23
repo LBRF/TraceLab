@@ -39,7 +39,7 @@ cue_back_size = 1 # deg of visual angle
 multi_session_project = True
 collect_demographics = True
 run_practice_blocks = False
-trials_per_block = 2
+trials_per_block = 50
 trials_per_practice_block = 0
 blocks_per_experiment = 1
 practice_blocks_per_experiment = 0
@@ -62,9 +62,9 @@ dm_auto_threshold = True
 ########################################
 capture_figures_mode = False
 
-outer_margin_v = 150
-outer_margin_h = 200
-inner_margin = 150
+outer_margin_v = 350
+outer_margin_h = 250
+inner_margin = 300
 # trace_mode = False
 
 # inner_margin = 300 #todo: v + h for inner margins
@@ -72,11 +72,14 @@ avg_seg_per_f = (9, 2)  # (avg number, variance)
 avg_seg_per_q = (2, 1)  # (avg number, variance)
 angularity = 0.5  # 0 = all curves, 1 = all lines
 
-# these three not implemented yet because math is hard
-sharpness = 0  # 0 = bell curves & obtuse angle, 1 = sheer, elliptical curves & acute angles
-path_length = -1  # length in px; -1 ignores this parameter; path length will override seg_length params if they conflict
-avg_segment_length = 50  # in px
-segment_length_variance = 0.25  # ie. percent of avg_segment_length
+# line controls
+min_linear_acuteness = 0.1  # must be between 0 and 1; low vals advised, higher vals increasingly get impossible to draw
+
+# curve controls
+peak_shift = (0.0, 0.5)  # 0 == perfect symmetry (ie. bell curve) and 1 == a right  triangle
+slope_magnitude = (0.25, 0.75)  # 0 = a straight line (ie. no curve), 1 = an infinitely steep curve (hint: don't pick this ;)
+curve_sheer = (0.0, 0.5)  # this is hard to describe, but 1 is again an impossible value, and this will grow to lunacy fast
+path_length = -1  # length (px); -1 ignores this parameter; path length will override seg_length params if they conflict
 seg_report_fuzz = (2, 4)
 # seg_count_fuzz_width
 # seg_answer_pos
