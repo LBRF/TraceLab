@@ -62,9 +62,10 @@ CREATE TABLE trials (
 	avg_velocity float not null,
 	path_length float not null,
 	trace_file text not null,
+  rt  float not null,  /* initiation time for all conditions*/
 	seg_count integer not null,
 	seg_estimate integer not null,
-	rt float not null
+	mt float not null
 );
 
 

@@ -3,16 +3,16 @@ __author__ = "Jonathan Mulle"
 
 import imp, sys, shutil, os
 sys.path.append("ExpAssets/Resources/code/")
-from klibs.KLExperiment import Experiment
-from klibs.KLDraw import *
-from klibs.KLUtilities import *
-from klibs.KLConstants import *
-from klibs.KLEventInterface import EventTicket as ET
 from klibs.KLExceptions import TrialException
+from klibs.KLConstants import *
+import klibs.KLParams as P
+from klibs.KLUtilities import *
+from klibs.KLDraw import Ellipse
+from klibs.KLEventInterface import EventTicket as ET
+from klibs.KLExperiment import Experiment
 from TraceLabFigure import TraceLabFigure
 from Slider import Slider
-from klibs import BoundaryInspector
-import klibs.KLParams as P
+from klibs.KLMixins import BoundaryInspector
 from hashlib import sha1
 
 WHITE = (255, 255, 255, 255)
@@ -65,7 +65,8 @@ class TraceLab(Experiment, BoundaryInspector):
 	use_random_figures = False
 	drawing = []
 	drawing_name = None
-	rt = None
+	rt = None  # time to initiate responding post-stimulus
+	mt = None  # time to complete response
 	mode = None
 	seg_estimate = None
 	test_figures = {}
@@ -162,7 +163,17 @@ class TraceLab(Experiment, BoundaryInspector):
 		if self.training_session:
 			self.blit(self.loading_msg, 5, P.screen_c)
 		self.flip()
-		self.figure = TraceLabFigure(self) if self.training_session else self.test_figures[self.figure_name]
+		failed_generations = 0
+		self.figure = None
+		while not self.figure:
+			try:
+				self.figure = TraceLabFigure(self) if self.training_session else self.test_figures[self.figure_name]
+			except RuntimeError as e:
+				failed_generations += 1
+				if failed_generations > 10:
+					print e.message
+					self.quit()
+				continue
 		if P.demo_mode:
 			self.figure.render()
 		self.value_slider.update_range(self.figure.seg_count)
@@ -195,9 +206,10 @@ class TraceLab(Experiment, BoundaryInspector):
 			"avg_velocity": self.figure.avg_velocity,
 			"path_length": self.figure.path_length,
 			"trace_file": self.tracing_name if P.exp_condition != CONTROL_MODE else NA,
+			"rt":  self.rt,
 			"seg_count": self.figure.seg_count,
 			"seg_estimate": self.seg_estimate,
-			"rt": self.rt,
+			"mt": self.mt,
 		}
 
 	def trial_clean_up(self):
@@ -272,81 +284,32 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.fill()
 		self.blit(self.origin_inactive, 5, self.origin_pos)
 		self.flip()
+		P.tk.start("imaginary trace")
 		if P.demo_mode:
 			show_mouse_cursor()
 		while not self.within_boundary('origin', mouse_pos()):
 			self.ui_request()
-		P.clock.register_event(ET('hold at origin', P.origin_wait_time, relative=True))
-		while self.evi.before('hold at origin', True):
-			for e in pump(True):
-				if not self.within_boundary('origin', mouse_pos()) or e.type == sdl2.SDL_MOUSEBUTTONUP:
-					self.fill()
-					self.blit(self.control_fail_msg, 5, P.screen_c)
-					self.flip()
-					self.any_key()
-					raise TrialException("Moved too soon.")
 		self.fill()
 		self.blit(self.origin_active, 5, self.origin_pos)
 		self.flip()
-		P.tk.start("imaginary trace")
 		while not self.within_boundary('origin', mouse_pos()) or e.type == sdl2.SDL_MOUSEBUTTONUP:
 			pass
-		self.rt = P.tk.stop("imaginary trace").read("imaginary trace")
+		self.mt = P.tk.stop("imaginary trace").read("imaginary trace")
 		if P.demo_mode:
 			hide_mouse_cursor()
 
 	def physical_trial(self):
+		start = P.clock.trial_time
 		self.rc.collect()
+		self.rt = self.rc.draw_listener.start_time - start
 		self.drawing = self.rc.draw_listener.responses[0][0]
-		self.rt = self.rc.draw_listener.responses[0][1]
+		self.mt = self.rc.draw_listener.responses[0][1] - self.rt
 
 	def control_trial(self):
 		self.drawing = NA
-		P.tk.start("seg estimate")
 		while self.seg_estimate == -1:
 			self.seg_estimate = self.value_slider.slide()
-		self.rt = P.tk.stop("seg estimate").read("seg estimate")
-
-	def show_figure(self):
-		surf = aggdraw.Draw("RGBA", P.screen_x_y, (0, 0, 0, 0))
-		p_str = "M{0} {1}".format(*self.figure_segments[0])
-		for s in chunk(self.figure_segments, 2):
-			try:
-				p_str += " L{0} {1} {2} {3}".format(*(list(s[0]) + list(s[1])) )
-			except IndexError:
-				pass
-		sym = aggdraw.Symbol(p_str)
-		surf.symbol((0, 0), sym, aggdraw.Pen((255, 0, 0), 1, 255))
-		surf = aggdraw_to_array(surf)
-
-		f_count = len(self.figure_segments)
-		self.fill()
-		draw_in = float(self.animate_time)
-		min_rate = 0.015
-		max_frames = int(draw_in / min_rate)
-		rate =  draw_in / len(self.figure_segments)
-		skip_frame = int(f_count / max_frames)
-		removed = 0
-		while len(self.figure_segments) > max_frames:
-			removed += 1
-			try:
-				self.figure_segments.remove(self.figure_segments[removed * skip_frame])
-			except IndexError:
-				break
-
-		last_f = time.time()
-		frame_start = time.time()
-		f = 0
-		while time.time() - frame_start < draw_in:
-			pump()
-			if time.time() > rate + last_f:
-				last_f = time.time()
-				f += 1
-			pos = self.figure_segments[f]
-			self.fill()
-			self.blit(surf, 5, P.screen_c)
-			self.blit(self.tracker_dot, 5, pos)
-			self.flip()
+		self.mt = P.tk.stop("seg estimate").read("seg estimate")
 
 	def capture_figures(self):
 		self.fill()
