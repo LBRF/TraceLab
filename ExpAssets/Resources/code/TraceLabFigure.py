@@ -161,9 +161,9 @@ class TraceLabFigure(object):
 
 		if self.min_spf > 4 * self.min_spq > self.max_spf:
 			raise ValueError("Impossible min/max values chosen for points per figure/quadrant.")
-		if P.outer_margin_h + P.inner_margin // 2 > Params.screen_c[0]:
+		if P.outer_margin_h + P.inner_margin_h // 2 > Params.screen_c[0]:
 			raise ValueError("Margins too large; no drawable area remains.")
-		if P.outer_margin_v + P.inner_margin // 2 > Params.screen_c[1]:
+		if P.outer_margin_v + P.inner_margin_v // 2 > Params.screen_c[1]:
 			raise ValueError("Margins too large; no drawable area remains.")
 		self.quad_ranges = None
 		self.dot = Ellipse(5, fill=(255,45,45))
@@ -184,7 +184,7 @@ class TraceLabFigure(object):
 			return
 		self.__generate_null_points__()
 		self.__gen_quad_intersects__()
-		self.__gen_real_points__()
+		self.__gen_real_points__(not P.generate_quadrant_intersections)
 		self.__gen_segments__()
 
 	def __generate_null_points__(self):
@@ -210,7 +210,8 @@ class TraceLabFigure(object):
 	def __gen_quad_intersects__(self):
 		global drawable_area
 		# replaces the first index of each quadrant in self.points with a coordinate tuple
-		i_m = P.inner_margin
+		i_mv = P.inner_margin_v
+		i_mh = P.inner_margin_h
 		o_mh = P.outer_margin_h
 		o_mv = P.outer_margin_v
 		s_c = P.screen_c
@@ -219,18 +220,20 @@ class TraceLabFigure(object):
 		drawable_area = {"x": range(o_mh, P.screen_x - o_mh), "y":range(o_mv, P.screen_y - o_mv)}
 
 		self.quad_ranges = [
-			[(o_mh, s_c[1] + i_m), (s_c[0] - i_m, s_y - o_mv)],
-			[(o_mh, o_mv), (s_c[0] - i_m, s_c[1] - i_m)],
-			[(s_c[0] + i_m, o_mv), (s_x - o_mh, s_c[1] - i_m)],
-			[(s_c[0] + i_m, s_c[1] + i_m), (s_x - o_mh, s_y - o_mv)]]
-		self.points[0][0] = (s_c[0], randrange(s_c[1] + i_m, s_y - o_mv))
-		self.points[1][0] = (randrange(o_mh, s_c[0] - i_m), s_c[1])
-		self.points[2][0] = (s_c[0], randrange(o_mv, s_c[1] - i_m))
-		self.points[3][0] = (randrange(s_c[0] + i_m, s_x - o_mh), s_c[1])
+			[(o_mh, s_c[1] + i_mv), (s_c[0] - i_mh, s_y - o_mv)],
+			[(o_mh, o_mv), (s_c[0] - i_mh, s_c[1] - i_mv)],
+			[(s_c[0] + i_mh, o_mv), (s_x - o_mh, s_c[1] - i_mv)],
+			[(s_c[0] + i_mh, s_c[1] + i_mv), (s_x - o_mh, s_y - o_mv)]]
+		if P.generate_quadrant_intersections:
+			self.points[0][0] = (s_c[0], randrange(s_c[1] + i_mv, s_y - o_mv))
+			self.points[1][0] = (randrange(o_mh, s_c[0] - i_mh), s_c[1])
+			self.points[2][0] = (s_c[0], randrange(o_mv, s_c[1] - i_mv))
+			self.points[3][0] = (randrange(s_c[0] + i_mh, s_x - o_mh), s_c[1])
 
-	def __gen_real_points__(self):
+	def __gen_real_points__(self, overwrite_intersections=False):
+		start_index = 0 if overwrite_intersections else 1
 		for i in range(0, 4):
-			for j in range(1, len(self.points[i])):
+			for j in range(start_index, len(self.points[i])):
 				x = randrange(self.quad_ranges[i][0][0], self.quad_ranges[i][1][0])
 				y = randrange(self.quad_ranges[i][0][1], self.quad_ranges[i][1][1])
 				self.points[i][j] = (x, y)
@@ -249,7 +252,8 @@ class TraceLabFigure(object):
 		i_curved_fail = False
 		while len(segment_types):
 			s = segment_types.pop()
-			print "Starting segment {0} of {2} ({1})".format(i, "curve" if s else "line", len(self.points))
+			if P.verbose_mode:
+				print "Starting segment {0} of {2} ({1})".format(i, "curve" if s else "line", len(self.points))
 			p1 = self.points[i]
 			try:
 				p2 = self.points[i + 1]
@@ -264,7 +268,7 @@ class TraceLabFigure(object):
 						prev_seg = None
 					seg_ok = False
 					while not seg_ok:
-						print "{0} of {1}".format(i+1, len(self.points))
+						if P.verbose_mode: print "{0} of {1}".format(i+1, len(self.points))
 						self.exp.ui_request()
 						segment = self.__generate_linear_segment__(p1, p2, prev_seg)
 						if all(type(n) is int for n in segment):
@@ -311,7 +315,6 @@ class TraceLabFigure(object):
 			else:
 				self.segments.append(linear_interpolation(p1, p2, velocity))
 		self.frames = list(chain(*self.segments))
-		print "done generating segments"
 
 	def __generate_linear_segment__(self, p1, p2, prev_seg=None):
 		if prev_seg and prev_seg[0]:
@@ -460,16 +463,27 @@ class TraceLabFigure(object):
 			if len(attr):
 				setattr(self, attr[0], eval(attr[1]))
 
-	def render(self,np=True):
-		surf = aggdraw.Draw("RGBA", P.screen_x_y, P.default_fill_color)
+	def render(self, np=True, trace=None):
+		surf = aggdraw.Draw("RGBA", P.screen_x_y, (0,0,0,255))
 		p_str = "M{0} {1}".format(*self.frames[0])
 		for s in chunk(self.frames, 2):
 			try:
-				p_str += " L{0} {1} {2} {3}".format(*(list(s[0]) + list(s[1])))
+				p_str += " L{0} {1} {2} {3}".format(s[0][0], s[0][1], s[1][0], s[1][1])
 			except IndexError:
 				pass
 		sym = aggdraw.Symbol(p_str)
-		surf.symbol((0, 0), sym, aggdraw.Pen((75, 75, 75), 1, 255))
+		surf.symbol((0, 0), sym, aggdraw.Pen(P.stimulus_feedback_color, 1, 255))
+		# if tracing data is passed, do this all again on the same surface
+		if trace:
+			p_str = "M{0} {1}".format(trace[0][0], trace[0][1])
+			for s in chunk(trace, 2):
+				try:
+					p_str += " L{0} {1} {2} {3}".format(s[0][0], s[0][1], s[1][0], s[1][1])
+				except IndexError:
+					pass
+			sym = aggdraw.Symbol(p_str)
+			surf.symbol((0, 0), sym, aggdraw.Pen(P.response_feedback_color, 1, 255))
+
 		self.rendered = aggdraw_to_array(surf) if np else Image.frombytes(surf.mode, surf.size, surf.tostring())
 		return self.rendered
 
@@ -505,6 +519,7 @@ class TraceLabFigure(object):
 
 	def animate(self):
 		updated_a_frames = []
+		start = P.clock.trial_time
 		for f in self.a_frames:
 			self.exp.ui_request()
 			self.exp.fill()
@@ -514,12 +529,15 @@ class TraceLabFigure(object):
 			self.exp.flip()
 			f = list(f)
 			try:
-				updated_a_frames.append((f[0], f[1], Params.clock.trial_time))
+				updated_a_frames.append((f[0], f[1], P.clock.trial_time - start))
 			except RuntimeError:
 				pass  # for capture mode
 		self.a_frames = updated_a_frames
 		self.animate_time = Params.clock.trial_time
 		self.avg_velocity = self.path_length / self.animate_time
+
+	# def feedback(self, trace):
+
 
 	def write_out(self, file_name=None, data=None):
 		write_png = False

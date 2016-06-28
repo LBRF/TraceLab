@@ -57,14 +57,37 @@ demo_mode = True
 dm_suppress_debug_pane = False
 dm_auto_threshold = True
 
+
+# For everything involving color,  http://www.colorspire.com/rgb-color-wheel/ will let you get the rgb values
+# for any color you prefer
+
+########################################
+# Tracker Dot Controls
+########################################
+tracker_dot_size = 5  # diameter in px
+tracker_dot_perimeter =  2  # px; *additional* to tracking dot size, so the diameter gets 2 x this number larger
+
+tracker_dot_color = (255, 0, 0)  # r, g, b, and the last value should always be 255
+tracker_dot_perimeter_color = (255, 255, 255)
+
+
+########################################
+# Feedback Controls
+########################################
+response_feedback_color = (0,0,255)
+stimulus_feedback_color = (255, 0, 0)
+
 ########################################
 # Figure Controls
 ########################################
 capture_figures_mode = False
 
+generate_quadrant_intersections = False
+
 outer_margin_v = 350
 outer_margin_h = 250
-inner_margin = 300
+inner_margin_v = 300
+inner_margin_h = 300
 # trace_mode = False
 
 # inner_margin = 300 #todo: v + h for inner margins
@@ -76,8 +99,8 @@ angularity = 0.5  # 0 = all curves, 1 = all lines
 min_linear_acuteness = 0.1  # must be between 0 and 1; low vals advised, higher vals increasingly get impossible to draw
 
 # curve controls
-peak_shift = (0.0, 0.5)  # 0 == perfect symmetry (ie. bell curve) and 1 == a right  triangle
 slope_magnitude = (0.25, 0.75)  # 0 = a straight line (ie. no curve), 1 = an infinitely steep curve (hint: don't pick this ;)
+peak_shift = (0.0, 0.5)  # 0 == perfect symmetry (ie. bell curve) and 1 == a right  triangle
 curve_sheer = (0.0, 0.5)  # this is hard to describe, but 1 is again an impossible value, and this will grow to lunacy fast
 path_length = -1  # length (px); -1 ignores this parameter; path length will override seg_length params if they conflict
 seg_report_fuzz = (2, 4)
