@@ -57,8 +57,8 @@ CREATE TABLE trials (
 	condition text not null,
 	trial_num integer not null,
 	figure_file text not null,
-	animate_goal_time float not null,
-	animate_real_time float not null,
+	stimulus_gt float not null, /* goal animation time */
+	stimulus_mt float not null, /* real animation time */
 	avg_velocity float not null,
 	path_length float not null,
 	trace_file text not null,

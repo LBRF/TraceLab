@@ -46,7 +46,6 @@ class TraceLab(Experiment, BoundaryInspector):
 	origin_pos = None
 	origin_boundary = None
 	tracker_dot_proto = None
-	tracker_dot_size = 3
 	tracker_dot = None
 
 	instructions = None
@@ -93,8 +92,11 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.fig_dir = os.path.join(P.resources_dir, "figures")
 
 		self.origin_proto = Ellipse(self.origin_size)
-		self.tracker_dot_proto = Ellipse(self.tracker_dot_size)
-		self.tracker_dot_proto.fill = [255, 0, 0]
+		if P.tracker_dot_perimeter > 0:
+			tracker_dot_stroke = [P.tracker_dot_perimeter, P.tracker_dot_perimeter_color, STROKE_OUTER]
+		else:
+			tracker_dot_stroke = None
+		self.tracker_dot_proto = Ellipse(P.tracker_dot_size, stroke=tracker_dot_stroke, fill=P.tracker_dot_color)
 		self.tracker_dot = self.tracker_dot_proto.render()
 		self.text_manager.add_style('instructions', 18, [255, 255, 255, 255])
 		self.text_manager.add_style('error', 18, [255, 0, 0, 255])
@@ -165,15 +167,18 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.flip()
 		failed_generations = 0
 		self.figure = None
-		while not self.figure:
-			try:
-				self.figure = TraceLabFigure(self) if self.training_session else self.test_figures[self.figure_name]
-			except RuntimeError as e:
-				failed_generations += 1
-				if failed_generations > 10:
-					print e.message
-					self.quit()
-				continue
+		if self.figure_name == "random":
+			while not self.figure:
+				try:
+					self.figure = TraceLabFigure(self)
+				except RuntimeError as e:
+					failed_generations += 1
+					if failed_generations > 10:
+						print e.message
+						self.quit()
+					continue
+		else:
+			self.figure = self.test_figures[self.figure_name]
 		if P.demo_mode:
 			self.figure.render()
 		self.value_slider.update_range(self.figure.seg_count)
@@ -201,8 +206,8 @@ class TraceLab(Experiment, BoundaryInspector):
 			"session_num": P.session_number,
 			"condition": P.exp_condition,
 			"figure_file": self.figure.file_name if self.training_session else self.figure_name,
-			"animate_goal_time": self.animate_time,
-			"animate_real_time": self.figure.animate_time,
+			"stimulus_gt": self.animate_time,
+			"stimulus_mt": self.figure.animate_time,
 			"avg_velocity": self.figure.avg_velocity,
 			"path_length": self.figure.path_length,
 			"trace_file": self.tracing_name if P.exp_condition != CONTROL_MODE else NA,
@@ -304,6 +309,12 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.rt = self.rc.draw_listener.start_time - start
 		self.drawing = self.rc.draw_listener.responses[0][0]
 		self.mt = self.rc.draw_listener.responses[0][1] - self.rt
+		if self.feedback == "true":
+			self.fill()
+			self.blit(self.figure.render(trace=self.drawing), 5, Params.screen_c)
+			self.flip()
+			self.any_key()
+
 
 	def control_trial(self):
 		self.drawing = NA
