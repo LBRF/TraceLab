@@ -250,7 +250,10 @@ class TraceLabFigure(object):
 		i = 0
 		i_linear_fail = False
 		i_curved_fail = False
+		start = time.time()
 		while len(segment_types):
+			if time.time() - start > P.generation_timeout:
+				raise RuntimeError("Figure generation timed out.")
 			s = segment_types.pop()
 			if P.verbose_mode:
 				print "Starting segment {0} of {2} ({1})".format(i, "curve" if s else "line", len(self.points))
@@ -489,11 +492,11 @@ class TraceLabFigure(object):
 
 	def draw(self, dots=True, flip=True):
 		self.exp.fill()
-		self.exp.blit(self.render())
+		self.exp.blit(self.render(), flip_x=P.flip_x)
 		self.exp.message("Path Length: {0}".format(interpolated_path_len(self.frames), "default", location=(25,50)))
 		if dots:
 			for p in self.points:
-				self.exp.blit(self.r_dot, 5, p)
+				self.exp.blit(self.r_dot, 5, p, flip_x=P.flip_x)
 				self.exp.message(str(p[0]), "tiny", location=p)
 		if flip:
 			self.exp.flip()
@@ -521,11 +524,13 @@ class TraceLabFigure(object):
 		updated_a_frames = []
 		start = P.clock.trial_time
 		for f in self.a_frames:
+			if P.flip_x:
+				f[0] = P.screen_x - f[0]
 			self.exp.ui_request()
 			self.exp.fill()
 			if P.demo_mode:
-				self.exp.blit(self.rendered, 5, P.screen_c)
-			self.exp.blit(self.exp.tracker_dot, 5, f)
+				self.exp.blit(self.rendered, 5, P.screen_c, flip_x=P.flip_x)
+			self.exp.blit(self.exp.tracker_dot, 5, f, flip_x=P.flip_x)
 			self.exp.flip()
 			f = list(f)
 			try:

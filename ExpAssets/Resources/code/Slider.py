@@ -75,38 +75,47 @@ class Slider(BoundaryInspector):
 
 		dragging = False
 		while True:
-			for event in pump(True):
-				self.exp.ui_request(event)
-				if event.type == sdl2.SDL_MOUSEBUTTONDOWN:
-					m_pos = mouse_pos()
-					within_button = self.within_boundary("button", m_pos)
-					if self.button_active and within_button:
-						return self.response
-					dragging = self.within_boundary("handle", m_pos)
-					if dragging:
-						break
+			if not dragging:
+				for event in pump(True):
+					self.exp.ui_request(event)
+					if event.type in (sdl2.SDL_MOUSEBUTTONDOWN, sdl2.SDL_MOUSEBUTTONDOWN):
+						within_button = self.within_boundary("button", m_pos)
+						if self.button_active and within_button:
+							return self.response
+				m_pos = mouse_pos()
+				dragging = self.within_boundary("handle", m_pos)
+				# if dragging:
+				# 	break
 			if dragging:
+				button_up = False
+				off_handle = False
 				for event in pump(True):
 					self.exp.ui_request(event)
 					if event.type == sdl2.SDL_MOUSEBUTTONUP:
-						self.response =  self.handle_value()
-						self.button_active = True
-						flush()
-						return -1
-					self.handle_pos = mouse_pos()[0]
-					self.blit()
+						button_up = True
+
+				off_handle = not self.within_boundary("handle", mouse_pos())
+
+				if off_handle or button_up:
+					dragging = False
+					self.response =  self.handle_value()
+					self.button_active = True
+					flush()
+					return -1
+				self.handle_pos = mouse_pos()[0]
+				self.blit()
 		return False
 
 	def blit(self):
 		self.exp.fill()
-		self.exp.blit(self.ok_active_button if self.button_active else self.ok_inactive_button, 5, self.button_pos)
-		self.exp.blit(self.ok_text, 5, self.button_pos)
-		self.exp.blit(self.bar, 7, self.pos)
-		self.exp.blit(self.handle, 5, self.handle_pos)
-		self.exp.blit(self.increment_surfs[self.handle_value()], registration=5, location=self.message_pos)
-		self.exp.blit(self.lb_msg, 5, (self.pos[0], self.pos[1] - 15))
-		self.exp.blit(self.ub_msg, 5, (self.pos[0] + self.bar_size[0], self.pos[1] - 15))
-		self.exp.blit(self.msg, 5, P.screen_c)
+		self.exp.blit(self.ok_active_button if self.button_active else self.ok_inactive_button, 5, self.button_pos, flip_x=P.flip_x)
+		self.exp.blit(self.ok_text, 5, self.button_pos, flip_x=P.flip_x)
+		self.exp.blit(self.bar, 7, self.pos, flip_x=P.flip_x)
+		self.exp.blit(self.handle, 5, self.handle_pos, flip_x=P.flip_x)
+		self.exp.blit(self.increment_surfs[self.handle_value()], registration=5, location=self.message_pos, flip_x=P.flip_x)
+		self.exp.blit(self.lb_msg, 5, (self.pos[0], self.pos[1] - 15), flip_x=P.flip_x)
+		self.exp.blit(self.ub_msg, 5, (self.pos[0] + self.bar_size[0], self.pos[1] - 15), flip_x=P.flip_x)
+		self.exp.blit(self.msg, 5, P.screen_c, flip_x=P.flip_x)
 		self.exp.flip()
 
 	def handle_value(self):
