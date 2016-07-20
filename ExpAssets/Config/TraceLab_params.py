@@ -76,13 +76,14 @@ tracker_dot_perimeter_color = (255, 255, 255)
 ########################################
 response_feedback_color = (0,0,255)
 stimulus_feedback_color = (255, 0, 0)
-
+max_feedback_time = 500  # ms
 ########################################
 # Figure Controls
 ########################################
+generation_timeout = 10  # seconds
 capture_figures_mode = False
 
-generate_quadrant_intersections = False
+generate_quadrant_intersections = True
 
 outer_margin_v = 350
 outer_margin_h = 250

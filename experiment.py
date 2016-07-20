@@ -1,6 +1,5 @@
 # "fixate" at draw start; show image (maintain "fixation"; draw after SOA
 __author__ = "Jonathan Mulle"
-
 import imp, sys, shutil, os
 sys.path.append("ExpAssets/Resources/code/")
 from klibs.KLExceptions import TrialException
@@ -23,10 +22,15 @@ BOT_L = 0
 TOP_L = 1
 TOP_R = 2
 
-# jon hates retyping strings
-PHYSICAL_MODE = "p"
-IMAGERY_MODE = "i"
-CONTROL_MODE = "c"
+# condition codes; jon hates retyping strings
+PP_xx_1 = "PP-00-1"
+PP_xx_5 = "PP-00-5"
+MI_xx_5 = "MI-00-5"
+CC_xx_5 = "CC-00-5"
+PP_VV_5 = "PP-VV-5"
+PP_RR_5 = "PP-RR-5"
+PP_VR_5 = "PP-VR-5"
+EXP_CONDITIONS = [PP_xx_1, PP_xx_5, MI_xx_5, CC_xx_5, PP_VV_5, PP_RR_5, PP_VR_5]
 
 class TraceLab(Experiment, BoundaryInspector):
 
@@ -34,6 +38,8 @@ class TraceLab(Experiment, BoundaryInspector):
 	p_dir = None
 	fig_dir = None
 	training_session = None
+	session_type = None
+	feedback = False
 
 	# graphical elements
 	value_slider = None
@@ -80,6 +86,7 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def __init__(self, *args, **kwargs):
 		super(TraceLab, self).__init__(*args, **kwargs)
+		P.flip_x=True
 
 	def setup(self):
 		try:
@@ -92,6 +99,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.fig_dir = os.path.join(P.resources_dir, "figures")
 
 		self.origin_proto = Ellipse(self.origin_size)
+
 		if P.tracker_dot_perimeter > 0:
 			tracker_dot_stroke = [P.tracker_dot_perimeter, P.tracker_dot_perimeter_color, STROKE_OUTER]
 		else:
@@ -111,43 +119,38 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.origin_active = self.origin_proto.render()
 		self.origin_proto.fill = self.origin_inactive_color
 		self.origin_inactive = self.origin_proto.render()
-		self.origin_pos = (P.screen_c[0], int(P.screen_c[1] * 1.5))
-		self.add_boundary("origin", [self.origin_pos, self.origin_size // 2], CIRCLE_BOUNDARY)
-		self.origin_boundary = [self.origin_pos, self.origin_size // 2]
 		instructions_file = "{0}_group_instructions.txt"
-		if P.exp_condition == PHYSICAL_MODE:
+		if P.exp_condition == PP_xx_5:
 			instructions_file = instructions_file.format("physical")
-		elif P.exp_condition == IMAGERY_MODE:
+		elif P.exp_condition == MI_xx_5:
 			instructions_file = instructions_file.format("imagery")
 		else:
 			instructions_file = instructions_file.format("control")
 		instructions_file = os.path.join(P.resources_dir, "Text", instructions_file)
 		self.instructions = self.message(open(instructions_file).read(), "instructions", blit=False)
-		load_text = "Loading..."
-		self.loading_msg = self.message(load_text, "default", blit=False)
+		self.loading_msg = self.message("Loading...", "default", blit=False)
 		self.control_fail_msg = self.message("Please keep your finger on the start area for the complete duration.", 'error', blit=False )
 		self.next_trial_msg = self.message("Press any key to begin the trial.", 'default', blit=False)
 
 		# import figures for use during testing sessions
-		if not self.training_session:
-			self.fill()
-			self.blit(self.loading_msg, 5, P.screen_c)
-			self.flip()
-			for f in P.figures:
-				self.ui_request()
-				self.test_figures[f] = TraceLabFigure(self, os.path.join(P.resources_dir, "figures", f))
+		self.fill()
+		self.blit(self.loading_msg, 5, P.screen_c, flip_x=P.flip_x)
+		self.flip()
+		for f in P.figures:
+			self.ui_request()
+			self.test_figures[f] = TraceLabFigure(self, os.path.join(P.resources_dir, "figures", f))
+		if P.exp_condition in [PP_RR_5, PP_VR_5]:
+			self.feedback = True
 
 	def block(self):
 		self.fill()
-		self.blit(self.instructions, registration=5, location=P.screen_c)
+		self.blit(self.instructions, registration=5, location=P.screen_c, flip_x=P.flip_x)
 		self.flip()
 		self.any_key()
 
 	def setup_response_collector(self):
 		self.rc.uses(RC_DRAW)
 		self.rc.end_collection_event = 'response_period_end'
-		self.rc.draw_listener.add_boundaries([('start', self.origin_boundary, CIRCLE_BOUNDARY),
-											  ('stop', self.origin_boundary, CIRCLE_BOUNDARY)])
 		self.rc.draw_listener.start_boundary = 'start'
 		self.rc.draw_listener.stop_boundary = 'stop'
 		self.rc.draw_listener.show_active_cursor = False
@@ -158,12 +161,13 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.rc.display_callback_args = [True]
 
 	def trial_prep(self):
+		self.rt = -1.0
 		self.animate_time = int(self.animate_time)
 		self.drawing = NA
 		self.seg_estimate = -1
 		self.fill()
 		if self.training_session:
-			self.blit(self.loading_msg, 5, P.screen_c)
+			self.blit(self.loading_msg, 5, P.screen_c, flip_x=P.flip_x)
 		self.flip()
 		failed_generations = 0
 		self.figure = None
@@ -179,24 +183,31 @@ class TraceLab(Experiment, BoundaryInspector):
 					continue
 		else:
 			self.figure = self.test_figures[self.figure_name]
+		self.origin_pos = list(self.figure.frames[0])
+		if P.flip_x:
+			self.origin_pos[0] = P.screen_x - self.origin_pos[0]
+		self.add_boundary("origin", [self.origin_pos, self.origin_size // 2], CIRCLE_BOUNDARY)
+		self.origin_boundary = [self.origin_pos, self.origin_size // 2]
+		self.rc.draw_listener.add_boundaries([('start', self.origin_boundary, CIRCLE_BOUNDARY),
+											  ('stop', self.origin_boundary, CIRCLE_BOUNDARY)])
 		if P.demo_mode:
 			self.figure.render()
 		self.value_slider.update_range(self.figure.seg_count)
 		self.figure.prepare_animation()
 		# let participant self-initiate next trial
 		self.fill()
-		self.blit(self.next_trial_msg, 5, P.screen_c)
+		self.blit(self.next_trial_msg, 5, P.screen_c, flip_x=P.flip_x)
 		self.flip()
 		self.any_key()
 
 	def trial(self):
 		self.figure.animate()
-		if P.exp_condition == IMAGERY_MODE:
-			self.control_trial()
-		if P.exp_condition == PHYSICAL_MODE:
-			self.physical_trial()
-		if P.exp_condition == CONTROL_MODE:
+		if P.exp_condition == MI_xx_5:
 			self.imagery_trial()
+		if P.exp_condition in (PP_xx_5, PP_xx_1, PP_VV_5, PP_VR_5, PP_RR_5):
+			self.physical_trial()
+		if P.exp_condition == CC_xx_5:
+			self.control_trial()
 		self.fill()
 		self.flip()
 
@@ -210,7 +221,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			"stimulus_mt": self.figure.animate_time,
 			"avg_velocity": self.figure.avg_velocity,
 			"path_length": self.figure.path_length,
-			"trace_file": self.tracing_name if P.exp_condition != CONTROL_MODE else NA,
+			"trace_file": self.tracing_name if P.exp_condition != CC_xx_5 else NA,
 			"rt":  self.rt,
 			"seg_count": self.figure.seg_count,
 			"seg_estimate": self.seg_estimate,
@@ -230,11 +241,11 @@ class TraceLab(Experiment, BoundaryInspector):
 	def display_refresh(self, flip=True):
 		self.fill()
 		origin = self.origin_active  if self.rc.draw_listener.active else self.origin_inactive
-		self.blit(origin, 5, self.origin_pos)
+		self.blit(origin, 5, self.origin_pos, flip_x=P.flip_x)
 		if self.show_drawing:
 			try:
 				drawing = self.rc.draw_listener.render_progress()
-				self.blit(drawing, 5, P.screen_c)
+				self.blit(drawing, 5, P.screen_c, flip_x=P.flip_x)
 			except TypeError:
 				pass
 		if flip:
@@ -255,12 +266,12 @@ class TraceLab(Experiment, BoundaryInspector):
 				P.session_number = session_data[3] + 1
 			except IndexError:
 				retry = self.query("That identifier wasn't found. Do you wish to try another? (y)es or (n)o",
-								   accepted=['y', 'Y', 'n', 'N'])
+								   accepted=['y', 'Y', 'n', 'N'], flip_x=P.flip_x)
 				if retry == 'y':
 					return self.collect_demographics()
 				else:
 					self.fill()
-					self.message("Thanks for participating!", location=P.screen_c)
+					self.message("Thanks for participating!", location=P.screen_c, flip_x=P.flip_x)
 					self.flip()
 					self.any_key()
 					self.quit()
@@ -275,7 +286,7 @@ class TraceLab(Experiment, BoundaryInspector):
 				 session_data = self.database.query(session_data_str, q_vars=[P.participant_id]).fetchall()[0]
 				 P.exp_condition = session_data[2]
 			except IndexError:
-				P.exp_condition = self.query("Please enter an experimental condition identifier:", accepted=('p', 'i', 'c'))
+				P.exp_condition = self.query("Enter an experimental condition identifier:", accepted=EXP_CONDITIONS, flip_x=P.flip_x)
 				self.database.init_entry('sessions')
 				self.database.log('participant_id', P.participant_id)
 				self.database.log('sessions_completed', 0)
@@ -287,7 +298,7 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def imagery_trial(self):
 		self.fill()
-		self.blit(self.origin_inactive, 5, self.origin_pos)
+		self.blit(self.origin_inactive, 5, self.origin_pos, flip_x=P.flip_x)
 		self.flip()
 		P.tk.start("imaginary trace")
 		if P.demo_mode:
@@ -295,11 +306,12 @@ class TraceLab(Experiment, BoundaryInspector):
 		while not self.within_boundary('origin', mouse_pos()):
 			self.ui_request()
 		self.fill()
-		self.blit(self.origin_active, 5, self.origin_pos)
+		self.blit(self.origin_active, 5, self.origin_pos, flip_x=P.flip_x)
 		self.flip()
-		while not self.within_boundary('origin', mouse_pos()) or e.type == sdl2.SDL_MOUSEBUTTONUP:
-			pass
-		self.mt = P.tk.stop("imaginary trace").read("imaginary trace")
+		while self.within_boundary('origin', mouse_pos()):
+			self.ui_request()
+		mt =  P.tk.stop("imaginary trace").read("imaginary trace")
+		self.mt = mt[1] - mt[0]
 		if P.demo_mode:
 			hide_mouse_cursor()
 
@@ -309,18 +321,20 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.rt = self.rc.draw_listener.start_time - start
 		self.drawing = self.rc.draw_listener.responses[0][0]
 		self.mt = self.rc.draw_listener.responses[0][1] - self.rt
-		if self.feedback == "true":
+		if self.feedback:
+			flush()
 			self.fill()
-			self.blit(self.figure.render(trace=self.drawing), 5, Params.screen_c)
+			self.blit(self.figure.render(trace=self.drawing), 5, Params.screen_c, flip_x=P.flip_x)
 			self.flip()
-			self.any_key()
-
+			self.any_key(Params.max_feedback_time)
 
 	def control_trial(self):
 		self.drawing = NA
+		P.tk.start("seg estimate")
 		while self.seg_estimate == -1:
 			self.seg_estimate = self.value_slider.slide()
-		self.mt = P.tk.stop("seg estimate").read("seg estimate")
+		mt = P.tk.stop("seg estimate").read("seg estimate")
+		self.mt = mt[1] - mt[0]
 
 	def capture_figures(self):
 		self.fill()
