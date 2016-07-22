@@ -48,7 +48,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	origin_inactive = None
 	origin_active_color = GREEN
 	origin_inactive_color = RED
-	origin_size = 20
+	origin_size = None
 	origin_pos = None
 	origin_boundary = None
 	tracker_dot_proto = None
@@ -86,9 +86,10 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def __init__(self, *args, **kwargs):
 		super(TraceLab, self).__init__(*args, **kwargs)
-		P.flip_x=True
+		P.flip_x=False
 
 	def setup(self):
+		self.origin_size = P.origin_size
 		try:
 			self.p_dir = os.path.join(P.data_path, "p{0}_{1}".format(P.user_data[0], P.user_data[-2]))
 			self.fig_dir = os.path.join(self.p_dir, self.session_type, "session_" + str(P.session_number))
@@ -120,7 +121,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.origin_proto.fill = self.origin_inactive_color
 		self.origin_inactive = self.origin_proto.render()
 		instructions_file = "{0}_group_instructions.txt"
-		if P.exp_condition == PP_xx_5:
+		if P.exp_condition in [PP_xx_5, PP_xx_1, PP_RR_5, PP_VR_5, PP_VV_5]:
 			instructions_file = instructions_file.format("physical")
 		elif P.exp_condition == MI_xx_5:
 			instructions_file = instructions_file.format("imagery")
@@ -159,6 +160,8 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.rc.draw_listener.interrupts = True
 		self.rc.display_callback = self.display_refresh
 		self.rc.display_callback_args = [True]
+		if P.demo_mode:
+			self.rc.draw_listener.render_real_time = True
 
 	def trial_prep(self):
 		self.rt = -1.0
@@ -303,13 +306,26 @@ class TraceLab(Experiment, BoundaryInspector):
 		P.tk.start("imaginary trace")
 		if P.demo_mode:
 			show_mouse_cursor()
-		while not self.within_boundary('origin', mouse_pos()):
-			self.ui_request()
+		at_origin = False
+		while not at_origin:
+			for e in pump(True):
+				if e.type == sdl2.SDL_MOUSEBUTTONDOWN:
+					click_loc = (e.button.x, e.button.y)
+					at_origin = self.within_boundary('origin',click_loc)
+			if self.within_boundary('origin', mouse_pos()):
+				at_origin = True
+				self.ui_request(e)
+			# self.ui_request()
 		self.fill()
 		self.blit(self.origin_active, 5, self.origin_pos, flip_x=P.flip_x)
 		self.flip()
-		while self.within_boundary('origin', mouse_pos()):
-			self.ui_request()
+		while at_origin:
+			for e in pump(True):
+				if e.type == sdl2.SDL_MOUSEBUTTONUP:
+					at_origin = False
+				self.ui_request(e)
+			if not self.within_boundary('origin', mouse_pos()):
+			 	at_origin = False
 		mt =  P.tk.stop("imaginary trace").read("imaginary trace")
 		self.mt = mt[1] - mt[0]
 		if P.demo_mode:
@@ -326,7 +342,9 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.fill()
 			self.blit(self.figure.render(trace=self.drawing), 5, Params.screen_c, flip_x=P.flip_x)
 			self.flip()
-			self.any_key(Params.max_feedback_time)
+			start = time.time()
+			while time.time() - start > Params.max_feedback_time:
+				self.ui_request()
 
 	def control_trial(self):
 		self.drawing = NA
@@ -337,6 +355,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.mt = mt[1] - mt[0]
 
 	def capture_figures(self):
+		self.animate_time = 5000.0
 		self.fill()
 		self.message("Press command+q at any time to exit.\nPress any key to continue.", "default", registration=5, location=P.screen_c, flip=True)
 		self.any_key()
@@ -347,9 +366,13 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def __review_figure(self):
 		self.fill()
-		if not self.figure:
-			self.figure = TraceLabFigure(self)
-		self.animate_time = 5
+		while not self.figure:
+			self.ui_request()
+			try:
+				self.figure = TraceLabFigure(self)
+			except RuntimeError:
+				pass
+		self.animate_time = 5000.0
 		self.figure.render()
 		self.figure.prepare_animation()
 		self.figure.animate()
