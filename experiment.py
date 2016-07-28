@@ -197,6 +197,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.figure.render()
 		self.value_slider.update_range(self.figure.seg_count)
 		self.figure.prepare_animation()
+		flush()
 		# let participant self-initiate next trial
 		self.fill()
 		self.blit(self.next_trial_msg, 5, P.screen_c, flip_x=P.flip_x)
@@ -205,6 +206,7 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def trial(self):
 		self.figure.animate()
+		self.animate_finsh = P.clock.trial_time
 		if P.exp_condition == MI_xx_5:
 			self.imagery_trial()
 		if P.exp_condition in (PP_xx_5, PP_xx_1, PP_VV_5, PP_VR_5, PP_RR_5):
@@ -219,7 +221,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			"trial_num": P.trial_number,
 			"session_num": P.session_number,
 			"condition": P.exp_condition,
-			"figure_file": self.figure.file_name if self.training_session else self.figure_name,
+			"figure_file": self.figure.file_name,
 			"stimulus_gt": self.animate_time,
 			"stimulus_mt": self.figure.animate_time,
 			"avg_velocity": self.figure.avg_velocity,
@@ -232,6 +234,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		}
 
 	def trial_clean_up(self):
+		self.rc.draw_listener.reset()
 		self.value_slider.reset()
 		self.figure.write_out()
 		self.figure.write_out(self.tracing_name, self.drawing)
@@ -300,6 +303,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		P.demographics_collected = True
 
 	def imagery_trial(self):
+		start = P.clock.trial_time
 		self.fill()
 		self.blit(self.origin_inactive, 5, self.origin_pos, flip_x=P.flip_x)
 		self.flip()
@@ -308,26 +312,19 @@ class TraceLab(Experiment, BoundaryInspector):
 			show_mouse_cursor()
 		at_origin = False
 		while not at_origin:
-			for e in pump(True):
-				if e.type == sdl2.SDL_MOUSEBUTTONDOWN:
-					click_loc = (e.button.x, e.button.y)
-					at_origin = self.within_boundary('origin',click_loc)
 			if self.within_boundary('origin', mouse_pos()):
 				at_origin = True
-				self.ui_request(e)
-			# self.ui_request()
+				self.rt = P.clock.trial_time - start
+			self.ui_request()
+
 		self.fill()
 		self.blit(self.origin_active, 5, self.origin_pos, flip_x=P.flip_x)
 		self.flip()
 		while at_origin:
-			for e in pump(True):
-				if e.type == sdl2.SDL_MOUSEBUTTONUP:
-					at_origin = False
-				self.ui_request(e)
 			if not self.within_boundary('origin', mouse_pos()):
-			 	at_origin = False
+				at_origin = False
 		mt =  P.tk.stop("imaginary trace").read("imaginary trace")
-		self.mt = mt[1] - mt[0]
+		self.mt = (mt[1] - mt[0]) - self.rt
 		if P.demo_mode:
 			hide_mouse_cursor()
 
@@ -343,16 +340,19 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.blit(self.figure.render(trace=self.drawing), 5, Params.screen_c, flip_x=P.flip_x)
 			self.flip()
 			start = time.time()
-			while time.time() - start > Params.max_feedback_time:
+			while time.time() - start < Params.max_feedback_time / 1000.0:
 				self.ui_request()
 
 	def control_trial(self):
+		self.value_slider.reset()
+		start = P.clock.trial_time
 		self.drawing = NA
 		P.tk.start("seg estimate")
 		while self.seg_estimate == -1:
 			self.seg_estimate = self.value_slider.slide()
+		self.rt = self.value_slider.start_time - start
 		mt = P.tk.stop("seg estimate").read("seg estimate")
-		self.mt = mt[1] - mt[0]
+		self.mt = (mt[1] - mt[0]) - self.rt
 
 	def capture_figures(self):
 		self.animate_time = 5000.0
@@ -389,7 +389,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		if resp == "s":
 			self.fill()
 			self.message("Saving... ", flip=True)
-			f_name = sha1("figure_" + str(now(True))).hex_digest() + ".tlf"
+			f_name = sha1("figure_" + str(now(True))).hexdigest() + ".tlf"
 			self.figure.write_out(f_name)
 
 
