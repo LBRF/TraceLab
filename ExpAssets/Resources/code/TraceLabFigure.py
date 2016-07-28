@@ -238,7 +238,7 @@ class TraceLabFigure(object):
 				y = randrange(self.quad_ranges[i][0][1], self.quad_ranges[i][1][1])
 				self.points[i][j] = (x, y)
 		self.points = list(chain(*self.points))
-		self.seg_count = sum(len(i) for i in self.points)
+		self.seg_count = len(self.points)
 
 	def __gen_segments__(self):
 		# first generate the segments to establish a path length

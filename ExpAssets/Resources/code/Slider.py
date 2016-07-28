@@ -44,6 +44,7 @@ class Slider(BoundaryInspector):
 		button_upper_left = (self.button_pos[0] - 50, self.button_pos[1] - 25)
 		button_botton_right = (self.button_pos[0] + 50, self.button_pos[1] + 25)
 		self.add_boundary("button", (button_upper_left, button_botton_right), RECT_BOUNDARY)
+		self.start_time = False
 
 		self.response = None
 
@@ -84,6 +85,8 @@ class Slider(BoundaryInspector):
 							return self.response
 				m_pos = mouse_pos()
 				dragging = self.within_boundary("handle", m_pos)
+				if not self.start_time:
+					self.start_time = P.clock.trial_time
 				# if dragging:
 				# 	break
 			if dragging:
@@ -127,6 +130,7 @@ class Slider(BoundaryInspector):
 		self.response = None
 		self.button_active = False
 		self.handle_pos = self.pos[0]
+		self.start_time = False
 
 	@property
 	def handle_pos(self):
