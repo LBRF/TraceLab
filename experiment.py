@@ -2,6 +2,7 @@
 __author__ = "Jonathan Mulle"
 import imp, sys, shutil, os
 sys.path.append("ExpAssets/Resources/code/")
+from random import choice
 from klibs.KLExceptions import TrialException
 from klibs.KLConstants import *
 import klibs.KLParams as P
@@ -73,7 +74,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	rt = None  # time to initiate responding post-stimulus
 	mt = None  # time to complete response
 	mode = None
-	seg_estimate = None
+	control_response = None
 	test_figures = {}
 	figure = None
 	figure_dots = None
@@ -115,6 +116,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		if P.capture_figures_mode:
 			self.capture_figures()
 		self.value_slider = Slider(self, int(P.screen_y * 0.75), int(P.screen_x * 0.5), 15, 20, (75,75,75), RED)
+		self.value_slider.update_range(5)
 		self.use_random_figures = P.session_number not in (1, 5)
 		self.origin_proto.fill = self.origin_active_color
 		self.origin_active = self.origin_proto.render()
@@ -164,10 +166,11 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.rc.draw_listener.render_real_time = True
 
 	def trial_prep(self):
+		self.control_question = choice(["LEFT","RIGHT","UP","DOWN"])
 		self.rt = -1.0
 		self.animate_time = int(self.animate_time)
 		self.drawing = NA
-		self.seg_estimate = -1
+		self.control_response = -1
 		self.fill()
 		if self.training_session:
 			self.blit(self.loading_msg, 5, P.screen_c, flip_x=P.flip_x)
@@ -195,7 +198,6 @@ class TraceLab(Experiment, BoundaryInspector):
 											  ('stop', self.origin_boundary, CIRCLE_BOUNDARY)])
 		if P.demo_mode:
 			self.figure.render()
-		self.value_slider.update_range(self.figure.seg_count)
 		self.figure.prepare_animation()
 		flush()
 		# let participant self-initiate next trial
@@ -226,10 +228,10 @@ class TraceLab(Experiment, BoundaryInspector):
 			"stimulus_mt": self.figure.animate_time,
 			"avg_velocity": self.figure.avg_velocity,
 			"path_length": self.figure.path_length,
-			"trace_file": self.tracing_name if P.exp_condition != CC_xx_5 else NA,
+			"trace_file": self.tracing_name if P.exp_condition in (PP_xx_5, PP_xx_1, PP_VV_5, PP_VR_5, PP_RR_5) else NA,
 			"rt":  self.rt,
-			"seg_count": self.figure.seg_count,
-			"seg_estimate": self.seg_estimate,
+			"control_question": self.control_question if P.exp_condition == CC_xx_5 else NA,
+			"control_response": self.control_response,
 			"mt": self.mt,
 		}
 
@@ -344,12 +346,14 @@ class TraceLab(Experiment, BoundaryInspector):
 				self.ui_request()
 
 	def control_trial(self):
+		cq_text = "How many times did the dot change course {0}?".format(self.control_question)
+		self.value_slider.msg = self.message(cq_text, "default", blit=False)
 		self.value_slider.reset()
 		start = P.clock.trial_time
 		self.drawing = NA
 		P.tk.start("seg estimate")
-		while self.seg_estimate == -1:
-			self.seg_estimate = self.value_slider.slide()
+		while self.control_response == -1:
+			self.control_response = self.value_slider.slide()
 		self.rt = self.value_slider.start_time - start
 		mt = P.tk.stop("seg estimate").read("seg estimate")
 		self.mt = (mt[1] - mt[0]) - self.rt
@@ -387,9 +391,10 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.figure = None
 			return False
 		if resp == "s":
+			f_name = self.query("Enter a filename for this figure (omitting suffixes):") + ".tlf"
 			self.fill()
 			self.message("Saving... ", flip=True)
-			f_name = sha1("figure_" + str(now(True))).hexdigest() + ".tlf"
+			#f_name = sha1("figure_" + str(now(True))).hexdigest() + ".tlf"
 			self.figure.write_out(f_name)
 
 

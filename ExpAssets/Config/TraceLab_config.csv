@@ -1,4 +1,4 @@
 # Config file for TraceLab
 animate_time.param, figure_name.param
-5000       , figure_1
+5000       , testfig
 1000       , random

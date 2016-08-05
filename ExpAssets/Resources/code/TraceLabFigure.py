@@ -459,14 +459,21 @@ class TraceLabFigure(object):
 		return indices_of(True, q, True)
 
 
-	def __import_figure(self, path):
+	def __import_figure(self, path, join_parent=True):
 		fig_archive = zipfile.ZipFile(path + ".zip")
 		figure = path.split("/")[-1]
-		fig_file = os.path.join(figure, figure + ".tlf")
-		for l in fig_archive.open(fig_file).readlines():
-			attr = l.split(" = ")
-			if len(attr):
-				setattr(self, attr[0], eval(attr[1]))
+		# have no earthly clue why some times the first line works and sometimes it's the other...
+		if join_parent:
+			fig_file = os.path.join(figure, figure + ".tlf")
+		else:
+			fig_file = figure + ".tlf"
+		try:
+			for l in fig_archive.open(fig_file).readlines():
+				attr = l.split(" = ")
+				if len(attr):
+					setattr(self, attr[0], eval(attr[1]))
+		except KeyError:
+			return self.__import_figure(path, False)
 
 	def render(self, np=True, trace=None):
 		surf = aggdraw.Draw("RGBA", P.screen_x_y, (0,0,0,255))
@@ -524,6 +531,7 @@ class TraceLabFigure(object):
 				seg_len = 0
 
 	def animate(self):
+		print self.points
 		updated_a_frames = []
 		if not P.capture_figures_mode:
 			start = P.clock.trial_time
@@ -541,6 +549,7 @@ class TraceLabFigure(object):
 				updated_a_frames.append((f[0], f[1], P.clock.trial_time - start))
 		if not P.capture_figures_mode:
 			self.a_frames = updated_a_frames
+			self.a_frames.append(self.points)
 			self.animate_time = Params.clock.trial_time
 
 			self.avg_velocity = self.path_length / self.animate_time
@@ -562,7 +571,7 @@ class TraceLabFigure(object):
 			f = open(fig_path, "w+")
 			if P.capture_figures_mode:
 				for k, v in self.__dict__.iteritems():
-					if k in ["dot", "r_dot", "exp"]:
+					if k in ["dot", "r_dot", "exp", 'rendered']:
 						continue
 					f.write("{0} = {1}\n".format(k, v))
 			else:

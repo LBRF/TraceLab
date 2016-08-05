@@ -47,7 +47,7 @@ trials_per_participant = 0
 pre_render_block_messages = False
 show_practice_messages = True
 table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA")]}
-figures = ["figure_1"]
+figures = ["testfig"]
 origin_wait_time = 1000  # ms
 demo_mode = True
 
@@ -78,6 +78,7 @@ origin_size = 30 # px
 response_feedback_color = (0,0,255)
 stimulus_feedback_color = (255, 0, 0)
 max_feedback_time = 500  # ms
+ignore_points_at = []  # list of (x,y) coordinates to be removed
 
 ########################################
 # Figure Controls

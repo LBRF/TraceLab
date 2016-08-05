@@ -63,8 +63,8 @@ CREATE TABLE trials (
 	path_length float not null,
 	trace_file text not null,
   rt  float not null,  /* initiation time for all conditions*/
-	seg_count integer not null,
-	seg_estimate integer not null,
+	control_question text not null,
+	control_response integer not null,
 	mt float not null
 );
 
