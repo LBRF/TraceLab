@@ -64,8 +64,9 @@ class Slider(BoundaryInspector):
 		self.boundaries['handle'].bounds = [self.handle_pos, self.handle_radius]
 
 	def update_range(self, seg_count):
-		self.lower_bound = seg_count - randrange(*P.seg_report_fuzz)
-		self.upper_bound = seg_count + randrange(*P.seg_report_fuzz)
+		# this originally did some randomization around a given number and was later changed to hard values
+		self.lower_bound = 1
+		self.upper_bound = 5
 		self.lb_msg = self.exp.message(str(self.lower_bound), "small", blit=False)
 		self.ub_msg = self.exp.message(str(self.upper_bound), "small", blit=False)
 		self.__build_increments()
