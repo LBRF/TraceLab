@@ -44,6 +44,7 @@ class Slider(BoundaryInspector):
 		button_upper_left = (self.button_pos[0] - 50, self.button_pos[1] - 25)
 		button_botton_right = (self.button_pos[0] + 50, self.button_pos[1] + 25)
 		self.add_boundary("button", (button_upper_left, button_botton_right), RECT_BOUNDARY)
+		self.start_time = False
 
 		self.response = None
 
@@ -63,8 +64,9 @@ class Slider(BoundaryInspector):
 		self.boundaries['handle'].bounds = [self.handle_pos, self.handle_radius]
 
 	def update_range(self, seg_count):
-		self.lower_bound = seg_count - randrange(*P.seg_report_fuzz)
-		self.upper_bound = seg_count + randrange(*P.seg_report_fuzz)
+		# this originally did some randomization around a given number and was later changed to hard values
+		self.lower_bound = 1
+		self.upper_bound = 5
 		self.lb_msg = self.exp.message(str(self.lower_bound), "small", blit=False)
 		self.ub_msg = self.exp.message(str(self.upper_bound), "small", blit=False)
 		self.__build_increments()
@@ -84,6 +86,8 @@ class Slider(BoundaryInspector):
 							return self.response
 				m_pos = mouse_pos()
 				dragging = self.within_boundary("handle", m_pos)
+				if not self.start_time:
+					self.start_time = P.clock.trial_time
 				# if dragging:
 				# 	break
 			if dragging:
@@ -127,6 +131,7 @@ class Slider(BoundaryInspector):
 		self.response = None
 		self.button_active = False
 		self.handle_pos = self.pos[0]
+		self.start_time = False
 
 	@property
 	def handle_pos(self):
