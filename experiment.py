@@ -2,6 +2,7 @@
 __author__ = "Jonathan Mulle"
 import imp, sys, shutil, os
 sys.path.append("ExpAssets/Resources/code/")
+from random import choice
 from klibs.KLExceptions import TrialException
 from klibs.KLConstants import *
 import klibs.KLParams as P
@@ -48,7 +49,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	origin_inactive = None
 	origin_active_color = GREEN
 	origin_inactive_color = RED
-	origin_size = 20
+	origin_size = None
 	origin_pos = None
 	origin_boundary = None
 	tracker_dot_proto = None
@@ -73,7 +74,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	rt = None  # time to initiate responding post-stimulus
 	mt = None  # time to complete response
 	mode = None
-	seg_estimate = None
+	control_response = None
 	test_figures = {}
 	figure = None
 	figure_dots = None
@@ -86,9 +87,10 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def __init__(self, *args, **kwargs):
 		super(TraceLab, self).__init__(*args, **kwargs)
-		P.flip_x=True
+		P.flip_x=False
 
 	def setup(self):
+		self.origin_size = P.origin_size
 		try:
 			self.p_dir = os.path.join(P.data_path, "p{0}_{1}".format(P.user_data[0], P.user_data[-2]))
 			self.fig_dir = os.path.join(self.p_dir, self.session_type, "session_" + str(P.session_number))
@@ -114,13 +116,14 @@ class TraceLab(Experiment, BoundaryInspector):
 		if P.capture_figures_mode:
 			self.capture_figures()
 		self.value_slider = Slider(self, int(P.screen_y * 0.75), int(P.screen_x * 0.5), 15, 20, (75,75,75), RED)
+		self.value_slider.update_range(5)
 		self.use_random_figures = P.session_number not in (1, 5)
 		self.origin_proto.fill = self.origin_active_color
 		self.origin_active = self.origin_proto.render()
 		self.origin_proto.fill = self.origin_inactive_color
 		self.origin_inactive = self.origin_proto.render()
 		instructions_file = "{0}_group_instructions.txt"
-		if P.exp_condition == PP_xx_5:
+		if P.exp_condition in [PP_xx_5, PP_xx_1, PP_RR_5, PP_VR_5, PP_VV_5]:
 			instructions_file = instructions_file.format("physical")
 		elif P.exp_condition == MI_xx_5:
 			instructions_file = instructions_file.format("imagery")
@@ -159,12 +162,15 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.rc.draw_listener.interrupts = True
 		self.rc.display_callback = self.display_refresh
 		self.rc.display_callback_args = [True]
+		if P.demo_mode:
+			self.rc.draw_listener.render_real_time = True
 
 	def trial_prep(self):
+		self.control_question = choice(["LEFT","RIGHT","UP","DOWN"])
 		self.rt = -1.0
 		self.animate_time = int(self.animate_time)
 		self.drawing = NA
-		self.seg_estimate = -1
+		self.control_response = -1
 		self.fill()
 		if self.training_session:
 			self.blit(self.loading_msg, 5, P.screen_c, flip_x=P.flip_x)
@@ -192,8 +198,8 @@ class TraceLab(Experiment, BoundaryInspector):
 											  ('stop', self.origin_boundary, CIRCLE_BOUNDARY)])
 		if P.demo_mode:
 			self.figure.render()
-		self.value_slider.update_range(self.figure.seg_count)
 		self.figure.prepare_animation()
+		flush()
 		# let participant self-initiate next trial
 		self.fill()
 		self.blit(self.next_trial_msg, 5, P.screen_c, flip_x=P.flip_x)
@@ -203,6 +209,7 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def trial(self):
 		self.figure.animate()
+		self.animate_finsh = P.clock.trial_time
 		if P.exp_condition == MI_xx_5:
 			self.imagery_trial()
 		if P.exp_condition in (PP_xx_5, PP_xx_1, PP_VV_5, PP_VR_5, PP_RR_5):
@@ -217,19 +224,20 @@ class TraceLab(Experiment, BoundaryInspector):
 			"trial_num": P.trial_number,
 			"session_num": P.session_number,
 			"condition": P.exp_condition,
-			"figure_file": self.figure.file_name if self.training_session else self.figure_name,
+			"figure_file": self.figure.file_name,
 			"stimulus_gt": self.animate_time,
 			"stimulus_mt": self.figure.animate_time,
 			"avg_velocity": self.figure.avg_velocity,
 			"path_length": self.figure.path_length,
-			"trace_file": self.tracing_name if P.exp_condition != CC_xx_5 else NA,
+			"trace_file": self.tracing_name if P.exp_condition in (PP_xx_5, PP_xx_1, PP_VV_5, PP_VR_5, PP_RR_5) else NA,
 			"rt":  self.rt,
-			"seg_count": self.figure.seg_count,
-			"seg_estimate": self.seg_estimate,
+			"control_question": self.control_question if P.exp_condition == CC_xx_5 else NA,
+			"control_response": self.control_response,
 			"mt": self.mt,
 		}
 
 	def trial_clean_up(self):
+		self.rc.draw_listener.reset()
 		self.value_slider.reset()
 		self.figure.write_out()
 		self.figure.write_out(self.tracing_name, self.drawing)
@@ -298,21 +306,28 @@ class TraceLab(Experiment, BoundaryInspector):
 		P.demographics_collected = True
 
 	def imagery_trial(self):
+		start = P.clock.trial_time
 		self.fill()
 		self.blit(self.origin_inactive, 5, self.origin_pos, flip_x=P.flip_x)
 		self.flip()
 		P.tk.start("imaginary trace")
 		if P.demo_mode:
 			show_mouse_cursor()
-		while not self.within_boundary('origin', mouse_pos()):
+		at_origin = False
+		while not at_origin:
+			if self.within_boundary('origin', mouse_pos()):
+				at_origin = True
+				self.rt = P.clock.trial_time - start
 			self.ui_request()
+
 		self.fill()
 		self.blit(self.origin_active, 5, self.origin_pos, flip_x=P.flip_x)
 		self.flip()
-		while self.within_boundary('origin', mouse_pos()):
-			self.ui_request()
+		while at_origin:
+			if not self.within_boundary('origin', mouse_pos()):
+				at_origin = False
 		mt =  P.tk.stop("imaginary trace").read("imaginary trace")
-		self.mt = mt[1] - mt[0]
+		self.mt = (mt[1] - mt[0]) - self.rt
 		if P.demo_mode:
 			hide_mouse_cursor()
 
@@ -327,17 +342,25 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.fill()
 			self.blit(self.figure.render(trace=self.drawing), 5, Params.screen_c, flip_x=P.flip_x)
 			self.flip()
-			self.any_key(Params.max_feedback_time)
+			start = time.time()
+			while time.time() - start < Params.max_feedback_time / 1000.0:
+				self.ui_request()
 
 	def control_trial(self):
+		cq_text = "How many times did the dot change course {0}?".format(self.control_question)
+		self.value_slider.msg = self.message(cq_text, "default", blit=False)
+		self.value_slider.reset()
+		start = P.clock.trial_time
 		self.drawing = NA
 		P.tk.start("seg estimate")
-		while self.seg_estimate == -1:
-			self.seg_estimate = self.value_slider.slide()
+		while self.control_response == -1:
+			self.control_response = self.value_slider.slide()
+		self.rt = self.value_slider.start_time - start
 		mt = P.tk.stop("seg estimate").read("seg estimate")
-		self.mt = mt[1] - mt[0]
+		self.mt = (mt[1] - mt[0]) - self.rt
 
 	def capture_figures(self):
+		self.animate_time = 5000.0
 		self.fill()
 		self.message("Press command+q at any time to exit.\nPress any key to continue.", "default", registration=5, location=P.screen_c, flip=True)
 		self.any_key()
@@ -348,9 +371,13 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def __review_figure(self):
 		self.fill()
-		if not self.figure:
-			self.figure = TraceLabFigure(self)
-		self.animate_time = 5
+		while not self.figure:
+			self.ui_request()
+			try:
+				self.figure = TraceLabFigure(self)
+			except RuntimeError:
+				pass
+		self.animate_time = 5000.0
 		self.figure.render()
 		self.figure.prepare_animation()
 		self.figure.animate()
@@ -365,9 +392,10 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.figure = None
 			return False
 		if resp == "s":
+			f_name = self.query("Enter a filename for this figure (omitting suffixes):") + ".tlf"
 			self.fill()
 			self.message("Saving... ", flip=True)
-			f_name = sha1("figure_" + str(now(True))).hex_digest() + ".tlf"
+			#f_name = sha1("figure_" + str(now(True))).hexdigest() + ".tlf"
 			self.figure.write_out(f_name)
 
 
@@ -375,20 +403,6 @@ class TraceLab(Experiment, BoundaryInspector):
 	def tracing_name(self):
 		fname_data = [P.participant_id, P.block_number, P.trial_number, now(True, "%Y-%m-%d"), P.session_number]
 		return "p{0}_s{4}_b{1}_t{2}_{3}.tlt".format(*fname_data)
-
-
-	def click_to_advance(self):
-		self.fill()
-		self.blit(fsdfg)
-		self.flip()
-		while True:
-			for e in pump(True):
-				self.ui_request(e)
-				if e.type == sdl2.SDL_MOUSEBUTTON_DOWN:
-					if self.within_boundary("label", [e.x, e.y]):
-						break
-
-
 
 
 

@@ -47,7 +47,7 @@ trials_per_participant = 0
 pre_render_block_messages = False
 show_practice_messages = True
 table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA")]}
-figures = ["figure_1"]
+figures = ["testfig"]
 origin_wait_time = 1000  # ms
 demo_mode = True
 
@@ -62,7 +62,7 @@ dm_auto_threshold = True
 # for any color you prefer
 
 ########################################
-# Tracker Dot Controls
+#  Dot Controls
 ########################################
 tracker_dot_size = 5  # diameter in px
 tracker_dot_perimeter =  2  # px; *additional* to tracking dot size, so the diameter gets 2 x this number larger
@@ -70,6 +70,7 @@ tracker_dot_perimeter =  2  # px; *additional* to tracking dot size, so the diam
 tracker_dot_color = (255, 0, 0)  # r, g, b, and the last value should always be 255
 tracker_dot_perimeter_color = (255, 255, 255)
 
+origin_size = 30 # px
 
 ########################################
 # Feedback Controls
@@ -77,6 +78,8 @@ tracker_dot_perimeter_color = (255, 255, 255)
 response_feedback_color = (0,0,255)
 stimulus_feedback_color = (255, 0, 0)
 max_feedback_time = 500  # ms
+ignore_points_at = []  # list of (x,y) coordinates to be removed
+
 ########################################
 # Figure Controls
 ########################################
@@ -85,10 +88,10 @@ capture_figures_mode = False
 
 generate_quadrant_intersections = True
 
-outer_margin_v = 350
-outer_margin_h = 250
-inner_margin_v = 300
-inner_margin_h = 300
+outer_margin_v = 150
+outer_margin_h = 100
+inner_margin_v = 100
+inner_margin_h = 100
 # trace_mode = False
 
 # inner_margin = 300 #todo: v + h for inner margins

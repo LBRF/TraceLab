@@ -238,13 +238,13 @@ class TraceLabFigure(object):
 				y = randrange(self.quad_ranges[i][0][1], self.quad_ranges[i][1][1])
 				self.points[i][j] = (x, y)
 		self.points = list(chain(*self.points))
-		self.seg_count = sum(len(i) for i in self.points)
+		self.seg_count = len(self.points)
 
 	def __gen_segments__(self):
 		# first generate the segments to establish a path length
 		first_pass_segs = []  # ie. raw interpolation unadjusted for velocity
 		p_len = 0
-		seg_type_dist = int((1.0 - P.angularity) * 10) * [False] + int(P.angularity * 10) * [True]
+		seg_type_dist = int((1.0 - P.angularity) * 10) * [True] + int(P.angularity * 10) * [False]
 		segment_types = [choice(seg_type_dist) for i in range(len(self.points))]
 
 		i = 0
@@ -252,8 +252,6 @@ class TraceLabFigure(object):
 		i_curved_fail = False
 		start = time.time()
 		while len(segment_types):
-			if time.time() - start > P.generation_timeout:
-				raise RuntimeError("Figure generation timed out.")
 			s = segment_types.pop()
 			if P.verbose_mode:
 				print "Starting segment {0} of {2} ({1})".format(i, "curve" if s else "line", len(self.points))
@@ -271,6 +269,8 @@ class TraceLabFigure(object):
 						prev_seg = None
 					seg_ok = False
 					while not seg_ok:
+						if time.time() - start > P.generation_timeout:
+							raise RuntimeError("Figure generation timed out.")
 						if P.verbose_mode: print "{0} of {1}".format(i+1, len(self.points))
 						self.exp.ui_request()
 						segment = self.__generate_linear_segment__(p1, p2, prev_seg)
@@ -283,7 +283,7 @@ class TraceLabFigure(object):
 					p_len += segment[0]
 					first_pass_segs.append(segment[1])
 				else:
-					segment = self.__generate_curved_segment__(p1, p2)
+					segment = self.__generate_curved_segment__(p1, p2, start)
 					p_len += segment[0]
 					first_pass_segs.append(segment[1])
 				i += 1
@@ -341,7 +341,7 @@ class TraceLabFigure(object):
 		return [line_segment_len(p1, p2), [False, (p1, p2)]]
 
 
-	def __generate_curved_segment__(self, p1, p2):
+	def __generate_curved_segment__(self, p1, p2, start):
 		# single letters here mean: r = rotation, c = control, p = point, q = quadrant, a = angle, v = vector
 		report = False
 		segment = None
@@ -417,6 +417,8 @@ class TraceLabFigure(object):
 		initial_v_c_b_len = v_c_b_len
 		flipped_spin = False
 		while not segment:
+			if time.time() - start > P.generation_timeout:
+				raise RuntimeError("Figure generation timed out.")
 			if not p_c:
 				v_c_b_len -= 1
 				if v_c_b_len == 0:
@@ -457,14 +459,21 @@ class TraceLabFigure(object):
 		return indices_of(True, q, True)
 
 
-	def __import_figure(self, path):
+	def __import_figure(self, path, join_parent=True):
 		fig_archive = zipfile.ZipFile(path + ".zip")
 		figure = path.split("/")[-1]
-		fig_file = os.path.join(figure, figure + ".tlf")
-		for l in fig_archive.open(fig_file).readlines():
-			attr = l.split(" = ")
-			if len(attr):
-				setattr(self, attr[0], eval(attr[1]))
+		# have no earthly clue why some times the first line works and sometimes it's the other...
+		if join_parent:
+			fig_file = os.path.join(figure, figure + ".tlf")
+		else:
+			fig_file = figure + ".tlf"
+		try:
+			for l in fig_archive.open(fig_file).readlines():
+				attr = l.split(" = ")
+				if len(attr):
+					setattr(self, attr[0], eval(attr[1]))
+		except KeyError:
+			return self.__import_figure(path, False)
 
 	def render(self, np=True, trace=None):
 		surf = aggdraw.Draw("RGBA", P.screen_x_y, (0,0,0,255))
@@ -508,6 +517,7 @@ class TraceLabFigure(object):
 		draw_in = self.exp.animate_time * 0.001
 		rate = 0.016666666666667
 		max_frames = int(draw_in / rate)
+		print [self.path_length, max_frames]
 		delta_d = math.floor(self.path_length / max_frames)
 		self.a_frames = [list(self.frames[0])]
 		seg_len = 0
@@ -523,8 +533,10 @@ class TraceLabFigure(object):
 				seg_len = 0
 
 	def animate(self):
+		print self.points
 		updated_a_frames = []
-		start = P.clock.trial_time
+		if not P.capture_figures_mode:
+			start = P.clock.trial_time
 		for f in self.a_frames:
 			if P.flip_x:
 				f[0] = P.screen_x - f[0]
@@ -535,13 +547,14 @@ class TraceLabFigure(object):
 			self.exp.blit(self.exp.tracker_dot, 5, f, flip_x=P.flip_x)
 			self.exp.flip()
 			f = list(f)
-			try:
+			if not P.capture_figures_mode:
 				updated_a_frames.append((f[0], f[1], P.clock.trial_time - start))
-			except RuntimeError:
-				pass  # for capture mode
-		self.a_frames = updated_a_frames
-		self.animate_time = Params.clock.trial_time
-		self.avg_velocity = self.path_length / self.animate_time
+		if not P.capture_figures_mode:
+			self.a_frames = updated_a_frames
+			self.a_frames.append(self.points)
+			self.animate_time = Params.clock.trial_time
+
+			self.avg_velocity = self.path_length / self.animate_time
 
 	# def feedback(self, trace):
 
@@ -560,7 +573,7 @@ class TraceLabFigure(object):
 			f = open(fig_path, "w+")
 			if P.capture_figures_mode:
 				for k, v in self.__dict__.iteritems():
-					if k in ["dot", "r_dot", "exp"]:
+					if k in ["dot", "r_dot", "exp", 'rendered']:
 						continue
 					f.write("{0} = {1}\n".format(k, v))
 			else:
