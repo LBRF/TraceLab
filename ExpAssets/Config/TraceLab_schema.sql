@@ -56,6 +56,7 @@ CREATE TABLE trials (
 	session_num integer not null,
 	condition text not null,
 	trial_num integer not null,
+	figure_type text not null, /* rehearsal figure vs random */
 	figure_file text not null,
 	stimulus_gt float not null, /* goal animation time */
 	stimulus_mt float not null, /* real animation time */
@@ -63,6 +64,7 @@ CREATE TABLE trials (
 	path_length float not null,
 	trace_file text not null,
   rt  float not null,  /* initiation time for all conditions*/
+  it  float not null,  /* time between RT and MT for physical conditions, ie. lingering at origin*/
 	control_question text not null,
 	control_response integer not null,
 	mt float not null
