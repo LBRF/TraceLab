@@ -78,13 +78,13 @@ class Slider(BoundaryInspector):
 		dragging = False
 		while True:
 			if not dragging:
+				m_pos = mouse_pos()
 				for event in pump(True):
 					self.exp.ui_request(event)
 					if event.type in (sdl2.SDL_MOUSEBUTTONDOWN, sdl2.SDL_MOUSEBUTTONDOWN):
 						within_button = self.within_boundary("button", m_pos)
 						if self.button_active and within_button:
 							return self.response
-				m_pos = mouse_pos()
 				dragging = self.within_boundary("handle", m_pos)
 				if not self.start_time:
 					self.start_time = P.clock.trial_time

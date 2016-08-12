@@ -138,6 +138,7 @@ def bezier_interpolation(origin, destination, control_o, control_d=None, velocit
 
 
 class TraceLabFigure(object):
+	allow_verbosity = False
 
 	def __init__(self, exp, import_path=None):
 		self.exp = exp
@@ -253,7 +254,7 @@ class TraceLabFigure(object):
 		start = time.time()
 		while len(segment_types):
 			s = segment_types.pop()
-			if P.verbose_mode:
+			if P.verbose_mode and self.allow_verbosity:
 				print "Starting segment {0} of {2} ({1})".format(i, "curve" if s else "line", len(self.points))
 			p1 = self.points[i]
 			try:
@@ -271,7 +272,7 @@ class TraceLabFigure(object):
 					while not seg_ok:
 						if time.time() - start > P.generation_timeout:
 							raise RuntimeError("Figure generation timed out.")
-						if P.verbose_mode: print "{0} of {1}".format(i+1, len(self.points))
+						if P.verbose_mode and self.allow_verbosity: print "{0} of {1}".format(i+1, len(self.points))
 						self.exp.ui_request()
 						segment = self.__generate_linear_segment__(p1, p2, prev_seg)
 						if all(type(n) is int for n in segment):
@@ -289,7 +290,8 @@ class TraceLabFigure(object):
 				i += 1
 				i_curved_fail = False
 				i_linear_fail = False
-				print "Segment {0} done ({1})".format(i, "curve" if s else "line")
+				if P.verbose_mode and self.allow_verbosity:
+					print "Segment {0} done ({1})".format(i, "curve" if s else "line")
 			except TrialException:
 				e = "Generation failed on {0} segment.".format("curved" if s else "linear")
 				print e
@@ -409,6 +411,7 @@ class TraceLabFigure(object):
 		except ValueError:
 			try:
 				p_c = (p_c_x, randrange(p_c_max[1], p_c_min[1]))
+				p_c = (p_c_x, randrange(p_c_max[1], p_c_min[1]))
 			except ValueError:
 				p_c = (p_c_x, p_c_max[1])
 
@@ -517,7 +520,6 @@ class TraceLabFigure(object):
 		draw_in = self.exp.animate_time * 0.001
 		rate = 0.016666666666667
 		max_frames = int(draw_in / rate)
-		print [self.path_length, max_frames]
 		delta_d = math.floor(self.path_length / max_frames)
 		self.a_frames = [list(self.frames[0])]
 		seg_len = 0
@@ -533,7 +535,6 @@ class TraceLabFigure(object):
 				seg_len = 0
 
 	def animate(self):
-		print self.points
 		updated_a_frames = []
 		if not P.capture_figures_mode:
 			start = P.clock.trial_time
@@ -551,7 +552,7 @@ class TraceLabFigure(object):
 				updated_a_frames.append((f[0], f[1], P.clock.trial_time - start))
 		if not P.capture_figures_mode:
 			self.a_frames = updated_a_frames
-			self.a_frames.append(self.points)
+			# self.a_frames.append(self.points)
 			self.animate_time = Params.clock.trial_time
 
 			self.avg_velocity = self.path_length / self.animate_time
@@ -561,13 +562,17 @@ class TraceLabFigure(object):
 
 	def write_out(self, file_name=None, data=None):
 		write_png = False
+		write_points = False
 		if not file_name:
 			file_name = self.file_name
 		if not data:
+			write_points = True
 			write_png = True
 			data = self.a_frames
 		thumb_file_name = file_name[:-4] + "_preview.png"
+		points_file_name = file_name[:-4] + "_points.txt"
 		fig_path = os.path.join(self.exp.fig_dir, file_name)
+		points_path = os.path.join(self.exp.fig_dir, points_file_name)
 		thumb_path = os.path.join(self.exp.fig_dir, thumb_file_name)
 		with zipfile.ZipFile(fig_path[:-3] + "zip", "a", zipfile.ZIP_DEFLATED) as fig_zip:
 			f = open(fig_path, "w+")
@@ -579,6 +584,12 @@ class TraceLabFigure(object):
 			else:
 				f.write(str(data))
 			f.close()
+			if write_points:
+				f = open(points_path, "w+")
+				f.write(str(self.points))
+				f.close()
+				fig_zip.write(points_path, points_file_name)
+				os.remove(points_path)
 			if write_png:
 				png.from_array(self.render(), 'RGBA').save(thumb_path)
 				fig_zip.write(thumb_path, thumb_file_name)

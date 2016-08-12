@@ -72,7 +72,8 @@ class TraceLab(Experiment, BoundaryInspector):
 	drawing = []
 	drawing_name = None
 	rt = None  # time to initiate responding post-stimulus
-	mt = None  # time to complete response
+	mt = None  # time to start and complete response
+	it = None  # time between arriving at response origin and intiating response (ie. between RT and MT)
 	mode = None
 	control_response = None
 	test_figures = {}
@@ -167,7 +168,8 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def trial_prep(self):
 		self.control_question = choice(["LEFT","RIGHT","UP","DOWN"])
-		self.rt = -1.0
+		self.rt = 0.0
+		self.it = 0.0
 		self.animate_time = int(self.animate_time)
 		self.drawing = NA
 		self.control_response = -1
@@ -205,7 +207,6 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.blit(self.next_trial_msg, 5, P.screen_c, flip_x=P.flip_x)
 		self.flip()
 		self.any_key()
-		self.click_to_advance()
 
 	def trial(self):
 		self.figure.animate()
@@ -224,23 +225,25 @@ class TraceLab(Experiment, BoundaryInspector):
 			"trial_num": P.trial_number,
 			"session_num": P.session_number,
 			"condition": P.exp_condition,
+			"figure_type": self.figure_name,
 			"figure_file": self.figure.file_name,
 			"stimulus_gt": self.animate_time,
 			"stimulus_mt": self.figure.animate_time,
 			"avg_velocity": self.figure.avg_velocity,
 			"path_length": self.figure.path_length,
 			"trace_file": self.tracing_name if P.exp_condition in (PP_xx_5, PP_xx_1, PP_VV_5, PP_VR_5, PP_RR_5) else NA,
-			"rt":  self.rt,
+			"rt": self.rt,
+			"it": self.it,
 			"control_question": self.control_question if P.exp_condition == CC_xx_5 else NA,
 			"control_response": self.control_response,
 			"mt": self.mt,
 		}
 
 	def trial_clean_up(self):
-		self.rc.draw_listener.reset()
-		self.value_slider.reset()
 		self.figure.write_out()
 		self.figure.write_out(self.tracing_name, self.drawing)
+		self.rc.draw_listener.reset()
+		self.value_slider.reset()
 
 	def clean_up(self):
 		# if the entire experiment is successfully completed, update the sessions_completed column
@@ -334,9 +337,16 @@ class TraceLab(Experiment, BoundaryInspector):
 	def physical_trial(self):
 		start = P.clock.trial_time
 		self.rc.collect()
+		print "\nStart\t\t\t: {0}".format(start)
+		print "\nDL Start Time\t\t: {0}".format(self.rc.draw_listener.start_time)
 		self.rt = self.rc.draw_listener.start_time - start
 		self.drawing = self.rc.draw_listener.responses[0][0]
-		self.mt = self.rc.draw_listener.responses[0][1] - self.rt
+		self.it = self.rc.draw_listener.first_sample_time - (self.rt + start)
+
+		print "First Sample Real Time\t: {0}".format(self.rc.draw_listener.start_time + self.rc.draw_listener.first_sample_time)
+		print "RT\t\t\t: {0}".format(self.rt)
+		print "IT\t\t\t: {0}".format(self.it)
+		self.mt = self.rc.draw_listener.responses[0][1]
 		if self.feedback:
 			flush()
 			self.fill()
@@ -403,6 +413,10 @@ class TraceLab(Experiment, BoundaryInspector):
 	def tracing_name(self):
 		fname_data = [P.participant_id, P.block_number, P.trial_number, now(True, "%Y-%m-%d"), P.session_number]
 		return "p{0}_s{4}_b{1}_t{2}_{3}.tlt".format(*fname_data)
+
+
+
+
 
 
 
