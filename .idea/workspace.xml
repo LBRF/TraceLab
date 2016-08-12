@@ -2,13 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6db2e76c-6d4e-4d96-a23f-00d633d34891" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/TraceLab.db.backup" afterPath="$PROJECT_DIR$/ExpAssets/TraceLab.db.backup" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/TraceLab.db" afterPath="$PROJECT_DIR$/ExpAssets/TraceLab.db" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/code/Slider.py" afterPath="$PROJECT_DIR$/ExpAssets/Resources/code/Slider.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/code/TraceLabFigure.py" afterPath="$PROJECT_DIR$/ExpAssets/Resources/code/TraceLabFigure.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Config/TraceLab_config.csv" afterPath="$PROJECT_DIR$/ExpAssets/Config/TraceLab_config.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py" afterPath="$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/experiment.py" afterPath="$PROJECT_DIR$/experiment.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="TraceLab.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -37,27 +33,28 @@
       <file leaf-file-name="experiment.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/experiment.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="185" column="53" selection-start="6107" selection-end="6107" vertical-scroll-proportion="0.9075377" vertical-offset="1502" max-vertical-offset="5083">
+            <state line="362" column="24" selection-start="12380" selection-end="12380" vertical-scroll-proportion="4.475377" vertical-offset="253" max-vertical-offset="5226">
               <folding>
                 <element signature="e#2118#2181#0" expanded="true" />
                 <element signature="e#2203#4799#0" expanded="true" />
                 <element signature="e#4821#4948#0" expanded="true" />
                 <element signature="e#4989#5446#0" expanded="true" />
-                <element signature="e#6795#7648#0" expanded="true" />
-                <element signature="e#7679#7787#0" expanded="true" />
-                <element signature="e#7812#8063#0" expanded="true" />
-                <element signature="e#8106#8460#0" expanded="true" />
-                <element signature="e#8502#10409#0" expanded="true" />
-                <element signature="e#10439#10985#0" expanded="true" />
-                <element signature="e#11016#11423#0" expanded="true" />
-                <element signature="e#11453#11661#0" expanded="true" />
-                <element signature="e#11693#11955#0" expanded="true" />
-                <element signature="e#11987#12584#0" expanded="true" />
-                <element signature="e#12625#12788#0" expanded="true" />
-                <marker date="1469033489000" expanded="true" signature="7914:7975" placeholder="UPDATE `sess..." />
-                <marker date="1469033489000" expanded="true" signature="8522:8573" placeholder="SELECT * FRO..sessions..." />
-                <marker date="1469033489000" expanded="true" signature="8657:8706" placeholder="SELECT * FRO..participants..." />
-                <marker date="1469033489000" expanded="true" signature="9530:9573" placeholder="SELECT * FRO..participants..." />
+                <element signature="e#5473#6799#0" expanded="true" />
+                <element signature="e#6821#7674#0" expanded="true" />
+                <element signature="e#7705#7813#0" expanded="true" />
+                <element signature="e#7838#8089#0" expanded="true" />
+                <element signature="e#8132#8486#0" expanded="true" />
+                <element signature="e#8528#10435#0" expanded="true" />
+                <element signature="e#10465#11011#0" expanded="true" />
+                <element signature="e#11042#11449#0" expanded="true" />
+                <element signature="e#11479#11687#0" expanded="true" />
+                <element signature="e#11719#11981#0" expanded="true" />
+                <element signature="e#12651#12814#0" expanded="true" />
+                <element signature="e#12848#13060#0" expanded="true" />
+                <marker date="1470160891000" expanded="true" signature="7940:8001" placeholder="UPDATE `sess..." />
+                <marker date="1470160891000" expanded="true" signature="8548:8599" placeholder="SELECT * FRO..sessions..." />
+                <marker date="1470160891000" expanded="true" signature="8683:8732" placeholder="SELECT * FRO..participants..." />
+                <marker date="1470160891000" expanded="true" signature="9556:9599" placeholder="SELECT * FRO..participants..." />
               </folding>
             </state>
           </provider>
@@ -75,7 +72,7 @@
       <file leaf-file-name="TraceLabFigure.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/TraceLabFigure.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="532" column="52" selection-start="19367" selection-end="19367" vertical-scroll-proportion="0.0" vertical-offset="3452" max-vertical-offset="7566">
+            <state line="526" column="19" selection-start="19110" selection-end="19111" vertical-scroll-proportion="-89.96" vertical-offset="4589" max-vertical-offset="7592">
               <folding>
                 <element signature="e#73#82#0" expanded="true" />
                 <element signature="e#472#825#0" expanded="true" />
@@ -94,10 +91,10 @@
                 <element signature="e#16455#16813#0" expanded="true" />
                 <element signature="e#16852#17113#0" expanded="true" />
                 <element signature="e#17157#18032#0" expanded="true" />
-                <element signature="e#18075#18420#0" expanded="true" />
-                <element signature="e#18454#19050#0" expanded="true" />
-                <element signature="e#19775#20606#0" expanded="true" />
-                <element signature="e#20643#20808#0" expanded="true" />
+                <element signature="e#18077#18422#0" expanded="true" />
+                <element signature="e#18456#19052#0" expanded="true" />
+                <element signature="e#19777#20608#0" expanded="true" />
+                <element signature="e#20645#20810#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -171,15 +168,14 @@
         <option value="$PROJECT_DIR$/ExpAssets/Config/TraceLab_schema.sql" />
         <option value="$PROJECT_DIR$/ExpAssets/Config/TraceLab_config.csv" />
         <option value="/Library/Python/2.7/site-packages/klibs/KLExperiment.py" />
-        <option value="$PROJECT_DIR$/ExpAssets/Resources/code/TraceLabFigure.py" />
         <option value="$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/Slider.py" />
         <option value="$PROJECT_DIR$/experiment.py" />
+        <option value="$PROJECT_DIR$/ExpAssets/Resources/code/TraceLabFigure.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-8" />
     <option name="y" value="23" />
     <option name="width" value="2560" />
     <option name="height" value="1413" />
@@ -330,7 +326,7 @@
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="options.lastSelected" value="SQL Dialects" />
+    <property name="options.lastSelected" value="reference.settingsdialog.IDE.editor.colors.Font" />
     <property name="recentsLimit" value="5" />
     <property name="last_opened_file_path" value="/KLAB/2014-2015/Projects/FigureGroundSearch" />
     <property name="FullScreen" value="false" />
@@ -554,11 +550,11 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="23" width="2560" height="1413" extended-state="6" />
-    <editor active="false" />
+    <frame x="0" y="23" width="2560" height="1413" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2088167" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2088167" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -638,20 +634,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ExpAssets/Config/TraceLab_config.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="19" selection-start="106" selection-end="106" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="130">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///Library/Python/2.7/site-packages/klibs/KLConstants.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="157" column="16" selection-start="3794" selection-end="3794" vertical-scroll-proportion="0.0" vertical-offset="1365" max-vertical-offset="2899">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///Library/Python/2.7/site-packages/klibs/KLExperiment.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="921" column="82" selection-start="35048" selection-end="35048" vertical-scroll-proportion="0.25427136" vertical-offset="1567" max-vertical-offset="3952">
@@ -688,9 +670,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/ExpAssets/Config/TraceLab_config.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3" column="19" selection-start="106" selection-end="106" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="130">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/TraceLabFigure.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="532" column="52" selection-start="19367" selection-end="19367" vertical-scroll-proportion="0.0" vertical-offset="6325" max-vertical-offset="7566">
+        <state line="526" column="19" selection-start="19110" selection-end="19111" vertical-scroll-proportion="-89.96" vertical-offset="4589" max-vertical-offset="7592">
           <folding>
             <element signature="e#73#82#0" expanded="true" />
             <element signature="e#472#825#0" expanded="true" />
@@ -709,37 +698,45 @@
             <element signature="e#16455#16813#0" expanded="true" />
             <element signature="e#16852#17113#0" expanded="true" />
             <element signature="e#17157#18032#0" expanded="true" />
-            <element signature="e#18075#18420#0" expanded="true" />
-            <element signature="e#18454#19050#0" expanded="true" />
-            <element signature="e#19775#20606#0" expanded="true" />
-            <element signature="e#20643#20808#0" expanded="true" />
+            <element signature="e#18077#18422#0" expanded="true" />
+            <element signature="e#18456#19052#0" expanded="true" />
+            <element signature="e#19777#20608#0" expanded="true" />
+            <element signature="e#20645#20810#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///Library/Python/2.7/site-packages/klibs/KLConstants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="157" column="16" selection-start="3794" selection-end="3794" vertical-scroll-proportion="0.0" vertical-offset="1365" max-vertical-offset="2899">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/experiment.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="185" column="53" selection-start="6107" selection-end="6107" vertical-scroll-proportion="0.9075377" vertical-offset="1502" max-vertical-offset="5083">
+        <state line="362" column="24" selection-start="12380" selection-end="12380" vertical-scroll-proportion="4.475377" vertical-offset="253" max-vertical-offset="5226">
           <folding>
             <element signature="e#2118#2181#0" expanded="true" />
             <element signature="e#2203#4799#0" expanded="true" />
             <element signature="e#4821#4948#0" expanded="true" />
             <element signature="e#4989#5446#0" expanded="true" />
-            <element signature="e#6795#7648#0" expanded="true" />
-            <element signature="e#7679#7787#0" expanded="true" />
-            <element signature="e#7812#8063#0" expanded="true" />
-            <element signature="e#8106#8460#0" expanded="true" />
-            <element signature="e#8502#10409#0" expanded="true" />
-            <element signature="e#10439#10985#0" expanded="true" />
-            <element signature="e#11016#11423#0" expanded="true" />
-            <element signature="e#11453#11661#0" expanded="true" />
-            <element signature="e#11693#11955#0" expanded="true" />
-            <element signature="e#11987#12584#0" expanded="true" />
-            <element signature="e#12625#12788#0" expanded="true" />
-            <marker date="1469033489000" expanded="true" signature="7914:7975" placeholder="UPDATE `sess..." />
-            <marker date="1469033489000" expanded="true" signature="8522:8573" placeholder="SELECT * FRO..sessions..." />
-            <marker date="1469033489000" expanded="true" signature="8657:8706" placeholder="SELECT * FRO..participants..." />
-            <marker date="1469033489000" expanded="true" signature="9530:9573" placeholder="SELECT * FRO..participants..." />
+            <element signature="e#5473#6799#0" expanded="true" />
+            <element signature="e#6821#7674#0" expanded="true" />
+            <element signature="e#7705#7813#0" expanded="true" />
+            <element signature="e#7838#8089#0" expanded="true" />
+            <element signature="e#8132#8486#0" expanded="true" />
+            <element signature="e#8528#10435#0" expanded="true" />
+            <element signature="e#10465#11011#0" expanded="true" />
+            <element signature="e#11042#11449#0" expanded="true" />
+            <element signature="e#11479#11687#0" expanded="true" />
+            <element signature="e#11719#11981#0" expanded="true" />
+            <element signature="e#12651#12814#0" expanded="true" />
+            <element signature="e#12848#13060#0" expanded="true" />
+            <marker date="1470160891000" expanded="true" signature="7940:8001" placeholder="UPDATE `sess..." />
+            <marker date="1470160891000" expanded="true" signature="8548:8599" placeholder="SELECT * FRO..sessions..." />
+            <marker date="1470160891000" expanded="true" signature="8683:8732" placeholder="SELECT * FRO..participants..." />
+            <marker date="1470160891000" expanded="true" signature="9556:9599" placeholder="SELECT * FRO..participants..." />
           </folding>
         </state>
       </provider>
