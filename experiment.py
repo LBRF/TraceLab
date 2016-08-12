@@ -357,10 +357,9 @@ class TraceLab(Experiment, BoundaryInspector):
 				self.ui_request()
 
 	def control_trial(self):
+		start = P.clock.trial_time
 		cq_text = "How many times did the dot change course {0}?".format(self.control_question)
 		self.value_slider.msg = self.message(cq_text, "default", blit=False)
-		self.value_slider.reset()
-		start = P.clock.trial_time
 		self.drawing = NA
 		P.tk.start("seg estimate")
 		while self.control_response == -1:
