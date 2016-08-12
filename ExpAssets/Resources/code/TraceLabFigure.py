@@ -490,6 +490,8 @@ class TraceLabFigure(object):
 		self.rendered = aggdraw_to_array(surf) if np else Image.frombytes(surf.mode, surf.size, surf.tostring())
 		return self.rendered
 
+
+
 	def draw(self, dots=True, flip=True):
 		self.exp.fill()
 		self.exp.blit(self.render(), flip_x=P.flip_x)

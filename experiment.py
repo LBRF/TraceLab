@@ -199,6 +199,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.blit(self.next_trial_msg, 5, P.screen_c, flip_x=P.flip_x)
 		self.flip()
 		self.any_key()
+		self.click_to_advance()
 
 	def trial(self):
 		self.figure.animate()
@@ -376,6 +377,16 @@ class TraceLab(Experiment, BoundaryInspector):
 		return "p{0}_s{4}_b{1}_t{2}_{3}.tlt".format(*fname_data)
 
 
+	def click_to_advance(self):
+		self.fill()
+		self.blit(fsdfg)
+		self.flip()
+		while True:
+			for e in pump(True):
+				self.ui_request(e)
+				if e.type == sdl2.SDL_MOUSEBUTTON_DOWN:
+					if self.within_boundary("label", [e.x, e.y]):
+						break
 
 
 
