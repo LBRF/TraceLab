@@ -71,7 +71,7 @@ tracker_dot_perimeter =  2  # px; *additional* to tracking dot size, so the diam
 tracker_dot_color = (255, 0, 0)  # r, g, b, and the last value should always be 255
 tracker_dot_perimeter_color = (255, 255, 255)
 
-origin_size = 30 # px
+origin_size = 30  # px
 
 ########################################
 # Feedback Controls
@@ -80,6 +80,7 @@ response_feedback_color = (0,0,255)
 stimulus_feedback_color = (255, 0, 0)
 max_feedback_time = 500  # ms
 ignore_points_at = []  # list of (x,y) coordinates to be removed
+trial_error_msg = "Trial ended too soon!"
 
 ########################################
 # Figure Controls
