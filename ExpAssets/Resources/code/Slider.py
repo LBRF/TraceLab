@@ -86,10 +86,8 @@ class Slider(BoundaryInspector):
 						if self.button_active and within_button:
 							return self.response
 				dragging = self.within_boundary("handle", m_pos)
-				if not self.start_time:
+				if not self.start_time and dragging:
 					self.start_time = P.clock.trial_time
-				# if dragging:
-				# 	break
 			if dragging:
 				button_up = False
 				off_handle = False

@@ -539,8 +539,8 @@ class TraceLabFigure(object):
 		if not P.capture_figures_mode:
 			start = P.clock.trial_time
 		for f in self.a_frames:
-			if P.flip_x:
-				f[0] = P.screen_x - f[0]
+			# if P.flip_x:
+			# 	f[0] = P.screen_x - f[0]
 			self.exp.ui_request()
 			self.exp.fill()
 			if P.demo_mode:
@@ -552,7 +552,6 @@ class TraceLabFigure(object):
 				updated_a_frames.append((f[0], f[1], P.clock.trial_time - start))
 		if not P.capture_figures_mode:
 			self.a_frames = updated_a_frames
-			# self.a_frames.append(self.points)
 			self.animate_time = Params.clock.trial_time
 
 			self.avg_velocity = self.path_length / self.animate_time
