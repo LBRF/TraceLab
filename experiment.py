@@ -67,6 +67,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	sample_exposure_time = 4500
 
 	# dynamic trial vars
+	animate_finish = None
 	boundaries = {}
 	use_random_figures = False
 	drawing = []
@@ -80,6 +81,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	figure = None
 	figure_dots = None
 	figure_segments = None
+	control_question = None  # ie. which question the control will be asked to report an answer for
 
 	# configured trial factors (dynamically loaded per-trial
 	animate_time = None
@@ -88,7 +90,7 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def __init__(self, *args, **kwargs):
 		super(TraceLab, self).__init__(*args, **kwargs)
-		P.flip_x=False
+		P.flip_x = P.mirror_mode
 
 	def setup(self):
 		self.origin_size = P.origin_size
@@ -210,13 +212,25 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def trial(self):
 		self.figure.animate()
-		self.animate_finsh = P.clock.trial_time
-		if P.exp_condition == MI_xx_5:
-			self.imagery_trial()
-		if P.exp_condition in (PP_xx_5, PP_xx_1, PP_VV_5, PP_VR_5, PP_RR_5):
-			self.physical_trial()
-		if P.exp_condition == CC_xx_5:
-			self.control_trial()
+		self.animate_finish = P.clock.trial_time
+		try:
+			if P.exp_condition in (PP_xx_5, PP_xx_1, PP_VV_5, PP_VR_5, PP_RR_5):
+				self.physical_trial()
+			if P.exp_condition == MI_xx_5:
+				if P.session_number == 5:
+					self.physical_trial()
+				else:
+					self.imagery_trial()
+			if P.exp_condition == CC_xx_5:
+				if P.session_number == 5:
+					self.physical_trial()
+				else:
+					self.control_trial()
+		except TrialException:
+			self.fill()
+			self.message(P.trial_error_msg, "error")
+			self.any_key()
+			raise TrialException
 		self.fill()
 		self.flip()
 
@@ -293,6 +307,10 @@ class TraceLab(Experiment, BoundaryInspector):
 			user_data = self.database.query(q_str, q_vars=[P.participant_id]).fetchall()[0]
 		P.user_data = user_data
 
+		# delete previous trials for this session if any exist (essentially assume a do-over)
+		q_str = "DELETE FROM `trials` WHERE `participant_id` = ? AND `session_num` = ?"
+		print q_str, [P.participant_id, P.session_number]
+		self.database.query(q_str, q_vars=[P.participant_id, P.session_number])
 		if P.session_number == 1:
 			try:
 				 session_data = self.database.query(session_data_str, q_vars=[P.participant_id]).fetchall()[0]
