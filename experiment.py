@@ -230,7 +230,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.fill()
 			self.message(P.trial_error_msg, "error")
 			self.any_key()
-			raise TrialException
+			raise TrialException()
 		self.fill()
 		self.flip()
 

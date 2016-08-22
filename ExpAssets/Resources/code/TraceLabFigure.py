@@ -439,7 +439,6 @@ class TraceLabFigure(object):
 			else:
 				return [interpolation[0], [True, [p1, p2, p_c]]]
 
-
 	def __quadrant_from_point__(self, point):
 		if len(point) == 1: point = point[0]
 		q = [True, True, True, True]
@@ -460,7 +459,6 @@ class TraceLabFigure(object):
 			q[3] = False
 
 		return indices_of(True, q, True)
-
 
 	def __import_figure(self, path, join_parent=True):
 		fig_archive = zipfile.ZipFile(path + ".zip")
@@ -501,8 +499,6 @@ class TraceLabFigure(object):
 
 		self.rendered = aggdraw_to_array(surf) if np else Image.frombytes(surf.mode, surf.size, surf.tostring())
 		return self.rendered
-
-
 
 	def draw(self, dots=True, flip=True):
 		self.exp.fill()
