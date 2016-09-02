@@ -509,7 +509,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.blit(i[1], 5, pos)
 		self.flip()
 		self.any_key()
-		self.quit()
+		self.narration.mute()
 
 
 	@property
