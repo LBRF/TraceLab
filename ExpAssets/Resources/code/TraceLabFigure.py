@@ -140,8 +140,9 @@ def bezier_interpolation(origin, destination, control_o, control_d=None, velocit
 class TraceLabFigure(object):
 	allow_verbosity = False
 
-	def __init__(self, exp, import_path=None):
+	def __init__(self, exp, import_path=None, animate_time=None):
 		self.exp = exp
+		self.animate_target_time = animate_time if animate_time is not None else self.exp.animate_time
 		self.seg_count = None
 		self.min_spq = P.avg_seg_per_q[0] - P.avg_seg_per_q[1]
 		self.max_spq = P.avg_seg_per_q[0] + P.avg_seg_per_q[1]
@@ -308,7 +309,7 @@ class TraceLabFigure(object):
 					raise RuntimeError(e)
 
 		# use path length and animation duration to establish a velocity and then do a second interpolation
-		velocity = p_len / self.exp.animate_time
+		velocity = p_len / self.animate_target_time
 		for segment in first_pass_segs:
 			circle = segment[0]
 			try:
@@ -513,9 +514,10 @@ class TraceLabFigure(object):
 
 	def prepare_animation(self):
 		self.path_length = interpolated_path_len(self.frames)
-		draw_in = self.exp.animate_time * 0.001
+		draw_in = self.animate_target_time * 0.001
 		rate = 0.016666666666667
 		max_frames = int(draw_in / rate)
+		print self.animate_target_time, draw_in, max_frames, self.path_length
 		delta_d = math.floor(self.path_length / max_frames)
 		self.a_frames = [list(self.frames[0])]
 		seg_len = 0
@@ -530,10 +532,11 @@ class TraceLabFigure(object):
 				self.a_frames.append(list(self.frames[i]))
 				seg_len = 0
 
-	def animate(self):
+	def animate(self, practice=False):
 		updated_a_frames = []
-		if not P.capture_figures_mode:
-			start = P.clock.trial_time
+		if not P.capture_figures_mode and not practice:
+				start = P.clock.trial_time
+
 		for f in self.a_frames:
 			# if P.flip_x:
 			# 	f[0] = P.screen_x - f[0]
@@ -544,9 +547,9 @@ class TraceLabFigure(object):
 			self.exp.blit(self.exp.tracker_dot, 5, f, flip_x=P.flip_x)
 			self.exp.flip()
 			f = list(f)
-			if not P.capture_figures_mode:
+			if not P.capture_figures_mode and not practice:
 				updated_a_frames.append((f[0], f[1], P.clock.trial_time - start))
-		if not P.capture_figures_mode:
+		if not P.capture_figures_mode and not practice:
 			self.a_frames = updated_a_frames
 			self.animate_time = Params.clock.trial_time
 

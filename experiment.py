@@ -7,10 +7,12 @@ from klibs.KLExceptions import TrialException
 from klibs.KLConstants import *
 import klibs.KLParams as P
 from klibs.KLUtilities import *
-from klibs.KLDraw import Ellipse
+from klibs.KLDraw import Ellipse, Rectangle
 from klibs.KLEventInterface import EventTicket as ET
+# from klibs.KLAudio import AudioManager, AudioClip
+from klibs.KLNumpySurface import NumpySurface as NpS
 from klibs.KLExperiment import Experiment
-from TraceLabFigure import TraceLabFigure
+from TraceLabFigure import TraceLabFigure, linear_interpolation
 from Slider import Slider
 from klibs.KLMixins import BoundaryInspector
 from hashlib import sha1
@@ -43,6 +45,8 @@ class TraceLab(Experiment, BoundaryInspector):
 	feedback = False
 
 	# graphical elements
+
+	imgs = {}
 	value_slider = None
 	origin_proto = None
 	origin_active = None
@@ -87,6 +91,10 @@ class TraceLab(Experiment, BoundaryInspector):
 	animate_time = None
 	figure_name = None
 
+	# practice stuff
+	narration = None
+	practice_buttons = None
+	practice_instructions = None
 
 	def __init__(self, *args, **kwargs):
 		super(TraceLab, self).__init__(*args, **kwargs)
@@ -116,6 +124,8 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.text_manager.add_style('tiny', 12, [255, 255,255, 255])
 		self.text_manager.add_style('small', 14, [255, 255,255, 255])
 
+
+
 		if P.capture_figures_mode:
 			self.capture_figures()
 		self.value_slider = Slider(self, int(P.screen_y * 0.75), int(P.screen_x * 0.5), 15, 20, (75,75,75), RED)
@@ -137,6 +147,20 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.loading_msg = self.message("Loading...", "default", blit=False)
 		self.control_fail_msg = self.message("Please keep your finger on the start area for the complete duration.", 'error', blit=False )
 		self.next_trial_msg = self.message("Press any key to begin the trial.", 'default', blit=False)
+
+		# practice session vars & elements
+		self.practice_instructions = self.message(P.practice_instructions, "instructions", blit=False)
+		self.imgs['pointer'] = NpS(os.path.join(P.image_dir, "pointer.png"))
+		self.imgs['cloud'] = NpS(os.path.join(P.image_dir, "thought_bubble.png"))
+		self.narration = self.audio.clip(os.path.join(P.resources_dir, "instrux.wav"))
+		button = Rectangle(200, 100, (3, (255, 255, 255)), (145, 145, 145)).render()
+		self.practice_buttons = [
+			[button, self.text_manager.render("Replay", "instructions")],
+			[button, self.text_manager.render("Practice", "instructions")],
+			[button, self.text_manager.render("Begin", "instructions")]
+		]
+		if P.show_practice_demo:
+			self.practice()
 
 		# import figures for use during testing sessions
 		self.fill()
@@ -203,11 +227,11 @@ class TraceLab(Experiment, BoundaryInspector):
 		if P.demo_mode:
 			self.figure.render()
 		self.figure.prepare_animation()
-		flush()
 		# let participant self-initiate next trial
 		self.fill()
 		self.blit(self.next_trial_msg, 5, P.screen_c, flip_x=P.flip_x)
 		self.flip()
+		flush()
 		self.any_key()
 
 	def trial(self):
@@ -424,6 +448,68 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.message("Saving... ", flip=True)
 			#f_name = sha1("figure_" + str(now(True))).hexdigest() + ".tlf"
 			self.figure.write_out(f_name)
+
+	def practice(self):
+		self.fill()
+		self.blit(self.practice_instructions, 5, Params.screen_c)
+		self.flip()
+		self.any_key()
+
+		figure = None
+		while not figure:
+			try:
+				figure = TraceLabFigure(self, animate_time=5000)
+			except RuntimeError:
+				continue
+		# figure.prepare_animation()
+		# v = figure.path_length / 5.0
+		# self.narration.play()
+		# figure.animate(True)
+		pts = [ (Params.screen_c[0], int(0.75 * Params.screen_y)),
+				   (int(0.5 * Params.screen_y), int(0.25 * Params.screen_y)),
+				   (Params.screen_x - int(0.5 * Params.screen_y), int(0.25 * Params.screen_y))
+		]
+		v = 2 * line_segment_len(pts[0], pts[1]) + (pts[2][0] - pts[1][0]) / 5.0
+		self.origin_pos = list(pts[0])
+		self.display_refresh()
+
+		def draw_triangle(icon, registration):
+			for i in linear_interpolation(pts[0], pts[1], v):
+				self.ui_request()
+				self.display_refresh(False)
+				self.blit(icon, registration, i)
+				self.flip()
+			for i in linear_interpolation(pts[1], pts[2], v):
+				self.ui_request()
+				self.display_refresh(False)
+				self.blit(icon, registration, i)
+				self.flip()
+			for i in linear_interpolation(pts[2], pts[0], v):
+				self.ui_request()
+				self.display_refresh(False)
+				self.blit(icon, registration, i)
+				self.flip()
+		draw_triangle(self.tracker_dot, 5)
+		self.message("Intermediary instructions can go here...", "instructions", location=Params.screen_c, blit=True)
+		for i in linear_interpolation((pts[0][0] + 5, pts[0][1] + 5), pts[0], 8):
+			self.display_refresh(False)
+			self.blit(self.imgs['pointer'], 7, i)
+			self.flip()
+		self.fill()
+		self.blit(self.origin_active, 5, pts[0])
+		self.blit(self.imgs['pointer'], 7, pts[0])
+		self.flip()
+		time.sleep(1)
+		draw_triangle(self.imgs['pointer'], 7)
+		self.clear()
+		for i in self.practice_buttons:
+			ind = self.practice_buttons.index(i) + 1
+			pos = (int(ind * 0.25 * Params.screen_x), int(0.5 * Params.screen_y))
+			self.blit(i[0], 5, pos)
+			self.blit(i[1], 5, pos)
+		self.flip()
+		self.any_key()
+		self.quit()
 
 
 	@property
