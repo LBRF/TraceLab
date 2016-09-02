@@ -115,6 +115,8 @@ seg_report_fuzz = (2, 4)
 
  # NOTE VARIABLE SESSION COUNTS
 
-# PRACTICE CONTROLS
+########################################
+# Practice Controls
+########################################
 show_practice_demo = True
 practice_instructions = "The following is a demonstration period. Use this time to learn and then practice the task.\nTap the screen to continue."
