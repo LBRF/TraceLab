@@ -463,7 +463,7 @@ class TraceLab(Experiment, BoundaryInspector):
 				continue
 		# figure.prepare_animation()
 		# v = figure.path_length / 5.0
-		# self.narration.play()
+		self.narration.play()
 		# figure.animate(True)
 		pts = [ (Params.screen_c[0], int(0.75 * Params.screen_y)),
 				   (int(0.5 * Params.screen_y), int(0.25 * Params.screen_y)),
