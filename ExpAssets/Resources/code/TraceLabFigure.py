@@ -517,7 +517,6 @@ class TraceLabFigure(object):
 		draw_in = self.animate_target_time * 0.001
 		rate = 0.016666666666667
 		max_frames = int(draw_in / rate)
-		print self.animate_target_time, draw_in, max_frames, self.path_length
 		delta_d = math.floor(self.path_length / max_frames)
 		self.a_frames = [list(self.frames[0])]
 		seg_len = 0
