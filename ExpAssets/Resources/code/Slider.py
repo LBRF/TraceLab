@@ -143,3 +143,124 @@ class Slider(BoundaryInspector):
 			pos = self.pos[0] + self.bar_size[0] - 2
 		self.__handle_pos = (pos, self.__handle_pos[1])
 		self.__update_handle_boundary()
+
+
+class Button(object):
+
+	def __init__(self, bar, exp, button_text, button_size, location):
+		super(Button, self).__init__()
+		self.bar = bar
+		self.exp = exp
+		self.size = button_size
+		self.button_text = button_text
+		self.button_rtext_a = exp.message(button_text, "button_active", blit=False)
+		self.button_rtext_i = exp.message(button_text, "button_inactive", blit=False)
+		self.frame_i = Rectangle(button_size[0], button_size[1], fill=None, stroke=(5, (255,255,255)))
+		self.frame_a = Rectangle(button_size[0], button_size[1], fill=None, stroke=(5, (150,255,150)))
+		self.active = False
+		self.location = location
+		self.text_location = (self.location[0] + self.size[0] // 2, self.location[1] + self.size[1] // 2)
+		self.create_boundary()
+
+	def blit(self):
+		if self.active:
+			self.exp.blit(self.frame_a, 5, self.location)
+			self.exp.blit(self.button_rtext_a, 5, self.location)
+		else:
+			self.exp.blit(self.frame_i, 5, self.location)
+			self.exp.blit(self.button_rtext_i, 5, self.location)
+
+	def create_boundary(self):
+		x1 = self.location[0] - self.size[0] // 2
+		y1 = self.location[1] - self.size[1] // 2
+		x2 = self.location[0] + self.size[0] // 2
+		y2 = self.location[1] + self.size[1] // 2
+		self.bar.add_boundary(self.button_text, ((x1,y1), (x2,y2)), RECT_BOUNDARY)
+
+
+class ButtonBar(BoundaryInspector):
+
+	def __init__(self, exp, button_count, button_size, screen_margins, y_offset, message=None):
+		super(ButtonBar, self).__init__()
+		self.exp = exp
+		self.exp.text_manager.add_style('button_inactive', 24, [255, 255, 255, 255])
+		self.exp.text_manager.add_style('button_active', 24, [150, 255, 150, 255])
+		self.b_count = button_count
+		self.buttons = []
+		self.b_size = button_size
+		self.screen_margins = screen_margins
+		self.y_offset = y_offset
+		self.b_pad = (Params.screen_x - (self.b_size * self.b_count + 2 * self.screen_margins)) // (self.b_count - 1)
+		self.start = None
+		self.mt = None
+		self.rt = None
+		self.finish_b = None
+		self.message = message
+		if message:
+			self.message_r = self.exp.message(message, "instructions", blit=False)
+			self.message_loc = (Params.screen_c[0], self.y_offset - (self.message_r.height * 2))
+		self.gen_buttons()
+
+	def gen_buttons(self):
+		for i in range(0, self.b_count):
+			loc = (self.screen_margins + (i * self.b_size) + (i * self.b_pad) + self.b_size // 2, self.y_offset + self.b_size //2)
+			self.buttons.append(Button(self, self.exp, str(i+1), (self.b_size,self.b_size), loc))
+		self.finish_b = Button(self, self.exp, "Done", (100,50), (Params.screen_x - (self.screen_margins + self.b_size), int(Params.screen_y * 0.9)))
+
+	def render(self):
+		self.exp.fill()
+		for b in self.buttons:
+			b.blit()
+		self.finish_b.blit()
+		if self.message:
+			self.exp.blit(self.message_r, 5, self.message_loc)
+		self.exp.flip()
+
+	def collect_response(self):
+		self.start = time.time()
+		finished = False
+		selection = None
+		flush()
+		mt_start = None
+		while not finished:
+			show_mouse_cursor()
+			events = pump(True)
+			self.exp.ui_request(events)
+			for e in events:
+				if e.type == sdl2.SDL_MOUSEBUTTONDOWN:
+					selection = None
+					for b in self.buttons:
+						if self.within_boundary(b.button_text, [e.button.x, e.button.y]):
+				 			self.toggle(b)
+							if not self.rt:
+								self.rt = time.time() - self.start
+								mt_start = time.time()
+							if b.active:
+								selection = b
+						if self.finish_b.active and self.within_boundary("Done",[e.button.x, e.button.y]):
+							self.mt = time.time() - mt_start
+							finished = True
+			self.finish_b.active = selection is not None
+			self.render()
+		self.exp.fill()
+		self.exp.flip()
+		print self.rt, self.mt
+		hide_mouse_cursor()
+
+
+	def toggle(self, button):
+		for b in self.buttons:
+			b.active = not b.active if b == button else False
+
+	def reset(self):
+		self.start = None
+		for b in self.buttons:
+			b.active = False
+		self.finish_b.active = False
+		self.rt = None
+		self.mt = None
+
+	def update_message(self, message_text):
+		self.message = message_text
+		self.message_r = self.exp.message(message_text, "instructions", blit=False)
+

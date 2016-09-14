@@ -83,6 +83,15 @@ ignore_points_at = []  # list of (x,y) coordinates to be removed
 trial_error_msg = "Trial ended too soon!"
 
 ########################################
+# Button Bar Controls
+########################################
+button_count = 5
+button_size = 75  # px square
+button_screen_margins = 300  # margins on either side of screen where buttons cant be placed
+y_offset = 300  # how far down the screen, vertically, the buttons should be placed
+button_instructions = "How many times did the dot change course {0}?"  #  the {0} will contain the direction text
+
+########################################
 # Figure Controls
 ########################################
 generation_timeout = 10  # seconds
@@ -118,5 +127,5 @@ seg_report_fuzz = (2, 4)
 ########################################
 # Practice Controls
 ########################################
-show_practice_demo = True
+show_practice_demo = False
 practice_instructions = "The following is a demonstration period. Use this time to learn and then practice the task.\nTap the screen to continue."
