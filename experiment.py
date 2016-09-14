@@ -463,16 +463,14 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.flip()
 		self.any_key()
 
-		figure = None
-		while not figure:
-			try:
-				figure = TraceLabFigure(self, animate_time=5000)
-			except RuntimeError:
-				continue
-		# figure.prepare_animation()
-		# v = figure.path_length / 5.0
-		self.narration.play()
-		# figure.animate(True)
+		# figure = None
+		# while not figure:
+		# 	try:
+		# 		figure = TraceLabFigure(self, animate_time=5000)
+		# 	except RuntimeError:
+		# 		continue
+		if P.play_narration:
+			self.narration.play()
 		pts = [ (Params.screen_c[0], int(0.75 * Params.screen_y)),
 				   (int(0.5 * Params.screen_y), int(0.25 * Params.screen_y)),
 				   (Params.screen_x - int(0.5 * Params.screen_y), int(0.25 * Params.screen_y))

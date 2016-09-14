@@ -129,3 +129,4 @@ seg_report_fuzz = (2, 4)
 ########################################
 show_practice_demo = False
 practice_instructions = "The following is a demonstration period. Use this time to learn and then practice the task.\nTap the screen to continue."
+play_narration = False  # toggles the audio component
