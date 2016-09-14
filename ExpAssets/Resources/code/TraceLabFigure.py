@@ -513,6 +513,8 @@ class TraceLabFigure(object):
 			self.exp.flip()
 
 	def prepare_animation(self):
+		if self.animate_target_time is None:
+			self.animate_target_time = self.exp.animate_time
 		self.path_length = interpolated_path_len(self.frames)
 		draw_in = self.animate_target_time * 0.001
 		rate = 0.016666666666667
