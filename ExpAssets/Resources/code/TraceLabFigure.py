@@ -182,7 +182,7 @@ class TraceLabFigure(object):
 		self.animate_time = None  # last call to animate only
 		self.rendered = False
 		if import_path:
-			self.__import_figure(import_path)
+			self.__import_figure__(import_path)
 			return
 		self.__generate_null_points__()
 		self.__gen_quad_intersects__()
@@ -461,7 +461,7 @@ class TraceLabFigure(object):
 
 		return indices_of(True, q, True)
 
-	def __import_figure(self, path, join_parent=True):
+	def __import_figure__(self, path, join_parent=True):
 		fig_archive = zipfile.ZipFile(path + ".zip")
 		figure = path.split("/")[-1]
 		# have no earthly clue why some times the first line works and sometimes it's the other...
@@ -475,7 +475,7 @@ class TraceLabFigure(object):
 				if len(attr):
 					setattr(self, attr[0], eval(attr[1]))
 		except KeyError:
-			return self.__import_figure(path, False)
+			return self.__import_figure__(path, False)
 
 	def render(self, np=True, trace=None):
 		surf = aggdraw.Draw("RGBA", P.screen_x_y, (0,0,0,255))
@@ -513,6 +513,8 @@ class TraceLabFigure(object):
 			self.exp.flip()
 
 	def prepare_animation(self):
+		if self.animate_target_time is None:
+			self.animate_target_time = self.exp.animate_time
 		self.path_length = interpolated_path_len(self.frames)
 		draw_in = self.animate_target_time * 0.001
 		rate = 0.016666666666667
