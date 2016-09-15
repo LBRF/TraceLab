@@ -13,7 +13,7 @@ from klibs.KLEventInterface import EventTicket as ET
 from klibs.KLNumpySurface import NumpySurface as NpS
 from klibs.KLExperiment import Experiment
 from TraceLabFigure import TraceLabFigure, linear_interpolation
-from Slider import Slider
+from ButtonBar import Button, ButtonBar
 from klibs.KLMixins import BoundaryInspector
 from hashlib import sha1
 
@@ -47,7 +47,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	# graphical elements
 
 	imgs = {}
-	value_slider = None
+	# value_slider = None
 	origin_proto = None
 	origin_active = None
 	origin_inactive = None
@@ -58,6 +58,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	origin_boundary = None
 	tracker_dot_proto = None
 	tracker_dot = None
+	button_bar = None
 
 	instructions = None
 	loading_msg = None
@@ -128,8 +129,9 @@ class TraceLab(Experiment, BoundaryInspector):
 
 		if P.capture_figures_mode:
 			self.capture_figures()
-		self.value_slider = Slider(self, int(P.screen_y * 0.75), int(P.screen_x * 0.5), 15, 20, (75,75,75), RED)
-		self.value_slider.update_range(5)
+		# self.value_slider = Slider(self, int(P.screen_y * 0.75), int(P.screen_x * 0.5), 15, 20, (75,75,75), RED)
+		# self.value_slider.update_range(5)
+		self.button_bar = ButtonBar(self, P.button_count, P.button_size, P.button_screen_margins, P.y_offset, P.button_instructions)
 		self.use_random_figures = P.session_number not in (1, 5)
 		self.origin_proto.fill = self.origin_active_color
 		self.origin_active = self.origin_proto.render()
@@ -281,7 +283,8 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.figure.write_out()
 		self.figure.write_out(self.tracing_name, self.drawing)
 		self.rc.draw_listener.reset()
-		self.value_slider.reset()
+		# self.value_slider.reset()
+		self.button_bar.reset()
 
 	def clean_up(self):
 		# if the entire experiment is successfully completed, update the sessions_completed column
@@ -399,16 +402,12 @@ class TraceLab(Experiment, BoundaryInspector):
 				self.ui_request()
 
 	def control_trial(self):
-		start = P.clock.trial_time
-		cq_text = "How many times did the dot change course {0}?".format(self.control_question)
-		self.value_slider.msg = self.message(cq_text, "default", blit=False)
-		self.drawing = NA
-		P.tk.start("seg estimate")
-		while self.control_response == -1:
-			self.control_response = self.value_slider.slide()
-		self.rt = self.value_slider.start_time - start
-		mt = P.tk.stop("seg estimate").read("seg estimate")
-		self.mt = (mt[1] - mt[0]) - self.rt
+		self.button_bar.update_message(P.button_instructions.format(self.control_question))
+		self.button_bar.render()
+		self.button_bar.collect_response()
+		self.rt = self.button_bar.rt
+		self.mt = self.button_bar.mt
+		self.control_response = self.button_bar.response
 
 	def capture_figures(self):
 		self.animate_time = 5000.0
@@ -455,16 +454,14 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.flip()
 		self.any_key()
 
-		figure = None
-		while not figure:
-			try:
-				figure = TraceLabFigure(self, animate_time=5000)
-			except RuntimeError:
-				continue
-		# figure.prepare_animation()
-		# v = figure.path_length / 5.0
-		self.narration.play()
-		# figure.animate(True)
+		# figure = None
+		# while not figure:
+		# 	try:
+		# 		figure = TraceLabFigure(self, animate_time=5000)
+		# 	except RuntimeError:
+		# 		continue
+		if P.play_narration:
+			self.narration.play()
 		pts = [ (Params.screen_c[0], int(0.75 * Params.screen_y)),
 				   (int(0.5 * Params.screen_y), int(0.25 * Params.screen_y)),
 				   (Params.screen_x - int(0.5 * Params.screen_y), int(0.25 * Params.screen_y))
