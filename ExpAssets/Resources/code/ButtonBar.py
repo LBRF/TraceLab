@@ -200,6 +200,7 @@ class ButtonBar(BoundaryInspector):
 			self.message_r = self.exp.message(message, "instructions", blit=False)
 			self.message_loc = (Params.screen_c[0], self.y_offset - (self.message_r.height * 2))
 		self.gen_buttons()
+		self.response = None
 
 	def gen_buttons(self):
 		for i in range(0, self.b_count):
@@ -238,6 +239,7 @@ class ButtonBar(BoundaryInspector):
 							if b.active:
 								selection = b
 						if self.finish_b.active and self.within_boundary("Done",[e.button.x, e.button.y]):
+							self.response = int(selection.button_text)
 							self.mt = time.time() - mt_start
 							finished = True
 			self.finish_b.active = selection is not None
@@ -246,7 +248,6 @@ class ButtonBar(BoundaryInspector):
 		self.exp.flip()
 		print self.rt, self.mt
 		hide_mouse_cursor()
-
 
 	def toggle(self, button):
 		for b in self.buttons:
@@ -259,6 +260,7 @@ class ButtonBar(BoundaryInspector):
 		self.finish_b.active = False
 		self.rt = None
 		self.mt = None
+		self.response = None
 
 	def update_message(self, message_text):
 		self.message = message_text

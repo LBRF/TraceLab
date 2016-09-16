@@ -13,7 +13,7 @@ from klibs.KLEventInterface import EventTicket as ET
 from klibs.KLNumpySurface import NumpySurface as NpS
 from klibs.KLExperiment import Experiment
 from TraceLabFigure import TraceLabFigure, linear_interpolation
-from Slider import Slider, Button, ButtonBar
+from ButtonBar import Button, ButtonBar
 from klibs.KLMixins import BoundaryInspector
 from hashlib import sha1
 
@@ -407,16 +407,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.button_bar.collect_response()
 		self.rt = self.button_bar.rt
 		self.mt = self.button_bar.mt
-		# start = P.clock.trial_time
-		# cq_text = "How many times did the dot change course {0}?".format(self.control_question)
-		# self.value_slider.msg = self.message(cq_text, "default", blit=False)
-		# self.drawing = NA
-		# P.tk.start("seg estimate")
-		# while self.control_response == -1:
-		# 	self.control_response = self.value_slider.slide()
-		# self.rt = self.value_slider.start_time - start
-		# mt = P.tk.stop("seg estimate").read("seg estimate")
-		# self.mt = (mt[1] - mt[0]) - self.rt
+		self.control_response = self.button_bar.response
 
 	def capture_figures(self):
 		self.animate_time = 5000.0
@@ -515,7 +506,6 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.blit(i[1], 5, pos)
 		self.flip()
 		self.any_key()
-		self.narration.mute()
 
 
 	@property
