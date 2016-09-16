@@ -1,8 +1,12 @@
 __author__ = 'jono'
 import abc
 import time
+import os
 from math import floor
+from klibs import P
+from klibs.KLConstants import *
 from klibs.KLNumpySurface import NumpySurface as NpS
+from klibs.KLDraw import *
 from klibs.KLUtilities import line_segment_len
 from TraceLabFigure import interpolated_path_len, bezier_interpolation, pascal_row, linear_interpolation
 
@@ -29,11 +33,20 @@ def bezier_frames(self):
 
 class KeyFrameAsset(object):
 
-	def __init__(self, text=None, path=None):
-		if not text and not path:
+	def __init__(self, text=None, file_name=None, drawbject=None):
+		if not text and not file_name and not drawbject:
 			raise ValueError("No resource provided.")
-		self.type = "test" if text else path
-		self.resource = text if text else NpS(path)
+		if text:
+			self.contents = text
+		if file_name:
+			self.contents = NpS(os.path.join(P.image_dir, file_name))
+		if drawbject:
+			if drawbject[0] == "rect":
+				self.contents = Rectangle(*drawbject[1:])
+			if drawbject[0] == "ellipse":
+				self.contents = Ellipse(*drawbject[1:])
+			if drawbject[0] == "annulus":
+				self.contents = Annulus(*drawbject[1:])
 
 class KeyFrame(object):
 
@@ -44,12 +57,17 @@ class KeyFrame(object):
 		self.cl_before = cl_before
 		self.assets = assets
 		self.directives = directives
+		self.asset_frames = []
 
 	def play(self):
 		start = time.time()
 		if self.cl_before:
 			self.exp.fill()
-		for
+		for t in self.asset_frames:
+			self.exp.fill()
+			for a in t:
+				self.exp.blit(self.assets[a[0]], 5, a[1])
+			self.flip()
 		if self.clear_after:
 			self.exp.fill()
 		while time.time() - start < self.duration:
@@ -77,16 +95,31 @@ class KeyFrame(object):
 		for frame_set in asset_frames:
 			while len(frame_set) < total_frames:
 				frame_set.append(frame_set[-1])
+		self.asset_frames = []
+		for i in range(0, len(asset_frames)):
+			self.asset_frames.append([n[i] for n in asset_frames])
 
-
-class PracticeDemo(object):
+class FrameSet(object):
 
 	def __init__(self):
 		self.key_frames = []
+		self.assets = {}
 
-	def load_key_frames(self, path):
-		pass
+	def load_assets(self, asset_list):
+		for a in asset_list:
+			self.assets[a] = KeyFrameAsset(asset_list[a])
+
+	def gen_key_frames(self, kf_list):
+		for kf in kf_list:
+			self.key_frames.append(KeyFrame(kf[1], self.assets, kf[2]))
 
 	def play(self):
 		for kf in self.key_frames:
 			kf.play()
+asset_list = [['pointer', None, "pointer.png", None],
+			  ['dot', None, None, ["annulus", 6,2,[1, (255,255,255)], (255, 0,0)]],
+			  ['instrux', "This is some instruction text", None, None]]
+keyframes = [["instructions", 1000, [["instrux", P.screen_c, P.screen_c]]],
+			 ["dot animate", 3000, [["dot", P.screen_c, (500,500)]]],
+			 ["both animate", 3000, [["dot", P.screen_c, (500,500)],
+									 ["pointer", (0,0), (500, 500)]]]]
