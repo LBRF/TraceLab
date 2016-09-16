@@ -31,45 +31,6 @@ def pascal_row(n):
 
 global drawable_area
 
-# def bezier_interpolation(origin, destination, control_o, control_d=None):
-# 		destination = tuple(destination)
-# 		origin = tuple(origin)
-# 		control_o = tuple(control_o)
-# 		if control_d:
-# 			control_d = tuple(control_d)
-# 		points = [origin, control_o, control_d, destination] if control_d else [origin, control_o, destination]
-# 		break_next = False
-# 		segments = []
-# 		n = len(points)
-#
-# 		def bezier(transitions):
-# 			combinations = pascal_row(n - 1)
-# 			result = []
-# 			for t in transitions:
-# 				t_powers = (t ** i for i in range(n))
-# 				u_powers = reversed([(1 - t) ** i for i in range(n)])
-# 				coefficients = [c * a * b for c, a, b in zip(combinations, t_powers, u_powers)]
-# 				result.append(list(sum([coef * p for coef, p in zip(coefficients, ps)]) for ps in zip(*points)))
-# 			return result
-#
-# 		return [ (int(p[0]), int(p[1])) for p in bezier([0.01 * t for t in range(101)])]
-#
-#
-# # def linear_interpolation(origin, destination, segmented=True):
-# # 	d_x = destination[0] - origin[0]
-# # 	d_y = destination[1] - origin[1]
-# # 	theta = angle_between(origin, destination)
-# # 	steps = abs(d_x) if abs(d_x) < abs(d_y) else abs(d_y)
-# # 	points = [origin]
-# # 	for i in range(steps):
-# # 		points.append(point_pos(origin, i, theta))
-# # 	points.append(destination)
-# # 	if segmented:
-# # 		segments = list(chunk(points, 2))
-# # 		return segments if len(segments[-1]) == 2 else segments[:-1]
-# # 	else:
-# # 		return points
-
 """
 Velocity is measured in (whatever units your distance function uses)/(draw call)
 dt is time between draw calls
