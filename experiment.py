@@ -103,10 +103,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		P.flip_x = P.mirror_mode
 
 	def setup(self):
-		kf = FrameSet(self)
-		assets_f = os.path.join(P.resources_dir, "code", "assets_test.json")
-		key_frames_f = os.path.join(P.resources_dir, "code", "key_frames_test.json")
-		kf.generate_key_frames(key_frames_f, assets_f)
+		kf = FrameSet(self, "key_frames_test", "assets_test")
 		kf.play()
 		self.quit()
 		self.origin_size = P.origin_size
