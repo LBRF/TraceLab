@@ -1,0 +1,23 @@
+{
+    "pointer": {
+        "text":null,
+        "filename": "pointer.png",
+        "drawbject": null
+    },
+    "dot": {
+        "text":null,
+        "filename": null,
+        "drawbject": {
+            "shape":"ellipse",
+            "width": 6,
+            "height": 6,
+            "stroke": [2, [255,255,255]],
+            "fill": [255, 0, 0]
+        }
+    },
+    "instrux": {
+        "text":"This is some instruction text",
+        "filename": null,
+        "drawbject": null
+    }
+}

@@ -2,12 +2,14 @@ __author__ = 'jono'
 import abc
 import time
 import os
+import json
+import unicodedata
 from math import floor
 from klibs import P
 from klibs.KLConstants import *
 from klibs.KLNumpySurface import NumpySurface as NpS
 from klibs.KLDraw import *
-from klibs.KLUtilities import line_segment_len
+from klibs.KLUtilities import line_segment_len, iterable
 from TraceLabFigure import interpolated_path_len, bezier_interpolation, pascal_row, linear_interpolation
 
 
@@ -31,45 +33,148 @@ def bezier_frames(self):
 				seg_len = 0
 
 
+class JSON_Object(object):
+
+	def __init__(self, json_file_path=None, decoded_data=None, child_object=False):
+		self.__items__ = self.__unicode_to_str__(json.load(open(json_file_path)) if json_file_path else decoded_data)
+		self.__objectify__(self.__items__, not (child_object and type(decoded_data) is list))
+		self.__current__ = 0
+		try:
+			self.keys = self.__items__.keys()
+			self.values = []
+			for k in self.keys:
+				self.values.append(self.__dict__[k])
+		except AttributeError:
+			self.keys = range(0, len(self.__items__))
+			self.values = self.__items__
+
+	def __unicode_to_str__(self, content):
+		if type(content) is unicode:
+			converted = unicodedata.normalize('NFKD', content).encode('ascii','ignore')
+		elif type(content) in (list, dict):
+			#  manage dicts first
+			try:
+				converted = {}  # converted output for this level of the data
+				for k in content:
+					v = content[k]  # ensure the keys are ascii strings
+					if type(k) is unicode:
+						k = self.__unicode_to_str__(k)
+					if type(v) is unicode:
+						converted[k] = self.__unicode_to_str__(v)
+					elif iterable(v):
+						converted[k] = self.__unicode_to_str__(v)
+					else:
+						converted[k] = v
+			except (TypeError, IndexError):
+				converted = []
+				for i in content:
+					if type(i) is unicode:
+						converted.append(self.__unicode_to_str__(i))
+					elif iterable(i):
+						converted.append(self.__unicode_to_str__(i))
+					else:
+						converted.append(i)
+		return converted
+
+	def __find_nested_dicts__(self, data):
+		tmp = []
+		for i in data:
+			if type(i) is dict:
+				tmp.append(JSON_Object(None, i, True))
+			elif type(i) is list:
+				tmp.append(self.__find_nested_dicts__(i))
+			else:
+				tmp.append(i)
+		return tmp
+
+	def __objectify__(self, content, initial_pass=False):
+
+		try:
+			converted = {}
+			for i in content:
+				v = content[i]
+				if type(v) is dict:
+					v = JSON_Object(None, v, True)
+				elif type(v) is list:
+					v = self.__find_nested_dicts__(v)
+				converted[i] = v
+				if initial_pass:
+					setattr(self, i, v)
+		except (TypeError, IndexError) as e:
+			if initial_pass:
+				raise ValueError("Top-level element must be a key-value pair.")
+			converted = []
+			for i in content:
+				if type(i) is dict:
+					converted.append(JSON_Object(None, i, True))
+				elif type(i) is list:
+					converted.append(self.__find_nested_dicts__(i))
+				else:
+					converted.append(i)
+		return converted
+
+
+	def __iter__(self):
+		return self
+
+	def __getitem__(self, key):
+		return self.__dict__[key]
+
+	def next(self):
+		try:
+			i =  self.keys[self.__current__]
+			self.__current__ += 1
+			return i
+		except IndexError:
+			self.__current__ = 0
+			raise StopIteration
+
+	# 	if recursive:
+	# 		for i in range(0, len(v)):
+	# 			if isinstance(i, JSON_Object):
+	# 				v[i] = v[i].vals()
+	# 	return v
+	#
+	# def hash(self, recursive=True):
+	# 	h = self.raw_decode
+
+
 class KeyFrameAsset(object):
 
-	def __init__(self, text=None, file_name=None, drawbject=None):
-		if not text and not file_name and not drawbject:
-			raise ValueError("No resource provided.")
-		if text:
-			self.contents = text
-		if file_name:
-			self.contents = NpS(os.path.join(P.image_dir, file_name))
-		if drawbject:
-			if drawbject[0] == "rect":
-				self.contents = Rectangle(*drawbject[1:])
-			if drawbject[0] == "ellipse":
-				self.contents = Ellipse(*drawbject[1:])
-			if drawbject[0] == "annulus":
-				self.contents = Annulus(*drawbject[1:])
+	def __init__(self, data):
+		if data.text:
+			self.contents = data.text
+		elif data.filename:
+			self.contents = NpS(os.path.join(P.image_dir, data.filename))
+		elif data.drawbject:
+			d = data.drawbject
+			if d.shape == "rect":
+				self.contents = Rectangle(d.width, d.height, d.stroke, d.fill)
+			if d.shape == "ellipse":
+				self.contents = Ellipse(d.width, d.height, d.stroke, d.fill)
+			if d.shape == "annulus":
+				self.contents = Annulus(d.diameter, d.ring_width, d.stroke, d.fill)
 
 class KeyFrame(object):
 
-	def __init__(self, duration, assets, directives, cl_after=False, cl_before=False):
-		self.exp = None
-		self.duration = duration * 0.001
-		self.cl_after = cl_after
-		self.cl_before = cl_before
+	def __init__(self, exp, data, assets):
+		self.exp = exp
 		self.assets = assets
-		self.directives = directives
+		self.label = data.label
+		self.directives = data.directives
+		self.duration = data.duration * 0.001
 		self.asset_frames = []
+
+		self.__render_frames__()
 
 	def play(self):
 		start = time.time()
-		if self.cl_before:
+		for frame in self.asset_frames:
+			self.exp.ui_request()
 			self.exp.fill()
-		for t in self.asset_frames:
-			self.exp.fill()
-			for a in t:
-				self.exp.blit(self.assets[a[0]], 5, a[1])
-			self.flip()
-		if self.clear_after:
-			self.exp.fill()
+			for asset in frame:
+				self.exp.blit(self.assets[asset[0]].contents, 5, asset[1])
+			self.exp.flip()
 		while time.time() - start < self.duration:
 			self.exp.ui_request()
 
@@ -77,49 +182,55 @@ class KeyFrame(object):
 		total_frames = 0
 		asset_frames = []
 		for d in self.directives:
-			if d[1] == d[2]:
-				asset_frames.append([d[0], d[1]])
+			if d.start == d.end:
+				asset_frames.append([d.asset, d.start])
 				continue
 			frames = []
-			if d[3] is None:
-				v = line_segment_len(d[1], d[2]) / self.duration
-				raw_frames = linear_interpolation(d[1], d[2], v)
-			else:
-				v = interpolated_path_len(bezier_interpolation(d[1, d[2], d[3]])) / self.duration
-				raw_frames = bezier_interpolation(d[1, d[2], d[3]], None, v)
+			try:
+				v = interpolated_path_len(bezier_interpolation(d.start, d.end, d.control)) / self.duration
+				raw_frames = bezier_interpolation(d.start, d.end, d.control, None, v)
+			except AttributeError:
+				v = line_segment_len(d.start, d.end) / self.duration
+				raw_frames = linear_interpolation(d.start, d.end, v)
 			for p in raw_frames :
-				frames.append([d[0], p])
+				frames.append([d.asset, p])
 			if len(frames) > total_frames:
 				total_frames = len(frames)
 			asset_frames.append(frames)
 		for frame_set in asset_frames:
 			while len(frame_set) < total_frames:
 				frame_set.append(frame_set[-1])
+		log = open("log.txt", "w+")
+		log.write("Asset Frames")
+		for i in asset_frames:
+			log.write(str(i) + "\n")
 		self.asset_frames = []
-		for i in range(0, len(asset_frames)):
+		for i in range(0, total_frames):
 			self.asset_frames.append([n[i] for n in asset_frames])
+		log.write("\n\nFinal Asset Frames")
+		for i in self.asset_frames:
+			log.write(str(i) + "\n")
+		log.close()
 
 class FrameSet(object):
 
-	def __init__(self):
+	def __init__(self, exp):
+		self.exp = exp
 		self.key_frames = []
 		self.assets = {}
 
-	def load_assets(self, asset_list):
-		for a in asset_list:
-			self.assets[a] = KeyFrameAsset(asset_list[a])
+	def __load_assets__(self, assets_file):
+		j_ob = JSON_Object(assets_file)
+		for a in j_ob:
+			self.assets[a] = KeyFrameAsset(j_ob[a])
 
-	def gen_key_frames(self, kf_list):
-		for kf in kf_list:
-			self.key_frames.append(KeyFrame(kf[1], self.assets, kf[2]))
+	def generate_key_frames(self, key_frames_file, assets_file=None):
+		if assets_file:
+			self.__load_assets__(assets_file)
+		j_ob = JSON_Object(key_frames_file)
+		for kf in j_ob.keyframes:
+			self.key_frames.append(KeyFrame(self.exp, kf, self.assets))
 
 	def play(self):
 		for kf in self.key_frames:
 			kf.play()
-asset_list = [['pointer', None, "pointer.png", None],
-			  ['dot', None, None, ["annulus", 6,2,[1, (255,255,255)], (255, 0,0)]],
-			  ['instrux', "This is some instruction text", None, None]]
-keyframes = [["instructions", 1000, [["instrux", P.screen_c, P.screen_c]]],
-			 ["dot animate", 3000, [["dot", P.screen_c, (500,500)]]],
-			 ["both animate", 3000, [["dot", P.screen_c, (500,500)],
-									 ["pointer", (0,0), (500, 500)]]]]

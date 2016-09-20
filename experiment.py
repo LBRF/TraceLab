@@ -14,6 +14,7 @@ from klibs.KLNumpySurface import NumpySurface as NpS
 from klibs.KLExperiment import Experiment
 from TraceLabFigure import TraceLabFigure, linear_interpolation
 from ButtonBar import Button, ButtonBar
+from KeyFrames import KeyFrame, FrameSet
 from klibs.KLMixins import BoundaryInspector
 from hashlib import sha1
 
@@ -45,8 +46,8 @@ class TraceLab(Experiment, BoundaryInspector):
 	feedback = False
 
 	# graphical elements
-
 	imgs = {}
+
 	# value_slider = None
 	origin_proto = None
 	origin_active = None
@@ -102,6 +103,12 @@ class TraceLab(Experiment, BoundaryInspector):
 		P.flip_x = P.mirror_mode
 
 	def setup(self):
+		kf = FrameSet(self)
+		assets_f = os.path.join(P.resources_dir, "code", "assets_test.json")
+		key_frames_f = os.path.join(P.resources_dir, "code", "key_frames_test.json")
+		kf.generate_key_frames(key_frames_f, assets_f)
+		kf.play()
+		self.quit()
 		self.origin_size = P.origin_size
 		try:
 			self.p_dir = os.path.join(P.data_path, "p{0}_{1}".format(P.user_data[0], P.user_data[-2]))

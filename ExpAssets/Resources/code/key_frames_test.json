@@ -1,0 +1,43 @@
+{
+    "keyframes": [
+        {
+            "label": "instructions",
+            "duration": 1000,
+            "directives": [
+                {
+                    "asset": "instrux",
+                    "start": [10, 10],
+                    "end": [10, 10]
+                }
+            ]
+        },
+        {
+            "label": "dot animate",
+            "duration": 3000,
+            "directives": [
+                {
+                    "asset": "dot",
+                    "start": [300, 300],
+                    "end": [500, 500]
+                }
+            ]
+        },
+        {
+            "label": "all animate",
+            "duration": 3000,
+            "directives": [
+                {
+                    "asset": "dot",
+                    "start": [100, 100],
+                    "end": [500, 500]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [500, 500],
+                    "end": [100, 100]
+                }
+            ]
+        }
+    ]
+}
+
