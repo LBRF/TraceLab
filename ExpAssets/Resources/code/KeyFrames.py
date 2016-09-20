@@ -36,7 +36,10 @@ def bezier_frames(self):
 class JSON_Object(object):
 
 	def __init__(self, json_file_path=None, decoded_data=None, child_object=False):
-		self.__items__ = self.__unicode_to_str__(json.load(open(json_file_path)) if json_file_path else decoded_data)
+		try:
+			self.__items__ = self.__unicode_to_str__(json.load(open(json_file_path)) if json_file_path else decoded_data)
+		except ValueError:
+			raise ValueError("JSON file is poorly formatted. Please check syntax.")
 		self.__objectify__(self.__items__, not (child_object and type(decoded_data) is list))
 		self.__current__ = 0
 		try:
@@ -214,20 +217,27 @@ class KeyFrame(object):
 
 class FrameSet(object):
 
-	def __init__(self, exp):
+	def __init__(self, exp, key_frames_file, assets_file=None):
 		self.exp = exp
 		self.key_frames = []
 		self.assets = {}
+		if assets_file:
+			self.assets_file = os.path.join(P.resources_dir, "code", assets_file + ".json")
+		else:
+			self.assets_file = None
+		self.key_frames_file = os.path.join(P.resources_dir, "code", key_frames_file + ".json")
+		self.generate_key_frames()
+
 
 	def __load_assets__(self, assets_file):
 		j_ob = JSON_Object(assets_file)
 		for a in j_ob:
 			self.assets[a] = KeyFrameAsset(j_ob[a])
 
-	def generate_key_frames(self, key_frames_file, assets_file=None):
-		if assets_file:
-			self.__load_assets__(assets_file)
-		j_ob = JSON_Object(key_frames_file)
+	def generate_key_frames(self, ):
+		if self.assets_file:
+			self.__load_assets__(self.assets_file)
+		j_ob = JSON_Object(self.key_frames_file)
 		for kf in j_ob.keyframes:
 			self.key_frames.append(KeyFrame(self.exp, kf, self.assets))
 

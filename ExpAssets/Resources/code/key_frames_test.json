@@ -1,11 +1,22 @@
 {
     "keyframes": [
         {
-            "label": "instructions",
+            "label": "instructions_1",
             "duration": 1000,
             "directives": [
                 {
-                    "asset": "instrux",
+                    "asset": "task_instructions_1",
+                    "start": [10, 10],
+                    "end": [10, 10]
+                }
+            ]
+        },
+        {
+            "label": "instructions_2",
+            "duration": 1000,
+            "directives": [
+                {
+                    "asset": "task_instructions_2",
                     "start": [10, 10],
                     "end": [10, 10]
                 }

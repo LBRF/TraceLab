@@ -221,6 +221,7 @@ class ButtonBar(BoundaryInspector):
 		self.start = time.time()
 		finished = False
 		selection = None
+		last_selected = None
 		flush()
 		mt_start = None
 		while not finished:
@@ -238,15 +239,15 @@ class ButtonBar(BoundaryInspector):
 								mt_start = time.time()
 							if b.active:
 								selection = b
+								last_selected = b
 						if self.finish_b.active and self.within_boundary("Done",[e.button.x, e.button.y]):
-							self.response = int(selection.button_text)
+							self.response = int(last_selected.button_text)
 							self.mt = time.time() - mt_start
 							finished = True
 			self.finish_b.active = selection is not None
 			self.render()
 		self.exp.fill()
 		self.exp.flip()
-		print self.rt, self.mt
 		hide_mouse_cursor()
 
 	def toggle(self, button):
