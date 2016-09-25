@@ -2,12 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6db2e76c-6d4e-4d96-a23f-00d633d34891" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/code/ButtonBar.py" afterPath="$PROJECT_DIR$/ExpAssets/Resources/code/ButtonBar.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/code/KeyFrames.py" afterPath="$PROJECT_DIR$/ExpAssets/Resources/code/KeyFrames.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py" afterPath="$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/code/assets_test.json" afterPath="$PROJECT_DIR$/ExpAssets/Resources/code/assets_test.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ExpAssets/Resources/figures/testfig/testfig_preview.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ExpAssets/Resources/figures/testfig/testfig.tlf" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Config/TraceLab_config.csv" afterPath="$PROJECT_DIR$/ExpAssets/Config/TraceLab_config.csv" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/experiment.py" afterPath="$PROJECT_DIR$/experiment.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/code/key_frames_test.json" afterPath="$PROJECT_DIR$/ExpAssets/Resources/code/key_frames_test.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="TraceLab.iws" />
@@ -38,23 +36,10 @@
       <file leaf-file-name="experiment.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/experiment.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="106" column="17" selection-start="2860" selection-end="2860" vertical-scroll-proportion="0.0" vertical-offset="1144" max-vertical-offset="4598">
+            <state line="15" column="5" selection-start="653" selection-end="653" vertical-scroll-proportion="0.0" vertical-offset="2264" max-vertical-offset="2860">
               <folding>
-                <element signature="e#2699#2773#0" expanded="true" />
-                <element signature="e#6620#7144#0" expanded="true" />
-                <element signature="e#7171#8507#0" expanded="true" />
-                <element signature="e#8529#9816#0" expanded="true" />
-                <element signature="e#9847#10015#0" expanded="true" />
-                <element signature="e#10334#10688#0" expanded="true" />
-                <element signature="e#13703#14564#0" expanded="true" />
-                <element signature="e#14594#14854#0" expanded="true" />
-                <element signature="e#15991#17893#0" expanded="true" />
-                <element signature="e#16681#17157#0" expanded="true" />
-                <marker date="1474371958000" expanded="true" signature="10142:10203" placeholder="UPDATE `sess..." />
-                <marker date="1474371958000" expanded="true" signature="10750:10801" placeholder="SELECT * FRO..sessions..." />
-                <marker date="1474371958000" expanded="true" signature="10885:10934" placeholder="SELECT * FRO..participants..." />
-                <marker date="1474371958000" expanded="true" signature="11758:11801" placeholder="SELECT * FRO..participants..." />
-                <marker date="1474371958000" expanded="true" signature="12012:12081" placeholder="DELETE FROM ..." />
+                <element signature="e#2795#6302#0" expanded="true" />
+                <element signature="e#7043#8434#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -63,16 +48,16 @@
       <file leaf-file-name="ButtonBar.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/ButtonBar.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="220" column="31" selection-start="8434" selection-end="8434" vertical-scroll-proportion="0.0" vertical-offset="519" max-vertical-offset="990">
+            <state line="220" column="31" selection-start="8434" selection-end="8434" vertical-scroll-proportion="0.0" vertical-offset="2420" max-vertical-offset="3025">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TraceLab_config.csv" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="TraceLab_config.csv" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ExpAssets/Config/TraceLab_config.csv">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="2" column="20" selection-start="85" selection-end="85" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="110">
+            <state line="3" column="13" selection-start="99" selection-end="105" vertical-scroll-proportion="0.07656612" vertical-offset="0" max-vertical-offset="431">
               <folding />
             </state>
           </provider>
@@ -81,20 +66,19 @@
       <file leaf-file-name="TraceLab_params.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="70" column="20" selection-start="2223" selection-end="2234" vertical-scroll-proportion="0.0" vertical-offset="793" max-vertical-offset="1507">
+            <state line="70" column="20" selection-start="2223" selection-end="2234" vertical-scroll-proportion="0.0" vertical-offset="1076" max-vertical-offset="1507">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="KeyFrames.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="KeyFrames.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/KeyFrames.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="33" column="0" selection-start="1025" selection-end="1025" vertical-scroll-proportion="0.5365854" vertical-offset="0" max-vertical-offset="2431">
+            <state line="62" column="42" selection-start="2087" selection-end="2087" vertical-scroll-proportion="0.0" vertical-offset="176" max-vertical-offset="2431">
               <folding>
                 <element signature="e#20#30#0" expanded="true" />
                 <element signature="e#1138#1692#0" expanded="true" />
-                <element signature="e#1736#2590#0" expanded="true" />
                 <element signature="e#2634#2836#0" expanded="true" />
                 <element signature="e#2896#3523#0" expanded="true" />
                 <element signature="e#3549#3560#0" expanded="true" />
@@ -117,7 +101,7 @@
       <file leaf-file-name="assets_test.json" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/assets_test.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="60" column="233" selection-start="2147" selection-end="2147" vertical-scroll-proportion="-9.25" vertical-offset="475" max-vertical-offset="770">
+            <state line="60" column="233" selection-start="2147" selection-end="2147" vertical-scroll-proportion="0.0" vertical-offset="660" max-vertical-offset="770">
               <folding />
             </state>
           </provider>
@@ -126,15 +110,10 @@
       <file leaf-file-name="TraceLabFigure.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/TraceLabFigure.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="131" column="45" selection-start="4985" selection-end="4994" vertical-scroll-proportion="0.0" vertical-offset="715" max-vertical-offset="4356">
+            <state line="475" column="8" selection-start="17628" selection-end="17628" vertical-scroll-proportion="0.0" vertical-offset="724" max-vertical-offset="1364">
               <folding>
-                <element signature="e#1870#3432#0" expanded="true" />
-                <element signature="e#6423#7341#0" expanded="true" />
-                <element signature="e#7820#10562#0" expanded="true" />
-                <element signature="e#11522#15364#0" expanded="true" />
-                <element signature="e#15827#16314#0" expanded="true" />
+                <element signature="e#3556#5718#0" expanded="true" />
                 <element signature="e#17655#18345#0" expanded="true" />
-                <element signature="e#19187#20365#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -143,12 +122,8 @@
       <file leaf-file-name="key_frames_test.json" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/key_frames_test.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="39" selection-start="1204" selection-end="1204" vertical-scroll-proportion="-8.25" vertical-offset="330" max-vertical-offset="660">
-              <folding>
-                <element signature="e#126#304#0" expanded="true" />
-                <element signature="e#421#599#0" expanded="true" />
-                <element signature="e#713#879#0" expanded="true" />
-              </folding>
+            <state line="45" column="39" selection-start="1204" selection-end="1204" vertical-scroll-proportion="0.0" vertical-offset="495" max-vertical-offset="660">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -156,7 +131,7 @@
       <file leaf-file-name=".gitignore" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="8" selection-start="177" selection-end="177" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="209">
+            <state line="11" column="8" selection-start="177" selection-end="177" vertical-scroll-proportion="0.0" vertical-offset="121" max-vertical-offset="209">
               <folding />
             </state>
           </provider>
@@ -180,7 +155,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/ExpAssets/Resources/code/Slider.py" />
         <option value="$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/PracticeDemo.py" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/physical_key_frames.py" />
@@ -192,10 +166,11 @@
         <option value="$PROJECT_DIR$/ExpAssets/EDF/incomplete/.gitignore" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/TraceLabFigure.py" />
         <option value="$PROJECT_DIR$/ExpAssets/Config/assets_test.json" />
-        <option value="$PROJECT_DIR$/experiment.py" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/key_frames_test.json" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/assets_test.json" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/KeyFrames.py" />
+        <option value="$PROJECT_DIR$/experiment.py" />
+        <option value="$PROJECT_DIR$/ExpAssets/Config/TraceLab_config.csv" />
       </list>
     </option>
   </component>
@@ -230,17 +205,18 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Tracelab" />
+              <option name="myItemId" value="TraceLab" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Tracelab" />
+              <option name="myItemId" value="TraceLab" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -250,7 +226,7 @@
           </PATH>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Tracelab" />
+              <option name="myItemId" value="TraceLab" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -264,7 +240,7 @@
           </PATH>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Tracelab" />
+              <option name="myItemId" value="TraceLab" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -282,18 +258,17 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="options.lastSelected" value="reference.settingsdialog.IDE.editor.colors.Font" />
     <property name="recentsLimit" value="5" />
+    <property name="options.lastSelected" value="reference.settingsdialog.IDE.editor.colors.Font" />
     <property name="last_opened_file_path" value="/KLAB/Non-Annual/SoftwareRepo/klibs" />
     <property name="FullScreen" value="false" />
-    <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -429,6 +404,9 @@
       <option name="PARAMETERS" value="" />
       <method />
     </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug" singleton="true">
+      <method />
+    </configuration>
     <configuration default="true" type="tests" factoryName="Unittests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -450,9 +428,6 @@
       <option name="PUREUNITTEST" value="true" />
       <option name="PARAMS" value="" />
       <option name="USE_PARAM" value="false" />
-      <method />
-    </configuration>
-    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug" singleton="true">
       <method />
     </configuration>
     <configuration default="true" type="tests" factoryName="Doctests">
@@ -533,16 +508,15 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1357" height="741" extended-state="0" />
+    <frame x="0" y="23" width="1357" height="741" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.38969404" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22632423" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32850242" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23264684" sideWeight="0.61030596" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23646072" sideWeight="0.77367574" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -551,6 +525,7 @@
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32850242" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -575,63 +550,37 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ExpAssets/Data/incomplete/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="11" selection-start="70" selection-end="70" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="99">
-          <folding />
-        </state>
+        <state line="3" column="11" selection-start="70" selection-end="70" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="99" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ExpAssets/EDF/incomplete/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="11" selection-start="70" selection-end="70" vertical-scroll-proportion="0.09428571" vertical-offset="0" max-vertical-offset="350">
-          <folding />
-        </state>
+        <state line="3" column="11" selection-start="70" selection-end="70" vertical-scroll-proportion="0.09428571" vertical-offset="0" max-vertical-offset="350" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ExpAssets/EDF/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="11" selection-start="70" selection-end="70" vertical-scroll-proportion="0.09428571" vertical-offset="0" max-vertical-offset="350">
-          <folding />
-        </state>
+        <state line="3" column="11" selection-start="70" selection-end="70" vertical-scroll-proportion="0.09428571" vertical-offset="0" max-vertical-offset="350" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ExpAssets/Data/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="11" selection-start="70" selection-end="70" vertical-scroll-proportion="0.08847185" vertical-offset="0" max-vertical-offset="373">
-          <folding />
-        </state>
+        <state line="3" column="11" selection-start="70" selection-end="70" vertical-scroll-proportion="0.08847185" vertical-offset="0" max-vertical-offset="373" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ExpAssets/.versions/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="11" selection-start="70" selection-end="70" vertical-scroll-proportion="0.08847185" vertical-offset="0" max-vertical-offset="373">
-          <folding />
-        </state>
+        <state line="3" column="11" selection-start="70" selection-end="70" vertical-scroll-proportion="0.08847185" vertical-offset="0" max-vertical-offset="373" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/physical_key_frames.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="6" selection-start="398" selection-end="398" vertical-scroll-proportion="0.31428573" vertical-offset="0" max-vertical-offset="350">
-          <folding />
-        </state>
+        <state line="10" column="6" selection-start="398" selection-end="398" vertical-scroll-proportion="0.31428573" vertical-offset="0" max-vertical-offset="350" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/ButtonBar.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="220" column="31" selection-start="8434" selection-end="8434" vertical-scroll-proportion="0.0" vertical-offset="519" max-vertical-offset="990">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ExpAssets/Config/TraceLab_config.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="20" selection-start="85" selection-end="85" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="110">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="70" column="20" selection-start="2223" selection-end="2234" vertical-scroll-proportion="0.0" vertical-offset="793" max-vertical-offset="1507">
           <folding />
         </state>
       </provider>
@@ -643,69 +592,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/TraceLabFigure.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="131" column="45" selection-start="4985" selection-end="4994" vertical-scroll-proportion="0.0" vertical-offset="715" max-vertical-offset="4356">
-          <folding>
-            <element signature="e#1870#3432#0" expanded="true" />
-            <element signature="e#6423#7341#0" expanded="true" />
-            <element signature="e#7820#10562#0" expanded="true" />
-            <element signature="e#11522#15364#0" expanded="true" />
-            <element signature="e#15827#16314#0" expanded="true" />
-            <element signature="e#17655#18345#0" expanded="true" />
-            <element signature="e#19187#20365#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/experiment.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="106" column="17" selection-start="2860" selection-end="2860" vertical-scroll-proportion="0.0" vertical-offset="1144" max-vertical-offset="4598">
-          <folding>
-            <element signature="e#2699#2773#0" expanded="true" />
-            <element signature="e#6620#7144#0" expanded="true" />
-            <element signature="e#7171#8507#0" expanded="true" />
-            <element signature="e#8529#9816#0" expanded="true" />
-            <element signature="e#9847#10015#0" expanded="true" />
-            <element signature="e#10334#10688#0" expanded="true" />
-            <element signature="e#13703#14564#0" expanded="true" />
-            <element signature="e#14594#14854#0" expanded="true" />
-            <element signature="e#15991#17893#0" expanded="true" />
-            <element signature="e#16681#17157#0" expanded="true" />
-            <marker date="1474371958000" expanded="true" signature="10142:10203" placeholder="UPDATE `sess..." />
-            <marker date="1474371958000" expanded="true" signature="10750:10801" placeholder="SELECT * FRO..sessions..." />
-            <marker date="1474371958000" expanded="true" signature="10885:10934" placeholder="SELECT * FRO..participants..." />
-            <marker date="1474371958000" expanded="true" signature="11758:11801" placeholder="SELECT * FRO..participants..." />
-            <marker date="1474371958000" expanded="true" signature="12012:12081" placeholder="DELETE FROM ..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/key_frames_test.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="39" selection-start="1204" selection-end="1204" vertical-scroll-proportion="-8.25" vertical-offset="330" max-vertical-offset="660">
-          <folding>
-            <element signature="e#126#304#0" expanded="true" />
-            <element signature="e#421#599#0" expanded="true" />
-            <element signature="e#713#879#0" expanded="true" />
-          </folding>
+        <state line="45" column="39" selection-start="1204" selection-end="1204" vertical-scroll-proportion="0.0" vertical-offset="495" max-vertical-offset="660">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/assets_test.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="60" column="233" selection-start="2147" selection-end="2147" vertical-scroll-proportion="-9.25" vertical-offset="475" max-vertical-offset="770">
+        <state line="60" column="233" selection-start="2147" selection-end="2147" vertical-scroll-proportion="0.0" vertical-offset="660" max-vertical-offset="770">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/KeyFrames.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="0" selection-start="1025" selection-end="1025" vertical-scroll-proportion="0.5365854" vertical-offset="0" max-vertical-offset="2431">
+        <state line="62" column="42" selection-start="2087" selection-end="2087" vertical-scroll-proportion="0.0" vertical-offset="176" max-vertical-offset="2431">
           <folding>
             <element signature="e#20#30#0" expanded="true" />
             <element signature="e#1138#1692#0" expanded="true" />
-            <element signature="e#1736#2590#0" expanded="true" />
             <element signature="e#2634#2836#0" expanded="true" />
             <element signature="e#2896#3523#0" expanded="true" />
             <element signature="e#3549#3560#0" expanded="true" />
@@ -721,6 +627,40 @@
             <element signature="e#6736#6932#0" expanded="true" />
             <element signature="e#6953#6992#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="70" column="20" selection-start="2223" selection-end="2234" vertical-scroll-proportion="0.0" vertical-offset="793" max-vertical-offset="1507">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/TraceLabFigure.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="475" column="8" selection-start="17628" selection-end="17628" vertical-scroll-proportion="0.0" vertical-offset="724" max-vertical-offset="1364">
+          <folding>
+            <element signature="e#3556#5718#0" expanded="true" />
+            <element signature="e#17655#18345#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/experiment.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="5" selection-start="653" selection-end="653" vertical-scroll-proportion="0.0" vertical-offset="2264" max-vertical-offset="2860">
+          <folding>
+            <element signature="e#2795#6302#0" expanded="true" />
+            <element signature="e#7043#8434#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ExpAssets/Config/TraceLab_config.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3" column="13" selection-start="99" selection-end="105" vertical-scroll-proportion="0.07656612" vertical-offset="0" max-vertical-offset="431">
+          <folding />
         </state>
       </provider>
     </entry>

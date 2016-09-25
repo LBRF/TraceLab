@@ -103,9 +103,6 @@ class TraceLab(Experiment, BoundaryInspector):
 		P.flip_x = P.mirror_mode
 
 	def setup(self):
-		kf = FrameSet(self, "key_frames_test", "assets_test")
-		kf.play()
-		self.quit()
 		self.origin_size = P.origin_size
 		try:
 			self.p_dir = os.path.join(P.data_path, "p{0}_{1}".format(P.user_data[0], P.user_data[-2]))
@@ -165,8 +162,6 @@ class TraceLab(Experiment, BoundaryInspector):
 			[button, self.text_manager.render("Practice", "instructions")],
 			[button, self.text_manager.render("Begin", "instructions")]
 		]
-		if P.show_practice_demo:
-			self.practice()
 
 		# import figures for use during testing sessions
 		self.fill()
@@ -223,6 +218,7 @@ class TraceLab(Experiment, BoundaryInspector):
 					continue
 		else:
 			self.figure = self.test_figures[self.figure_name]
+			self.figure.animate_target_time = self.animate_time
 		self.origin_pos = list(self.figure.frames[0])
 		if P.flip_x:
 			self.origin_pos[0] = P.screen_x - self.origin_pos[0]
