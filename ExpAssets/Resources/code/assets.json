@@ -16,7 +16,10 @@
         }
     },
     "instructions": {
-        "text":"You are about to see a white dot trace out a movement on the screen. \nAll movements begin and end at the same point.\nYou will later be asked to repeat this movement yourself on the touchscreen.\nThis tutorial will show you how to respond.",
+        "text": {
+            "string": "You are about to see a white dot trace out a movement on the screen. \nAll movements begin and end at the same point.\nYou will later be asked to repeat this movement yourself on the touchscreen.\nThis tutorial will show you how to respond.",
+            "style": "instructions"
+        },
         "filename": null,
         "drawbject": null
     },
@@ -43,22 +46,34 @@
         }
     },
     "origin_instructions": {
-        "text": "The red circle indicates that you are now able to respond.\nThis is not a reaction time test — you do not need to respond right away; take your time!",
+        "text": {
+            "string": "The red circle indicates that you are now able to respond.\nThis is not a reaction time test — you do not need to respond right away; take your time!",
+            "style": "instructions"
+        },
         "filename": null,
         "drawbject": null
     },
     "task_instructions_1":  {
-        "text": "Once you touch the circle…",
+        "text": {
+            "string": "Once you touch the circle…",
+            "style": "instructions"
+        },
         "filename": null,
         "drawbject": null
     },
     "task_instructions_2":  {
-        "text": "… and begin to move, the circle will turn green, indicating that the computer is now recording.\nYour job is to trace out exactly the movement you observed, even matching the speed.",
+        "text": {
+            "string": "… and begin to move, the circle will turn green, indicating that the computer is now recording.\nYour job is to trace out exactly the movement you observed, even matching the speed.",
+            "style": "instructions"
+        },
         "filename": null,
         "drawbject": null
     },
     "task_instructions_3":  {
-        "text": "The trial ends when you return to the starting point. If successful, the green dot will disappear.\nIf still green, simply drag your finger onto the circle again.\nIf still red, it didn’t record, so just try again.",
+        "text": {
+            "string": "The trial ends when you return to the starting point. If successful, the green dot will disappear.\nIf still green, simply drag your finger onto the circle again.\nIf still red, it didn’t record, so just try again.",
+            "style": "instructions"
+        },
         "filename": null,
         "drawbject": null
     }

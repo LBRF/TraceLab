@@ -86,7 +86,7 @@ def bezier_interpolation(origin, destination, control_o, control_d=None, velocit
 	if not velocity:
 		return [length_of_first_guess, [origin, destination, control_o, control_d]]
 	# Calculate the time to traverse the curve at expected velocity
-	time_to_completion = length_of_first_guess/velocity
+	time_to_completion = length_of_first_guess / velocity
 	# The ceil call here biases long
 	# If you want to resolve issues of dt not dividing time to complete
 	# another way, feel free. The shorter the lines relative to the

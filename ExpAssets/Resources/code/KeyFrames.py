@@ -6,12 +6,12 @@ import json
 import unicodedata
 from math import floor
 from klibs import P
-from klibs.KLConstants import *
 from klibs.KLNumpySurface import NumpySurface as NpS
 from klibs.KLDraw import *
 from klibs.KLUtilities import line_segment_len, iterable
 from TraceLabFigure import interpolated_path_len, bezier_interpolation, pascal_row, linear_interpolation
 
+# TODO: come up with a way for a FrameSet object to be an asset
 
 def bezier_frames(self):
 		self.path_length = interpolated_path_len(self.frames)
@@ -68,6 +68,14 @@ class JSON_Object(object):
 						converted[k] = self.__unicode_to_str__(v)
 					else:
 						converted[k] = v
+					try:
+						if converted[k][0:4] == "EVAL":
+							converted[k] = eval(converted[k][6:])
+							if type(converted[k]) is tuple:
+								converted[k] = list(converted[k])
+					except (TypeError, AttributeError, IndexError):
+						pass
+
 			except (TypeError, IndexError):
 				converted = []
 				for i in content:
@@ -77,6 +85,14 @@ class JSON_Object(object):
 						converted.append(self.__unicode_to_str__(i))
 					else:
 						converted.append(i)
+					try:
+						if converted[k][0:4] == "EVAL":
+							converted[k] = eval(converted[k][6:])
+							if type(converted[k]) is tuple:
+								converted[k] = list(converted[k])
+					except (TypeError, AttributeError, IndexError):
+						pass
+
 		return converted
 
 	def __find_nested_dicts__(self, data):
@@ -132,21 +148,14 @@ class JSON_Object(object):
 			self.__current__ = 0
 			raise StopIteration
 
-	# 	if recursive:
-	# 		for i in range(0, len(v)):
-	# 			if isinstance(i, JSON_Object):
-	# 				v[i] = v[i].vals()
-	# 	return v
-	#
-	# def hash(self, recursive=True):
-	# 	h = self.raw_decode
-
 
 class KeyFrameAsset(object):
 
-	def __init__(self, data):
+	def __init__(self, exp, data):
+		self.exp = exp
 		if data.text:
-			self.contents = data.text
+			# todo: make style optional
+			self.contents = exp.message(data.text.string, data.text.style, blit=False)
 		elif data.filename:
 			self.contents = NpS(os.path.join(P.image_dir, data.filename))
 		elif data.drawbject:
@@ -185,12 +194,20 @@ class KeyFrame(object):
 		total_frames = 0
 		asset_frames = []
 		for d in self.directives:
+			if d.start == "screen_c":
+				d.start = P.screen_c
+			if d.end == "screen_c":
+				d.end = P.screen_c
+
 			if d.start == d.end:
 				asset_frames.append([d.asset, d.start])
 				continue
 			frames = []
 			try:
-				v = interpolated_path_len(bezier_interpolation(d.start, d.end, d.control)) / self.duration
+				bezier_points = bezier_interpolation(d.start, d.end, d.control)[1]
+				if bezier_points[-1] is None:
+					bezier_points = bezier_points[:-1]
+				v = interpolated_path_len(bezier_points) / self.duration
 				raw_frames = bezier_interpolation(d.start, d.end, d.control, None, v)
 			except AttributeError:
 				v = line_segment_len(d.start, d.end) / self.duration
@@ -203,17 +220,12 @@ class KeyFrame(object):
 		for frame_set in asset_frames:
 			while len(frame_set) < total_frames:
 				frame_set.append(frame_set[-1])
-		log = open("log.txt", "w+")
-		log.write("Asset Frames")
-		for i in asset_frames:
-			log.write(str(i) + "\n")
 		self.asset_frames = []
-		for i in range(0, total_frames):
-			self.asset_frames.append([n[i] for n in asset_frames])
-		log.write("\n\nFinal Asset Frames")
-		for i in self.asset_frames:
-			log.write(str(i) + "\n")
-		log.close()
+		if total_frames > 1:
+			for i in range(0, total_frames):
+				self.asset_frames.append([n[i] for n in asset_frames])
+		else:
+			self.asset_frames = [asset_frames]
 
 class FrameSet(object):
 
@@ -232,7 +244,7 @@ class FrameSet(object):
 	def __load_assets__(self, assets_file):
 		j_ob = JSON_Object(assets_file)
 		for a in j_ob:
-			self.assets[a] = KeyFrameAsset(j_ob[a])
+			self.assets[a] = KeyFrameAsset(self.exp, j_ob[a])
 
 	def generate_key_frames(self, ):
 		if self.assets_file:
