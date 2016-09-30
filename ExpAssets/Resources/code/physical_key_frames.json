@@ -1,0 +1,63 @@
+{
+    "keyframes": [
+        {
+            "label": "physical instructions",
+            "duration": 3000,
+            "directives": [
+                {
+                    "asset": "instructions",
+                    "start": "EVAL: P.screen_c",
+                    "end": "EVAL: P.screen_c"
+                }
+            ]
+        },
+
+        {
+            "label": "heart 1",
+            "duration": 900,
+            "directives": [
+                {
+                    "asset": "dot",
+                    "start": [960, 780],
+                    "end": [480, 360]
+                }
+            ]
+        },
+          {
+            "label": "heart 2",
+            "duration":600,
+            "directives": [
+                {
+                    "asset": "dot",
+                    "start": [480, 360],
+                    "end": [960, 360],
+                    "control": [720, 120]
+                }
+            ]
+        },
+          {
+            "label": "heart 3",
+            "duration": 600,
+            "directives": [
+                {
+                    "asset": "dot",
+                    "start": [960, 360],
+                    "end": [1420, 360],
+                    "control": [1200, 120]
+                }
+            ]
+        },
+          {
+            "label": "heart 4",
+            "duration": 900,
+            "directives": [
+                {
+                    "asset": "dot",
+                    "start": [1420, 360],
+                    "end": [960, 780]
+                }
+            ]
+        }
+    ]
+}
+
