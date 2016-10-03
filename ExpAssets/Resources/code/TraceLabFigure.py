@@ -101,7 +101,7 @@ def bezier_interpolation(origin, destination, control_o, control_d=None, velocit
 class TraceLabFigure(object):
 	allow_verbosity = False
 
-	def __init__(self, exp, import_path=None, animate_time=None):
+	def __init__(self, exp, import_path=None, animate_time=None, manufacture=None):
 		self.exp = exp
 		self.animate_target_time = animate_time if animate_time is not None else self.exp.animate_time
 		self.seg_count = None
@@ -145,10 +145,21 @@ class TraceLabFigure(object):
 		if import_path:
 			self.__import_figure__(import_path)
 			return
-		self.__generate_null_points__()
-		self.__gen_quad_intersects__()
-		self.__gen_real_points__(not P.generate_quadrant_intersections)
-		self.__gen_segments__()
+		if manufacture:
+			self.points = manufacture['points']
+			self.seg_count = len(self.points)
+			for s in manufacture['segments']:
+				try:
+					path_len = bezier_interpolation(s[0], s[1], s[2])[0]
+					self.segments.append(bezier_interpolation(s[0], s[1], s[2], velocity=path_len / s[3]))
+				except (IndexError, TypeError):
+					self.segments.append(linear_interpolation(s[0], s[1], line_segment_len(s[0], s[1]) / s[2]))
+			self.frames = list(chain(*self.segments))
+		else:
+			self.__generate_null_points__()
+			self.__gen_quad_intersects__()
+			self.__gen_real_points__(not P.generate_quadrant_intersections)
+			self.__gen_segments__()
 
 	def __generate_null_points__(self):
 		# make sure minimums won't exceed randomly generated total

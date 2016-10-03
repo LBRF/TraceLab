@@ -2,19 +2,34 @@
     "keyframes": [
         {
             "label": "physical instructions",
-            "duration": 3000,
+            "duration": 300,
             "directives": [
                 {
-                    "asset": "instructions",
+                    "asset": "physical instructions 1",
                     "start": "EVAL: P.screen_c",
                     "end": "EVAL: P.screen_c"
                 }
             ]
         },
-
+        {
+            "label": "heart 0",
+            "duration": 50,
+            "directives": [
+                {
+                    "asset": "physical instructions 1",
+                    "start": "EVAL: P.screen_c",
+                    "end": "EVAL: P.screen_c"
+                },
+                {
+                    "asset": "dot",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                }
+            ]
+        },
         {
             "label": "heart 1",
-            "duration": 900,
+            "duration": 90,
             "directives": [
                 {
                     "asset": "dot",
@@ -23,9 +38,9 @@
                 }
             ]
         },
-          {
+        {
             "label": "heart 2",
-            "duration":600,
+            "duration": 60,
             "directives": [
                 {
                     "asset": "dot",
@@ -35,9 +50,9 @@
                 }
             ]
         },
-          {
+        {
             "label": "heart 3",
-            "duration": 600,
+            "duration": 60,
             "directives": [
                 {
                     "asset": "dot",
@@ -47,9 +62,9 @@
                 }
             ]
         },
-          {
+        {
             "label": "heart 4",
-            "duration": 900,
+            "duration": 90,
             "directives": [
                 {
                     "asset": "dot",
@@ -57,7 +72,297 @@
                     "end": [960, 780]
                 }
             ]
+        },
+        {
+            "label": "origin 1",
+            "duration": 1000,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                }
+            ]
+        },
+        {
+            "label": "origin 2",
+            "duration": 2500,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "physical instructions 2",
+                    "start": [960, 680],
+                    "end": [960, 680]
+                }
+            ]
+        },
+        {
+            "label": "origin 3",
+            "duration": 300,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                 {
+                    "asset": "pointer",
+                    "start": [1160, 1000],
+                    "end": [1160, 1000]
+                }
+            ]
+        },
+        {
+            "label": "origin 4",
+            "duration": 500,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1160, 1000],
+                    "end": [1050, 870]
+                }
+            ]
+        },
+        {
+            "label": "origin 5",
+            "duration": 500,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 870],
+                    "end": [1050, 870]
+                },
+                                {
+                    "asset": "physical instructions 3",
+                    "start": [960, 680],
+                    "end": [960, 680]
+                }
+
+            ]
+        },
+        {
+            "label": "origin 7",
+            "duration": 200,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 870],
+                    "end": [1050, 880]
+                },
+                {
+                    "asset": "physical instructions 3",
+                    "start": [960, 680],
+                    "end": [960, 680]
+                }
+            ]
+        },
+        {
+            "label": "origin 7",
+            "duration": 1000,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 880],
+                    "end": [1050, 880]
+                },
+                {
+                    "asset": "physical instructions 3",
+                    "start": [960, 680],
+                    "end": [960, 680]
+                }
+            ]
+        },
+        {
+            "label": "origin 8",
+            "duration": 500,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 880],
+                    "end": [1010, 850]
+                },
+                {
+                    "asset": "physical instructions 4",
+                    "start": [960, 680],
+                    "end": [960, 680]
+                }
+            ]
+        },
+        {
+            "label": "origin 9",
+            "duration": 3000,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 850],
+                    "end": [1010, 850]
+                },
+                {
+                    "asset": "physical instructions 5",
+                    "start": [960, 680],
+                    "end": [960, 680]
+                }
+            ]
+        },
+        {
+            "label": "pointer 1",
+            "duration": 900,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 850],
+                    "end": [570, 460]
+                }
+            ]
+        },
+        {
+            "label": "pointer 2",
+            "duration": 600,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [570, 460],
+                    "end": [1050, 460],
+                    "control": [810, 220]
+                }
+            ]
+        },
+        {
+            "label": "pointer 3",
+            "duration": 600,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 460],
+                    "end": [1510, 460],
+                    "control": [1290, 220]
+                }
+            ]
+        },
+        {
+            "label": "pointer 4",
+            "duration": 900,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1510, 460],
+                    "end": [1140, 810]
+                }
+            ]
+        },
+        {
+            "label": "pointer 5",
+            "duration": 2000,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1140, 810],
+                    "end": [1140, 810]
+                },
+                {
+                    "asset": "physical instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "pointer 6",
+            "duration": 500,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1140, 810],
+                    "end": [1050, 880]
+                },
+                {
+                    "asset": "physical instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "pointer 7",
+            "duration": 1000,
+            "directives": [
+                {
+                    "asset": "pointer",
+                    "start": [1050, 880],
+                    "end": [1050, 880]
+                },
+                {
+                    "asset": "physical instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
         }
+
     ]
 }
 

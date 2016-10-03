@@ -179,10 +179,13 @@ class TraceLab(Experiment, BoundaryInspector):
 		for f in P.figures:
 			self.ui_request()
 			self.test_figures[f] = TraceLabFigure(self, os.path.join(P.resources_dir, "figures", f))
+
 		if P.exp_condition in [PP_RR_5, PP_VR_5]:
 			self.feedback = True
+
 		if P.enable_practice:
-			self.message(P.practice_instructions, "instructions")
+			self.message(P.practice_instructions, "instructions", blit=True)
+			self.flip()
 			self.any_key()
 			self.practice()
 
@@ -273,10 +276,10 @@ class TraceLab(Experiment, BoundaryInspector):
 			raise TrialException("Moved too early")
 		self.fill()
 		self.flip()
+
 		if self.__practicing__:
-			self.rc.draw_listener.reset()
-			self.button_bar.reset()
-			return self.practice(False)
+			return
+
 		return {
 			"block_num": P.block_number,
 			"trial_num": P.trial_number,
@@ -297,8 +300,9 @@ class TraceLab(Experiment, BoundaryInspector):
 		}
 
 	def trial_clean_up(self):
-		self.figure.write_out()
-		self.figure.write_out(self.tracing_name, self.drawing)
+		if not self.__practicing__:
+			self.figure.write_out()
+			self.figure.write_out(self.tracing_name, self.drawing)
 		self.rc.draw_listener.reset()
 		self.button_bar.reset()
 
@@ -403,7 +407,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.it = self.rc.draw_listener.first_sample_time - (self.rt + start)
 
 		self.mt = self.rc.draw_listener.responses[0][1]
-		if self.feedback:
+		if self.feedback and not self.__practicing__:
 			flush()
 			self.fill()
 			self.blit(self.figure.render(trace=self.drawing), 5, Params.screen_c, flip_x=P.flip_x)
@@ -432,10 +436,17 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def __review_figure__(self):
 		self.fill()
+		heart = {
+		"points": [(960, 780), (480, 360), (960, 360), (1420, 360)],
+		"segments": [[(960, 780), (480, 360), 900],
+					 [(480, 360), (960, 360), (720, 120), 600],
+					 [(960, 360), (1420, 360), (1200,120), 600],
+					 [(1420, 360), (960, 780), 900]
+					]}
 		while not self.figure:
 			self.ui_request()
 			try:
-				self.figure = TraceLabFigure(self)
+				self.figure = TraceLabFigure(self, manufacture=heart)
 			except RuntimeError:
 				pass
 		self.animate_time = 5000.0
@@ -459,27 +470,44 @@ class TraceLab(Experiment, BoundaryInspector):
 			#f_name = sha1("figure_" + str(now(True))).hexdigest() + ".tlf"
 			self.figure.write_out(f_name)
 
-	def practice(self, play_key_frames=True):
-		self.practice_button_bar.reset()
+	def practice(self, play_key_frames=True, callback=None):
 		self.__practicing__ = True
-		Params.clock.start()
+
+		if callback == self.__practice__:
+			play_key_frames = False
+			self.__practice__()
+		elif callback == self.practice:
+			play_key_frames = True
+		elif callback == self.any_key:
+			self.__practicing__ = False
+			return self.any_key()
 
 		if play_key_frames:
 			self.practice_kf.play()
 
-		self.button_bar.update_message("How do you wish to proceed?")
+		self.practice_button_bar.reset()
 		self.practice_button_bar.render()
-		self.practice_button_bar.collect_response()
-		Params.clock.stop()
+		P.clock.start()
+		cb = self.practice_button_bar.collect_response()
+		P.clock.stop()
+
 		self.__practicing__ = False
-		self.evi.clear()
+
+		return self.practice(callback=cb)
+
+		# reset stuff before the experiment proper begins
 
 	def __practice__(self):
-		self.figure_name = "testfig"
+		self.figure_name = P.practice_figure
 		self.animate_time = 3500
 		self.setup_response_collector()
 		self.trial_prep()
+		P.clock.start()
 		self.trial()
+		P.clock.stop()
+		self.trial_clean_up()
+
+
 
 	@property
 	def tracing_name(self):

@@ -193,22 +193,17 @@ class KeyFrame(object):
 	def __render_frames__(self):
 		total_frames = 0
 		asset_frames = []
+		if all([d.start == d.end for d in self.directives]):
+			self.asset_frames = [[[d.asset, d.start] for d in self.directives]]
+			return
 		for d in self.directives:
-			if d.start == "screen_c":
-				d.start = P.screen_c
-			if d.end == "screen_c":
-				d.end = P.screen_c
-
 			if d.start == d.end:
-				asset_frames.append([d.asset, d.start])
+				asset_frames.append([[d.asset, d.start]])
 				continue
 			frames = []
 			try:
-				bezier_points = bezier_interpolation(d.start, d.end, d.control)[1]
-				if bezier_points[-1] is None:
-					bezier_points = bezier_points[:-1]
-				v = interpolated_path_len(bezier_points) / self.duration
-				raw_frames = bezier_interpolation(d.start, d.end, d.control, None, v)
+				path_len = bezier_interpolation(d.start, d.end, d.control)[0]
+				raw_frames = bezier_interpolation(d.start, d.end, d.control, velocity=path_len / self.duration)
 			except AttributeError:
 				v = line_segment_len(d.start, d.end) / self.duration
 				raw_frames = linear_interpolation(d.start, d.end, v)
@@ -225,7 +220,7 @@ class KeyFrame(object):
 			for i in range(0, total_frames):
 				self.asset_frames.append([n[i] for n in asset_frames])
 		else:
-			self.asset_frames = [asset_frames]
+			self.asset_frames = asset_frames
 
 class FrameSet(object):
 
