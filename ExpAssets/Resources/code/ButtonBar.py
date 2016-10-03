@@ -198,9 +198,6 @@ class ButtonBar(BoundaryInspector):
 		self.screen_margins = screen_margins
 		self.y_offset = y_offset
 		self.b_pad = (Params.screen_x - (self.b_width * self.b_count + 2 * self.screen_margins)) // (self.b_count - 1)
-		self.start = None
-		self.mt = None
-		self.rt = None
 		self.gen_finish_button = finish_button
 		self.finish_b = None
 		self.message = message
@@ -208,6 +205,9 @@ class ButtonBar(BoundaryInspector):
 			self.message_r = self.exp.message(message, "instructions", blit=False)
 			self.message_loc = (Params.screen_c[0], self.y_offset - (self.message_r.height * 2))
 		self.gen_buttons()
+		self.start = None
+		self.mt = None
+		self.rt = None
 		self.response = None
 
 	def gen_buttons(self):
@@ -260,7 +260,7 @@ class ButtonBar(BoundaryInspector):
 								last_selected = b
 								if callable(b.callback):
 									if self.finish_b is None:
-										return b.callback()
+										return b.callback
 									else:
 										b.callback()
 						try:
@@ -285,11 +285,11 @@ class ButtonBar(BoundaryInspector):
 
 	def reset(self):
 		self.start = None
-		for b in self.buttons:
-			b.active = False
 		self.rt = None
 		self.mt = None
 		self.response = None
+		for b in self.buttons:
+			b.active = False
 		try:
 			self.finish_b.active = False
 		except AttributeError:

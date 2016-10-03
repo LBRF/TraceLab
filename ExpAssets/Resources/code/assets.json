@@ -1,21 +1,21 @@
 {
     "pointer": {
-        "text":null,
+        "text": null,
         "filename": "pointer.png",
         "drawbject": null
     },
     "dot": {
-        "text":null,
+        "text": null,
         "filename": null,
         "drawbject": {
-            "shape":"ellipse",
+            "shape": "ellipse",
             "width": 6,
             "height": 6,
-            "stroke": [2, [255,255,255]],
-            "fill": [255,45,45]
+            "stroke": [2, [255, 255, 255]],
+            "fill": [255, 45, 45]
         }
     },
-    "instructions": {
+    "physical instructions 1": {
         "text": {
             "string": "You are about to see a white dot trace out a movement on the screen. \nAll movements begin and end at the same point.\nYou will later be asked to repeat this movement yourself on the touchscreen.\nThis tutorial will show you how to respond.",
             "style": "instructions"
@@ -23,58 +23,66 @@
         "filename": null,
         "drawbject": null
     },
-    "origin_red": {
-        "text": null,
-        "filename": null,
-        "drawbject": {
-            "shape":"ellipse",
-            "width": 30,
-            "height": 30,
-            "stroke": null,
-            "fill": [255,45,45]
-        }
-    },
-    "origin_green": {
-        "text": null,
-        "filename": null,
-        "drawbject": {
-            "shape":"ellipse",
-            "width": 30,
-            "height": 30,
-            "stroke": null,
-            "fill": [0,255,0]
-        }
-    },
-    "origin_instructions": {
+    "physical instructions 2": {
         "text": {
-            "string": "The red circle indicates that you are now able to respond.\nThis is not a reaction time test — you do not need to respond right away; take your time!",
+            "string": "The red circle indicates that you are now able to respond…\nThis is not a reaction time test — you do not need to respond right away; take your time!",
             "style": "instructions"
         },
         "filename": null,
         "drawbject": null
     },
-    "task_instructions_1":  {
+    "physical instructions 3": {
         "text": {
-            "string": "Once you touch the circle…",
+            "string": "Once you touch the circle...",
             "style": "instructions"
         },
         "filename": null,
         "drawbject": null
     },
-    "task_instructions_2":  {
+     "physical instructions 4": {
         "text": {
-            "string": "… and begin to move, the circle will turn green, indicating that the computer is now recording.\nYour job is to trace out exactly the movement you observed, even matching the speed.",
+            "string": "..and begin to move...",
             "style": "instructions"
         },
         "filename": null,
         "drawbject": null
     },
-    "task_instructions_3":  {
+    "physical instructions 5": {
+        "text": {
+            "string": "...the circle will turn green, indicating that the computer is now recording.\nYour job is to trace out exactly the movement you observed, even matching the speed.",
+            "style": "instructions"
+        },
+        "filename": null,
+        "drawbject": null
+    },
+      "physical instructions 6": {
         "text": {
             "string": "The trial ends when you return to the starting point. If successful, the green dot will disappear.\nIf still green, simply drag your finger onto the circle again.\nIf still red, it didn’t record, so just try again.",
             "style": "instructions"
         },
         "filename": null,
         "drawbject": null
+    },
+    "origin red": {
+        "text": null,
+        "filename": null,
+        "drawbject": {
+            "shape": "ellipse",
+            "width": 30,
+            "height": 30,
+            "stroke": null,
+            "fill": [255, 45, 45]
+        }
+    },
+    "origin green": {
+        "text": null,
+        "filename": null,
+        "drawbject": {
+            "shape": "ellipse",
+            "width": 30,
+            "height": 30,
+            "stroke": null,
+            "fill": [0, 255, 0]
+        }
     }
 }
