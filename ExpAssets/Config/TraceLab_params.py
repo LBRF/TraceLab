@@ -131,3 +131,4 @@ enable_practice = True
 practice_instructions = "The following is a demonstration period. Use this time to learn and then practice the task.\nTap the screen to continue."
 play_narration = False  # toggles the audio component
 practice_figure = "heart"
+practice_animation_time = 3500 # ms

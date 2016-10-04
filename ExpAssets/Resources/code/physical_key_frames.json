@@ -2,7 +2,9 @@
     "keyframes": [
         {
             "label": "physical instructions",
-            "duration": 300,
+			"description": "Initial presentation of instructions.",
+            "duration": 3000,
+			"enabled":true,
             "directives": [
                 {
                     "asset": "physical instructions 1",
@@ -13,7 +15,9 @@
         },
         {
             "label": "heart 0",
-            "duration": 50,
+			"description": "Dot appears on screen.",
+            "duration": 500,
+			"enabled":true,
             "directives": [
                 {
                     "asset": "physical instructions 1",
@@ -27,9 +31,11 @@
                 }
             ]
         },
-        {
+         {
             "label": "heart 1",
-            "duration": 90,
+            "description": "Dot appears and travels to first vertex,",
+            "duration": 900,
+            "enabled": true,
             "directives": [
                 {
                     "asset": "dot",
@@ -40,7 +46,9 @@
         },
         {
             "label": "heart 2",
-            "duration": 60,
+            "description": "Dot travels to second vertex.",
+            "duration": 600,
+            "enabled": true,
             "directives": [
                 {
                     "asset": "dot",
@@ -52,7 +60,9 @@
         },
         {
             "label": "heart 3",
-            "duration": 60,
+            "description": "Dot travels to third vertex...",
+            "duration": 600,
+            "enabled": true,
             "directives": [
                 {
                     "asset": "dot",
@@ -64,7 +74,9 @@
         },
         {
             "label": "heart 4",
-            "duration": 90,
+            "description": "Dot returns to the origin.",
+            "duration": 900,
+            "enabled": true,
             "directives": [
                 {
                     "asset": "dot",
@@ -75,7 +87,9 @@
         },
         {
             "label": "origin 1",
+			"description": "Origin appears",
             "duration": 1000,
+			"enabled":true,
             "directives": [
                 {
                     "asset": "origin red",
@@ -86,7 +100,9 @@
         },
         {
             "label": "origin 2",
+			"description": "Second instructions appear",
             "duration": 2500,
+			"enabled":true,
             "directives": [
                 {
                     "asset": "origin red",
@@ -102,7 +118,9 @@
         },
         {
             "label": "origin 3",
+			"description": "Pointer appears and instructions leave.",
             "duration": 300,
+			"enabled":true,
             "directives": [
                 {
                     "asset": "origin red",
@@ -118,7 +136,9 @@
         },
         {
             "label": "origin 4",
+			"description": "Pointer moves to origin.",
             "duration": 500,
+			"enabled":true,
             "directives": [
                 {
                     "asset": "origin red",
@@ -134,7 +154,9 @@
         },
         {
             "label": "origin 5",
+			"description": "Third set of instructions appear.",
             "duration": 500,
+			"enabled":true,
             "directives": [
                 {
                     "asset": "origin red",
@@ -156,7 +178,9 @@
         },
         {
             "label": "origin 7",
+			"description": "Pointer simulates click on origin.",
             "duration": 200,
+			"enabled":true,
             "directives": [
                 {
                     "asset": "origin red",
@@ -177,7 +201,9 @@
         },
         {
             "label": "origin 7",
+			"description": "Pause after pointer click.",
             "duration": 1000,
+			"enabled":true,
             "directives": [
                 {
                     "asset": "origin red",
@@ -198,7 +224,9 @@
         },
         {
             "label": "origin 8",
+			"description": "Fourth set of instructions appear and pointer leaves origin.",
             "duration": 500,
+			"enabled":true,
             "directives": [
                 {
                     "asset": "origin red",
@@ -219,7 +247,9 @@
         },
         {
             "label": "origin 9",
+			"description": "Origin turns green",
             "duration": 3000,
+			"enabled":true,
             "directives": [
                 {
                     "asset": "origin green",
@@ -240,7 +270,9 @@
         },
         {
             "label": "pointer 1",
+			"description": "Pointer travels to first vertex.",
             "duration": 900,
+			"enabled":true,
             "directives": [
                 {
                     "asset": "origin green",
@@ -256,7 +288,9 @@
         },
         {
             "label": "pointer 2",
+			"description": "Pointer travels to second vertex.",
             "duration": 600,
+			"enabled":true,
             "directives": [
                 {
                     "asset": "origin green",
@@ -273,7 +307,9 @@
         },
         {
             "label": "pointer 3",
+			"description": "Pointer travels to third vertex.",
             "duration": 600,
+			"enabled":true,
             "directives": [
                 {
                     "asset": "origin green",
@@ -290,7 +326,9 @@
         },
         {
             "label": "pointer 4",
+			"description": "Pointer travels most of the way to the origin.",
             "duration": 900,
+			"enabled":true,
             "directives": [
                 {
                     "asset": "origin green",
@@ -306,7 +344,9 @@
         },
         {
             "label": "pointer 5",
+			"description": "Sixth instructions given.",
             "duration": 2000,
+			"enabled":true,
             "directives": [
                 {
                     "asset": "origin green",
@@ -327,7 +367,9 @@
         },
         {
             "label": "pointer 6",
+			"description": "Pointer returns to the origin.",
             "duration": 500,
+			"enabled":true,
             "directives": [
                 {
                     "asset": "origin green",
@@ -348,7 +390,9 @@
         },
         {
             "label": "pointer 7",
+			"description": "Origin is removed.",
             "duration": 1000,
+			"enabled":true,
             "directives": [
                 {
                     "asset": "pointer",
