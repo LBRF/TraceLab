@@ -1,11 +1,13 @@
 {
     "keyframes": [
         {
-            "label": "physical instructions",
+            "label": "control instructions",
+            "description": "Instructions initially presented",
             "duration": 3000,
+            "enabled": true,
             "directives": [
                 {
-                    "asset": "instructions",
+                    "asset": "control instructions 1",
                     "start": "EVAL: P.screen_c",
                     "end": "EVAL: P.screen_c"
                 }
@@ -14,7 +16,9 @@
 
         {
             "label": "heart 1",
+            "description": "Dot appears and travels to first vertex,",
             "duration": 900,
+            "enabled": true,
             "directives": [
                 {
                     "asset": "dot",
@@ -23,9 +27,11 @@
                 }
             ]
         },
-          {
+        {
             "label": "heart 2",
-            "duration":600,
+            "description": "Dot travels to second vertex.",
+            "duration": 600,
+            "enabled": true,
             "directives": [
                 {
                     "asset": "dot",
@@ -35,9 +41,11 @@
                 }
             ]
         },
-          {
+        {
             "label": "heart 3",
+            "description": "Dot travels to third vertex...",
             "duration": 600,
+            "enabled": true,
             "directives": [
                 {
                     "asset": "dot",
@@ -47,9 +55,11 @@
                 }
             ]
         },
-          {
+        {
             "label": "heart 4",
+            "description": "Dot returns to the origin.",
             "duration": 900,
+            "enabled": true,
             "directives": [
                 {
                     "asset": "dot",
@@ -57,7 +67,1321 @@
                     "end": [960, 780]
                 }
             ]
+        },
+        {
+            "label": "vertices 1",
+            "description": "Intial instructions provided.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control instructions 2",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                },
+                {
+                    "asset": "dot",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                }
+            ]
+        },
+        {
+            "label": "vertices 2",
+            "description": "Dot travels to first vertex.",
+            "duration": 1800,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control instructions 2",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                },
+                {
+                    "asset": "dot",
+                    "start": [960, 780],
+                    "end": [480, 360]
+                }
+            ]
+        },
+        {
+            "label": "vertices 3",
+            "description": "Instructions about corners and movement given. ",
+            "duration": 1000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control instructions 3",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                },
+                {
+                    "asset": "dot",
+                    "start": [480, 360],
+                    "end": [480, 360]
+                }
+            ]
+        },
+        {
+            "label": "vertices 4",
+            "description": "Dot progresses to second vertex.",
+            "duration": 1200,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control instructions 3",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                },
+                {
+                    "asset": "dot",
+                    "start": [480, 360],
+                    "end": [960, 360],
+                    "control": [720, 120]
+                }
+            ]
+        },
+        {
+            "label": "vertices 5",
+            "description": "Dot pauses at second vertex.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control instructions 3",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                },
+                {
+                    "asset": "dot",
+                    "start": [960, 360],
+                    "end": [960, 360]
+                }
+            ]
+        },
+        {
+            "label": "vertices 6",
+            "description": "Description of dot's last activity given.",
+            "duration": 3000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control instructions 4",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                },
+                {
+                    "asset": "dot",
+                    "start": [960, 360],
+                    "end": [960, 360]
+                }
+            ]
+        },
+        {
+            "label": "vertices 7",
+            "description": "Descriptions about next activity given.",
+            "duration": 1500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control instructions 5",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                },
+                {
+                    "asset": "dot",
+                    "start": [960, 360],
+                    "end": [960, 360]
+                }
+            ]
+        },
+        {
+            "label": "vertices 8",
+            "description": "Dot progresses to vertex 3",
+            "duration": 1200,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control instructions 5",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                },
+                {
+                    "asset": "dot",
+                    "start": [960, 360],
+                    "end": [1420, 360],
+                    "control": [1200, 120]
+                }
+            ]
+        },
+        {
+            "label": "vertices 9",
+            "description": "Dot pauses",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control instructions 5",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                },
+                {
+                    "asset": "dot",
+                    "start": [1420, 360],
+                    "end": [1420, 360]
+                }
+            ]
+        },
+        {
+            "label": "vertices 10",
+            "description": "Description of dot's last activity given.",
+            "duration": 2000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control instructions 6",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                },
+                {
+                    "asset": "dot",
+                    "start": [1420, 360],
+                    "end": [1420, 360]
+                }
+            ]
+        },
+        {
+            "label": "vertices 11",
+            "description": "Dot returns to the origin.",
+            "duration": 1800,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control instructions 6",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                },
+                {
+                    "asset": "dot",
+                    "start": [1420, 360],
+                    "end": [960, 780]
+                }
+            ]
+        },
+        {
+            "label": "vertices 12",
+            "description": "Dot pauses at origin.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control instructions 6",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                },
+                {
+                    "asset": "dot",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                }
+            ]
+        },
+        {
+            "label": "vertices 13",
+            "description": "Final instructions about dot behavior given.",
+            "duration": 8000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control instructions 7",
+                    "start": "EVAL: P.screen_c",
+                    "end": "EVAL: P.screen_c"
+                },
+                {
+                    "asset": "dot",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                }
+            ]
+        },
+        {
+            "label": "buttons 1",
+            "description": "Buttons initially presented WITHOUT instructions.",
+            "duration": 1000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 1 white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 2 white",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 3 white",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 4 white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 5 white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "finish box white",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "finish text white",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                }
+            ]
+        },
+        {
+            "label": "buttons 2",
+            "description": "Buttons initially presented WITH instructions.",
+            "duration": 3000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 1 white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 2 white",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 3 white",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 4 white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 5 white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "finish box white",
+                    "start": "EVAL: [P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9)]",
+                    "end": "EVAL: [P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9)]"
+                },
+                {
+                    "asset": "finish text white",
+                    "start": "EVAL: [P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9)]",
+                    "end": "EVAL: [P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9)]"
+                },
+                {
+                    "asset": "control instructions 8",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                }
+            ]
+        },
+        {
+            "label": "buttons 3",
+            "description": "pointer enters screen and moves to box 2",
+            "duration": 1000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 1 white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 2 white",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 3 white",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 4 white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 5 white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "finish box white",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "finish text white",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "pointer",
+                    "start": "EVAL: (960, P.screen_y)",
+                    "end": "EVAL: (P.button_screen_margins + 90 + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset + 100)"
+                },
+                {
+                    "asset": "control instructions 8",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                }
+            ]
+        },
+        {
+            "label": "buttons 4",
+            "description": "pointer pauses on button 2 briefly",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 1 white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 2 white",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 3 white",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 4 white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 5 white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "finish box white",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "finish text white",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "pointer",
+                    "start": "EVAL: (P.button_screen_margins + 90 + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset + 100)",
+                    "end": "EVAL: (P.button_screen_margins + 90 + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset + 100)"
+                },
+                {
+                    "asset": "control instructions 8",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                }
+            ]
+        },
+        {
+            "label": "buttons 5",
+            "description": "pointer simulates click",
+            "duration": 300,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 1 white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 2 white",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 3 white",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 4 white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 5 white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "finish box white",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "finish text white",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "pointer",
+                    "start": "EVAL: (P.button_screen_margins + 90 + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset + 100)",
+                    "end": "EVAL: (P.button_screen_margins + 90 + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset + 110)"
+                },
+                {
+                    "asset": "control instructions 8",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                }
+            ]
+        },
+        {
+            "label": "buttons 6",
+            "description": "box 2 turns green",
+            "duration": 1000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box green",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 1 white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 1 green",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 3 white",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 4 white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 5 white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "finish box green",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "finish text green",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "pointer",
+                    "start": "EVAL: (P.button_screen_margins + 90 + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset + 110)",
+                    "end": "EVAL: (P.button_screen_margins + 90 + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset + 110)"
+                },
+                {
+                    "asset": "control instructions 8",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                }
+            ]
+        },
+        {
+            "label": "buttons 7",
+            "description": "Instructions on changing answer are presented",
+            "duration": 3000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box green",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 1 white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 1 green",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 3 white",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 4 white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 5 white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "finish box green",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "finish text green",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "pointer",
+                    "start": "EVAL: (P.button_screen_margins + 90 + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset + 110)",
+                    "end": "EVAL: (P.button_screen_margins + 90 + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset + 110)"
+                },
+                {
+                    "asset": "control instructions 9",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                }
+            ]
+        },
+        {
+            "label": "buttons 8",
+            "description": "Pointer moves to box 3",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box green",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 1 white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 1 green",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 3 white",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 4 white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 5 white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "finish box green",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "finish text green",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                 {
+                    "asset": "pointer",
+                    "start": "EVAL: (P.button_screen_margins + 90 + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset + 110)",
+                    "end": "EVAL: (P.button_screen_margins + 90 + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset + 100)"
+                },
+                {
+                    "asset": "control instructions 9",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                }
+            ]
+        },
+        {
+            "label": "buttons 9",
+            "description": "Pointer simulates a click",
+            "duration": 300,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box green",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 1 white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 1 green",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 3 white",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 4 white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 5 white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "finish box green",
+                    "start": "EVAL: [P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9)]",
+                    "end": "EVAL: [P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9)]"
+                },
+                {
+                    "asset": "finish text green",
+                    "start": "EVAL: [P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9)]",
+                    "end": "EVAL: [P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9)]"
+                },
+                {
+                    "asset": "pointer",
+                    "start": "EVAL: (P.button_screen_margins + 90 + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset + 100)",
+                    "end": "EVAL: (P.button_screen_margins + 90 + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset + 110)"
+                },
+                {
+                    "asset": "control instructions 9",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                }
+            ]
+        },
+        {
+            "label": "buttons 10",
+            "description": "Box 2 toggles off and box 3 is activated.",
+            "duration": 1000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box green",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 1 white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 2 white",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 2 green",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 4 white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 5 white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "finish box green",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "finish text green",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "pointer",
+                    "start": "EVAL: (P.button_screen_margins + 90 + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset + 110)",
+                    "end": "EVAL: (P.button_screen_margins + 90 + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset + 110)"
+                },
+                {
+                    "asset": "control instructions 9",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                }
+            ]
+        },
+        {
+            "label": "buttons 11",
+            "description": "Pointer moves to finished button.",
+            "duration": 1000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box green",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 1 white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 2 white",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 2 green",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 4 white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 5 white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "finish box green",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "finish text green",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "pointer",
+                    "start": "EVAL: (P.button_screen_margins + 90 + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset + 110)",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100) + 90, int(P.screen_y * 0.9) + 100)"
+                },
+                {
+                    "asset": "control instructions 9",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                }
+            ]
+        },
+        {
+            "label": "buttons 12",
+            "description": "Pointer pauses on finish button.",
+            "duration": 750,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box green",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 1 white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 2 white",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 2 green",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 4 white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 5 white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "finish box green",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "finish text green",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "pointer",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100) + 90, int(P.screen_y * 0.9) + 100)",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100) + 90, int(P.screen_y * 0.9) + 100)"
+                },
+                {
+                    "asset": "control instructions 9",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                }
+            ]
+        },
+        {
+            "label": "buttons 13",
+            "description": "Pointer simulates click on finish button.",
+            "duration": 300,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box green",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 1 white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 2 white",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 2 green",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 4 white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 5 white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "finish box green",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "finish text green",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "pointer",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100) + 90, int(P.screen_y * 0.9) + 100)",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100) + 90, int(P.screen_y * 0.9) + 110)"
+                },
+                {
+                    "asset": "control instructions 9",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                }
+            ]
+        },
+                {
+            "label": "buttons 14",
+            "description": "Final pause to establish click.",
+            "duration": 1000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box green",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control box white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 1 white",
+                    "start": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 0 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 2 white",
+                    "start": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 1 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 2 green",
+                    "start": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 2 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 4 white",
+                    "start": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 3 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "control text 5 white",
+                    "start": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)",
+                    "end": "EVAL: (P.button_screen_margins + 4 * (((P.screen_x - (2 * P.button_screen_margins)) // 5) + P.button_size), P.y_offset)"
+                },
+                {
+                    "asset": "finish box green",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "finish text green",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100), int(P.screen_y * 0.9))"
+                },
+                {
+                    "asset": "pointer",
+                    "start": "EVAL: (P.screen_x - (P.button_screen_margins + 100) + 90, int(P.screen_y * 0.9) + 110)",
+                    "end": "EVAL: (P.screen_x - (P.button_screen_margins + 100) + 90, int(P.screen_y * 0.9) + 110)"
+                },
+                {
+                    "asset": "control instructions 9",
+                    "start": [960, 150],
+                    "end": [960, 150]
+                }
+            ]
         }
+
+
     ]
 }
-

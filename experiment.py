@@ -106,6 +106,10 @@ class TraceLab(Experiment, BoundaryInspector):
 		P.flip_x = P.mirror_mode
 
 	def setup(self):
+		self.loading_msg = self.message("Loading...", "default", blit=False)
+		self.fill()
+		self.blit(self.loading_msg, 5, P.screen_c)
+		self.flip()
 		self.origin_size = P.origin_size
 		try:
 			self.p_dir = os.path.join(P.data_path, "p{0}_{1}".format(P.user_data[0], P.user_data[-2]))
@@ -151,7 +155,6 @@ class TraceLab(Experiment, BoundaryInspector):
 			instructions_file = instructions_file.format("control")
 		instructions_file = os.path.join(P.resources_dir, "Text", instructions_file)
 		self.instructions = self.message(open(instructions_file).read(), "instructions", blit=False)
-		self.loading_msg = self.message("Loading...", "default", blit=False)
 		self.control_fail_msg = self.message("Please keep your finger on the start area for the complete duration.", 'error', blit=False )
 		self.next_trial_msg = self.message("Press any key to begin the trial.", 'default', blit=False)
 
@@ -182,12 +185,13 @@ class TraceLab(Experiment, BoundaryInspector):
 
 		if P.exp_condition in [PP_RR_5, PP_VR_5]:
 			self.feedback = True
-
+		self.clear()
 		if P.enable_practice:
-			self.message(P.practice_instructions, "instructions", blit=True)
-			self.flip()
-			self.any_key()
-			self.practice()
+			if P.session_number == 1 or (P.exp_condition in [MI_xx_5, CC_xx_5] and P.session_number == 5):
+				self.message(P.practice_instructions, "instructions", registration=5, location=P.screen_c, blit=True)
+				self.flip()
+				self.any_key()
+				self.practice()
 
 	def block(self):
 		self.fill()
@@ -356,7 +360,6 @@ class TraceLab(Experiment, BoundaryInspector):
 
 		# delete previous trials for this session if any exist (essentially assume a do-over)
 		q_str = "DELETE FROM `trials` WHERE `participant_id` = ? AND `session_num` = ?"
-		print q_str, [P.participant_id, P.session_number]
 		self.database.query(q_str, q_vars=[P.participant_id, P.session_number])
 		if P.session_number == 1:
 			try:
@@ -499,7 +502,7 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def __practice__(self):
 		self.figure_name = P.practice_figure
-		self.animate_time = 3500
+		self.animate_time = P.practice_animation_time
 		self.setup_response_collector()
 		self.trial_prep()
 		P.clock.start()

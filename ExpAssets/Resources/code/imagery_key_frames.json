@@ -1,20 +1,41 @@
 {
     "keyframes": [
         {
-            "label": "physical instructions",
+            "label": "imagery instructions",
+			"description": "Initial instructions given.",
             "duration": 3000,
+            "enabled": true,
             "directives": [
                 {
-                    "asset": "instructions",
+                    "asset": "imagery instructions 1",
                     "start": "EVAL: P.screen_c",
                     "end": "EVAL: P.screen_c"
                 }
             ]
         },
-
+        {
+            "label": "heart 0",
+			"description": "Dot appears on screen",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "imagery instructions 1",
+                    "start": "EVAL: P.screen_c",
+                    "end": "EVAL: P.screen_c"
+                },
+                {
+                    "asset": "dot",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                }
+            ]
+        },
         {
             "label": "heart 1",
+            "description": "Dot appears and travels to first vertex,",
             "duration": 900,
+			"enabled": true,
             "directives": [
                 {
                     "asset": "dot",
@@ -23,9 +44,11 @@
                 }
             ]
         },
-          {
+        {
             "label": "heart 2",
-            "duration":600,
+            "description": "Dot travels to second vertex.",
+            "duration": 600,
+            "enabled": true,
             "directives": [
                 {
                     "asset": "dot",
@@ -35,9 +58,11 @@
                 }
             ]
         },
-          {
+        {
             "label": "heart 3",
+            "description": "Dot travels to third vertex...",
             "duration": 600,
+            "enabled": true,
             "directives": [
                 {
                     "asset": "dot",
@@ -47,14 +72,295 @@
                 }
             ]
         },
-          {
+        {
             "label": "heart 4",
+            "description": "Dot returns to the origin.",
             "duration": 900,
+            "enabled": true,
             "directives": [
                 {
                     "asset": "dot",
                     "start": [1420, 360],
                     "end": [960, 780]
+                }
+            ]
+        },
+        {
+            "label": "origin 1",
+			"description": "Origin appears.",
+            "duration": 1000,
+			"enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                }
+            ]
+        },
+        {
+            "label": "origin 2",
+			"description": "Second set of instructions given.",
+            "duration": 2500,
+			"enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "imagery instructions 2",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "origin 3",
+			"description": "Pointer appears.",
+            "duration": 300,
+			"enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                 {
+                    "asset": "pointer",
+                    "start": [1160, 1000],
+                    "end": [1160, 1000]
+                }
+            ]
+        },
+        {
+            "label": "origin 4",
+			"description": "Pointer moves to origin.",
+            "duration": 500,
+			"enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1160, 1000],
+                    "end": [1050, 870]
+                }
+            ]
+        },
+        {
+            "label": "origin 5",
+			"description": "Third instructions given.",
+            "duration": 500,
+			"enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 870],
+                    "end": [1050, 870]
+                },
+                                {
+                    "asset": "imagery instructions 3",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+
+            ]
+        },
+        {
+            "label": "origin 6",
+			"description": "Pointer simulates click on origin.",
+            "duration": 200,
+			"enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 870],
+                    "end": [1050, 880]
+                },
+                {
+                    "asset": "imagery instructions 3",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "origin 7",
+			"description": "Pointer pauses after click.",
+            "duration": 500,
+			"enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 880],
+                    "end": [1050, 880]
+                },
+                {
+                    "asset": "imagery instructions 3",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "origin 8",
+			"description": "Pointer moves off of origin.",
+            "duration": 500,
+			"enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                                {
+                    "asset": "pointer",
+                    "start": [1050, 880],
+                    "end": [1010, 850]
+                }
+
+            ]
+        },
+        {
+            "label": "origin 9",
+			"description": "Origin turns green.",
+            "duration": 3000,
+			"enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 850],
+                    "end": [1010, 850]
+                },
+                {
+                    "asset": "imagery instructions 4",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "origin 10",
+			"description": "Extended pause to simulate imagining the dot's route.",
+            "duration": 3000,
+			"enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 850],
+                    "end": [1010, 850]
+                },
+                {
+                    "asset": "imagery instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "pointer 1",
+			"description": "Pointer simulates being lifted off of screen.",
+            "duration": 200,
+			"enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 850],
+                    "end": [1010, 840]
+                },
+                {
+                    "asset": "imagery instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "pointer 2",
+			"description": "Sixth instructions given.",
+            "duration": 1000,
+			"enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 840],
+                    "end": [1010, 840]
+                },
+                {
+                    "asset": "imagery instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+         {
+            "label": "pointer 3",
+			"description": "Pointer removed and seventh instructions given.",
+            "duration": 1500,
+			"enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "imagery instructions 7",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+         {
+            "label": "pointer 4",
+			"description": "Origin removed.",
+            "duration": 5000,
+			"enabled": true,
+            "directives": [
+                {
+                    "asset": "imagery instructions 7",
+                    "start": [960, 580],
+                    "end": [960, 580]
                 }
             ]
         }
