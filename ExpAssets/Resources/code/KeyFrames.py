@@ -1,192 +1,67 @@
 __author__ = 'jono'
-import abc
-import time
-import os
-import json
-import unicodedata
-from re import compile
-from math import floor
+# import sys
+# sys.path.append("ExpAssets/Resources/code/")
+
 from klibs import P
 from klibs.KLNumpySurface import NumpySurface as NpS
 from klibs.KLDraw import *
-from klibs.KLUtilities import line_segment_len, iterable
-from TraceLabFigure import interpolated_path_len, bezier_interpolation, pascal_row, linear_interpolation
+from klibs.KLAudio import AudioClip
+from klibs.KLUtilities import line_segment_len
+from TraceLabFigure import bezier_interpolation,  linear_interpolation
+from JSON_Object import JSON_Object
 
 # TODO: come up with a way for a FrameSet object to be an asset
-
-def bezier_frames(self):
-		self.path_length = interpolated_path_len(self.frames)
-		draw_in = self.animate_target_time * 0.001
-		rate = 0.016666666666667
-		max_frames = int(draw_in / rate)
-		delta_d = floor(self.path_length / max_frames)
-		self.a_frames = [list(self.frames[0])]
-		seg_len = 0
-		for i in range(0, len(self.frames)):
-			p1 = [float(p) for p in self.frames[i]]
-			try:
-				p2 = [float(p) for p in self.frames[i+1]]
-			except IndexError:
-				p2 = [float(p) for p in self.frames[0]]
-			seg_len += line_segment_len(p1, p2)
-			if seg_len >= delta_d:
-				self.a_frames.append(list(self.frames[i]))
-				seg_len = 0
-
-
-class JSON_Object(object):
-	__eval_regex__ = compile("^EVAL:[ ]{0,}(.*)$")
-
-	def __init__(self, json_file_path=None, decoded_data=None, child_object=False):
-		try:
-			self.__items__ = self.__unicode_to_str__(json.load(open(json_file_path)) if json_file_path else decoded_data)
-		except ValueError:
-			raise ValueError("JSON file is poorly formatted. Please check syntax.")
-		self.__objectified__ = self.__objectify__(self.__items__, not (child_object and type(decoded_data) is list))
-		self.__current__ = 0
-		try:
-			self.keys = self.__items__.keys()
-			self.values = []
-			for k in self.keys:
-				self.values.append(self.__dict__[k])
-		except AttributeError:
-			self.keys = range(0, len(self.__items__))
-			self.values = self.__items__
-
-	def __unicode_to_str__(self, content):
-		if type(content) is unicode:
-			# convert string to ascii
-			converted = unicodedata.normalize('NFKD', content).encode('ascii','ignore')
-
-			# convert JS booleans to Python booleans
-			if converted in ("true", "false"):
-				converted = converted == "true"
-
-			# run eval on Python code passed as a JSON string
-			eval_statement = self.__eval_regex__.match(converted)
-			if eval_statement is not None:
-				converted = eval(eval_statement.group(1))
-				if type(converted) is tuple:
-					converted = list(converted)
-				# todo: this next bit is broken, it's so unimportant I didn't even try to fix it but maybe one day
-				# on the off chance that the eval returns well-formed JSON
-				# try:
-				# 	converted = JSON_Object(converted)
-				# except ValueError:
-				# 	pass
-
-		elif type(content) in (list, dict):
-			#  manage dicts first
-			try:
-				converted = {}  # converted output for this level of the data
-				for k in content:
-					v = content[k]  # ensure the keys are ascii strings
-					if type(k) is unicode:
-						k = self.__unicode_to_str__(k)
-					if type(v) is unicode:
-						converted[k] = self.__unicode_to_str__(v)
-					elif iterable(v):
-						converted[k] = self.__unicode_to_str__(v)
-					else:
-						converted[k] = v
-
-			except (TypeError, IndexError):
-				converted = []
-				for i in content:
-					if type(i) is unicode:
-						converted.append(self.__unicode_to_str__(i))
-					elif iterable(i):
-						converted.append(self.__unicode_to_str__(i))
-					else:
-						converted.append(i)
-
-		else:
-			# assume it's numeric
-			return content
-
-		return converted
-
-	def __find_nested_dicts__(self, data):
-		tmp = []
-		for i in data:
-			if type(i) is dict:
-				tmp.append(JSON_Object(None, i, True))
-			elif type(i) is list:
-				tmp.append(self.__find_nested_dicts__(i))
-			else:
-				tmp.append(i)
-		return tmp
-
-	def __objectify__(self, content, initial_pass=False):
-
-		try:
-			converted = {}
-			for i in content:
-				v = content[i]
-				if type(v) is dict:
-					v = JSON_Object(None, v, True)
-				elif type(v) is list:
-					v = self.__find_nested_dicts__(v)
-				converted[i] = v
-				if initial_pass:
-					setattr(self, i, v)
-		except (TypeError, IndexError) as e:
-			if initial_pass:
-				raise ValueError("Top-level element must be a key-value pair.")
-			converted = []
-			for i in content:
-				if type(i) is dict:
-					converted.append(JSON_Object(None, i, True))
-				elif type(i) is list:
-					converted.append(self.__find_nested_dicts__(i))
-				else:
-					converted.append(i)
-		return converted
-
-
-	def __iter__(self):
-		return self
-
-	def __getitem__(self, key):
-		return self.__dict__[key]
-
-	def next(self):
-		try:
-			i =  self.keys[self.__current__]
-			self.__current__ += 1
-			return i
-		except IndexError:
-			self.__current__ = 0
-			raise StopIteration
-
-	def report(self, depth=0, subtree=None):
-		keys = self.keys if not subtree else subtree
-		vals = self.__items__ if not subtree else subtree.__items__
-		for k in keys:
-			if isinstance(vals[k], JSON_Object):
-				print "{0}".format(depth * "\t" + k)
-				self.report(depth + 1, vals[k])
-			else:
-				print "{0}: {1}".format(depth * "\t" + k, vals[k])
-
+AUDIO_FILE = "audio_f"
+IMAGE_FILE = "image_f"
 
 class KeyFrameAsset(object):
 
 	def __init__(self, exp, data):
 		self.exp = exp
+		self.media_type = IMAGE_FILE
+		self.height = None
+		self.width = None
+		self.duration = None
+
 		if data.text:
 			# todo: make style optional
 			self.contents = exp.message(data.text.string, data.text.style, blit=False)
-		elif data.filename:
-			self.contents = NpS(os.path.join(P.image_dir, data.filename))
 		elif data.drawbject:
 			d = data.drawbject
 			if d.shape == "rectangle":
-				self.contents = Rectangle(d.width, d.height, d.stroke, d.fill)
+				self.contents = Rectangle(d.width, d.height, d.stroke, d.fill).render()
 			if d.shape == "ellipse":
-				self.contents = Ellipse(d.width, d.height, d.stroke, d.fill)
+				self.contents = Ellipse(d.width, d.height, d.stroke, d.fill).render()
 			if d.shape == "annulus":
-				self.contents = Annulus(d.diameter, d.ring_width, d.stroke, d.fill)
+				self.contents = Annulus(d.diameter, d.ring_width, d.stroke, d.fill).render()
+		else:
+			self.media_type = data.file.media_type
+			if self.is_audio:
+				self.duration = data.file
+				self.contents = AudioClip(os.path.join(P.resources_dir, "audio", data.file.filename))
+			else:
+				self.contents = NpS(os.path.join(P.image_dir, data.file.filename))
+
+		try:
+			self.height = self.contents.height
+			self.width = self.contents.width
+		except AttributeError:
+			try:
+				self.height = self.contents.shape[0]
+				self.width = self.contents.shape[1]
+			except AttributeError:
+				pass  # ie. audio file
+
+	@property
+	def is_image(self):
+		return self.media_type == IMAGE_FILE
+
+	@property
+	def is_audio(self):
+		return self.media_type == AUDIO_FILE
+
+
+
 
 class KeyFrame(object):
 
@@ -198,30 +73,67 @@ class KeyFrame(object):
 		self.duration = data.duration * 0.001
 		self.asset_frames = []
 		self.enabled = data.enabled
+		self.audio_track = None
+		self.audio_start_time = 0
 		if self.enabled:
 			self.__render_frames__()
 
 	def play(self):
 		start = time.time()
-		for frame in self.asset_frames:
-			self.exp.ui_request()
-			self.exp.fill()
-			for asset in frame:
-				self.exp.blit(self.assets[asset[0]].contents, 5, asset[1])
-			self.exp.flip()
+		frames_played = False
 		while time.time() - start < self.duration:
 			self.exp.ui_request()
+			# if self.audio_track:
+			try:
+				if time.time() - start >= self.audio_start_time and not self.audio_track.started:
+					print "played audio for {0}".format(self.label)
+					self.audio_track.play()
+			except AttributeError:
+				pass
+			if not frames_played:
+				for frame in self.asset_frames:
+					self.exp.ui_request()
+					self.exp.fill()
+					for asset in frame:
+						self.exp.blit(asset[0], 5, asset[1])
+					self.exp.flip()
+				frames_played = True
 
 	def __render_frames__(self):
 		total_frames = 0
 		asset_frames = []
+		num_static_directives = 0
+		img_drctvs = []
+
 		try:
-			if all([d.start == d.end for d in self.directives]):
-				self.asset_frames = [[[d.asset, d.start] for d in self.directives]]
-				return
+			# strip out audio track if there is one, first
 			for d in self.directives:
+				try:
+					asset = self.assets[d.asset].contents
+				except KeyError:
+					e_msg = "Asset '{0}' not found in KeyFrame.assets.".format(d.asset)
+					raise KeyError(e_msg)
+
+				if self.assets[d.asset].is_audio:
+					if self.audio_track is not None:
+						raise RuntimeError("Only one audio track per key frame can be set.")
+					else:
+						self.audio_track = self.assets[d.asset].contents
+						self.audio_start_time = d.start
+				else:
+					img_drctvs.append(d)
+					if d.start == d.end:
+						num_static_directives += 1
+
+
+			if len(img_drctvs) == num_static_directives:
+				self.asset_frames = self.asset_frames = [[(self.assets[d.asset].contents, d.start) for d in img_drctvs]]
+				return
+
+			for d in img_drctvs:
+				asset = self.assets[d.asset].contents
 				if d.start == d.end:
-					asset_frames.append([[d.asset, d.start]])
+					asset_frames.append([(asset, d.start)])
 					continue
 				frames = []
 				try:
@@ -231,7 +143,7 @@ class KeyFrame(object):
 					v = line_segment_len(d.start, d.end) / self.duration
 					raw_frames = linear_interpolation(d.start, d.end, v)
 				for p in raw_frames :
-					frames.append([d.asset, p])
+					frames.append([asset, p])
 				if len(frames) > total_frames:
 					total_frames = len(frames)
 				asset_frames.append(frames)
@@ -244,7 +156,8 @@ class KeyFrame(object):
 					self.asset_frames.append([n[i] for n in asset_frames])
 			else:
 				self.asset_frames = asset_frames
-		except Exception as e:
+
+		except (IndexError, AttributeError, TypeError, ValueError) as e:
 			for d in self.directives: print d
 			e_msg = "An error occurred when rendering this frame. This is usually do an unexpected return " \
 					"from an 'EVAL:' entry in the JSON script. The original error was:\n\n\t{0}: {1}".format(e.__class__, e.message)
@@ -275,7 +188,6 @@ class FrameSet(object):
 			self.__load_assets__(self.assets_file)
 		j_ob = JSON_Object(self.key_frames_file)
 		for kf in j_ob.keyframes:
-			print kf.label
 			self.key_frames.append(KeyFrame(self.exp, kf, self.assets))
 
 

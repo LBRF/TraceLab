@@ -1,12 +1,32 @@
 {
     "pointer": {
         "text": null,
-        "filename": "pointer.png",
+        "file": {
+            "filename": "pointer.png",
+            "media_type": "image_f",
+            "resolution": [179,200],
+            "duration": null
+        },
+        "drawbject": null
+    },
+    "not recording": {
+        "text": null,
+        "file": {
+            "filename": "not_recording.png",
+            "media_type": "image_f",
+            "resolution": [219,220],
+            "duration": null
+        },
         "drawbject": null
     },
     "dot": {
         "text": null,
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": {
             "shape": "ellipse",
             "width": 6,
@@ -15,12 +35,30 @@
             "fill": [255, 45, 45]
         }
     },
+     "end practice": {
+        "text": {
+            "string": "Now it's your turn. Try some practice.",
+            "style": "instructions"
+        },
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
+        "drawbject": null
+    },
     "physical instructions 1": {
         "text": {
             "string": "You are about to see a white dot trace out a movement on the screen. \nAll movements begin and end at the same point.\nYou will later be asked to repeat this movement yourself on the touchscreen.\nThis tutorial will show you how to respond.",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
     "physical instructions 2": {
@@ -28,7 +66,12 @@
             "string": "The red circle indicates that you are now able to respond…\nThis is not a reaction time test — you do not need to respond right away; take your time!",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
     "physical instructions 3": {
@@ -36,15 +79,25 @@
             "string": "Once you touch the circle...",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
-     "physical instructions 4": {
+    "physical instructions 4": {
         "text": {
-            "string": "..and begin to move...",
+            "string": "...and begin to move...",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
     "physical instructions 5": {
@@ -52,15 +105,25 @@
             "string": "...the circle will turn green, indicating that the computer is now recording.\nYour job is to trace out exactly the movement you observed, even matching the speed.",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
-      "physical instructions 6": {
+    "physical instructions 6": {
         "text": {
             "string": "The trial ends when you return to the starting point. If successful, the green dot will disappear.\nIf still green, simply drag your finger onto the circle again.\nIf still red, it didn’t record, so just try again.",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
     "imagery instructions 1": {
@@ -68,47 +131,77 @@
             "string": "You are about to see a white dot trace out a movement on the screen.\nAll movements begin and end at the same point.\nTou will later be asked to repeat this movement using motor imagery.\nThis means you will practice the movement mentally, without actually performing the movement.\nWe want you to imagine what it would look like, and also how it would feel.\nThis tutorial will show you how to respond.",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
-     "imagery instructions 2": {
+    "imagery instructions 2": {
         "text": {
             "string": "The red circle indicates that you are now able to respond.\nThis is not a reaction time test — you do not need to respond right away; take your time!",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
-     "imagery instructions 3": {
+    "imagery instructions 3": {
         "text": {
             "string": "Once you touch the circle...",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
-     "imagery instructions 4": {
+    "imagery instructions 4": {
         "text": {
             "string": "...and begin to move, the circle will turn green.\n This indicates that the computer is now recording.",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
-     "imagery instructions 5": {
+    "imagery instructions 5": {
         "text": {
             "string": "Stop moving, and perform the movement mentally.\n\nRemember: do not actually perform the movement physically.\nJust imagine the movement, visualizing what it would look like and how it would feel to perform it with your fingertip.",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
-         "imagery instructions 6": {
+    "imagery instructions 6": {
         "text": {
             "string": "When you imagine returning to the starting point — the green circle — lift your finger from the screen.",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
     "imagery instructions 7": {
@@ -116,218 +209,551 @@
             "string": "This indicates that the trial is over, and the green dot will disappear.\nRemember, you must try to match the movement AND the speed that you observed.",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
-     "control instructions 1": {
+    "control instructions 1": {
         "text": {
             "string": "You are about to see a white dot trace out a movement on the screen.\nAll movements begin and end at the same point.\n\nFor example...",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
-     "control instructions 2": {
+    "control instructions 2": {
         "text": {
             "string": "All movements will pass through a set of vertices, which we will refer to as corners (including the starting point).\nLooking more closely, you’ll see that the movement appears to bounce.",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
-     "control instructions 3": {
+    "control instructions 3": {
         "text": {
             "string": "Looking more closely, you’ll see that the movement appears to bounce.",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
-      "control instructions 4": {
+    "control instructions 4": {
         "text": {
             "string": "After each movement, you will be asked how many times the dot moved in a certain direction after hitting a corner.\nIn other words, which way did it bounce?",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
-     "control instructions 5": {
+    "control instructions 5": {
         "text": {
             "string": "For example:\n \nIn the next bounce, the dot moves UP, LEFT and finally DOWN between corners.",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
-     "control instructions 6": {
+    "control instructions 6": {
         "text": {
             "string": "And next then the dot moves DOWN and LEFT, back to the starting corner.",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
-     "control instructions 7": {
+    "control instructions 7": {
         "text": {
             "string": "At the end of each movement, you will be asked:\n 'How many times the dot changed course to the LEFT, RIGHT, UP or DOWN?'\n \nPay attention to movements carefully, as you will be asked about one direction randomly.\nThe movements will happen quickly, so don’t worry about being perfect—use your best judgement.",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
-      "control instructions 8": {
+    "control instructions 8": {
         "text": {
             "string": "When you’re ready, pick a number.\nThe answer will always be a number from one to five.",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
-     "control instructions 9": {
+    "control instructions 9": {
         "text": {
             "string": "You can always change your answer before finally confirming your answer.",
             "style": "instructions"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
     "control box white": {
         "text": null,
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": {
             "shape": "rectangle",
             "width": 75,
             "height": 75,
-            "stroke": [5, [255,255,255]],
+            "stroke": [5, [255, 255, 255]],
             "fill": null
         }
     },
     "finish box white": {
         "text": null,
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": {
             "shape": "rectangle",
             "width": 100,
             "height": 50,
-            "stroke": [5, [255,255,255]],
+            "stroke": [5, [255, 255, 255]],
             "fill": null
         }
     },
     "finish box green": {
         "text": null,
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": {
             "shape": "rectangle",
             "width": 100,
             "height": 50,
-            "stroke": [5, [150,255,150]],
+            "stroke": [5, [150, 255, 150]],
             "fill": null
         }
     },
     "control box green": {
         "text": null,
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": {
             "shape": "rectangle",
             "width": 75,
             "height": 75,
-            "stroke": [5, [150,255,150]],
+            "stroke": [5, [150, 255, 150]],
             "fill": null
         }
     },
     "control text 1 white": {
         "text": {
-            "string":"1",
-            "style":"button_inactive"
+            "string": "1",
+            "style": "button_inactive"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
     "control text 2 white": {
         "text": {
-            "string":"2",
-            "style":"button_inactive"
+            "string": "2",
+            "style": "button_inactive"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
     "control text 3 white": {
         "text": {
-            "string":"3",
-            "style":"button_inactive"
+            "string": "3",
+            "style": "button_inactive"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
     "control text 4 white": {
         "text": {
-            "string":"4",
-            "style":"button_inactive"
+            "string": "4",
+            "style": "button_inactive"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
     "control text 5 white": {
         "text": {
-            "string":"5",
-            "style":"button_inactive"
+            "string": "5",
+            "style": "button_inactive"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
     "control text 1 green": {
         "text": {
-            "string":"2",
-            "style":"button_active"
+            "string": "2",
+            "style": "button_active"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
     "control text 2 green": {
         "text": {
-            "string":"3",
-            "style":"button_active"
+            "string": "3",
+            "style": "button_active"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
     "finish text white": {
         "text": {
-            "string":"Finish",
-            "style":"button_inactive"
+            "string": "Finish",
+            "style": "button_inactive"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
     "finish text green": {
         "text": {
-            "string":"Finish",
-            "style":"button_active"
+            "string": "Finish",
+            "style": "button_active"
         },
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": null
     },
-
     "origin red": {
         "text": null,
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": {
             "shape": "ellipse",
-            "width": 30,
-            "height": 30,
+            "width": 50,
+            "height": 50,
             "stroke": null,
             "fill": [255, 45, 45]
         }
     },
     "origin green": {
         "text": null,
-        "filename": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
         "drawbject": {
             "shape": "ellipse",
-            "width": 30,
-            "height": 30,
+            "width": 50,
+            "height": 50,
             "stroke": null,
             "fill": [0, 255, 0]
         }
+    },
+    "control audio 1": {
+        "text": null,
+        "file": {
+            "filename": "CC1.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 11.435
+        },
+        "drawbject": null
+    },
+    "control audio 2": {
+        "text": null,
+        "file": {
+            "filename": "CC2.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 10.611
+        },
+        "drawbject": null
+    },
+    "control audio 3": {
+        "text": null,
+        "file": {
+            "filename": "CC3.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 11.702
+        },
+        "drawbject": null
+    },
+    "control audio 4": {
+        "text": null,
+        "file": {
+            "filename": "CC4.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 3.877
+        },
+        "drawbject": null
+    },
+    "control audio 5": {
+        "text": null,
+        "file": {
+            "filename": "CC5.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 4.191
+        },
+        "drawbject": null
+    },
+    "control audio 6": {
+        "text": null,
+        "file": {
+            "filename": "CC6.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 20.363
+        },
+        "drawbject": null
+    },
+    "control audio 7": {
+        "text": null,
+        "file": {
+            "filename": "CC7.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 5.839
+        },
+        "drawbject": null
+    },
+    "control audio 8": {
+        "text": null,
+        "file": {
+            "filename": "CC8.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 4.702
+        },
+        "drawbject": null
+    },
+    "control audio 9": {
+    "text": null,
+    "file": {
+        "filename": "CC9.wav",
+        "media_type": "audio_f",
+        "resolution": null,
+        "duration": 3.622
+    },
+    "drawbject": null
+},
+    "imagery audio 1": {
+        "text": null,
+        "file": {
+            "filename": "MI1.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 26.006
+        },
+        "drawbject": null
+    },
+     "imagery audio 2": {
+        "text": null,
+        "file": {
+            "filename": "MI2.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 10.402
+        },
+        "drawbject": null
+    },
+     "imagery audio 3": {
+        "text": null,
+        "file": {
+            "filename": "MI3.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 2.786
+        },
+        "drawbject": null
+    },
+     "imagery audio 4": {
+        "text": null,
+        "file": {
+            "filename": "MI4.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 23.997
+        },
+        "drawbject": null
+    }, "imagery audio 5": {
+        "text": null,
+        "file": {
+            "filename": "MI5.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 9.079
+        },
+        "drawbject": null
+    },
+     "imagery audio 6": {
+        "text": null,
+        "file": {
+            "filename": "MI6.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 3.854
+        },
+        "drawbject": null
+    },
+    "physical audio 1": {
+        "text": null,
+        "file": {
+            "filename": "PP1.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 16
+        },
+        "drawbject": null
+    },
+      "physical audio 2": {
+        "text": null,
+        "file": {
+            "filename": "PP2.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 9.25
+        },
+        "drawbject": null
+    },
+     "physical audio 3": {
+        "text": null,
+        "file": {
+            "filename": "PP3.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 1.7
+        },
+        "drawbject": null
+    },
+     "physical audio 4": {
+        "text": null,
+        "file": {
+            "filename": "PP4.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 10.6
+        },
+        "drawbject": null
+    },
+     "physical audio 5": {
+        "text": null,
+        "file": {
+            "filename": "PP5.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 12.0
+        },
+        "drawbject": null
+    },
+     "physical audio 6": {
+        "text": null,
+        "file": {
+            "filename": "PP6.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 3.0
+        },
+        "drawbject": null
     }
 }

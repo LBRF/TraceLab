@@ -1,18 +1,15 @@
 # "fixate" at draw start; show image (maintain "fixation"; draw after SOA
 __author__ = "Jonathan Mulle"
-import imp, sys, shutil, os
+import shutil, sys
 sys.path.append("ExpAssets/Resources/code/")
 from random import choice
 from klibs.KLExceptions import TrialException
-from klibs.KLConstants import *
 import klibs.KLParams as P
 from klibs.KLUtilities import *
-from klibs.KLDraw import Ellipse, Rectangle
-from klibs.KLEventInterface import EventTicket as ET
+from klibs.KLDraw import Ellipse
 # from klibs.KLAudio import AudioManager, AudioClip
-from klibs.KLNumpySurface import NumpySurface as NpS
 from klibs.KLExperiment import Experiment
-from TraceLabFigure import TraceLabFigure, linear_interpolation
+from TraceLabFigure import TraceLabFigure
 from ButtonBar import Button, ButtonBar
 from KeyFrames import KeyFrame, FrameSet
 from klibs.KLMixins import BoundaryInspector
@@ -137,10 +134,8 @@ class TraceLab(Experiment, BoundaryInspector):
 
 		if P.capture_figures_mode:
 			self.capture_figures()
-		buttons = []
-		for i in range(0,5):
-			buttons.append([str(i), P.button_size, None])
-		self.button_bar = ButtonBar(self, buttons, P.button_size, P.button_screen_margins, P.y_offset, P.button_instructions)
+		btn_vars = (self, [(str(i), P.btn_size, None) for i in range(1,6)], P.btn_size, P.btn_s_pad, P.y_pad, P.btn_instrux)
+		self.button_bar = ButtonBar(*btn_vars)
 		self.use_random_figures = P.session_number not in (1, 5)
 		self.origin_proto.fill = self.origin_active_color
 		self.origin_active = self.origin_proto.render()
@@ -162,7 +157,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		# practice session vars & elements
 		#####
 
-		if P.exp_condition in [PP_xx_5, PP_xx_1, PP_RR_5, PP_VR_5, PP_VV_5]:
+		if P.exp_condition in [PP_xx_5, PP_xx_1, PP_RR_5, PP_VR_5, PP_VV_5] or P.session_number == 5:
 			key_frames_f = "physical_key_frames"
 		elif P.exp_condition == MI_xx_5:
 			key_frames_f = "imagery_key_frames"
@@ -173,7 +168,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.practice_instructions = self.message(P.practice_instructions, "instructions", blit=False)
 		practice_buttons = [('Replay', [200,100], self.practice), ('Practice', [200,100], self.__practice__),\
 							('Begin', [200,100], self.any_key)]
-		self.practice_button_bar = ButtonBar(self, practice_buttons, [200, 100], P.button_screen_margins, P.y_offset, finish_button=False)
+		self.practice_button_bar = ButtonBar(self, practice_buttons, [200, 100], P.btn_s_pad, P.y_pad, finish_button=False)
 
 		# import figures for use during testing sessions
 		self.fill()
@@ -449,7 +444,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		while not self.figure:
 			self.ui_request()
 			try:
-				self.figure = TraceLabFigure(self, manufacture=heart)
+				self.figure = TraceLabFigure(self)
 			except RuntimeError:
 				pass
 		self.animate_time = 5000.0
