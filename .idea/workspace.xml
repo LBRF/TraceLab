@@ -2,26 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6db2e76c-6d4e-4d96-a23f-00d633d34891" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC1.wav" afterPath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC1.wav" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC2.wav" afterPath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC2.wav" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC3.wav" afterPath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC3.wav" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC4.wav" afterPath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC4.wav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC5.wav" afterPath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC5.wav" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC6.wav" afterPath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC6.wav" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC7.wav" afterPath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC7.wav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC8.wav" afterPath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC8.wav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC9.wav" afterPath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC9.wav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/audio/MI1.wav" afterPath="$PROJECT_DIR$/ExpAssets/Resources/audio/MI1.wav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/audio/MI2.wav" afterPath="$PROJECT_DIR$/ExpAssets/Resources/audio/MI2.wav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/audio/MI3.wav" afterPath="$PROJECT_DIR$/ExpAssets/Resources/audio/MI3.wav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/audio/MI4.wav" afterPath="$PROJECT_DIR$/ExpAssets/Resources/audio/MI4.wav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/audio/MI5.wav" afterPath="$PROJECT_DIR$/ExpAssets/Resources/audio/MI5.wav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/audio/MI6.wav" afterPath="$PROJECT_DIR$/ExpAssets/Resources/audio/MI6.wav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/audio/PP2.wav" afterPath="$PROJECT_DIR$/ExpAssets/Resources/audio/PP2.wav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/code/JSON_Object.py" afterPath="$PROJECT_DIR$/ExpAssets/Resources/code/JSON_Object.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/code/KeyFrames.py" afterPath="$PROJECT_DIR$/ExpAssets/Resources/code/KeyFrames.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py" afterPath="$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/code/assets.json" afterPath="$PROJECT_DIR$/ExpAssets/Resources/code/assets.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/code/control_key_frames.json" afterPath="$PROJECT_DIR$/ExpAssets/Resources/code/control_key_frames.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/code/imagery_key_frames.json" afterPath="$PROJECT_DIR$/ExpAssets/Resources/code/imagery_key_frames.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/code/physical_key_frames.json" afterPath="$PROJECT_DIR$/ExpAssets/Resources/code/physical_key_frames.json" />
     </list>
@@ -52,60 +40,70 @@
     <splitter split-orientation="horizontal" split-proportion="0.53444946">
       <split-first>
         <leaf>
-          <file leaf-file-name="imagery_key_frames.json" pinned="false" current="true" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/imagery_key_frames.json">
+          <file leaf-file-name="KeyFrames.py" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/KeyFrames.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="16" column="48" selection-start="508" selection-end="508" vertical-scroll-proportion="0.28387097" vertical-offset="0" max-vertical-offset="7920">
+                <state line="95" column="42" selection-start="2636" selection-end="2636" vertical-scroll-proportion="0.0" vertical-offset="845" max-vertical-offset="2167">
                   <folding>
-                    <element signature="e#776#1129#0" expanded="true" />
-                    <element signature="e#1338#1504#0" expanded="true" />
-                    <element signature="e#1702#1911#0" expanded="true" />
-                    <element signature="e#2110#2321#0" expanded="true" />
-                    <element signature="e#2516#2683#0" expanded="true" />
-                    <element signature="e#2877#3044#0" expanded="true" />
-                    <element signature="e#3246#3739#0" expanded="true" />
-                    <element signature="e#3925#4258#0" expanded="true" />
-                    <element signature="e#4452#4784#0" expanded="true" />
-                    <element signature="e#5004#5335#0" expanded="true" />
-                    <element signature="e#5547#6199#0" expanded="true" />
-                    <element signature="e#6403#6905#0" expanded="true" />
-                    <element signature="e#7102#7604#0" expanded="true" />
-                    <element signature="e#7818#8299#0" expanded="true" />
-                    <element signature="e#8497#8829#0" expanded="true" />
-                    <element signature="e#9020#9524#0" expanded="true" />
-                    <element signature="e#9748#10252#0" expanded="true" />
-                    <element signature="e#10450#11147#0" expanded="true" />
-                    <element signature="e#11346#12207#0" expanded="true" />
-                    <element signature="e#12420#13282#0" expanded="true" />
-                    <element signature="e#13496#14401#0" expanded="true" />
-                    <element signature="e#14615#15520#0" expanded="true" />
-                    <element signature="e#15762#16623#0" expanded="true" />
-                    <element signature="e#16836#17697#0" expanded="true" />
-                    <element signature="e#17912#18773#0" expanded="true" />
-                    <element signature="e#18989#19493#0" expanded="true" />
-                    <element signature="e#19698#20202#0" expanded="true" />
-                    <element signature="e#20438#20934#0" expanded="true" />
-                    <element signature="e#21121#21306#0" expanded="true" />
-                    <element signature="e#21535#21876#0" expanded="true" />
+                    <element signature="e#81#100#0" expanded="true" />
+                    <element signature="e#547#1664#0" expanded="true" />
+                    <element signature="e#1700#1736#0" expanded="true" />
+                    <element signature="e#1772#1808#0" expanded="true" />
+                    <element signature="e#1880#2175#0" expanded="true" />
+                    <element signature="e#2843#5015#0" expanded="true" />
+                    <element signature="e#5463#5564#0" expanded="true" />
+                    <element signature="e#5602#5798#0" expanded="true" />
+                    <element signature="e#5820#5878#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="KeyFrames.py" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/KeyFrames.py">
+          <file leaf-file-name="control_key_frames.json" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/control_key_frames.json">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="32" column="16" selection-start="941" selection-end="941" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2123">
+                <state line="505" column="8" selection-start="15429" selection-end="15429" vertical-scroll-proportion="-0.55" vertical-offset="5544" max-vertical-offset="17072">
                   <folding>
-                    <element signature="e#81#100#0" expanded="true" />
-                    <element signature="e#1700#1736#0" expanded="true" />
-                    <element signature="e#1772#1808#0" expanded="true" />
-                    <element signature="e#1880#2175#0" expanded="true" />
-                    <element signature="e#2196#2716#0" expanded="true" />
-                    <element signature="e#2750#4914#0" expanded="true" />
-                    <element signature="e#5362#5463#0" expanded="true" />
-                    <element signature="e#5501#5697#0" expanded="true" />
-                    <element signature="e#5719#5777#0" expanded="true" />
+                    <element signature="e#241#591#0" expanded="true" />
+                    <element signature="e#800#966#0" expanded="true" />
+                    <element signature="e#1164#1373#0" expanded="true" />
+                    <element signature="e#1572#1783#0" expanded="true" />
+                    <element signature="e#1978#2145#0" expanded="true" />
+                    <element signature="e#2342#2508#0" expanded="true" />
+                    <element signature="e#2727#3214#0" expanded="true" />
+                    <element signature="e#3415#3752#0" expanded="true" />
+                    <element signature="e#3968#4467#0" expanded="true" />
+                    <element signature="e#4664#5163#0" expanded="true" />
+                    <element signature="e#5368#5865#0" expanded="true" />
+                    <element signature="e#6085#6422#0" expanded="true" />
+                    <element signature="e#6630#7010#0" expanded="true" />
+                    <element signature="e#7244#7581#0" expanded="true" />
+                    <element signature="e#7799#8286#0" expanded="true" />
+                    <element signature="e#8510#8847#0" expanded="true" />
+                    <element signature="e#9062#9423#0" expanded="true" />
+                    <element signature="e#9633#10147#0" expanded="true" />
+                    <element signature="e#10351#10867#0" expanded="true" />
+                    <element signature="e#11072#11589#0" expanded="true" />
+                    <element signature="e#11794#12133#0" expanded="true" />
+                    <element signature="e#12349#12838#0" expanded="true" />
+                    <element signature="e#13044#13558#0" expanded="true" />
+                    <element signature="e#13763#14277#0" expanded="true" />
+                    <element signature="e#14471#14808#0" expanded="true" />
+                    <element signature="e#15043#15409#0" expanded="true" />
+                    <element signature="e#15642#19822#0" expanded="true" />
+                    <element signature="e#20034#24328#0" expanded="true" />
+                    <element signature="e#24548#28919#0" expanded="true" />
+                    <element signature="e#29113#33484#0" expanded="true" />
+                    <element signature="e#33673#38044#0" expanded="true" />
+                    <element signature="e#38277#42798#0" expanded="true" />
+                    <element signature="e#42991#47363#0" expanded="true" />
+                    <element signature="e#47559#51930#0" expanded="true" />
+                    <element signature="e#52143#56514#0" expanded="true" />
+                    <element signature="e#56720#61065#0" expanded="true" />
+                    <element signature="e#61269#65588#0" expanded="true" />
+                    <element signature="e#65801#70120#0" expanded="true" />
+                    <element signature="e#70324#74643#0" expanded="true" />
+                    <element signature="e#74889#75229#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -139,14 +137,35 @@
               </provider>
             </entry>
           </file>
+          <file leaf-file-name="physical_key_frames.json" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/physical_key_frames.json">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="768" column="0" selection-start="23578" selection-end="23578" vertical-scroll-proportion="-20.6" vertical-offset="2382" max-vertical-offset="2981">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="imagery_key_frames.json" pinned="false" current="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/imagery_key_frames.json">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="101" column="38" selection-start="2971" selection-end="2971" vertical-scroll-proportion="0.23873122" vertical-offset="561" max-vertical-offset="2904">
+                  <folding>
+                    <element signature="e#235#586#0" expanded="true" />
+                    <element signature="e#3245#3738#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
         </leaf>
       </split-first>
       <split-second>
         <leaf>
-          <file leaf-file-name="assets.json" pinned="false" current="false" current-in-tab="true">
+          <file leaf-file-name="assets.json" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/assets.json">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="704" column="23" selection-start="20109" selection-end="20109" vertical-scroll-proportion="0.25700164" vertical-offset="7588" max-vertical-offset="8635">
+                <state line="206" column="142" selection-start="5972" selection-end="5972" vertical-scroll-proportion="0.10873146" vertical-offset="2200" max-vertical-offset="9240">
                   <folding />
                 </state>
               </provider>
@@ -179,15 +198,15 @@
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/ButtonBar.py" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/TraceLabFigure.py" />
         <option value="$PROJECT_DIR$/ExpAssets/Config/TraceLab_config.csv" />
-        <option value="$PROJECT_DIR$/ExpAssets/Resources/code/control_key_frames.json" />
         <option value="$PROJECT_DIR$/experiment.py" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/audio/.gitignore" />
-        <option value="$PROJECT_DIR$/ExpAssets/Resources/code/physical_key_frames.json" />
-        <option value="$PROJECT_DIR$/ExpAssets/Resources/code/KeyFrames.py" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/JSON_Object.py" />
         <option value="$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py" />
-        <option value="$PROJECT_DIR$/ExpAssets/Resources/code/assets.json" />
+        <option value="$PROJECT_DIR$/ExpAssets/Resources/code/KeyFrames.py" />
+        <option value="$PROJECT_DIR$/ExpAssets/Resources/code/physical_key_frames.json" />
+        <option value="$PROJECT_DIR$/ExpAssets/Resources/code/control_key_frames.json" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/imagery_key_frames.json" />
+        <option value="$PROJECT_DIR$/ExpAssets/Resources/code/assets.json" />
       </list>
     </option>
   </component>
@@ -739,13 +758,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file:///Library/Python/2.7/site-packages/klibs/KLUtilities.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="248" column="4" selection-start="7138" selection-end="7138" vertical-scroll-proportion="0.33333334" vertical-offset="435" max-vertical-offset="1782">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ExpAssets/Config/TraceLab_config.csv">
       <provider selected="true" editor-type-id="text-editor">
         <state line="7" column="0" selection-start="127" selection-end="127" vertical-scroll-proportion="0.1115942" vertical-offset="0" max-vertical-offset="690">
@@ -767,14 +779,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="227" column="30" selection-start="8718" selection-end="8718" vertical-scroll-proportion="0.0" vertical-offset="649" max-vertical-offset="2046">
           <folding>
-            <element signature="e#5685#6361#0" expanded="true" />
-            <element signature="e#6382#6615#0" expanded="true" />
-            <element signature="e#6647#6897#0" expanded="true" />
-            <element signature="e#7047#8029#0" expanded="true" />
-            <element signature="e#8057#8655#0" expanded="true" />
-            <element signature="e#8918#10066#0" expanded="true" />
-            <element signature="e#10194#10385#0" expanded="true" />
-            <element signature="e#10430#10535#0" expanded="true" />
+            <element signature="e#5685#6361#0" expanded="false" />
+            <element signature="e#6382#6615#0" expanded="false" />
+            <element signature="e#6647#6897#0" expanded="false" />
+            <element signature="e#7047#8029#0" expanded="false" />
+            <element signature="e#8057#8655#0" expanded="false" />
+            <element signature="e#8918#10066#0" expanded="false" />
+            <element signature="e#10194#10385#0" expanded="false" />
+            <element signature="e#10430#10535#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -800,68 +812,22 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="15" column="24" selection-start="618" selection-end="618" vertical-scroll-proportion="0.0" vertical-offset="2016" max-vertical-offset="5390">
           <folding>
-            <element signature="e#2591#2665#0" expanded="true" />
-            <element signature="e#2687#6519#0" expanded="true" />
-            <element signature="e#6541#6668#0" expanded="true" />
-            <element signature="e#6709#7233#0" expanded="true" />
-            <element signature="e#7260#8652#0" expanded="true" />
-            <element signature="e#8674#9998#0" expanded="true" />
-            <element signature="e#10029#10199#0" expanded="true" />
-            <element signature="e#10914#13065#0" expanded="true" />
-            <element signature="e#13835#14402#0" expanded="true" />
-            <element signature="e#14432#14692#0" expanded="true" />
-            <element signature="e#14724#15017#0" expanded="true" />
-            <element signature="e#15051#16073#0" expanded="true" />
-            <element signature="e#16135#16673#0" expanded="true" />
-            <element signature="e#16755#16967#0" expanded="true" />
-            <element signature="e#17009#17172#0" expanded="true" />
+            <element signature="e#2591#2665#0" expanded="false" />
+            <element signature="e#2687#6519#0" expanded="false" />
+            <element signature="e#6541#6668#0" expanded="false" />
+            <element signature="e#6709#7233#0" expanded="false" />
+            <element signature="e#7260#8652#0" expanded="false" />
+            <element signature="e#8674#9998#0" expanded="false" />
+            <element signature="e#10029#10199#0" expanded="false" />
+            <element signature="e#10914#13065#0" expanded="false" />
+            <element signature="e#13835#14402#0" expanded="false" />
+            <element signature="e#14432#14692#0" expanded="false" />
+            <element signature="e#14724#15017#0" expanded="false" />
+            <element signature="e#15051#16073#0" expanded="false" />
+            <element signature="e#16135#16673#0" expanded="false" />
+            <element signature="e#16755#16967#0" expanded="false" />
+            <element signature="e#17009#17172#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/control_key_frames.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="302" column="37" selection-start="9098" selection-end="9099" vertical-scroll-proportion="-1.9747474" vertical-offset="4495" max-vertical-offset="15323">
-          <folding>
-            <element signature="e#224#425#0" expanded="true" />
-            <element signature="e#635#801#0" expanded="true" />
-            <element signature="e#999#1208#0" expanded="true" />
-            <element signature="e#1407#1618#0" expanded="true" />
-            <element signature="e#1813#1980#0" expanded="true" />
-            <element signature="e#2181#2518#0" expanded="true" />
-            <element signature="e#2719#3056#0" expanded="true" />
-            <element signature="e#3276#3613#0" expanded="true" />
-            <element signature="e#3818#4198#0" expanded="true" />
-            <element signature="e#4398#4735#0" expanded="true" />
-            <element signature="e#4949#5286#0" expanded="true" />
-            <element signature="e#5498#5835#0" expanded="true" />
-            <element signature="e#6034#6416#0" expanded="true" />
-            <element signature="e#6598#6937#0" expanded="true" />
-            <element signature="e#7152#7491#0" expanded="true" />
-            <element signature="e#7691#8029#0" expanded="true" />
-            <element signature="e#8223#8560#0" expanded="true" />
-            <element signature="e#9352#13212#0" expanded="true" />
-            <element signature="e#13430#17461#0" expanded="true" />
-            <element signature="e#17673#21967#0" expanded="true" />
-            <element signature="e#22172#26543#0" expanded="true" />
-            <element signature="e#26737#31108#0" expanded="true" />
-            <element signature="e#31297#35668#0" expanded="true" />
-            <element signature="e#35885#40256#0" expanded="true" />
-            <element signature="e#40449#44821#0" expanded="true" />
-            <element signature="e#45017#49388#0" expanded="true" />
-            <element signature="e#49602#53973#0" expanded="true" />
-            <element signature="e#54179#58524#0" expanded="true" />
-            <element signature="e#58728#63047#0" expanded="true" />
-            <element signature="e#63260#67579#0" expanded="true" />
-            <element signature="e#67791#72110#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/physical_key_frames.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="65" column="9" selection-start="1947" selection-end="1947" vertical-scroll-proportion="-16.5" vertical-offset="0" max-vertical-offset="2992">
-          <folding />
         </state>
       </provider>
     </entry>
@@ -887,23 +853,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/KeyFrames.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="16" selection-start="941" selection-end="941" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2123">
-          <folding>
-            <element signature="e#81#100#0" expanded="true" />
-            <element signature="e#1700#1736#0" expanded="true" />
-            <element signature="e#1772#1808#0" expanded="true" />
-            <element signature="e#1880#2175#0" expanded="true" />
-            <element signature="e#2196#2716#0" expanded="true" />
-            <element signature="e#2750#4914#0" expanded="true" />
-            <element signature="e#5362#5463#0" expanded="true" />
-            <element signature="e#5501#5697#0" expanded="true" />
-            <element signature="e#5719#5777#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="136" column="0" selection-start="4765" selection-end="4765" vertical-scroll-proportion="0.0" vertical-offset="922" max-vertical-offset="1562">
@@ -911,48 +860,97 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/assets.json">
+    <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/image/arrow_up.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/KeyFrames.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="704" column="23" selection-start="20109" selection-end="20109" vertical-scroll-proportion="0.25700164" vertical-offset="7588" max-vertical-offset="8635">
+        <state line="95" column="42" selection-start="2636" selection-end="2636" vertical-scroll-proportion="0.0" vertical-offset="845" max-vertical-offset="2167">
+          <folding>
+            <element signature="e#81#100#0" expanded="true" />
+            <element signature="e#547#1664#0" expanded="true" />
+            <element signature="e#1700#1736#0" expanded="true" />
+            <element signature="e#1772#1808#0" expanded="true" />
+            <element signature="e#1880#2175#0" expanded="true" />
+            <element signature="e#2843#5015#0" expanded="true" />
+            <element signature="e#5463#5564#0" expanded="true" />
+            <element signature="e#5602#5798#0" expanded="true" />
+            <element signature="e#5820#5878#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/physical_key_frames.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="768" column="0" selection-start="23578" selection-end="23578" vertical-scroll-proportion="-20.6" vertical-offset="2382" max-vertical-offset="2981">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/control_key_frames.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="505" column="8" selection-start="15429" selection-end="15429" vertical-scroll-proportion="-0.55" vertical-offset="5544" max-vertical-offset="17072">
+          <folding>
+            <element signature="e#241#591#0" expanded="true" />
+            <element signature="e#800#966#0" expanded="true" />
+            <element signature="e#1164#1373#0" expanded="true" />
+            <element signature="e#1572#1783#0" expanded="true" />
+            <element signature="e#1978#2145#0" expanded="true" />
+            <element signature="e#2342#2508#0" expanded="true" />
+            <element signature="e#2727#3214#0" expanded="true" />
+            <element signature="e#3415#3752#0" expanded="true" />
+            <element signature="e#3968#4467#0" expanded="true" />
+            <element signature="e#4664#5163#0" expanded="true" />
+            <element signature="e#5368#5865#0" expanded="true" />
+            <element signature="e#6085#6422#0" expanded="true" />
+            <element signature="e#6630#7010#0" expanded="true" />
+            <element signature="e#7244#7581#0" expanded="true" />
+            <element signature="e#7799#8286#0" expanded="true" />
+            <element signature="e#8510#8847#0" expanded="true" />
+            <element signature="e#9062#9423#0" expanded="true" />
+            <element signature="e#9633#10147#0" expanded="true" />
+            <element signature="e#10351#10867#0" expanded="true" />
+            <element signature="e#11072#11589#0" expanded="true" />
+            <element signature="e#11794#12133#0" expanded="true" />
+            <element signature="e#12349#12838#0" expanded="true" />
+            <element signature="e#13044#13558#0" expanded="true" />
+            <element signature="e#13763#14277#0" expanded="true" />
+            <element signature="e#14471#14808#0" expanded="true" />
+            <element signature="e#15043#15409#0" expanded="true" />
+            <element signature="e#15642#19822#0" expanded="true" />
+            <element signature="e#20034#24328#0" expanded="true" />
+            <element signature="e#24548#28919#0" expanded="true" />
+            <element signature="e#29113#33484#0" expanded="true" />
+            <element signature="e#33673#38044#0" expanded="true" />
+            <element signature="e#38277#42798#0" expanded="true" />
+            <element signature="e#42991#47363#0" expanded="true" />
+            <element signature="e#47559#51930#0" expanded="true" />
+            <element signature="e#52143#56514#0" expanded="true" />
+            <element signature="e#56720#61065#0" expanded="true" />
+            <element signature="e#61269#65588#0" expanded="true" />
+            <element signature="e#65801#70120#0" expanded="true" />
+            <element signature="e#70324#74643#0" expanded="true" />
+            <element signature="e#74889#75229#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/imagery_key_frames.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="48" selection-start="508" selection-end="508" vertical-scroll-proportion="0.28387097" vertical-offset="0" max-vertical-offset="7920">
+        <state line="101" column="38" selection-start="2971" selection-end="2971" vertical-scroll-proportion="0.23873122" vertical-offset="561" max-vertical-offset="2904">
           <folding>
-            <element signature="e#776#1129#0" expanded="true" />
-            <element signature="e#1338#1504#0" expanded="true" />
-            <element signature="e#1702#1911#0" expanded="true" />
-            <element signature="e#2110#2321#0" expanded="true" />
-            <element signature="e#2516#2683#0" expanded="true" />
-            <element signature="e#2877#3044#0" expanded="true" />
-            <element signature="e#3246#3739#0" expanded="true" />
-            <element signature="e#3925#4258#0" expanded="true" />
-            <element signature="e#4452#4784#0" expanded="true" />
-            <element signature="e#5004#5335#0" expanded="true" />
-            <element signature="e#5547#6199#0" expanded="true" />
-            <element signature="e#6403#6905#0" expanded="true" />
-            <element signature="e#7102#7604#0" expanded="true" />
-            <element signature="e#7818#8299#0" expanded="true" />
-            <element signature="e#8497#8829#0" expanded="true" />
-            <element signature="e#9020#9524#0" expanded="true" />
-            <element signature="e#9748#10252#0" expanded="true" />
-            <element signature="e#10450#11147#0" expanded="true" />
-            <element signature="e#11346#12207#0" expanded="true" />
-            <element signature="e#12420#13282#0" expanded="true" />
-            <element signature="e#13496#14401#0" expanded="true" />
-            <element signature="e#14615#15520#0" expanded="true" />
-            <element signature="e#15762#16623#0" expanded="true" />
-            <element signature="e#16836#17697#0" expanded="true" />
-            <element signature="e#17912#18773#0" expanded="true" />
-            <element signature="e#18989#19493#0" expanded="true" />
-            <element signature="e#19698#20202#0" expanded="true" />
-            <element signature="e#20438#20934#0" expanded="true" />
-            <element signature="e#21121#21306#0" expanded="true" />
-            <element signature="e#21535#21876#0" expanded="true" />
+            <element signature="e#235#586#0" expanded="true" />
+            <element signature="e#3245#3738#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/assets.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="206" column="142" selection-start="5972" selection-end="5972" vertical-scroll-proportion="0.10873146" vertical-offset="2200" max-vertical-offset="9240">
+          <folding />
         </state>
       </provider>
     </entry>

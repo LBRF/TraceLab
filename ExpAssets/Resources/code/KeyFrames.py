@@ -79,18 +79,22 @@ class KeyFrame(object):
 			self.__render_frames__()
 
 	def play(self):
+		try:
+			if self.audio_track.started:
+				self.audio_track.started = False
+		except AttributeError:
+			pass
 		start = time.time()
 		frames_played = False
 		while time.time() - start < self.duration:
 			self.exp.ui_request()
-			# if self.audio_track:
-			try:
-				if time.time() - start >= self.audio_start_time and not self.audio_track.started:
-					self.audio_track.play()
-			except AttributeError:
-				pass
 			if not frames_played:
 				for frame in self.asset_frames:
+					try:
+						if time.time() - start >= self.audio_start_time and not self.audio_track.started:
+							self.audio_track.play()
+					except AttributeError:
+						pass
 					self.exp.ui_request()
 					self.exp.fill()
 					for asset in frame:
@@ -118,7 +122,7 @@ class KeyFrame(object):
 						raise RuntimeError("Only one audio track per key frame can be set.")
 					else:
 						self.audio_track = self.assets[d.asset].contents
-						self.audio_start_time = d.start
+						self.audio_start_time = d.start * 0.001
 				else:
 					img_drctvs.append(d)
 					if d.start == d.end:

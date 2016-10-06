@@ -19,6 +19,46 @@
         },
         "drawbject": null
     },
+    "arrow up": {
+        "text": null,
+        "file": {
+            "filename": "arrow_up.png",
+            "media_type": "image_f",
+            "resolution": [41, 81],
+            "duration": null
+        },
+        "drawbject": null
+    },
+    "arrow down": {
+        "text": null,
+        "file": {
+            "filename": "arrow_down.png",
+            "media_type": "image_f",
+            "resolution": [41, 81],
+            "duration": null
+        },
+        "drawbject": null
+    },
+    "arrow right": {
+        "text": null,
+        "file": {
+            "filename": "arrow_right.png",
+            "media_type": "image_f",
+            "resolution": [81, 41],
+            "duration": null
+        },
+        "drawbject": null
+    },
+    "arrow left": {
+        "text": null,
+        "file": {
+            "filename": "arrow_left.png",
+            "media_type": "image_f",
+            "resolution": [81, 41],
+            "duration": null
+        },
+        "drawbject": null
+    },
     "thought bubble": {
         "text": null,
         "file": {
@@ -43,6 +83,22 @@
             "height": 6,
             "stroke": [2, [255, 255, 255]],
             "fill": [255, 45, 45]
+        }
+    },
+    "target circle": {
+        "text": null,
+        "file": {
+            "filename": null,
+            "media_type": null,
+            "resolution": null,
+            "duration": null
+        },
+        "drawbject": {
+            "shape": "ellipse",
+            "width": 50,
+            "height": 50,
+            "stroke": [4, [255, 0, 0]],
+            "fill": null
         }
     },
     "not recording": {
@@ -148,7 +204,7 @@
     },
     "imagery instructions 1": {
         "text": {
-            "string": "You are about to see a white dot trace out a movement on the screen.\nAll movements begin and end at the same point.\nTou will later be asked to repeat this movement using motor imagery.\nThis means you will practice the movement mentally, without actually performing the movement.\nWe want you to imagine what it would look like, and also how it would feel.\nThis tutorial will show you how to respond.",
+            "string": "You are about to see a white dot trace out a movement on the screen.\nAll movements begin and end at the same point.\nYou will later be asked to repeat this movement using motor imagery.\nThis means you will practice the movement mentally, without actually performing the movement.\nWe want you to imagine what it would look like, and also how it would feel.\nThis tutorial will show you how to respond.",
             "style": "instructions"
         },
         "file": {
@@ -291,7 +347,7 @@
     },
     "control instructions 5": {
         "text": {
-            "string": "For example:\n \nIn the next bounce, the dot moves UP, LEFT and finally DOWN between corners.",
+            "string": "The dot moves UP, DOWN and RIGHT between corners.",
             "style": "instructions"
         },
         "file": {
@@ -317,7 +373,7 @@
     },
     "control instructions 7": {
         "text": {
-            "string": "At the end of each movement, you will be asked:\n 'How many times the dot changed course to the LEFT, RIGHT, UP or DOWN?'\n \nPay attention to movements carefully, as you will be asked about one direction randomly.\nThe movements will happen quickly, so don’t worry about being perfect—use your best judgement.",
+            "string": "At the end of each movement, you will be asked:\n 'How many times the dot changed course to the LEFT, RIGHT, UP or DOWN?'\n \nPay attention to movements carefully, as you will be asked about one direction randomly.\nThe movements will happen quickly, so don’t worry about being perfect.\nUse your best judgement.",
             "style": "instructions"
         },
         "file": {
@@ -583,8 +639,7 @@
             "filename": "CC2.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 10
-        },
+            "duration": 10.5        },
         "drawbject": null
     },
     "control audio 3": {
@@ -593,7 +648,7 @@
             "filename": "CC3.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 10.3
+            "duration": 9.9
         },
         "drawbject": null
     },
@@ -603,7 +658,7 @@
             "filename": "CC4.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 3.1
+            "duration": 4.0
         },
         "drawbject": null
     },
@@ -623,7 +678,7 @@
             "filename": "CC6.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 19.0
+            "duration": 18.5
         },
         "drawbject": null
     },
@@ -633,7 +688,7 @@
             "filename": "CC7.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 5.0
+            "duration": 4.9
         },
         "drawbject": null
     },
