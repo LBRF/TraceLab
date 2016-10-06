@@ -132,3 +132,5 @@ practice_instructions = "The following is a demonstration period. Use this time 
 play_narration = False  # toggles the audio component
 practice_figure = "heart"
 practice_animation_time = 3500 # ms
+
+bubble_location = (1550, 275)

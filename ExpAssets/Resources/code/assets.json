@@ -4,17 +4,27 @@
         "file": {
             "filename": "pointer.png",
             "media_type": "image_f",
-            "resolution": [179,200],
+            "resolution": [179, 200],
             "duration": null
         },
         "drawbject": null
     },
-    "not recording": {
+    "pointer small": {
         "text": null,
         "file": {
-            "filename": "not_recording.png",
+            "filename": "pointer_sml.png",
             "media_type": "image_f",
-            "resolution": [219,220],
+            "resolution": [45, 46],
+            "duration": null
+        },
+        "drawbject": null
+    },
+    "thought bubble": {
+        "text": null,
+        "file": {
+            "filename": "thought_bubble.png",
+            "media_type": "image_f",
+            "resolution": [588, 498],
             "duration": null
         },
         "drawbject": null
@@ -35,7 +45,17 @@
             "fill": [255, 45, 45]
         }
     },
-     "end practice": {
+    "not recording": {
+        "text": null,
+        "file": {
+            "filename": "not_recording.png",
+            "media_type": "image_f",
+            "resolution": [219, 220],
+            "duration": null
+        },
+        "drawbject": null
+    },
+    "end practice": {
         "text": {
             "string": "Now it's your turn. Try some practice.",
             "style": "instructions"
@@ -141,7 +161,7 @@
     },
     "imagery instructions 2": {
         "text": {
-            "string": "The red circle indicates that you are now able to respond.\nThis is not a reaction time test — you do not need to respond right away; take your time!",
+            "string": "The red circle indicates that you are now able to respond.\nThis is not a reaction time test; you do not need to respond right away.\nTake your time!",
             "style": "instructions"
         },
         "file": {
@@ -553,7 +573,7 @@
             "filename": "CC1.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 11.435
+            "duration": 10.4
         },
         "drawbject": null
     },
@@ -563,7 +583,7 @@
             "filename": "CC2.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 10.611
+            "duration": 10
         },
         "drawbject": null
     },
@@ -573,7 +593,7 @@
             "filename": "CC3.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 11.702
+            "duration": 10.3
         },
         "drawbject": null
     },
@@ -583,7 +603,7 @@
             "filename": "CC4.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 3.877
+            "duration": 3.1
         },
         "drawbject": null
     },
@@ -593,7 +613,7 @@
             "filename": "CC5.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 4.191
+            "duration": 3.1
         },
         "drawbject": null
     },
@@ -603,7 +623,7 @@
             "filename": "CC6.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 20.363
+            "duration": 19.0
         },
         "drawbject": null
     },
@@ -613,7 +633,7 @@
             "filename": "CC7.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 5.839
+            "duration": 5.0
         },
         "drawbject": null
     },
@@ -623,76 +643,76 @@
             "filename": "CC8.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 4.702
+            "duration": 3.1
         },
         "drawbject": null
     },
     "control audio 9": {
-    "text": null,
-    "file": {
-        "filename": "CC9.wav",
-        "media_type": "audio_f",
-        "resolution": null,
-        "duration": 3.622
+        "text": null,
+        "file": {
+            "filename": "CC9.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 2.7
+        },
+        "drawbject": null
     },
-    "drawbject": null
-},
     "imagery audio 1": {
         "text": null,
         "file": {
             "filename": "MI1.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 26.006
+            "duration": 24.5
         },
         "drawbject": null
     },
-     "imagery audio 2": {
+    "imagery audio 2": {
         "text": null,
         "file": {
             "filename": "MI2.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 10.402
+            "duration": 9.5
         },
         "drawbject": null
     },
-     "imagery audio 3": {
+    "imagery audio 3": {
         "text": null,
         "file": {
             "filename": "MI3.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 2.786
+            "duration": 1.6
         },
         "drawbject": null
     },
-     "imagery audio 4": {
+    "imagery audio 4": {
         "text": null,
         "file": {
             "filename": "MI4.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 23.997
+            "duration": 22.8
         },
         "drawbject": null
     }, "imagery audio 5": {
-        "text": null,
-        "file": {
-            "filename": "MI5.wav",
-            "media_type": "audio_f",
-            "resolution": null,
-            "duration": 9.079
-        },
-        "drawbject": null
+    "text": null,
+    "file": {
+        "filename": "MI5.wav",
+        "media_type": "audio_f",
+        "resolution": null,
+        "duration": 7.8
     },
-     "imagery audio 6": {
+    "drawbject": null
+},
+    "imagery audio 6": {
         "text": null,
         "file": {
             "filename": "MI6.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 3.854
+            "duration": 2.6
         },
         "drawbject": null
     },
@@ -702,21 +722,21 @@
             "filename": "PP1.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 16
+            "duration": 16.0
         },
         "drawbject": null
     },
-      "physical audio 2": {
+    "physical audio 2": {
         "text": null,
         "file": {
             "filename": "PP2.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 9.25
+            "duration": 9.2
         },
         "drawbject": null
     },
-     "physical audio 3": {
+    "physical audio 3": {
         "text": null,
         "file": {
             "filename": "PP3.wav",
@@ -726,7 +746,7 @@
         },
         "drawbject": null
     },
-     "physical audio 4": {
+    "physical audio 4": {
         "text": null,
         "file": {
             "filename": "PP4.wav",
@@ -736,7 +756,7 @@
         },
         "drawbject": null
     },
-     "physical audio 5": {
+    "physical audio 5": {
         "text": null,
         "file": {
             "filename": "PP5.wav",
@@ -746,7 +766,7 @@
         },
         "drawbject": null
     },
-     "physical audio 6": {
+    "physical audio 6": {
         "text": null,
         "file": {
             "filename": "PP6.wav",

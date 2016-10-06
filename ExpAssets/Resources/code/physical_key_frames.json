@@ -106,7 +106,7 @@
         {
             "label": "origin 2",
             "description": "Second instructions appear. Audio 2 starts.",
-            "duration": 9250,
+            "duration": 9200,
             "enabled": true,
             "directives": [
                 {
