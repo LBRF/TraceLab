@@ -49,7 +49,7 @@ show_practice_messages = True
 table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA")]}
 figures = ["heart", "fig6"]
 origin_wait_time = 1000  # ms
-demo_mode = True
+demo_mode = False
 mirror_mode = False
 
 #########################################
