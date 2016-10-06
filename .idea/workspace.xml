@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6db2e76c-6d4e-4d96-a23f-00d633d34891" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py" afterPath="$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/ExpAssets/Resources/figures/heart/heart.tlf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/ExpAssets/Resources/figures/heart/heart_points.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/ExpAssets/Resources/figures/heart/heart_preview.png" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="TraceLab.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -119,10 +122,19 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="TraceLab_params.py" pinned="false" current="true" current-in-tab="true">
+          <file leaf-file-name="TraceLab_params.py" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="51" column="17" selection-start="1628" selection-end="1628" vertical-scroll-proportion="0.36633664" vertical-offset="339" max-vertical-offset="1562">
+                <state line="64" column="20" selection-start="1978" selection-end="1978" vertical-scroll-proportion="0.0" vertical-offset="339" max-vertical-offset="1562">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name=".gitignore" pinned="false" current="true" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/figures/.gitignore">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="0" column="1" selection-start="1" selection-end="1" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="619">
                   <folding />
                 </state>
               </provider>
@@ -182,7 +194,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/ExpAssets/Resources/code/key_frames_test.json" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/assets_test.json" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/heart_key_frames.json" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/motor_key_frames.json" />
@@ -198,6 +209,7 @@
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/imagery_key_frames.json" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/assets.json" />
         <option value="$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py" />
+        <option value="$PROJECT_DIR$/ExpAssets/Resources/figures/.gitignore" />
       </list>
     </option>
   </component>
@@ -322,7 +334,51 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="figures" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TraceLab" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TraceLab" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ExpAssets" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="code" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TraceLab" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TraceLab" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ExpAssets" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="audio" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -749,13 +805,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/ExpAssets/Config/TraceLab_config.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="0" selection-start="127" selection-end="127" vertical-scroll-proportion="0.1115942" vertical-offset="0" max-vertical-offset="690">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/TraceLabFigure.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="154" column="46" selection-start="5904" selection-end="5904" vertical-scroll-proportion="0.0" vertical-offset="816" max-vertical-offset="2640">
@@ -940,7 +989,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="51" column="17" selection-start="1628" selection-end="1628" vertical-scroll-proportion="0.36633664" vertical-offset="339" max-vertical-offset="1562">
+        <state line="64" column="20" selection-start="1978" selection-end="1978" vertical-scroll-proportion="0.0" vertical-offset="339" max-vertical-offset="1562">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/figures/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="1" selection-start="1" selection-end="1" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="619">
           <folding />
         </state>
       </provider>
