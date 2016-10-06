@@ -2,16 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6db2e76c-6d4e-4d96-a23f-00d633d34891" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC2.wav" afterPath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC2.wav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC3.wav" afterPath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC3.wav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC4.wav" afterPath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC4.wav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC6.wav" afterPath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC6.wav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC7.wav" afterPath="$PROJECT_DIR$/ExpAssets/Resources/audio/CC7.wav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/code/KeyFrames.py" afterPath="$PROJECT_DIR$/ExpAssets/Resources/code/KeyFrames.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/code/assets.json" afterPath="$PROJECT_DIR$/ExpAssets/Resources/code/assets.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/code/control_key_frames.json" afterPath="$PROJECT_DIR$/ExpAssets/Resources/code/control_key_frames.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/code/imagery_key_frames.json" afterPath="$PROJECT_DIR$/ExpAssets/Resources/code/imagery_key_frames.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Resources/code/physical_key_frames.json" afterPath="$PROJECT_DIR$/ExpAssets/Resources/code/physical_key_frames.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py" afterPath="$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py" />
     </list>
     <ignored path="TraceLab.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -128,10 +119,10 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="TraceLab_params.py" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="TraceLab_params.py" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="136" column="0" selection-start="4765" selection-end="4765" vertical-scroll-proportion="0.0" vertical-offset="922" max-vertical-offset="1562">
+                <state line="51" column="17" selection-start="1628" selection-end="1628" vertical-scroll-proportion="0.36633664" vertical-offset="339" max-vertical-offset="1562">
                   <folding />
                 </state>
               </provider>
@@ -146,10 +137,10 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="imagery_key_frames.json" pinned="false" current="false" current-in-tab="true">
+          <file leaf-file-name="imagery_key_frames.json" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/imagery_key_frames.json">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="101" column="38" selection-start="2971" selection-end="2971" vertical-scroll-proportion="0.23873122" vertical-offset="561" max-vertical-offset="2904">
+                <state line="101" column="38" selection-start="2971" selection-end="2971" vertical-scroll-proportion="-7.15" vertical-offset="561" max-vertical-offset="2904">
                   <folding>
                     <element signature="e#235#586#0" expanded="true" />
                     <element signature="e#3245#3738#0" expanded="true" />
@@ -162,7 +153,7 @@
       </split-first>
       <split-second>
         <leaf>
-          <file leaf-file-name="assets.json" pinned="false" current="true" current-in-tab="true">
+          <file leaf-file-name="assets.json" pinned="false" current="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/assets.json">
               <provider selected="true" editor-type-id="text-editor">
                 <state line="206" column="142" selection-start="5972" selection-end="5972" vertical-scroll-proportion="0.10873146" vertical-offset="2200" max-vertical-offset="9240">
@@ -201,12 +192,12 @@
         <option value="$PROJECT_DIR$/experiment.py" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/audio/.gitignore" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/JSON_Object.py" />
-        <option value="$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/KeyFrames.py" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/physical_key_frames.json" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/control_key_frames.json" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/imagery_key_frames.json" />
         <option value="$PROJECT_DIR$/ExpAssets/Resources/code/assets.json" />
+        <option value="$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py" />
       </list>
     </option>
   </component>
@@ -853,13 +844,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="136" column="0" selection-start="4765" selection-end="4765" vertical-scroll-proportion="0.0" vertical-offset="922" max-vertical-offset="1562">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/image/arrow_up.png">
       <provider selected="true" editor-type-id="images">
         <state />
@@ -939,7 +923,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/imagery_key_frames.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="101" column="38" selection-start="2971" selection-end="2971" vertical-scroll-proportion="0.23873122" vertical-offset="561" max-vertical-offset="2904">
+        <state line="101" column="38" selection-start="2971" selection-end="2971" vertical-scroll-proportion="-7.15" vertical-offset="561" max-vertical-offset="2904">
           <folding>
             <element signature="e#235#586#0" expanded="true" />
             <element signature="e#3245#3738#0" expanded="true" />
@@ -950,6 +934,13 @@
     <entry file="file://$PROJECT_DIR$/ExpAssets/Resources/code/assets.json">
       <provider selected="true" editor-type-id="text-editor">
         <state line="206" column="142" selection-start="5972" selection-end="5972" vertical-scroll-proportion="0.10873146" vertical-offset="2200" max-vertical-offset="9240">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ExpAssets/Config/TraceLab_params.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="51" column="17" selection-start="1628" selection-end="1628" vertical-scroll-proportion="0.36633664" vertical-offset="339" max-vertical-offset="1562">
           <folding />
         </state>
       </provider>
