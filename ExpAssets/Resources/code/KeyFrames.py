@@ -86,7 +86,6 @@ class KeyFrame(object):
 			# if self.audio_track:
 			try:
 				if time.time() - start >= self.audio_start_time and not self.audio_track.started:
-					print "played audio for {0}".format(self.label)
 					self.audio_track.play()
 			except AttributeError:
 				pass

@@ -33,6 +33,7 @@ class JSON_Object(object):
 	__eval_regex__ = compile("^EVAL:[ ]{0,}(.*)$")
 
 	def __init__(self, json_file_path=None, decoded_data=None, child_object=False):
+		self.file_path = json_file_path
 		try:
 			self.__items__ = self.__unicode_to_str__(json.load(open(json_file_path)) if json_file_path else decoded_data)
 		except ValueError:
@@ -127,6 +128,7 @@ class JSON_Object(object):
 					setattr(self, i, v)
 		except (TypeError, IndexError) as e:
 			if initial_pass:
+				print e
 				raise ValueError("Top-level element must be a key-value pair.")
 			converted = []
 			for i in content:
