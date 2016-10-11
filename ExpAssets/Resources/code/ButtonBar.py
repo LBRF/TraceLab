@@ -147,7 +147,7 @@ class Slider(BoundaryInspector):
 
 class Button(object):
 
-	def __init__(self, bar, exp, button_text, button_size, location):
+	def __init__(self, bar, exp, button_text, button_size, location, callback=None):
 		super(Button, self).__init__()
 		self.bar = bar
 		self.exp = exp
@@ -161,6 +161,7 @@ class Button(object):
 		self.location = location
 		self.text_location = (self.location[0] + self.size[0] // 2, self.location[1] + self.size[1] // 2)
 		self.create_boundary()
+		self.callback = callback
 
 	def blit(self):
 		if self.active:
@@ -180,39 +181,56 @@ class Button(object):
 
 class ButtonBar(BoundaryInspector):
 
-	def __init__(self, exp, button_count, button_size, screen_margins, y_offset, message=None):
+	def __init__(self, exp, buttons, button_size, screen_margins, y_offset, message=None, finish_button=True):
 		super(ButtonBar, self).__init__()
 		self.exp = exp
 		self.exp.text_manager.add_style('button_inactive', 24, [255, 255, 255, 255])
 		self.exp.text_manager.add_style('button_active', 24, [150, 255, 150, 255])
-		self.b_count = button_count
+		self.b_count = len(buttons)
+		self.button_data = buttons
 		self.buttons = []
-		self.b_size = button_size
+		try:
+			self.b_width = button_size[0]
+			self.b_height = button_size[1]
+		except TypeError:
+			self.b_width = button_size
+			self.b_height = button_size
 		self.screen_margins = screen_margins
 		self.y_offset = y_offset
-		self.b_pad = (Params.screen_x - (self.b_size * self.b_count + 2 * self.screen_margins)) // (self.b_count - 1)
-		self.start = None
-		self.mt = None
-		self.rt = None
+		self.b_pad = (Params.screen_x - (self.b_width * self.b_count + 2 * self.screen_margins)) // (self.b_count - 1)
+		self.gen_finish_button = finish_button
 		self.finish_b = None
 		self.message = message
 		if message:
 			self.message_r = self.exp.message(message, "instructions", blit=False)
 			self.message_loc = (Params.screen_c[0], self.y_offset - (self.message_r.height * 2))
 		self.gen_buttons()
+		self.start = None
+		self.mt = None
+		self.rt = None
 		self.response = None
 
 	def gen_buttons(self):
-		for i in range(0, self.b_count):
-			loc = (self.screen_margins + (i * self.b_size) + (i * self.b_pad) + self.b_size // 2, self.y_offset + self.b_size //2)
-			self.buttons.append(Button(self, self.exp, str(i+1), (self.b_size,self.b_size), loc))
-		self.finish_b = Button(self, self.exp, "Done", (100,50), (Params.screen_x - (self.screen_margins + self.b_size), int(Params.screen_y * 0.9)))
+		for b in self.button_data:
+			i = self.button_data.index(b)
+			loc = (self.screen_margins + (i * self.b_width) + (i * self.b_pad) + self.b_width // 2, \
+				   self.y_offset + self.b_height // 2)
+			try:
+				self.buttons.append(Button(self, self.exp, str(b[0]), (self.b_width, self.b_height), loc, b[2]))
+			except IndexError:
+				self.buttons.append(Button(self, self.exp, str(b[0]), (self.b_width,self.b_height), loc))
+		if self.gen_finish_button:
+			self.finish_b = Button(self, self.exp, "Done", (100,50), \
+								   (P.screen_x - (self.screen_margins + self.b_width), int(P.screen_y * 0.9)))
 
 	def render(self):
 		self.exp.fill()
 		for b in self.buttons:
 			b.blit()
-		self.finish_b.blit()
+		try:
+			self.finish_b.blit()
+		except AttributeError:
+			pass
 		if self.message:
 			self.exp.blit(self.message_r, 5, self.message_loc)
 		self.exp.flip()
@@ -240,11 +258,22 @@ class ButtonBar(BoundaryInspector):
 							if b.active:
 								selection = b
 								last_selected = b
-						if self.finish_b.active and self.within_boundary("Done",[e.button.x, e.button.y]):
-							self.response = int(last_selected.button_text)
-							self.mt = time.time() - mt_start
-							finished = True
-			self.finish_b.active = selection is not None
+								if callable(b.callback):
+									if self.finish_b is None:
+										return b.callback
+									else:
+										b.callback()
+						try:
+							if self.finish_b.active and self.within_boundary("Done",[e.button.x, e.button.y]):
+								self.response = int(last_selected.button_text)
+								self.mt = time.time() - mt_start
+								finished = True
+						except AttributeError:
+							pass
+			try:
+				self.finish_b.active = selection is not None
+			except AttributeError:
+				pass
 			self.render()
 		self.exp.fill()
 		self.exp.flip()
@@ -256,12 +285,15 @@ class ButtonBar(BoundaryInspector):
 
 	def reset(self):
 		self.start = None
-		for b in self.buttons:
-			b.active = False
-		self.finish_b.active = False
 		self.rt = None
 		self.mt = None
 		self.response = None
+		for b in self.buttons:
+			b.active = False
+		try:
+			self.finish_b.active = False
+		except AttributeError:
+			pass
 
 	def update_message(self, message_text):
 		self.message = message_text

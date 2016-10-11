@@ -1,0 +1,790 @@
+{
+    "keyframes": [
+        {
+            "label": "physical instructions",
+            "description": "Initial presentation of instructions. Audio 1 starts.",
+            "duration": 16000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "physical audio 1",
+                    "start": 0,
+                    "end": null
+                },
+                {
+                    "asset": "physical instructions 1",
+                    "start": "EVAL: P.screen_c",
+                    "end": "EVAL: P.screen_c"
+                }
+            ]
+        },
+        {
+            "label": "heart 0",
+            "description": "Dot appears on screen.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "physical instructions 1",
+                    "start": "EVAL: P.screen_c",
+                    "end": "EVAL: P.screen_c"
+                },
+                {
+                    "asset": "dot",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                }
+            ]
+        },
+        {
+            "label": "heart 1",
+            "description": "Dot appears and travels to first vertex,",
+            "duration": 900,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "dot",
+                    "start": [960, 780],
+                    "end": [480, 360]
+                }
+            ]
+        },
+        {
+            "label": "heart 2",
+            "description": "Dot travels to second vertex.",
+            "duration": 600,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "dot",
+                    "start": [480, 360],
+                    "end": [960, 360],
+                    "control": [720, 120]
+                }
+            ]
+        },
+        {
+            "label": "heart 3",
+            "description": "Dot travels to third vertex...",
+            "duration": 600,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "dot",
+                    "start": [960, 360],
+                    "end": [1420, 360],
+                    "control": [1200, 120]
+                }
+            ]
+        },
+        {
+            "label": "heart 4",
+            "description": "Dot returns to the origin.",
+            "duration": 900,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "dot",
+                    "start": [1420, 360],
+                    "end": [960, 780]
+                }
+            ]
+        },
+        {
+            "label": "origin 1",
+            "description": "Origin appears.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                }
+            ]
+        },
+        {
+            "label": "origin 2",
+            "description": "Second instructions appear. Audio 2 starts.",
+            "duration": 9200,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "physical audio 2",
+                    "start": 0,
+                    "end": null
+                },
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "physical instructions 2",
+                    "start": [960, 680],
+                    "end": [960, 680]
+                }
+            ]
+        },
+        {
+            "label": "origin 3",
+            "description": "Pointer appears and instructions leave.",
+            "duration": 300,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1160, 1000],
+                    "end": [1160, 1000]
+                }
+            ]
+        },
+        {
+            "label": "origin 4",
+            "description": "Pointer moves to origin.",
+            "duration": 1000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1160, 1000],
+                    "end": [1050, 870]
+                }
+            ]
+        },
+        {
+            "label": "origin 5",
+            "description": "Third set of instructions appear. Audio 3 starts.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "physical audio 3",
+                    "start": 0,
+                    "end": null
+                },
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 870],
+                    "end": [1050, 870]
+                },
+                {
+                    "asset": "physical instructions 3",
+                    "start": [960, 680],
+                    "end": [960, 680]
+                }
+
+            ]
+        },
+        {
+            "label": "origin 7",
+            "description": "Pointer simulates click on origin.",
+            "duration": 200,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 870],
+                    "end": [1050, 880]
+                },
+                {
+                    "asset": "physical instructions 3",
+                    "start": [960, 680],
+                    "end": [960, 680]
+                }
+            ]
+        },
+        {
+            "label": "origin 7",
+            "description": "Pause after pointer click.",
+            "duration": 1000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 880],
+                    "end": [1050, 880]
+                },
+                {
+                    "asset": "physical instructions 3",
+                    "start": [960, 680],
+                    "end": [960, 680]
+                }
+            ]
+        },
+        {
+            "label": "origin 8",
+            "description": "Fourth set of instructions appear and pointer leaves origin. Audio 4 starts.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "physical audio 4",
+                    "start": 0,
+                    "end": null
+                },
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 880],
+                    "end": [1010, 850]
+                },
+                {
+                    "asset": "physical instructions 4",
+                    "start": [960, 680],
+                    "end": [960, 680]
+                }
+            ]
+        },
+        {
+            "label": "origin 9",
+            "description": "Pause to let audio 4 advance to instructions 5",
+            "duration": 1000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 850],
+                    "end": [1010, 850]
+                },
+                {
+                    "asset": "physical instructions 4",
+                    "start": [960, 680],
+                    "end": [960, 680]
+                }
+            ]
+        },
+        {
+            "label": "origin 9",
+            "description": "Pause to let audio 4 advance to instructions 5",
+            "duration": 2000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 850],
+                    "end": [1010, 850]
+                },
+                {
+                    "asset": "physical instructions 5",
+                    "start": [960, 680],
+                    "end": [960, 680]
+                }
+            ]
+        },
+        {
+            "label": "origin 10",
+            "description": "Origin turns green.",
+            "duration": 4100,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 850],
+                    "end": [1010, 850]
+                },
+                {
+                    "asset": "physical instructions 5",
+                    "start": [960, 680],
+                    "end": [960, 680]
+                }
+            ]
+        },
+        {
+            "label": "pointer 1",
+            "description": "Pointer travels to first vertex.",
+            "duration": 900,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 850],
+                    "end": [570, 460]
+                }
+            ]
+        },
+        {
+            "label": "pointer 2",
+            "description": "Pointer travels to second vertex.",
+            "duration": 600,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [570, 460],
+                    "end": [1050, 460],
+                    "control": [810, 220]
+                }
+            ]
+        },
+        {
+            "label": "pointer 3",
+            "description": "Pointer travels to third vertex.",
+            "duration": 600,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 460],
+                    "end": [1510, 460],
+                    "control": [1290, 220]
+                }
+            ]
+        },
+        {
+            "label": "pointer 4",
+            "description": "Pointer travels most of the way to the origin.",
+            "duration": 900,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1510, 460],
+                    "end": [1140, 810]
+                }
+            ]
+        },
+        {
+            "label": "pointer 5",
+            "description": "Sixth instructions given. Audio 5 starts.",
+            "duration": 2600,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "physical audio 5",
+                    "start": 0,
+                    "end": null
+                },
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1140, 810],
+                    "end": [1140, 810]
+                },
+                                {
+                    "asset": "physical instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "pointer 6",
+            "description": "Sixth instructions given. ",
+            "duration": 1800,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1140, 810],
+                    "end": [1140, 810]
+                },
+                {
+                    "asset": "physical instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "pointer 7",
+            "description": "Pointer returns to the origin.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1140, 810],
+                    "end": [1050, 880]
+                },
+                {
+                    "asset": "physical instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "pointer 8",
+            "description": "Origin is removed.",
+            "duration": 1000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "pointer",
+                    "start": [1050, 880],
+                    "end": [1050, 880]
+                },
+                {
+                    "asset": "physical instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "pointer 9",
+            "description": "Pointer misses the origin.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1140, 810],
+                    "end": [950, 900]
+                },
+                {
+                    "asset": "physical instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "pointer 9",
+            "description": "Pointer persists.",
+            "duration": 1000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [950, 900],
+                    "end": [950, 900]
+                },
+                {
+                    "asset": "physical instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+                {
+            "label": "pointer 10",
+            "description": "Pointer recovers.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [950, 900],
+                    "end": [1050, 880]
+                },
+                {
+                    "asset": "physical instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+         {
+            "label": "pointer 10",
+            "description": "Pause after pointer recovery.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 880],
+                    "end": [1050, 880]
+                },
+                {
+                    "asset": "physical instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "pointer 11",
+            "description": "Origin is removed (second time).",
+            "duration": 1400,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "pointer",
+                    "start": [1050, 880],
+                    "end": [1050, 880]
+                },
+                {
+                    "asset": "physical instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "pointer 7",
+            "description": "Pointer returns to the RED origin.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1140, 810],
+                    "end": [1050, 880]
+                },
+                {
+                    "asset": "physical instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "pointer 7",
+            "description": "Pointer returns to the RED origin.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 880],
+                    "end": [1050, 880]
+                },
+                {
+                    "asset": "physical instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                },
+                                {
+                    "asset": "not recording",
+                    "start": "EVAL: (P.screen_c[0], P.screen_c[1] - 200)",
+                    "end": "EVAL: (P.screen_c[0], P.screen_c[1] - 200)"
+                }
+
+            ]
+        },
+         {
+            "label": "pointer 7",
+            "description": "Pointer returns to the RED origin.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 880],
+                    "end": [1050, 880]
+                },
+                {
+                    "asset": "physical instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+           {
+            "label": "pointer 7",
+            "description": "Pointer returns to the RED origin.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 880],
+                    "end": [1050, 880]
+                },
+                {
+                    "asset": "physical instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                },
+                                {
+                    "asset": "not recording",
+                    "start": "EVAL: (P.screen_c[0], P.screen_c[1] - 200)",
+                    "end": "EVAL: (P.screen_c[0], P.screen_c[1] - 200)"
+                }
+
+            ]
+        },
+        {
+            "label": "pointer 7",
+            "description": "Pointer returns to the RED origin.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 880],
+                    "end": [1050, 880]
+                },
+                {
+                    "asset": "physical instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+           {
+            "label": "pointer 7",
+            "description": "Pointer returns to the RED origin.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 880],
+                    "end": [1050, 880]
+                },
+                {
+                    "asset": "physical instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                },
+                                {
+                    "asset": "not recording",
+                    "start": "EVAL: (P.screen_c[0], P.screen_c[1] - 200)",
+                    "end": "EVAL: (P.screen_c[0], P.screen_c[1] - 200)"
+                }
+
+            ]
+        },
+        {
+            "label": "end practice script",
+            "description": "User is told to begin self-initiating practice.",
+            "duration": 3000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "physical audio 6",
+                    "start": 0,
+                    "end": null
+                },
+                {
+                    "asset": "end practice",
+                    "start": "EVAL: P.screen_c",
+                    "end": "EVAL: P.screen_c"
+                }
+            ]
+        }
+
+    ]
+}
+
