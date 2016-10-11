@@ -1,125 +1,200 @@
 __author__ = 'jono'
-import abc
-import time
-import os
-from math import floor
+# import sys
+# sys.path.append("ExpAssets/Resources/code/")
+
 from klibs import P
-from klibs.KLConstants import *
 from klibs.KLNumpySurface import NumpySurface as NpS
 from klibs.KLDraw import *
+from klibs.KLAudio import AudioClip
 from klibs.KLUtilities import line_segment_len
-from TraceLabFigure import interpolated_path_len, bezier_interpolation, pascal_row, linear_interpolation
+from TraceLabFigure import bezier_interpolation,  linear_interpolation
+from JSON_Object import JSON_Object
 
-
-def bezier_frames(self):
-		self.path_length = interpolated_path_len(self.frames)
-		draw_in = self.animate_target_time * 0.001
-		rate = 0.016666666666667
-		max_frames = int(draw_in / rate)
-		delta_d = floor(self.path_length / max_frames)
-		self.a_frames = [list(self.frames[0])]
-		seg_len = 0
-		for i in range(0, len(self.frames)):
-			p1 = [float(p) for p in self.frames[i]]
-			try:
-				p2 = [float(p) for p in self.frames[i+1]]
-			except IndexError:
-				p2 = [float(p) for p in self.frames[0]]
-			seg_len += line_segment_len(p1, p2)
-			if seg_len >= delta_d:
-				self.a_frames.append(list(self.frames[i]))
-				seg_len = 0
-
+# TODO: come up with a way for a FrameSet object to be an asset
+AUDIO_FILE = "audio_f"
+IMAGE_FILE = "image_f"
 
 class KeyFrameAsset(object):
 
-	def __init__(self, text=None, file_name=None, drawbject=None):
-		if not text and not file_name and not drawbject:
-			raise ValueError("No resource provided.")
-		if text:
-			self.contents = text
-		if file_name:
-			self.contents = NpS(os.path.join(P.image_dir, file_name))
-		if drawbject:
-			if drawbject[0] == "rect":
-				self.contents = Rectangle(*drawbject[1:])
-			if drawbject[0] == "ellipse":
-				self.contents = Ellipse(*drawbject[1:])
-			if drawbject[0] == "annulus":
-				self.contents = Annulus(*drawbject[1:])
+	def __init__(self, exp, data):
+		self.exp = exp
+		self.media_type = IMAGE_FILE
+		self.height = None
+		self.width = None
+		self.duration = None
+
+		if data.text:
+			# todo: make style optional
+			self.contents = exp.message(data.text.string, data.text.style, blit=False)
+		elif data.drawbject:
+			d = data.drawbject
+			if d.shape == "rectangle":
+				self.contents = Rectangle(d.width, d.height, d.stroke, d.fill).render()
+			if d.shape == "ellipse":
+				self.contents = Ellipse(d.width, d.height, d.stroke, d.fill).render()
+			if d.shape == "annulus":
+				self.contents = Annulus(d.diameter, d.ring_width, d.stroke, d.fill).render()
+		else:
+			self.media_type = data.file.media_type
+			if self.is_audio:
+				self.duration = data.file
+				self.contents = AudioClip(os.path.join(P.resources_dir, "audio", data.file.filename))
+			else:
+				self.contents = NpS(os.path.join(P.image_dir, data.file.filename))
+
+		try:
+			self.height = self.contents.height
+			self.width = self.contents.width
+		except AttributeError:
+			try:
+				self.height = self.contents.shape[0]
+				self.width = self.contents.shape[1]
+			except AttributeError:
+				pass  # ie. audio file
+
+	@property
+	def is_image(self):
+		return self.media_type == IMAGE_FILE
+
+	@property
+	def is_audio(self):
+		return self.media_type == AUDIO_FILE
+
+
+
 
 class KeyFrame(object):
 
-	def __init__(self, duration, assets, directives, cl_after=False, cl_before=False):
-		self.exp = None
-		self.duration = duration * 0.001
-		self.cl_after = cl_after
-		self.cl_before = cl_before
+	def __init__(self, exp, data, assets):
+		self.exp = exp
 		self.assets = assets
-		self.directives = directives
+		self.label = data.label
+		self.directives = data.directives
+		self.duration = data.duration * 0.001
 		self.asset_frames = []
+		self.enabled = data.enabled
+		self.audio_track = None
+		self.audio_start_time = 0
+		if self.enabled:
+			self.__render_frames__()
 
 	def play(self):
+		try:
+			if self.audio_track.started:
+				self.audio_track.started = False
+		except AttributeError:
+			pass
 		start = time.time()
-		if self.cl_before:
-			self.exp.fill()
-		for t in self.asset_frames:
-			self.exp.fill()
-			for a in t:
-				self.exp.blit(self.assets[a[0]], 5, a[1])
-			self.flip()
-		if self.clear_after:
-			self.exp.fill()
+		frames_played = False
 		while time.time() - start < self.duration:
 			self.exp.ui_request()
+			if not frames_played:
+				for frame in self.asset_frames:
+					try:
+						if time.time() - start >= self.audio_start_time and not self.audio_track.started:
+							self.audio_track.play()
+					except AttributeError:
+						pass
+					self.exp.ui_request()
+					self.exp.fill()
+					for asset in frame:
+						self.exp.blit(asset[0], 5, asset[1])
+					self.exp.flip()
+				frames_played = True
 
 	def __render_frames__(self):
 		total_frames = 0
 		asset_frames = []
-		for d in self.directives:
-			if d[1] == d[2]:
-				asset_frames.append([d[0], d[1]])
-				continue
-			frames = []
-			if d[3] is None:
-				v = line_segment_len(d[1], d[2]) / self.duration
-				raw_frames = linear_interpolation(d[1], d[2], v)
+		num_static_directives = 0
+		img_drctvs = []
+
+		try:
+			# strip out audio track if there is one, first
+			for d in self.directives:
+				try:
+					asset = self.assets[d.asset].contents
+				except KeyError:
+					e_msg = "Asset '{0}' not found in KeyFrame.assets.".format(d.asset)
+					raise KeyError(e_msg)
+
+				if self.assets[d.asset].is_audio:
+					if self.audio_track is not None:
+						raise RuntimeError("Only one audio track per key frame can be set.")
+					else:
+						self.audio_track = self.assets[d.asset].contents
+						self.audio_start_time = d.start * 0.001
+				else:
+					img_drctvs.append(d)
+					if d.start == d.end:
+						num_static_directives += 1
+
+
+			if len(img_drctvs) == num_static_directives:
+				self.asset_frames = self.asset_frames = [[(self.assets[d.asset].contents, d.start) for d in img_drctvs]]
+				return
+
+			for d in img_drctvs:
+				asset = self.assets[d.asset].contents
+				if d.start == d.end:
+					asset_frames.append([(asset, d.start)])
+					continue
+				frames = []
+				try:
+					path_len = bezier_interpolation(d.start, d.end, d.control)[0]
+					raw_frames = bezier_interpolation(d.start, d.end, d.control, velocity=path_len / self.duration)
+				except AttributeError:
+					v = line_segment_len(d.start, d.end) / self.duration
+					raw_frames = linear_interpolation(d.start, d.end, v)
+				for p in raw_frames :
+					frames.append([asset, p])
+				if len(frames) > total_frames:
+					total_frames = len(frames)
+				asset_frames.append(frames)
+			for frame_set in asset_frames:
+				while len(frame_set) < total_frames:
+					frame_set.append(frame_set[-1])
+			self.asset_frames = []
+			if total_frames > 1:
+				for i in range(0, total_frames):
+					self.asset_frames.append([n[i] for n in asset_frames])
 			else:
-				v = interpolated_path_len(bezier_interpolation(d[1, d[2], d[3]])) / self.duration
-				raw_frames = bezier_interpolation(d[1, d[2], d[3]], None, v)
-			for p in raw_frames :
-				frames.append([d[0], p])
-			if len(frames) > total_frames:
-				total_frames = len(frames)
-			asset_frames.append(frames)
-		for frame_set in asset_frames:
-			while len(frame_set) < total_frames:
-				frame_set.append(frame_set[-1])
-		self.asset_frames = []
-		for i in range(0, len(asset_frames)):
-			self.asset_frames.append([n[i] for n in asset_frames])
+				self.asset_frames = asset_frames
+
+		except (IndexError, AttributeError, TypeError, ValueError) as e:
+			for d in self.directives: print d
+			e_msg = "An error occurred when rendering this frame. This is usually do an unexpected return " \
+					"from an 'EVAL:' entry in the JSON script. The original error was:\n\n\t{0}: {1}".format(e.__class__, e.message)
+			raise RuntimeError(e_msg)
+
 
 class FrameSet(object):
 
-	def __init__(self):
+	def __init__(self, exp, key_frames_file, assets_file=None):
+		self.exp = exp
 		self.key_frames = []
 		self.assets = {}
+		if assets_file:
+			self.assets_file = os.path.join(P.resources_dir, "code", assets_file + ".json")
+		else:
+			self.assets_file = None
+		self.key_frames_file = os.path.join(P.resources_dir, "code", key_frames_file + ".json")
+		self.generate_key_frames()
 
-	def load_assets(self, asset_list):
-		for a in asset_list:
-			self.assets[a] = KeyFrameAsset(asset_list[a])
 
-	def gen_key_frames(self, kf_list):
-		for kf in kf_list:
-			self.key_frames.append(KeyFrame(kf[1], self.assets, kf[2]))
+	def __load_assets__(self, assets_file):
+		j_ob = JSON_Object(assets_file)
+		for a in j_ob:
+			self.assets[a] = KeyFrameAsset(self.exp, j_ob[a])
+
+	def generate_key_frames(self, ):
+		if self.assets_file:
+			self.__load_assets__(self.assets_file)
+		j_ob = JSON_Object(self.key_frames_file)
+		for kf in j_ob.keyframes:
+			self.key_frames.append(KeyFrame(self.exp, kf, self.assets))
+
 
 	def play(self):
 		for kf in self.key_frames:
-			kf.play()
-asset_list = [['pointer', None, "pointer.png", None],
-			  ['dot', None, None, ["annulus", 6,2,[1, (255,255,255)], (255, 0,0)]],
-			  ['instrux', "This is some instruction text", None, None]]
-keyframes = [["instructions", 1000, [["instrux", P.screen_c, P.screen_c]]],
-			 ["dot animate", 3000, [["dot", P.screen_c, (500,500)]]],
-			 ["both animate", 3000, [["dot", P.screen_c, (500,500)],
-									 ["pointer", (0,0), (500, 500)]]]]
+			if kf.enabled:
+				kf.play()

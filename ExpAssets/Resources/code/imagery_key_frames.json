@@ -1,0 +1,714 @@
+{
+    "keyframes": [
+        {
+            "label": "imagery instructions",
+            "description": "Initial instructions given. Audio 1 begins",
+            "duration": 22000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "imagery audio 1",
+                    "start": 0,
+                    "end": null
+                },
+
+                {
+                    "asset": "imagery instructions 1",
+                    "start": "EVAL: P.screen_c",
+                    "end": "EVAL: P.screen_c"
+                }
+            ]
+        },
+        {
+            "label": "heart 0",
+            "description": "Dot appears on screen",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "imagery instructions 1",
+                    "start": "EVAL: P.screen_c",
+                    "end": "EVAL: P.screen_c"
+                },
+                {
+                    "asset": "dot",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                }
+            ]
+        },
+        {
+            "label": "heart 1",
+            "description": "Dot appears and travels to first vertex,",
+            "duration": 900,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "dot",
+                    "start": [960, 780],
+                    "end": [480, 360]
+                }
+            ]
+        },
+        {
+            "label": "heart 2",
+            "description": "Dot travels to second vertex.",
+            "duration": 600,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "dot",
+                    "start": [480, 360],
+                    "end": [960, 360],
+                    "control": [720, 120]
+                }
+            ]
+        },
+        {
+            "label": "heart 3",
+            "description": "Dot travels to third vertex...",
+            "duration": 600,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "dot",
+                    "start": [960, 360],
+                    "end": [1420, 360],
+                    "control": [1200, 120]
+                }
+            ]
+        },
+        {
+            "label": "heart 4",
+            "description": "Dot returns to the origin.",
+            "duration": 900,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "dot",
+                    "start": [1420, 360],
+                    "end": [960, 780]
+                }
+            ]
+        },
+        {
+            "label": "heart 5",
+            "description": "Dot pauses at the origin.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "dot",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                }
+            ]
+        },
+        {
+            "label": "origin 1",
+            "description": "Origin appears. Audio 2 begins.",
+            "duration": 8200,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "imagery audio 2",
+                    "start": 0,
+                    "end": null
+                },
+                {
+                    "asset": "imagery instructions 2",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                },
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                }
+            ]
+        },
+        {
+            "label": "origin 3",
+            "description": "Pointer appears.",
+            "duration": 300,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1160, 1000],
+                    "end": [1160, 1000]
+                }
+            ]
+        },
+        {
+            "label": "origin 4",
+            "description": "Pointer moves to origin.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1160, 1000],
+                    "end": [1050, 870]
+                }
+            ]
+        },
+        {
+            "label": "origin 5",
+            "description": "Pointer remains at origin while Audio 2 completes.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 870],
+                    "end": [1050, 870]
+                }
+            ]
+        },
+
+        {
+            "label": "origin 6",
+            "description": "Third instructions given. Audio 3 begins.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "imagery audio 3",
+                    "start": 0,
+                    "end": null
+                },
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 870],
+                    "end": [1050, 870]
+                },
+                {
+                    "asset": "imagery instructions 3",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+
+            ]
+        },
+        {
+            "label": "origin 7",
+            "description": "Pointer simulates click on origin.",
+            "duration": 200,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 870],
+                    "end": [1050, 880]
+                },
+                {
+                    "asset": "imagery instructions 3",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "origin 8",
+            "description": "Pointer pauses after click.",
+            "duration": 800,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 880],
+                    "end": [1050, 880]
+                },
+                {
+                    "asset": "imagery instructions 3",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "origin 9",
+            "description": "Pointer moves off of origin. Audio 4 begins.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "imagery audio 4",
+                    "start": 0,
+                    "end": null
+                },
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1050, 880],
+                    "end": [1010, 850]
+                }
+
+            ]
+        },
+        {
+            "label": "origin 9",
+            "description": "Pointer moves off of origin.",
+            "duration": 900,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin red",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 850],
+                    "end": [1010, 850]
+                }
+
+            ]
+        },
+        {
+            "label": "origin 10",
+            "description": "Origin turns green.",
+            "duration": 4100,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 850],
+                    "end": [1010, 850]
+                },
+                {
+                    "asset": "imagery instructions 4",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "origin 11",
+            "description": "Extended pause to simulate imagining the dot's route.",
+            "duration": 700,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 850],
+                    "end": [1010, 850]
+                },
+                {
+                    "asset": "imagery instructions 5",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "mental move 1",
+            "description": "Thought bubble appears.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 850],
+                    "end": [1010, 850]
+                },
+                {
+                    "asset": "thought bubble",
+                    "start": "EVAL: P.bubble_location",
+                    "end": "EVAL: P.bubble_location"
+                },
+                {
+                    "asset": "imagery instructions 5",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "mental move 2",
+            "description": "Thought pointer appears.",
+            "duration": 500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 850],
+                    "end": [1010, 850]
+                },
+                {
+                    "asset": "thought bubble",
+                    "start": "EVAL: P.bubble_location",
+                    "end": "EVAL: P.bubble_location"
+                },
+                {
+                    "asset": "pointer small",
+                    "start": [1550, 375],
+                    "end": [1550, 375]
+                },
+                {
+                    "asset": "imagery instructions 5",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "mental move 3",
+            "description": "Thought pointer moves to first vertex.",
+            "duration": 900,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+
+                {
+                    "asset": "pointer",
+                    "start": [1010, 850],
+                    "end": [1010, 850]
+                },
+                {
+                    "asset": "thought bubble",
+                    "start": "EVAL: P.bubble_location",
+                    "end": "EVAL: P.bubble_location"
+                },
+                {
+                    "asset": "pointer small",
+                    "start": [1550, 375],
+                    "end": [1400, 200]
+                },
+                {
+                    "asset": "imagery instructions 5",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "mental move 4",
+            "description": "Thought pointer moves to second vertex.",
+            "duration": 600,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 850],
+                    "end": [1010, 850]
+                },
+                {
+                    "asset": "thought bubble",
+                    "start": "EVAL: P.bubble_location",
+                    "end": "EVAL: P.bubble_location"
+                },
+                {
+                    "asset": "pointer small",
+                    "start": [1400, 200],
+                    "end": [1550, 200],
+                    "control": [1475, 130]
+                },
+                {
+                    "asset": "imagery instructions 5",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "mental move 5",
+            "description": "Thought pointer moves to third  vertex.",
+            "duration": 600,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 850],
+                    "end": [1010, 850]
+                },
+                {
+                    "asset": "thought bubble",
+                    "start": "EVAL: P.bubble_location",
+                    "end": "EVAL: P.bubble_location"
+                },
+                {
+                    "asset": "pointer small",
+                    "start": [1550, 200],
+                    "end": [1700, 200],
+                    "control": [1625, 130]
+                },
+                {
+                    "asset": "imagery instructions 5",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "mental move 6",
+            "description": "Thought pointer rests at third vertex, awaiting audio to catch up.",
+            "duration": 8700,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 850],
+                    "end": [1010, 850]
+                },
+                {
+                    "asset": "thought bubble",
+                    "start": "EVAL: P.bubble_location",
+                    "end": "EVAL: P.bubble_location"
+                },
+                {
+                    "asset": "pointer small",
+                    "start": [1700, 200],
+                    "end": [1700, 200]
+                },
+                {
+                    "asset": "imagery instructions 5",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "mental move 4",
+            "description": "Thought pointer returns to the origin.",
+            "duration": 900,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 850],
+                    "end": [1010, 850]
+                },
+                {
+                    "asset": "thought bubble",
+                    "start": "EVAL: P.bubble_location",
+                    "end": "EVAL: P.bubble_location"
+                },
+                {
+                    "asset": "pointer small",
+                    "start": [1700, 200],
+                    "end": [1550, 375]
+                },
+                {
+                    "asset": "imagery instructions 5",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "mental move 4",
+            "description": "Thought pointer moves to second vertex.",
+            "duration": 2600,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 850],
+                    "end": [1010, 850]
+                },
+                {
+                    "asset": "thought bubble",
+                    "start": "EVAL: P.bubble_location",
+                    "end": "EVAL: P.bubble_location"
+                },
+                {
+                    "asset": "pointer small",
+                    "start": [1550, 375],
+                    "end": [1550, 375]
+                },
+                {
+                    "asset": "imagery instructions 5",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "pointer 0",
+            "description": "Pointer simulates being lifted off of screen.",
+            "duration": 200,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 850],
+                    "end": [1010, 840]
+                },
+                {
+                    "asset": "imagery instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+         {
+            "label": "pointer 1",
+            "description": "Pause to allow audio 5 to finish",
+            "duration": 1600,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "pointer",
+                    "start": [1010, 840],
+                    "end": [1010, 840]
+                },
+                {
+                    "asset": "imagery instructions 6",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+
+        {
+            "label": "pointer 3",
+            "description": "Pointer removed and seventh instructions given. Audio 5 begins.",
+            "duration": 3500,
+            "enabled": true,
+            "directives": [
+                 {
+                    "asset": "imagery audio 5",
+                    "start": 0,
+                    "end": null
+                },
+                {
+                    "asset": "origin green",
+                    "start": [960, 780],
+                    "end": [960, 780]
+                },
+                {
+                    "asset": "imagery instructions 7",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "pointer 4",
+            "description": "Origin removed.",
+            "duration": 4500,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "imagery instructions 7",
+                    "start": [960, 580],
+                    "end": [960, 580]
+                }
+            ]
+        },
+        {
+            "label": "end practice script",
+            "description": "User is told to begin self-initiating practice.",
+            "duration": 3000,
+            "enabled": true,
+            "directives": [
+                {
+                    "asset": "physical audio 6",
+                    "start": 0,
+                    "end": null
+                },
+                {
+                    "asset": "end practice",
+                    "start": "EVAL: P.screen_c",
+                    "end": "EVAL: P.screen_c"
+                }
+            ]
+        }
+    ]
+}
+
