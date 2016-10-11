@@ -276,6 +276,8 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.fill()
 		self.flip()
 
+		if P.exp_condition == MI_xx_5 and not P.practicing:
+			self.evi.send("origin_off", code=P.origin_off_code)
 		if self.__practicing__:
 			return
 
@@ -376,6 +378,8 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.fill()
 		self.blit(self.origin_inactive, 5, self.origin_pos, flip_x=P.flip_x)
 		self.flip()
+		if not P.practicing:
+			self.evi.send("origin_red", code=P.origin_red_on_code)
 		P.tk.start("imaginary trace")
 		if P.demo_mode:
 			show_mouse_cursor()
@@ -389,6 +393,8 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.fill()
 		self.blit(self.origin_active, 5, self.origin_pos, flip_x=P.flip_x)
 		self.flip()
+		if not P.practicing:
+			self.evi.send("origin_green", code=P.origin_green_on_code)
 		while at_origin:
 			if not self.within_boundary('origin', mouse_pos()):
 				at_origin = False
