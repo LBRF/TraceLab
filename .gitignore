@@ -9,5 +9,6 @@ ExpAssets/Local
 ExpAssets/Local/**
 **/.pyc
 **/.idea
+.idea
 .idea/**
 .DS_STORE
