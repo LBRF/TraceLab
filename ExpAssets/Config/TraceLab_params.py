@@ -7,8 +7,8 @@
 #########################################
 eye_tracker_available = False
 eye_tracking = False
-labjack_available = False
-labjacking = True
+labjack_available = True
+labjacking = False
 
 #########################################
 # Environment Aesthetic Defaults
@@ -127,7 +127,7 @@ seg_report_fuzz = (2, 4)
 ########################################
 # Practice Controls
 ########################################
-enable_practice = True
+enable_practice = False
 truncate_practice_animation = True
 practice_instructions = "The following is a demonstration period. Use this time to learn and then practice the task.\nTap the screen to continue."
 play_narration = False  # toggles the audio component
