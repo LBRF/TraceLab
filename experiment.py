@@ -106,7 +106,8 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def setup(self):
 		self.lj = u3.U3()
-		self.lj.configU3()
+		self.lj.configU3(FIOAnalog=1)
+		self.lj.getFeedback(u3.PortStateWrite([0, 0, 0]))
 		self.loading_msg = self.message("Loading...", "default", blit=False)
 		self.fill()
 		self.blit(self.loading_msg, 5, P.screen_c)
@@ -280,7 +281,18 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.flip()
 
 		if P.exp_condition == MI_xx_5 and not P.practicing:
-			self.lj.getFeedback(u3.PortStateWrite([3000, 0, 0]))
+			self.lj.getFeedback(u3.PortStateWrite([1, 0, 0]))
+			time.sleep(0.01)
+			self.lj.getFeedback(u3.PortStateWrite([0, 0, 0]))
+			time.sleep(0.01)
+			self.lj.getFeedback(u3.PortStateWrite([1, 0, 0]))
+			time.sleep(0.01)
+			self.lj.getFeedback(u3.PortStateWrite([0, 0, 0]))
+			time.sleep(0.01)
+			self.lj.getFeedback(u3.PortStateWrite([1, 0, 0]))
+			time.sleep(0.01)
+			self.lj.getFeedback(u3.PortStateWrite([0, 0, 0]))
+
 		if self.__practicing__:
 			return
 
@@ -387,7 +399,9 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.blit(self.origin_inactive, 5, self.origin_pos, flip_x=P.flip_x)
 		self.flip()
 		if not P.practicing:
-			self.lj.getFeedback(u3.PortStateWrite([1000, 0, 0]))
+			self.lj.getFeedback(u3.PortStateWrite([1, 0, 0]))
+			time.sleep(0.01)
+			self.lj.getFeedback(u3.PortStateWrite([0, 0, 0]))
 		P.tk.start("imaginary trace")
 		if P.demo_mode:
 			show_mouse_cursor()
@@ -402,7 +416,13 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.blit(self.origin_active, 5, self.origin_pos, flip_x=P.flip_x)
 		self.flip()
 		if not P.practicing:
-			self.lj.getFeedback(u3.PortStateWrite([2000, 0, 0]))
+			self.lj.getFeedback(u3.PortStateWrite([1, 0, 0]))
+			time.sleep(0.01)
+			self.lj.getFeedback(u3.PortStateWrite([0, 0, 0]))
+			time.sleep(0.01)
+			self.lj.getFeedback(u3.PortStateWrite([1, 0, 0]))
+			time.sleep(0.01)
+			self.lj.getFeedback(u3.PortStateWrite([0, 0, 0]))
 		while at_origin:
 			if not self.within_boundary('origin', mouse_pos()):
 				at_origin = False
