@@ -4,7 +4,7 @@
             "label": "imagery instructions",
             "description": "Initial instructions given. Audio 1 begins",
             "duration": 22000,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "imagery audio 1",
@@ -23,7 +23,7 @@
             "label": "heart 0",
             "description": "Dot appears on screen",
             "duration": 500,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "imagery instructions 1",
@@ -41,7 +41,7 @@
             "label": "heart 1",
             "description": "Dot appears and travels to first vertex,",
             "duration": 900,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "dot",
@@ -54,7 +54,7 @@
             "label": "heart 2",
             "description": "Dot travels to second vertex.",
             "duration": 600,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "dot",
@@ -68,7 +68,7 @@
             "label": "heart 3",
             "description": "Dot travels to third vertex...",
             "duration": 600,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "dot",
@@ -82,7 +82,7 @@
             "label": "heart 4",
             "description": "Dot returns to the origin.",
             "duration": 900,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "dot",
@@ -95,7 +95,7 @@
             "label": "heart 5",
             "description": "Dot pauses at the origin.",
             "duration": 500,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "dot",
@@ -108,7 +108,7 @@
             "label": "origin 1",
             "description": "Origin appears. Audio 2 begins.",
             "duration": 8200,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "imagery audio 2",
@@ -131,7 +131,7 @@
             "label": "origin 3",
             "description": "Pointer appears.",
             "duration": 300,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "origin red",
@@ -149,7 +149,7 @@
             "label": "origin 4",
             "description": "Pointer moves to origin.",
             "duration": 500,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "origin red",
@@ -167,7 +167,7 @@
             "label": "origin 5",
             "description": "Pointer remains at origin while Audio 2 completes.",
             "duration": 500,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "origin red",
@@ -186,7 +186,7 @@
             "label": "origin 6",
             "description": "Third instructions given. Audio 3 begins.",
             "duration": 500,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "imagery audio 3",
@@ -215,7 +215,7 @@
             "label": "origin 7",
             "description": "Pointer simulates click on origin.",
             "duration": 200,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "origin red",
@@ -238,7 +238,7 @@
             "label": "origin 8",
             "description": "Pointer pauses after click.",
             "duration": 800,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "origin red",
@@ -261,7 +261,7 @@
             "label": "origin 9",
             "description": "Pointer moves off of origin. Audio 4 begins.",
             "duration": 500,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "imagery audio 4",
@@ -285,7 +285,7 @@
             "label": "origin 9",
             "description": "Pointer moves off of origin.",
             "duration": 900,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "origin red",
@@ -304,7 +304,7 @@
             "label": "origin 10",
             "description": "Origin turns green.",
             "duration": 4100,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "origin green",
@@ -327,7 +327,7 @@
             "label": "origin 11",
             "description": "Extended pause to simulate imagining the dot's route.",
             "duration": 700,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "origin green",
@@ -350,7 +350,7 @@
             "label": "mental move 1",
             "description": "Thought bubble appears.",
             "duration": 500,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "origin green",
@@ -378,7 +378,7 @@
             "label": "mental move 2",
             "description": "Thought pointer appears.",
             "duration": 500,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "origin green",
@@ -411,7 +411,7 @@
             "label": "mental move 3",
             "description": "Thought pointer moves to first vertex.",
             "duration": 900,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "origin green",
@@ -445,7 +445,7 @@
             "label": "mental move 4",
             "description": "Thought pointer moves to second vertex.",
             "duration": 600,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "origin green",
@@ -479,7 +479,7 @@
             "label": "mental move 5",
             "description": "Thought pointer moves to third  vertex.",
             "duration": 600,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "origin green",
@@ -513,7 +513,7 @@
             "label": "mental move 6",
             "description": "Thought pointer rests at third vertex, awaiting audio to catch up.",
             "duration": 8700,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "origin green",
@@ -546,7 +546,7 @@
             "label": "mental move 4",
             "description": "Thought pointer returns to the origin.",
             "duration": 900,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "origin green",
@@ -579,7 +579,7 @@
             "label": "mental move 4",
             "description": "Thought pointer moves to second vertex.",
             "duration": 2600,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "origin green",
@@ -612,7 +612,7 @@
             "label": "pointer 0",
             "description": "Pointer simulates being lifted off of screen.",
             "duration": 200,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "origin green",
@@ -635,7 +635,7 @@
             "label": "pointer 1",
             "description": "Pause to allow audio 5 to finish",
             "duration": 1600,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "origin green",
@@ -659,7 +659,7 @@
             "label": "pointer 3",
             "description": "Pointer removed and seventh instructions given. Audio 5 begins.",
             "duration": 3500,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                  {
                     "asset": "imagery audio 5",
@@ -682,7 +682,7 @@
             "label": "pointer 4",
             "description": "Origin removed.",
             "duration": 4500,
-            "enabled": true,
+            "enabled": "EVAL: not P.truncate_practice_instructions",
             "directives": [
                 {
                     "asset": "imagery instructions 7",
