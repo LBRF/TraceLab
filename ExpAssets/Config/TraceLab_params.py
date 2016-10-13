@@ -8,7 +8,7 @@
 eye_tracker_available = False
 eye_tracking = False
 labjack_available = False
-labjacking = False
+labjacking = True
 
 #########################################
 # Environment Aesthetic Defaults
@@ -95,7 +95,7 @@ btn_instrux = "How many times did the dot change course {0}?"  #  the {0} will c
 # Figure Controls
 ########################################
 generation_timeout = 10  # seconds
-capture_figures_mode = True
+capture_figures_mode = False
 
 generate_quadrant_intersections = True
 
@@ -128,9 +128,16 @@ seg_report_fuzz = (2, 4)
 # Practice Controls
 ########################################
 enable_practice = True
+truncate_practice_animation = True
 practice_instructions = "The following is a demonstration period. Use this time to learn and then practice the task.\nTap the screen to continue."
 play_narration = False  # toggles the audio component
 practice_figure = "heart"
 practice_animation_time = 3500 # ms
-truncate_practice_animation = True
 bubble_location = (1550, 275)
+
+########################################
+# Labjack Codes
+########################################
+origin_red_on_code = 001
+origin_green_on_code = 002
+origin_off_code = 003
