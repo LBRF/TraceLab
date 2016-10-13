@@ -103,12 +103,13 @@ class TraceLabFigure(object):
 
 	def __init__(self, exp, import_path=None, animate_time=None, manufacture=None):
 		self.exp = exp
-		self.animate_target_time = animate_time if animate_time is not None else self.exp.animate_time
+		self.animate_target_time = 5  # dynamically changed after extended_interpolation is generated
 		self.seg_count = None
 		self.min_spq = P.avg_seg_per_q[0] - P.avg_seg_per_q[1]
 		self.max_spq = P.avg_seg_per_q[0] + P.avg_seg_per_q[1]
 		self.min_spf = P.avg_seg_per_f[0] - P.avg_seg_per_f[1]
 		self.max_spf = P.avg_seg_per_f[0] + P.avg_seg_per_f[1]
+		self.extended_interpolation = []  # regardless of real draw time, stores interpolation at 5s for data analysis
 
 		# segment generation controls
 		self.min_lin_ang_width = P.min_linear_acuteness * 180
@@ -159,6 +160,11 @@ class TraceLabFigure(object):
 			self.__generate_null_points__()
 			self.__gen_quad_intersects__()
 			self.__gen_real_points__(not P.generate_quadrant_intersections)
+			self.__gen_segments__()
+			self.extended_interpolation = self.frames
+			self.segments = []
+			self.frames = []
+			self.animate_target_time = animate_time if animate_time is not None else self.exp.animate_time
 			self.__gen_segments__()
 
 	def __generate_null_points__(self):
@@ -219,7 +225,7 @@ class TraceLabFigure(object):
 		first_pass_segs = []  # ie. raw interpolation unadjusted for velocity
 		p_len = 0
 		seg_type_dist = int((1.0 - P.angularity) * 10) * [True] + int(P.angularity * 10) * [False]
-		segment_types = [choice(seg_type_dist) for i in range(len(self.points))]
+		segment_types = [choice(seg_type_dist)] * len(self.points)
 
 		i = 0
 		i_linear_fail = False
@@ -531,19 +537,23 @@ class TraceLabFigure(object):
 	# def feedback(self, trace):
 
 
-	def write_out(self, file_name=None, data=None):
+	def write_out(self, file_name=None, trial_data=None):
 		write_png = False
 		write_points = False
+		write_ext_interp = False
 		if not file_name:
 			file_name = self.file_name
-		if not data:
+		if not trial_data:
 			write_points = True
 			write_png = True
-			data = self.a_frames
+			trial_data = self.a_frames
+			write_ext_interp = True
 		thumb_file_name = file_name[:-4] + "_preview.png"
 		points_file_name = file_name[:-4] + "_points.txt"
+		ext_interp_file_name = file_name[:-4] + "_.tlfx"
 		fig_path = os.path.join(self.exp.fig_dir, file_name)
 		points_path = os.path.join(self.exp.fig_dir, points_file_name)
+		ext_interpolation_path = os.path.join(self.exp.fig_dir, ext_interp_file_name)
 		thumb_path = os.path.join(self.exp.fig_dir, thumb_file_name)
 		with zipfile.ZipFile(fig_path[:-3] + "zip", "a", zipfile.ZIP_DEFLATED) as fig_zip:
 			f = open(fig_path, "w+")
@@ -553,8 +563,16 @@ class TraceLabFigure(object):
 						continue
 					f.write("{0} = {1}\n".format(k, v))
 			else:
-				f.write(str(data))
+				f.write(str(trial_data))
 			f.close()
+
+			if write_ext_interp:
+				f = open(ext_interpolation_path, "w+")
+				f.write(str(self.extended_interpolation))
+				f.close()
+				fig_zip.write(ext_interpolation_path, ext_interp_file_name)
+				os.remove(ext_interpolation_path)
+
 			if write_points:
 				f = open(points_path, "w+")
 				f.write(str(self.points))

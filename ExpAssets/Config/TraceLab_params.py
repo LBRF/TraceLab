@@ -95,7 +95,7 @@ btn_instrux = "How many times did the dot change course {0}?"  #  the {0} will c
 # Figure Controls
 ########################################
 generation_timeout = 10  # seconds
-capture_figures_mode = False
+capture_figures_mode = True
 
 generate_quadrant_intersections = True
 
@@ -132,5 +132,5 @@ practice_instructions = "The following is a demonstration period. Use this time 
 play_narration = False  # toggles the audio component
 practice_figure = "heart"
 practice_animation_time = 3500 # ms
-
+truncate_practice_animation = True
 bubble_location = (1550, 275)

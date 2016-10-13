@@ -108,14 +108,14 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.blit(self.loading_msg, 5, P.screen_c)
 		self.flip()
 		self.origin_size = P.origin_size
-		try:
+		if P.capture_figures_mode:
+			self.fig_dir = os.path.join(P.resources_dir, "figures")
+		else:
 			self.p_dir = os.path.join(P.data_path, "p{0}_{1}".format(P.user_data[0], P.user_data[-2]))
 			self.fig_dir = os.path.join(self.p_dir, self.session_type, "session_" + str(P.session_number))
 			if os.path.exists(self.fig_dir):
 				shutil.rmtree(self.fig_dir)
 			os.makedirs(self.fig_dir)
-		except AttributeError:  # for capture-figure mode
-			self.fig_dir = os.path.join(P.resources_dir, "figures")
 
 		self.origin_proto = Ellipse(self.origin_size)
 
@@ -130,10 +130,9 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.text_manager.add_style('tiny', 12, [255, 255,255, 255])
 		self.text_manager.add_style('small', 14, [255, 255,255, 255])
 
-
-
 		if P.capture_figures_mode:
 			self.capture_figures()
+
 		btn_vars = (self, [(str(i), P.btn_size, None) for i in range(1,6)], P.btn_size, P.btn_s_pad, P.y_pad, P.btn_instrux)
 		self.button_bar = ButtonBar(*btn_vars)
 		self.use_random_figures = P.session_number not in (1, 5)
@@ -353,22 +352,27 @@ class TraceLab(Experiment, BoundaryInspector):
 			user_data = self.database.query(q_str, q_vars=[P.participant_id]).fetchall()[0]
 		P.user_data = user_data
 
-		# delete previous trials for this session if any exist (essentially assume a do-over)
-		q_str = "DELETE FROM `trials` WHERE `participant_id` = ? AND `session_num` = ?"
-		self.database.query(q_str, q_vars=[P.participant_id, P.session_number])
-		if P.session_number == 1:
-			try:
-				 session_data = self.database.query(session_data_str, q_vars=[P.participant_id]).fetchall()[0]
-				 P.exp_condition = session_data[2]
-			except IndexError:
-				P.exp_condition = self.query("Enter an experimental condition identifier:", accepted=EXP_CONDITIONS, flip_x=P.flip_x)
-				self.database.init_entry('sessions')
-				self.database.log('participant_id', P.participant_id)
-				self.database.log('sessions_completed', 0)
-				self.database.log('exp_condition', P.exp_condition)
-				P.session_id = self.database.insert()
-		self.training_session = P.session_number not in (1,5)
-		self.session_type = "training" if self.training_session else "testing"
+		# delete previous trials for this session if any exist (essentially assume a do-
+		if not P.capture_figures_mode:
+			q_str = "DELETE FROM `trials` WHERE `participant_id` = ? AND `session_num` = ?"
+			self.database.query(q_str, q_vars=[P.participant_id, P.session_number])
+			if P.session_number == 1:
+				try:
+					 session_data = self.database.query(session_data_str, q_vars=[P.participant_id]).fetchall()[0]
+					 P.exp_condition = session_data[2]
+				except IndexError:
+					P.exp_condition = self.query("Enter an experimental condition identifier:", accepted=EXP_CONDITIONS, flip_x=P.flip_x)
+					self.database.init_entry('sessions')
+					self.database.log('participant_id', P.participant_id)
+					self.database.log('sessions_completed', 0)
+					self.database.log('exp_condition', P.exp_condition)
+					P.session_id = self.database.insert()
+			self.training_session = P.session_number not in (1,5)
+			self.session_type = "training" if self.training_session else "testing"
+		else:
+			self.training_session = True
+			self.session_type = "figure_capture"
+			P.session_id = -1
 		P.demographics_collected = True
 
 	def imagery_trial(self):
@@ -415,7 +419,7 @@ class TraceLab(Experiment, BoundaryInspector):
 				self.ui_request()
 
 	def control_trial(self):
-		self.button_bar.update_message(P.button_instructions.format(self.control_question))
+		self.button_bar.update_message(P.btn_instrux.format(self.control_question))
 		self.button_bar.render()
 		self.button_bar.collect_response()
 		self.rt = self.button_bar.rt
