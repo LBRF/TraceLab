@@ -7,7 +7,7 @@
 #########################################
 eye_tracker_available = False
 eye_tracking = False
-labjack_available = True
+labjack_available = False
 labjacking = False
 
 #########################################

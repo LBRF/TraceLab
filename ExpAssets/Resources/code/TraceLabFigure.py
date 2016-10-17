@@ -10,7 +10,7 @@ import aggdraw
 from klibs.KLDraw import aggdraw_to_array
 from math import ceil, floor
 from random import randrange, choice, shuffle
-from time import time
+import time
 from klibs.KLExceptions import TrialException
 import klibs.KLParams as P
 from klibs.KLUtilities import *
@@ -232,7 +232,7 @@ class TraceLabFigure(object):
 		i = 0
 		i_linear_fail = False
 		i_curved_fail = False
-		start = time()
+		start = time.time()
 		while len(segment_types):
 			s = segment_types.pop()
 			if P.verbose_mode and self.allow_verbosity:
@@ -251,7 +251,7 @@ class TraceLabFigure(object):
 						prev_seg = None
 					seg_ok = False
 					while not seg_ok:
-						if time() - start > P.generation_timeout:
+						if time.time() - start > P.generation_timeout:
 							raise RuntimeError("Figure generation timed out.")
 						if P.verbose_mode and self.allow_verbosity: print "{0} of {1}".format(i+1, len(self.points))
 						self.exp.ui_request()
@@ -400,7 +400,7 @@ class TraceLabFigure(object):
 		initial_v_c_b_len = v_c_b_len
 		flipped_spin = False
 		while not segment:
-			if time() - start > P.generation_timeout:
+			if time.time() - start > P.generation_timeout:
 				raise RuntimeError("Figure generation timed out.")
 			if not p_c:
 				v_c_b_len -= 1
@@ -587,9 +587,9 @@ class TraceLabFigure(object):
 
 			if write_segments:
 				f = open(segments_path, "w+")
-				f.write((str(s[1][1]) for s in self.raw_segments))
+				f.write(",".join( str(s[1]) for s in self.raw_segments))
 				f.close()
-				fig_zip.write(segments_path, points_file_name)
+				fig_zip.write(segments_path, segments_file_name)
 				os.remove(segments_path)
 
 			if write_png:
