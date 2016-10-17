@@ -140,6 +140,6 @@ bubble_location = (1550, 275)
 ########################################
 # Labjack Codes
 ########################################
-origin_red_on_code = 001
-origin_green_on_code = 002
-origin_off_code = 003
+origin_red_on_code = 1.0
+origin_green_on_code = 3.0
+origin_off_code = 5.0
