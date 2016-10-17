@@ -37,14 +37,14 @@ EXP_CONDITIONS = [PP_xx_1, PP_xx_5, MI_xx_5, CC_xx_5, PP_VV_5, PP_RR_5, PP_VR_5]
 class TraceLab(Experiment, BoundaryInspector):
 
 	# session vars
-	lj = None
 	p_dir = None
 	fig_dir = None
 	training_session = None
 	session_type = None
 	feedback = False
-	labjacking = False
-	
+	lab_jacking = False
+	lj_codes = None
+	lj = None
 	# graphical elements
 	imgs = {}
 
@@ -106,10 +106,16 @@ class TraceLab(Experiment, BoundaryInspector):
 		P.flip_x = P.mirror_mode
 
 	def setup(self):
-		if self.labjacking:
+		if self.lab_jacking:
 			self.lj = u3.U3()
-			self.lj.configU3(FIOAnalog=1)
-			self.lj.getFeedback(u3.PortStateWrite([0, 0, 0]))
+			self.getCalibrationData()
+			self.lj_codes = {
+			"baseline": u3.DAC0_8(self.lj.voltageToDACBits(0, dacNumber=0, is16Bits=False)),
+			"origin_red_on_code": u3.DAC0_8(self.lj.voltageToDACBits(1, dacNumber=0, is16Bits=False)),
+			"origin_green_on_code": u3.DAC0_8(self.lj.voltageToDACBits(2, dacNumber=0, is16Bits=False)),
+			"origin_off_code": u3.DAC0_8(self.lj.voltageToDACBits(3, dacNumber=0, is16Bits=False))}
+			# self.configU3(FIOAnalog=1)
+			self.getFeedback(P.eeg_codes['baseline'])
 		self.loading_msg = self.message("Loading...", "default", blit=False)
 		self.fill()
 		self.blit(self.loading_msg, 5, P.screen_c)
@@ -282,7 +288,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.fill()
 		self.flip()
 
-		if P.exp_condition == MI_xx_5 and not P.practicing and self.labjacking:
+		if P.exp_condition == MI_xx_5 and not P.practicing and self.lab_jacking:
 			self.lj.getFeedback(u3.PortStateWrite([1, 0, 0]))
 			time.sleep(0.01)
 			self.lj.getFeedback(u3.PortStateWrite([0, 0, 0]))
@@ -400,7 +406,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.fill()
 		self.blit(self.origin_inactive, 5, self.origin_pos, flip_x=P.flip_x)
 		self.flip()
-		if not P.practicing and self.labjacking:
+		if not P.practicing and self.lab_jacking:
 			self.lj.getFeedback(u3.PortStateWrite([1, 0, 0]))
 			time.sleep(0.01)
 			self.lj.getFeedback(u3.PortStateWrite([0, 0, 0]))
@@ -417,7 +423,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.fill()
 		self.blit(self.origin_active, 5, self.origin_pos, flip_x=P.flip_x)
 		self.flip()
-		if not P.practicing and self.labjacking:
+		if not P.practicing and self.lab_jacking:
 			self.lj.getFeedback(u3.PortStateWrite([1, 0, 0]))
 			time.sleep(0.01)
 			self.lj.getFeedback(u3.PortStateWrite([0, 0, 0]))
