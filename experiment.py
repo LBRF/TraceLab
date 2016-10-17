@@ -42,8 +42,9 @@ class TraceLab(Experiment, BoundaryInspector):
 	training_session = None
 	session_type = None
 	feedback = False
-	lab_jacking = False
+	lab_jacking = True
 	lj_codes = None
+	lj_spike_interval = 0.01
 	lj = None
 	# graphical elements
 	imgs = {}
@@ -108,14 +109,13 @@ class TraceLab(Experiment, BoundaryInspector):
 	def setup(self):
 		if self.lab_jacking:
 			self.lj = u3.U3()
-			self.getCalibrationData()
+			self.lj.getCalibrationData()
 			self.lj_codes = {
-			"baseline": u3.DAC0_8(self.lj.voltageToDACBits(0, dacNumber=0, is16Bits=False)),
-			"origin_red_on_code": u3.DAC0_8(self.lj.voltageToDACBits(1, dacNumber=0, is16Bits=False)),
-			"origin_green_on_code": u3.DAC0_8(self.lj.voltageToDACBits(2, dacNumber=0, is16Bits=False)),
-			"origin_off_code": u3.DAC0_8(self.lj.voltageToDACBits(3, dacNumber=0, is16Bits=False))}
-			# self.configU3(FIOAnalog=1)
-			self.getFeedback(P.eeg_codes['baseline'])
+			"baseline": u3.DAC0_8(self.lj.voltageToDACBits(0.0, dacNumber=0, is16Bits=False)),
+			"origin_red_on_code": u3.DAC0_8(self.lj.voltageToDACBits(P.origin_red_on_code, dacNumber=0, is16Bits=False)),
+			"origin_green_on_code": u3.DAC0_8(self.lj.voltageToDACBits(P.origin_green_on_code, dacNumber=0, is16Bits=False)),
+			"origin_off_code": u3.DAC0_8(self.lj.voltageToDACBits(P.origin_off_code, dacNumber=0, is16Bits=False))}
+			self.lj.getFeedback(self.lj_codes['baseline'])
 		self.loading_msg = self.message("Loading...", "default", blit=False)
 		self.fill()
 		self.blit(self.loading_msg, 5, P.screen_c)
@@ -191,7 +191,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.test_figures[f] = TraceLabFigure(self, os.path.join(P.resources_dir, "figures", f))
 
 		if P.exp_condition in [PP_RR_5, PP_VR_5]:
-			self.feedback = True
+			self.lj.feedback = True
 		self.clear()
 		if P.enable_practice:
 			if P.session_number == 1 or (P.exp_condition in [MI_xx_5, CC_xx_5] and P.session_number == 5):
@@ -289,17 +289,9 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.flip()
 
 		if P.exp_condition == MI_xx_5 and not P.practicing and self.lab_jacking:
-			self.lj.getFeedback(u3.PortStateWrite([1, 0, 0]))
-			time.sleep(0.01)
-			self.lj.getFeedback(u3.PortStateWrite([0, 0, 0]))
-			time.sleep(0.01)
-			self.lj.getFeedback(u3.PortStateWrite([1, 0, 0]))
-			time.sleep(0.01)
-			self.lj.getFeedback(u3.PortStateWrite([0, 0, 0]))
-			time.sleep(0.01)
-			self.lj.getFeedback(u3.PortStateWrite([1, 0, 0]))
-			time.sleep(0.01)
-			self.lj.getFeedback(u3.PortStateWrite([0, 0, 0]))
+			self.lj.getFeedback(self.lj_codes['origin_off_code'])
+			if self.lj_spike_interval: time.sleep(self.lj_spike_interval)
+			self.lj.getFeedback(self.lj_codes['baseline'])
 
 		if self.__practicing__:
 			return
@@ -402,15 +394,15 @@ class TraceLab(Experiment, BoundaryInspector):
 		P.demographics_collected = True
 
 	def imagery_trial(self):
-		start = P.clock.trial_time
 		self.fill()
 		self.blit(self.origin_inactive, 5, self.origin_pos, flip_x=P.flip_x)
-		self.flip()
+		self.flip()		
 		if not P.practicing and self.lab_jacking:
-			self.lj.getFeedback(u3.PortStateWrite([1, 0, 0]))
-			time.sleep(0.01)
-			self.lj.getFeedback(u3.PortStateWrite([0, 0, 0]))
-		P.tk.start("imaginary trace")
+			self.lj.getFeedback(self.lj_codes['origin_red_on_code'])
+			if self.lj_spike_interval:
+				time.sleep(self.lj_spike_interval)
+			self.lj.getFeedback(self.lj_codes['baseline'])
+		start = P.clock.trial_time
 		if P.demo_mode:
 			show_mouse_cursor()
 		at_origin = False
@@ -424,18 +416,15 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.blit(self.origin_active, 5, self.origin_pos, flip_x=P.flip_x)
 		self.flip()
 		if not P.practicing and self.lab_jacking:
-			self.lj.getFeedback(u3.PortStateWrite([1, 0, 0]))
-			time.sleep(0.01)
-			self.lj.getFeedback(u3.PortStateWrite([0, 0, 0]))
-			time.sleep(0.01)
-			self.lj.getFeedback(u3.PortStateWrite([1, 0, 0]))
-			time.sleep(0.01)
-			self.lj.getFeedback(u3.PortStateWrite([0, 0, 0]))
+			self.lj.getFeedback(self.lj_codes['origin_green_on_code'])
+			if self.lj_spike_interval:
+				time.sleep(self.lj_spike_interval)
+			self.lj.getFeedback(self.lj_codes['baseline'])
 		while at_origin:
 			if not self.within_boundary('origin', mouse_pos()):
 				at_origin = False
-		mt =  P.tk.stop("imaginary trace").read("imaginary trace")
-		self.mt = (mt[1] - mt[0]) - self.rt
+		# mt =  P.tk.stop("imaginary trace").read("imaginary trace")
+		self.mt = P.clock.trial_time - (self.rt + start)
 		if P.demo_mode:
 			hide_mouse_cursor()
 
@@ -447,7 +436,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.it = self.rc.draw_listener.first_sample_time - (self.rt + start)
 
 		self.mt = self.rc.draw_listener.responses[0][1]
-		if self.feedback and not self.__practicing__:
+		if self.lj.feedback and not self.__practicing__:
 			flush()
 			self.fill()
 			self.blit(self.figure.render(trace=self.drawing), 5, Params.screen_c, flip_x=P.flip_x)

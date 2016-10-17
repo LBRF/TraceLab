@@ -552,7 +552,7 @@ class TraceLabFigure(object):
 			write_ext_interp = True
 			write_segments = True
 		thumb_file_name = file_name[:-4] + "_preview.png"
-		points_file_name = file_name[:-4] + "_points.txt"
+		points_file_name = file_name[:-4] + "_.tlfp"
 		ext_interp_file_name = file_name[:-4] + "_.tlfx"
 		segments_file_name = file_name[:-4] + "_.tlfs"
 		fig_path = os.path.join(self.exp.fig_dir, file_name)
