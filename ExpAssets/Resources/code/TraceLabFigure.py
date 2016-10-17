@@ -2,11 +2,6 @@
 __author__ = 'jono'
 # import klibs.KLParams as P
 import os
-from klibs.KLExceptions import TrialException
-import klibs.KLParams as P
-from klibs.KLUtilities import *
-from klibs.KLDraw import Ellipse
-from random import randrange, choice, shuffle
 from itertools import chain
 from PIL import ImagePath, ImageDraw, Image
 import png
@@ -14,6 +9,12 @@ import zipfile
 import aggdraw
 from klibs.KLDraw import aggdraw_to_array
 from math import ceil, floor
+from random import randrange, choice, shuffle
+from time import time
+from klibs.KLExceptions import TrialException
+import klibs.KLParams as P
+from klibs.KLUtilities import *
+from klibs.KLDraw import Ellipse
 
 def pascal_row(n):
 	# This returns the nth row of Pascal's Triangle
@@ -134,6 +135,7 @@ class TraceLabFigure(object):
 		self.r_dot = self.dot.render()
 		self.total_spf = 0
 		self.points = []
+		self.raw_segments = []
 		self.segments = []
 		self.frames = None  # complete interpolated path
 		self.a_frames = None  # interpolation minus dropped frames to ensure constant velocity
@@ -230,7 +232,7 @@ class TraceLabFigure(object):
 		i = 0
 		i_linear_fail = False
 		i_curved_fail = False
-		start = time.time()
+		start = time()
 		while len(segment_types):
 			s = segment_types.pop()
 			if P.verbose_mode and self.allow_verbosity:
@@ -249,7 +251,7 @@ class TraceLabFigure(object):
 						prev_seg = None
 					seg_ok = False
 					while not seg_ok:
-						if time.time() - start > P.generation_timeout:
+						if time() - start > P.generation_timeout:
 							raise RuntimeError("Figure generation timed out.")
 						if P.verbose_mode and self.allow_verbosity: print "{0} of {1}".format(i+1, len(self.points))
 						self.exp.ui_request()
@@ -285,7 +287,7 @@ class TraceLabFigure(object):
 					shuffle(segment_types)
 				else:
 					raise RuntimeError(e)
-
+		self.raw_segments = first_pass_segs
 		# use path length and animation duration to establish a velocity and then do a second interpolation
 		velocity = p_len / self.animate_target_time
 		for segment in first_pass_segs:
@@ -320,7 +322,6 @@ class TraceLabFigure(object):
 				else:
 					return p2
 		return [line_segment_len(p1, p2), [False, (p1, p2)]]
-
 
 	def __generate_curved_segment__(self, p1, p2, start):
 		# single letters here mean: r = rotation, c = control, p = point, q = quadrant, a = angle, v = vector
@@ -399,7 +400,7 @@ class TraceLabFigure(object):
 		initial_v_c_b_len = v_c_b_len
 		flipped_spin = False
 		while not segment:
-			if time.time() - start > P.generation_timeout:
+			if time() - start > P.generation_timeout:
 				raise RuntimeError("Figure generation timed out.")
 			if not p_c:
 				v_c_b_len -= 1
@@ -541,6 +542,7 @@ class TraceLabFigure(object):
 		write_png = False
 		write_points = False
 		write_ext_interp = False
+		write_segments = False
 		if not file_name:
 			file_name = self.file_name
 		if not trial_data:
@@ -548,11 +550,14 @@ class TraceLabFigure(object):
 			write_png = True
 			trial_data = self.a_frames
 			write_ext_interp = True
+			write_segments = True
 		thumb_file_name = file_name[:-4] + "_preview.png"
 		points_file_name = file_name[:-4] + "_points.txt"
 		ext_interp_file_name = file_name[:-4] + "_.tlfx"
+		segments_file_name = file_name[:-4] + "_.tlfs"
 		fig_path = os.path.join(self.exp.fig_dir, file_name)
 		points_path = os.path.join(self.exp.fig_dir, points_file_name)
+		segments_path = os.path.join(self.exp.fig_dir, segments_file_name)
 		ext_interpolation_path = os.path.join(self.exp.fig_dir, ext_interp_file_name)
 		thumb_path = os.path.join(self.exp.fig_dir, thumb_file_name)
 		with zipfile.ZipFile(fig_path[:-3] + "zip", "a", zipfile.ZIP_DEFLATED) as fig_zip:
@@ -579,6 +584,14 @@ class TraceLabFigure(object):
 				f.close()
 				fig_zip.write(points_path, points_file_name)
 				os.remove(points_path)
+
+			if write_segments:
+				f = open(segments_path, "w+")
+				f.write((s[1][1] for s in self.raw_segments))
+				f.close()
+				fig_zip.write(segments_path, points_file_name)
+				os.remove(segments_path)
+
 			if write_png:
 				png.from_array(self.render(), 'RGBA').save(thumb_path)
 				fig_zip.write(thumb_path, thumb_file_name)
