@@ -587,7 +587,7 @@ class TraceLabFigure(object):
 
 			if write_segments:
 				f = open(segments_path, "w+")
-				f.write((s[1][1] for s in self.raw_segments))
+				f.write((str(s[1][1]) for s in self.raw_segments))
 				f.close()
 				fig_zip.write(segments_path, points_file_name)
 				os.remove(segments_path)
