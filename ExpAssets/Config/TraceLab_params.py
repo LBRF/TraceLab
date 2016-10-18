@@ -2,8 +2,6 @@
 #
 # Any param that is commented out by default is either deprecated or else not yet implemented--don't uncomment or use
 
-import u3
-
 #########################################
 # Available Hardware
 #########################################
