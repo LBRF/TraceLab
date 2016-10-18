@@ -7,12 +7,14 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "physical audio 1",
+                    "asset":  "physical audio 1",
+					"registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
-                    "asset": "physical instructions 1",
+                    "asset":  "physical instructions 1",
+					"registration": 5,
                     "start": "EVAL: P.screen_c",
                     "end": "EVAL: P.screen_c"
                 }
@@ -25,12 +27,14 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "physical instructions 1",
+                    "asset":  "physical instructions 1",
+					"registration": 5,
                     "start": "EVAL: P.screen_c",
                     "end": "EVAL: P.screen_c"
                 },
                 {
-                    "asset": "dot",
+                    "asset":  "dot",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 }
@@ -43,7 +47,8 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "dot",
+                    "asset":  "dot",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [480, 360]
                 }
@@ -56,7 +61,8 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "dot",
+                    "asset":  "dot",
+					"registration": 5,
                     "start": [480, 360],
                     "end": [960, 360],
                     "control": [720, 120]
@@ -70,7 +76,8 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "dot",
+                    "asset":  "dot",
+					"registration": 5,
                     "start": [960, 360],
                     "end": [1420, 360],
                     "control": [1200, 120]
@@ -84,7 +91,8 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "dot",
+                    "asset":  "dot",
+					"registration": 5,
                     "start": [1420, 360],
                     "end": [960, 780]
                 }
@@ -97,7 +105,8 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin red",
+                    "asset":  "origin red",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 }
@@ -110,17 +119,20 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "physical audio 2",
+                    "asset":  "physical audio 2",
+					"registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
-                    "asset": "origin red",
+                    "asset":  "origin red",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "physical instructions 2",
+                    "asset":  "physical instructions 2",
+					"registration": 5,
                     "start": [960, 680],
                     "end": [960, 680]
                 }
@@ -133,12 +145,14 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin red",
+                    "asset":  "origin red",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1160, 1000],
                     "end": [1160, 1000]
                 }
@@ -151,12 +165,14 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin red",
+                    "asset":  "origin red",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1160, 1000],
                     "end": [1050, 870]
                 }
@@ -169,22 +185,26 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "physical audio 3",
+                    "asset":  "physical audio 3",
+					"registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
-                    "asset": "origin red",
+                    "asset":  "origin red",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1050, 870],
                     "end": [1050, 870]
                 },
                 {
-                    "asset": "physical instructions 3",
+                    "asset":  "physical instructions 3",
+					"registration": 5,
                     "start": [960, 680],
                     "end": [960, 680]
                 }
@@ -198,17 +218,20 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin red",
+                    "asset":  "origin red",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1050, 870],
                     "end": [1050, 880]
                 },
                 {
-                    "asset": "physical instructions 3",
+                    "asset":  "physical instructions 3",
+					"registration": 5,
                     "start": [960, 680],
                     "end": [960, 680]
                 }
@@ -221,17 +244,20 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin red",
+                    "asset":  "origin red",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1050, 880],
                     "end": [1050, 880]
                 },
                 {
-                    "asset": "physical instructions 3",
+                    "asset":  "physical instructions 3",
+					"registration": 5,
                     "start": [960, 680],
                     "end": [960, 680]
                 }
@@ -244,22 +270,26 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "physical audio 4",
+                    "asset":  "physical audio 4",
+					"registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
-                    "asset": "origin red",
+                    "asset":  "origin red",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1050, 880],
                     "end": [1010, 850]
                 },
                 {
-                    "asset": "physical instructions 4",
+                    "asset":  "physical instructions 4",
+					"registration": 5,
                     "start": [960, 680],
                     "end": [960, 680]
                 }
@@ -272,17 +302,20 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin red",
+                    "asset":  "origin red",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1010, 850],
                     "end": [1010, 850]
                 },
                 {
-                    "asset": "physical instructions 4",
+                    "asset":  "physical instructions 4",
+					"registration": 5,
                     "start": [960, 680],
                     "end": [960, 680]
                 }
@@ -295,17 +328,20 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin red",
+                    "asset":  "origin red",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1010, 850],
                     "end": [1010, 850]
                 },
                 {
-                    "asset": "physical instructions 5",
+                    "asset":  "physical instructions 5",
+					"registration": 5,
                     "start": [960, 680],
                     "end": [960, 680]
                 }
@@ -318,17 +354,20 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin green",
+                    "asset":  "origin green",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1010, 850],
                     "end": [1010, 850]
                 },
                 {
-                    "asset": "physical instructions 5",
+                    "asset":  "physical instructions 5",
+					"registration": 5,
                     "start": [960, 680],
                     "end": [960, 680]
                 }
@@ -341,12 +380,14 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin green",
+                    "asset":  "origin green",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1010, 850],
                     "end": [570, 460]
                 }
@@ -359,12 +400,14 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin green",
+                    "asset":  "origin green",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [570, 460],
                     "end": [1050, 460],
                     "control": [810, 220]
@@ -378,12 +421,14 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin green",
+                    "asset":  "origin green",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1050, 460],
                     "end": [1510, 460],
                     "control": [1290, 220]
@@ -397,12 +442,14 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin green",
+                    "asset":  "origin green",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1510, 460],
                     "end": [1140, 810]
                 }
@@ -415,22 +462,26 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "physical audio 5",
+                    "asset":  "physical audio 5",
+					"registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
-                    "asset": "origin green",
+                    "asset":  "origin green",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1140, 810],
                     "end": [1140, 810]
                 },
                                 {
-                    "asset": "physical instructions 6",
+                    "asset":  "physical instructions 6",
+					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -443,17 +494,20 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin green",
+                    "asset":  "origin green",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1140, 810],
                     "end": [1140, 810]
                 },
                 {
-                    "asset": "physical instructions 6",
+                    "asset":  "physical instructions 6",
+					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -466,17 +520,20 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin green",
+                    "asset":  "origin green",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1140, 810],
                     "end": [1050, 880]
                 },
                 {
-                    "asset": "physical instructions 6",
+                    "asset":  "physical instructions 6",
+					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -489,12 +546,14 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1050, 880],
                     "end": [1050, 880]
                 },
                 {
-                    "asset": "physical instructions 6",
+                    "asset":  "physical instructions 6",
+					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -507,17 +566,20 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin green",
+                    "asset":  "origin green",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1140, 810],
                     "end": [950, 900]
                 },
                 {
-                    "asset": "physical instructions 6",
+                    "asset":  "physical instructions 6",
+					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -530,17 +592,20 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin green",
+                    "asset":  "origin green",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [950, 900],
                     "end": [950, 900]
                 },
                 {
-                    "asset": "physical instructions 6",
+                    "asset":  "physical instructions 6",
+					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -553,17 +618,20 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin green",
+                    "asset":  "origin green",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [950, 900],
                     "end": [1050, 880]
                 },
                 {
-                    "asset": "physical instructions 6",
+                    "asset":  "physical instructions 6",
+					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -576,17 +644,20 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin green",
+                    "asset":  "origin green",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1050, 880],
                     "end": [1050, 880]
                 },
                 {
-                    "asset": "physical instructions 6",
+                    "asset":  "physical instructions 6",
+					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -599,12 +670,14 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1050, 880],
                     "end": [1050, 880]
                 },
                 {
-                    "asset": "physical instructions 6",
+                    "asset":  "physical instructions 6",
+					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -617,17 +690,20 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin red",
+                    "asset":  "origin red",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1140, 810],
                     "end": [1050, 880]
                 },
                 {
-                    "asset": "physical instructions 6",
+                    "asset":  "physical instructions 6",
+					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -640,22 +716,26 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin red",
+                    "asset":  "origin red",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1050, 880],
                     "end": [1050, 880]
                 },
                 {
-                    "asset": "physical instructions 6",
+                    "asset":  "physical instructions 6",
+					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 },
                                 {
-                    "asset": "not recording",
+                    "asset":  "not recording",
+					"registration": 5,
                     "start": "EVAL: (P.screen_c[0], P.screen_c[1] - 200)",
                     "end": "EVAL: (P.screen_c[0], P.screen_c[1] - 200)"
                 }
@@ -669,17 +749,20 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin red",
+                    "asset":  "origin red",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1050, 880],
                     "end": [1050, 880]
                 },
                 {
-                    "asset": "physical instructions 6",
+                    "asset":  "physical instructions 6",
+					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -692,22 +775,26 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin red",
+                    "asset":  "origin red",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1050, 880],
                     "end": [1050, 880]
                 },
                 {
-                    "asset": "physical instructions 6",
+                    "asset":  "physical instructions 6",
+					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 },
                                 {
-                    "asset": "not recording",
+                    "asset":  "not recording",
+					"registration": 5,
                     "start": "EVAL: (P.screen_c[0], P.screen_c[1] - 200)",
                     "end": "EVAL: (P.screen_c[0], P.screen_c[1] - 200)"
                 }
@@ -721,17 +808,20 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin red",
+                    "asset":  "origin red",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1050, 880],
                     "end": [1050, 880]
                 },
                 {
-                    "asset": "physical instructions 6",
+                    "asset":  "physical instructions 6",
+					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -744,22 +834,26 @@
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
-                    "asset": "origin red",
+                    "asset":  "origin red",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset": "pointer",
+                    "asset":  "pointer",
+					"registration": 5,
                     "start": [1050, 880],
                     "end": [1050, 880]
                 },
                 {
-                    "asset": "physical instructions 6",
+                    "asset":  "physical instructions 6",
+					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 },
                                 {
-                    "asset": "not recording",
+                    "asset":  "not recording",
+					"registration": 5,
                     "start": "EVAL: (P.screen_c[0], P.screen_c[1] - 200)",
                     "end": "EVAL: (P.screen_c[0], P.screen_c[1] - 200)"
                 }
@@ -773,12 +867,14 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset": "physical audio 6",
+                    "asset":  "physical audio 6",
+					"registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
-                    "asset": "end practice",
+                    "asset":  "end practice",
+					"registration": 5,
                     "start": "EVAL: P.screen_c",
                     "end": "EVAL: P.screen_c"
                 }

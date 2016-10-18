@@ -14,7 +14,10 @@ from ButtonBar import Button, ButtonBar
 from KeyFrames import KeyFrame, FrameSet
 from klibs.KLMixins import BoundaryInspector
 from hashlib import sha1
-import u3
+try:
+	import u3
+except ImportError:
+	pass
 
 WHITE = (255, 255, 255, 255)
 BLACK = (0, 0, 0, 255)

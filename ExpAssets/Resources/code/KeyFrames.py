@@ -98,7 +98,7 @@ class KeyFrame(object):
 					self.exp.ui_request()
 					self.exp.fill()
 					for asset in frame:
-						self.exp.blit(asset[0], 5, asset[1])
+						self.exp.blit(asset[0], asset[2], asset[1])
 					self.exp.flip()
 				frames_played = True
 
@@ -130,23 +130,27 @@ class KeyFrame(object):
 
 
 			if len(img_drctvs) == num_static_directives:
-				self.asset_frames = self.asset_frames = [[(self.assets[d.asset].contents, d.start) for d in img_drctvs]]
+				self.asset_frames = self.asset_frames = [[(self.assets[d.asset].contents, d.start, d.registration) for d in img_drctvs]]
 				return
 
 			for d in img_drctvs:
 				asset = self.assets[d.asset].contents
 				if d.start == d.end:
-					asset_frames.append([(asset, d.start)])
+					asset_frames.append([(asset, d.start, d.registration)])
 					continue
 				frames = []
 				try:
 					path_len = bezier_interpolation(d.start, d.end, d.control)[0]
 					raw_frames = bezier_interpolation(d.start, d.end, d.control, velocity=path_len / self.duration)
 				except AttributeError:
-					v = line_segment_len(d.start, d.end) / self.duration
+					try:
+						v = line_segment_len(d.start, d.end) / self.duration
+					except TypeError:
+						raise ValueError("Image assets require their 'start' and 'end' attributes to be an x,y pair.")
+
 					raw_frames = linear_interpolation(d.start, d.end, v)
 				for p in raw_frames :
-					frames.append([asset, p])
+					frames.append([asset, p, d.registration])
 				if len(frames) > total_frames:
 					total_frames = len(frames)
 				asset_frames.append(frames)
@@ -160,8 +164,7 @@ class KeyFrame(object):
 			else:
 				self.asset_frames = asset_frames
 
-		except (IndexError, AttributeError, TypeError, ValueError) as e:
-			for d in self.directives: print d
+		except (IndexError, AttributeError, TypeError) as e:
 			e_msg = "An error occurred when rendering this frame. This is usually do an unexpected return " \
 					"from an 'EVAL:' entry in the JSON script. The original error was:\n\n\t{0}: {1}".format(e.__class__, e.message)
 			raise RuntimeError(e_msg)
