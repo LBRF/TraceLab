@@ -539,10 +539,10 @@ class TraceLabFigure(object):
 
 
 	def write_out(self, file_name=None, trial_data=None):
-		write_png = False
-		write_points = False
-		write_ext_interp = False
-		write_segments = False
+		write_png = True
+		write_points = True
+		write_ext_interp = True
+		write_segments = True
 		if not file_name:
 			file_name = self.file_name
 		if not trial_data:

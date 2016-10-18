@@ -24,7 +24,7 @@
         "file": {
             "filename": "arrow_up.png",
             "media_type": "image_f",
-            "resolution": [41, 81],
+            "resolution": [41, 219],
             "duration": null
         },
         "drawbject": null
@@ -34,7 +34,7 @@
         "file": {
             "filename": "arrow_down.png",
             "media_type": "image_f",
-            "resolution": [41, 81],
+            "resolution": [41, 471],
             "duration": null
         },
         "drawbject": null
@@ -44,7 +44,7 @@
         "file": {
             "filename": "arrow_right.png",
             "media_type": "image_f",
-            "resolution": [81, 41],
+            "resolution": [473, 41],
             "duration": null
         },
         "drawbject": null
@@ -54,7 +54,27 @@
         "file": {
             "filename": "arrow_left.png",
             "media_type": "image_f",
-            "resolution": [81, 41],
+            "resolution": [473, 41],
+            "duration": null
+        },
+        "drawbject": null
+    },
+    "dotted line": {
+        "text": null,
+        "file": {
+            "filename": "dotted_line.png",
+            "media_type": "image_f",
+            "resolution": [337, 447],
+            "duration": null
+        },
+        "drawbject": null
+    },
+     "dotted curve": {
+        "text": null,
+        "file": {
+            "filename": "dotted_curve.png",
+            "media_type": "image_f",
+            "resolution": [243, 111],
             "duration": null
         },
         "drawbject": null

@@ -49,10 +49,11 @@ trials_per_participant = 0
 pre_render_block_messages = False
 show_practice_messages = True
 table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA")]}
-figures = ["heart", "fig6"]
+figures = ["heart"]
 origin_wait_time = 1000  # ms
-demo_mode = False
+demo_mode = True
 mirror_mode = False
+next_trial_message = "Tap here to continue."
 
 #########################################
 # Development Mode Settings
@@ -98,9 +99,10 @@ btn_instrux = "How many times did the dot change course {0}?"  #  the {0} will c
 ########################################
 generation_timeout = 10  # seconds
 capture_figures_mode = False
+auto_generate = False
+auto_generate_count = 10  # when auto_generate and capture_figures_mode are true, this many figures will be generated
 
 generate_quadrant_intersections = True
-
 outer_margin_v = 50
 outer_margin_h = 50
 inner_margin_v = 10
@@ -129,10 +131,10 @@ seg_report_fuzz = (2, 4)
 ########################################
 # Practice Controls
 ########################################
-enable_practice = False
-truncate_practice_animation = True
+enable_practice = True
+truncate_practice_animation = False
 practice_instructions = "The following is a demonstration period. Use this time to learn and then practice the task.\nTap the screen to continue."
-play_narration = False  # toggles the audio component
+play_narration = True  # toggles the audio component
 practice_figure = "heart"
 practice_animation_time = 3500 # ms
 bubble_location = (1550, 275)
