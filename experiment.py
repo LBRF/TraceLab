@@ -4,7 +4,7 @@ import shutil, sys
 sys.path.append("ExpAssets/Resources/code/")
 from random import choice
 from klibs.KLExceptions import TrialException
-import klibs.KLParams as P
+from klibs import P
 from klibs.KLUtilities import *
 from klibs.KLDraw import Ellipse, Rectangle
 # from klibs.KLAudio import AudioManager, AudioClip
@@ -498,6 +498,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		while not finished:
 			try:
 				finished = self.__review_figure__()
+				self.figure = None
 			except IOError:
 				io_errors.append((P.auto_generate_count + 1) - self.auto_generate_count)
 				if len(io_errors) > 10:
