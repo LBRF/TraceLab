@@ -98,7 +98,7 @@ btn_instrux = "How many times did the dot change course {0}?"  #  the {0} will c
 generation_timeout = 10  # seconds
 capture_figures_mode = True
 auto_generate = True
-auto_generate_count = 1000  # when auto_generate and capture_figures_mode are true, this many figures will be generated
+auto_generate_count = 2  # when auto_generate and capture_figures_mode are true, this many figures will be generated
 
 generate_quadrant_intersections = True
 outer_margin_v = 50

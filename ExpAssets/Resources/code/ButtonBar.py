@@ -197,13 +197,13 @@ class ButtonBar(BoundaryInspector):
 			self.b_height = button_size
 		self.screen_margins = screen_margins
 		self.y_offset = y_offset
-		self.b_pad = (Params.screen_x - (self.b_width * self.b_count + 2 * self.screen_margins)) // (self.b_count - 1)
+		self.b_pad = (P.screen_x - (self.b_width * self.b_count + 2 * self.screen_margins)) // (self.b_count - 1)
 		self.gen_finish_button = finish_button
 		self.finish_b = None
 		self.message = message
 		if message:
 			self.message_r = self.exp.message(message, "instructions", blit=False)
-			self.message_loc = (Params.screen_c[0], self.y_offset - (self.message_r.height * 2))
+			self.message_loc = (P.screen_c[0], self.y_offset - (self.message_r.height * 2))
 		self.gen_buttons()
 		self.start = None
 		self.mt = None
