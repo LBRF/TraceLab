@@ -115,17 +115,18 @@ class TraceLab(Experiment, BoundaryInspector):
 		P.flip_x = P.mirror_mode
 
 	def setup(self):
-		if self.lab_jacking and P.exp_condition != MI_xx_5:
-			self.lab_jacking = False
-		if self.lab_jacking:
-			self.lj = u3.U3()
-			self.lj.getCalibrationData()
-			self.lj_codes = {
-			"baseline": u3.DAC0_8(self.lj.voltageToDACBits(0.0, dacNumber=0, is16Bits=False)),
-			"origin_red_on_code": u3.DAC0_8(self.lj.voltageToDACBits(P.origin_red_on_code, dacNumber=0, is16Bits=False)),
-			"origin_green_on_code": u3.DAC0_8(self.lj.voltageToDACBits(P.origin_green_on_code, dacNumber=0, is16Bits=False)),
-			"origin_off_code": u3.DAC0_8(self.lj.voltageToDACBits(P.origin_off_code, dacNumber=0, is16Bits=False))}
-			self.lj.getFeedback(self.lj_codes['baseline'])
+		if not P.capture_figures_mode:
+			if self.lab_jacking and P.exp_condition != MI_xx_5:
+				self.lab_jacking = False
+			if self.lab_jacking:
+				self.lj = u3.U3()
+				self.lj.getCalibrationData()
+				self.lj_codes = {
+				"baseline": u3.DAC0_8(self.lj.voltageToDACBits(0.0, dacNumber=0, is16Bits=False)),
+				"origin_red_on_code": u3.DAC0_8(self.lj.voltageToDACBits(P.origin_red_on_code, dacNumber=0, is16Bits=False)),
+				"origin_green_on_code": u3.DAC0_8(self.lj.voltageToDACBits(P.origin_green_on_code, dacNumber=0, is16Bits=False)),
+				"origin_off_code": u3.DAC0_8(self.lj.voltageToDACBits(P.origin_off_code, dacNumber=0, is16Bits=False))}
+				self.lj.getFeedback(self.lj_codes['baseline'])
 		self.loading_msg = self.message("Loading...", "default", blit=False)
 		self.fill()
 		self.blit(self.loading_msg, 5, P.screen_c)
@@ -287,7 +288,6 @@ class TraceLab(Experiment, BoundaryInspector):
 					next_trial_button_clicked = self.within_boundary("next trial button", [e.button.x, e.button.y])
 		if P.demo_mode:
 			hide_mouse_cursor()
-
 
 	def trial(self):
 		self.figure.animate()
@@ -494,8 +494,15 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.message(msg, "default", registration=5, location=P.screen_c, flip=True)
 			self.any_key()
 			finished = self.auto_generate_count == 0
+		io_errors = []
 		while not finished:
-			finished = self.__review_figure__()
+			try:
+				finished = self.__review_figure__()
+			except IOError:
+				io_errors.append((P.auto_generate_count + 1) - self.auto_generate_count)
+				if len(io_errors) > 10:
+					print "\n".join(io_errors)
+					break
 		self.quit()
 
 	def __review_figure__(self):
