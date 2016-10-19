@@ -572,25 +572,22 @@ class TraceLabFigure(object):
 			f.close()
 
 			if write_ext_interp:
-				f = open(ext_interpolation_path, "w+")
-				f.write(str(self.extended_interpolation))
-				f.close()
-				fig_zip.write(ext_interpolation_path, ext_interp_file_name)
-				os.remove(ext_interpolation_path)
+				with open(ext_interpolation_path, "w+") as f:
+					f.write(str(self.extended_interpolation))
+					fig_zip.write(ext_interpolation_path, ext_interp_file_name)
+					os.remove(ext_interpolation_path)
 
 			if write_points:
-				f = open(points_path, "w+")
-				f.write(str(self.points))
-				f.close()
-				fig_zip.write(points_path, points_file_name)
-				os.remove(points_path)
+				with open(points_path, "w+") as f:
+					f.write(str(self.points))
+					fig_zip.write(points_path, points_file_name)
+					os.remove(points_path)
 
 			if write_segments:
-				f = open(segments_path, "w+")
-				f.write(",".join( str(s[1]) for s in self.raw_segments))
-				f.close()
-				fig_zip.write(segments_path, segments_file_name)
-				os.remove(segments_path)
+				with open(segments_path, "w+") as f:
+					f.write(",".join( str(s[1]) for s in self.raw_segments))
+					fig_zip.write(segments_path, segments_file_name)
+					os.remove(segments_path)
 
 			if write_png:
 				png.from_array(self.render(), 'RGBA').save(thumb_path)
@@ -598,6 +595,7 @@ class TraceLabFigure(object):
 				os.remove(thumb_path)
 			fig_zip.write(fig_path, file_name)
 			os.remove(fig_path)
+
 
 	@property
 	def file_name(self):
