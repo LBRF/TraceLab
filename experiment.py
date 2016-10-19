@@ -45,7 +45,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	training_session = None
 	session_type = None
 	feedback = False
-	lab_jacking = False
+	lab_jacking = True
 	lj_codes = None
 	lj_spike_interval = 0.01
 	lj = None
@@ -113,10 +113,10 @@ class TraceLab(Experiment, BoundaryInspector):
 	def __init__(self, *args, **kwargs):
 		super(TraceLab, self).__init__(*args, **kwargs)
 		P.flip_x = P.mirror_mode
-		if self.lab_jacking and P.exp_condition != MI_xx_5:
-			self.lab_jacking = False
 
 	def setup(self):
+		if self.lab_jacking and P.exp_condition != MI_xx_5:
+			self.lab_jacking = False
 		if self.lab_jacking:
 			self.lj = u3.U3()
 			self.lj.getCalibrationData()
