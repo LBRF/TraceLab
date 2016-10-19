@@ -543,18 +543,16 @@ class TraceLabFigure(object):
 		write_points = True
 		write_ext_interp = True
 		write_segments = True
+
 		if not file_name:
 			file_name = self.file_name
 		if not trial_data:
-			write_points = True
-			write_png = True
 			trial_data = self.a_frames
-			write_ext_interp = True
-			write_segments = True
+
 		thumb_file_name = file_name[:-4] + "_preview.png"
-		points_file_name = file_name[:-4] + "_.tlfp"
-		ext_interp_file_name = file_name[:-4] + "_.tlfx"
-		segments_file_name = file_name[:-4] + "_.tlfs"
+		points_file_name = file_name[:-4] + ".tlfp"
+		ext_interp_file_name = file_name[:-4] + ".tlfx"
+		segments_file_name = file_name[:-4] + ".tlfs"
 		fig_path = os.path.join(self.exp.fig_dir, file_name)
 		points_path = os.path.join(self.exp.fig_dir, points_file_name)
 		segments_path = os.path.join(self.exp.fig_dir, segments_file_name)
@@ -574,23 +572,23 @@ class TraceLabFigure(object):
 			if write_ext_interp:
 				f = open(ext_interpolation_path, "w+")
 				f.write(str(self.extended_interpolation))
+				f.close()
 				fig_zip.write(ext_interpolation_path, ext_interp_file_name)
 				os.remove(ext_interpolation_path)
-				f.close()
 
 			if write_points:
 				f = open(points_path, "w+")
 				f.write(str(self.points))
+				f.close()
 				fig_zip.write(points_path, points_file_name)
 				os.remove(points_path)
-				f.close()
 
 			if write_segments:
 				f = open(segments_path, "w+")
 				f.write(",".join( str(s[1]) for s in self.raw_segments))
+				f.close()
 				fig_zip.write(segments_path, segments_file_name)
 				os.remove(segments_path)
-				f.close()
 
 			if write_png:
 				png.from_array(self.render(), 'RGBA').save(thumb_path)
