@@ -121,10 +121,7 @@ peak_shift = (0.25, 0.5)  # 0 == perfect symmetry (ie. bell curve) and 1 == a ri
 curve_sheer = (0.1, 0.3)  # this is hard to describe, but 1 is again an impossible value, and this will grow to lunacy fast
 path_length = -1  # length (px); -1 ignores this parameter; path length will override seg_length params if they conflict
 seg_report_fuzz = (2, 4)
-# seg_count_fuzz_width
-# seg_answer_pos
 
- # NOTE VARIABLE SESSION COUNTS
 
 ########################################
 # Practice Controls
@@ -143,3 +140,13 @@ bubble_location = (1550, 275)
 origin_red_on_code = 1.0
 origin_green_on_code = 3.0
 origin_off_code = 5.0
+
+
+########################################
+# tlf Controls
+########################################
+gen_tlfx = True  # extended (5s) interpolation
+gen_tlfs = True  # segments file
+gen_tlfp = True  # points file
+gen_png = True   # image file
+gen_ext_png = False  # image file from extended interpolation
