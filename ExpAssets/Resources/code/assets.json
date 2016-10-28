@@ -69,7 +69,7 @@
         },
         "drawbject": null
     },
-     "dotted curve": {
+    "dotted curve": {
         "text": null,
         "file": {
             "filename": "dotted_curve.png",
@@ -659,7 +659,8 @@
             "filename": "CC2.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 10.5        },
+            "duration": 10.5
+        },
         "drawbject": null
     },
     "control audio 3": {
