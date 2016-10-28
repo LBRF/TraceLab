@@ -3,7 +3,7 @@
         {
             "label": "physical instructions",
             "description": "Initial presentation of instructions. Audio 1 starts.",
-            "duration": 16000,
+            "duration": 15800,
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
@@ -324,7 +324,7 @@
         {
             "label": "origin 9",
             "description": "Pause to let audio 4 advance to instructions 5",
-            "duration": 2000,
+            "duration": 600,
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
@@ -350,7 +350,7 @@
         {
             "label": "origin 10",
             "description": "Origin turns green.",
-            "duration": 4100,
+            "duration": 5600,
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
