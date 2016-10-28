@@ -3,7 +3,7 @@
         {
             "label": "control instructions",
             "description": "Instructions initially presented. Audio 1 begins.",
-            "duration": 7400,
+            "duration": 10300,
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
@@ -95,7 +95,7 @@
         {
             "label": "vertices 1",
             "description": "Initial instructions provided. Audio 2 begins.",
-            "duration": 1700,
+            "duration": 1000,
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                  {
@@ -121,7 +121,7 @@
         {
             "label": "vertices 2",
             "description": "Dot travels to first vertex.",
-            "duration": 2500,
+            "duration": 2200,
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
@@ -252,6 +252,27 @@
                     "asset":  "dot",
 					"registration": 5,
                     "start": [480, 360],
+                    "end": [960, 360],
+                    "control": [720, 120]
+                }
+            ]
+        },
+        {
+            "label": "vertices 6.1.1",
+            "description": "Pause to let audio 2 conclude. ",
+            "duration": 1700,
+            "enabled": "EVAL: not P.truncate_practice_animation",
+            "directives": [
+                {
+                    "asset":  "control instructions 3",
+					"registration": 5,
+                    "start": [960, 150],
+                    "end": [960, 150]
+                },
+                {
+                    "asset":  "dot",
+					"registration": 5,
+                    "start": [960, 360],
                     "end": [960, 360],
                     "control": [720, 120]
                 }
