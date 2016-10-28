@@ -45,7 +45,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	training_session = None
 	session_type = None
 	feedback = False
-	lab_jacking = False
+	lab_jacking = True
 	lj_codes = None
 	lj_spike_interval = 0.01
 	lj = None
