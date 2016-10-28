@@ -99,10 +99,10 @@
         },
         "drawbject": {
             "shape": "ellipse",
-            "width": 6,
-            "height": 6,
-            "stroke": [2, [255, 255, 255]],
-            "fill": [255, 45, 45]
+            "width": 5,
+            "height": 5,
+            "stroke": [4, [255, 255, 255]],
+            "fill": [0, 0, 0]
         }
     },
     "target circle": {
