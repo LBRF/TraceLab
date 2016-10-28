@@ -199,7 +199,6 @@
                 }
             ]
         },
-
         {
             "label": "origin 6",
             "description": "Third instructions given. Audio 3 begins.",
@@ -738,7 +737,6 @@
                 }
             ]
         },
-
         {
             "label": "pointer 3",
             "description": "Pointer removed and seventh instructions given. Audio 5 begins.",

@@ -102,7 +102,7 @@
             "width": 5,
             "height": 5,
             "stroke": [4, [255, 255, 255]],
-            "fill": [0, 0, 0]
+            "fill": [11,11,11]
         }
     },
     "target circle": {
@@ -772,16 +772,17 @@
             "duration": 22.8
         },
         "drawbject": null
-    }, "imagery audio 5": {
-    "text": null,
-    "file": {
-        "filename": "MI5.wav",
-        "media_type": "audio_f",
-        "resolution": null,
-        "duration": 7.8
     },
-    "drawbject": null
-},
+    "imagery audio 5": {
+        "text": null,
+        "file": {
+            "filename": "MI5.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 7.8
+        },
+        "drawbject": null
+    },
     "imagery audio 6": {
         "text": null,
         "file": {
