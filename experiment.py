@@ -45,7 +45,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	training_session = None
 	session_type = None
 	feedback = False
-	lab_jacking = False
+	lab_jacking = True
 	lj_codes = None
 	lj_spike_interval = 0.01
 	lj = None
@@ -283,9 +283,11 @@ class TraceLab(Experiment, BoundaryInspector):
 		if P.demo_mode:
 			show_mouse_cursor()
 		while not next_trial_button_clicked:
-			for e in pump(True):
+			event_queue = pump(True)
+			for e in event_queue:
 				if e.type == sdl2.SDL_MOUSEBUTTONDOWN:
 					next_trial_button_clicked = self.within_boundary("next trial button", [e.button.x, e.button.y])
+				ui_request(e)
 		if P.demo_mode:
 			hide_mouse_cursor()
 
