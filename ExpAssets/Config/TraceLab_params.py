@@ -7,8 +7,8 @@
 #########################################
 eye_tracker_available = False
 eye_tracking = False
-labjack_available = True
-labjacking = True
+labjack_available = False
+labjacking = False
 
 #########################################
 # Environment Aesthetic Defaults
@@ -47,7 +47,7 @@ trials_per_participant = 0
 pre_render_block_messages = False
 show_practice_messages = True
 table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA")]}
-figures = ["heart"]
+figures = ["heart", "template_1477081781.44"]
 origin_wait_time = 1000  # ms
 demo_mode = False
 mirror_mode = False
@@ -96,7 +96,7 @@ btn_instrux = "How many times did the dot change course {0}?"  #  the {0} will c
 # Figure Controls
 ########################################
 generation_timeout = 10  # seconds
-capture_figures_mode = True
+capture_figures_mode = False
 auto_generate = True
 auto_generate_count = 2  # when auto_generate and capture_figures_mode are true, this many figures will be generated
 
@@ -145,7 +145,7 @@ origin_off_code = 5.0
 ########################################
 # tlf Controls
 ########################################
-gen_tlfx = True  # extended (5s) interpolation
+gen_tlfx = False  # extended (5s) interpolation
 gen_tlfs = True  # segments file
 gen_tlfp = True  # points file
 gen_png = True   # image file
