@@ -47,7 +47,7 @@ trials_per_participant = 0
 pre_render_block_messages = False
 show_practice_messages = True
 table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA")]}
-figures = ["heart", "template_1477081781.44"]
+figures = ["heart", "template_1477090164.31", "template_1477106073.55", "template_1477081781.44", "template_1477111169.26", "template_1477121315.85"]
 origin_wait_time = 1000  # ms
 demo_mode = False
 mirror_mode = False
@@ -126,7 +126,7 @@ seg_report_fuzz = (2, 4)
 ########################################
 # Practice Controls
 ########################################
-enable_practice = True
+enable_practice = False
 truncate_practice_animation = False
 practice_instructions = "The following is a demonstration period. Use this time to learn and then practice the task.\nTap the screen to continue."
 play_narration = True  # toggles the audio component
