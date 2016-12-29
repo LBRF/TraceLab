@@ -43,6 +43,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	session_type = None
 	feedback = False
 	lab_jacking = False
+	lj_spike_interval = 0.01
 	lj_codes = None
 	lj = None
 	# graphical elements
@@ -110,10 +111,10 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.lj = u3.U3()
 			self.getCalibrationData()
 			self.lj_codes = {
-			"baseline": u3.DAC0_8(self.lj.voltageToDACBits(0, dacNumber=0, is16Bits=False)),
-			"origin_red_on_code": u3.DAC0_8(self.lj.voltageToDACBits(1, dacNumber=0, is16Bits=False)),
-			"origin_green_on_code": u3.DAC0_8(self.lj.voltageToDACBits(2, dacNumber=0, is16Bits=False)),
-			"origin_off_code": u3.DAC0_8(self.lj.voltageToDACBits(3, dacNumber=0, is16Bits=False))}
+			"baseline": u3.DAC0_8(self.lj.voltageToDACBits(0.0, dacNumber=0, is16Bits=False)),
+			"origin_red_on_code": u3.DAC0_8(self.lj.voltageToDACBits(1.0, dacNumber=0, is16Bits=False)),
+			"origin_green_on_code": u3.DAC0_8(self.lj.voltageToDACBits(2.0, dacNumber=0, is16Bits=False)),
+			"origin_off_code": u3.DAC0_8(self.lj.voltageToDACBits(3.0, dacNumber=0, is16Bits=False))}
 			# self.configU3(FIOAnalog=1)
 			self.getFeedback(P.eeg_codes['baseline'])
 		self.loading_msg = self.message("Loading...", "default", blit=False)
@@ -402,10 +403,10 @@ class TraceLab(Experiment, BoundaryInspector):
 		P.demographics_collected = True
 
 	def imagery_trial(self):
-		start = P.clock.trial_time
 		self.fill()
 		self.blit(self.origin_inactive, 5, self.origin_pos, flip_x=P.flip_x)
 		self.flip()
+		start = P.clock.trial_time
 		if not P.practicing and self.lab_jacking:
 			self.lj.getFeedback(u3.PortStateWrite([1, 0, 0]))
 			time.sleep(0.01)
