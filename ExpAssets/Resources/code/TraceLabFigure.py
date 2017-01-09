@@ -7,14 +7,14 @@ from PIL import ImagePath, ImageDraw, Image
 import png
 import zipfile
 import aggdraw
-from klibs.KLDraw import aggdraw_to_array
+from klibs.KLGraphics import aggdraw_to_array, blit, flip, fill
 from math import ceil, floor
 from random import randrange, choice, shuffle
 import time
 from klibs.KLExceptions import TrialException
 import klibs.KLParams as P
 from klibs.KLUtilities import *
-from klibs.KLDraw import Ellipse
+from klibs.KLGraphics.KLDraw import Ellipse
 
 def pascal_row(n):
 	# This returns the nth row of Pascal's Triangle
@@ -104,7 +104,7 @@ class TraceLabFigure(object):
 
 	def __init__(self, exp, import_path=None, animate_time=None, manufacture=None):
 		self.exp = exp
-		self.animate_target_time = 5  # dynamically changed after extended_interpolation is generated
+		self.animate_target_time = animate_time if animate_time else self.exp.animate_time
 		self.seg_count = None
 		self.min_spq = P.avg_seg_per_q[0] - P.avg_seg_per_q[1]
 		self.max_spq = P.avg_seg_per_q[0] + P.avg_seg_per_q[1]
@@ -126,9 +126,9 @@ class TraceLabFigure(object):
 
 		if self.min_spf > 4 * self.min_spq > self.max_spf:
 			raise ValueError("Impossible min/max values chosen for points per figure/quadrant.")
-		if P.outer_margin_h + P.inner_margin_h // 2 > Params.screen_c[0]:
+		if P.outer_margin_h + P.inner_margin_h // 2 > P.screen_c[0]:
 			raise ValueError("Margins too large; no drawable area remains.")
-		if P.outer_margin_v + P.inner_margin_v // 2 > Params.screen_c[1]:
+		if P.outer_margin_v + P.inner_margin_v // 2 > P.screen_c[1]:
 			raise ValueError("Margins too large; no drawable area remains.")
 		self.quad_ranges = None
 		self.dot = Ellipse(5, fill=(255,45,45))
@@ -140,6 +140,7 @@ class TraceLabFigure(object):
 		self.frames = None  # complete interpolated path
 		self.a_frames = None  # interpolation minus dropped frames to ensure constant velocity
 		self.path_length = 0
+		self.p_len = 0
 		self.width = P.screen_x - (2 * P.outer_margin_h)
 		self.height = P.screen_y - (2 * P.outer_margin_h)
 		self.avg_velocity = None  # last call to animate only
@@ -163,11 +164,13 @@ class TraceLabFigure(object):
 			self.__gen_quad_intersects__()
 			self.__gen_real_points__(not P.generate_quadrant_intersections)
 			self.__gen_segments__()
-			self.extended_interpolation = self.frames
-			self.segments = []
-			self.frames = []
-			self.animate_target_time = animate_time if animate_time is not None else self.exp.animate_time
-			self.__gen_segments__()
+			self.segments_to_frames()
+			# self.extended_interpolation = self.frames
+			# self.frames = []
+			# self.segments = []
+			# self.animate_target_time =
+			# self.segments_to_frames()
+			# # self.__gen_segments__()
 
 	def __generate_null_points__(self):
 		# make sure minimums won't exceed randomly generated total
@@ -225,7 +228,7 @@ class TraceLabFigure(object):
 	def __gen_segments__(self):
 		# first generate the segments to establish a path length
 		first_pass_segs = []  # ie. raw interpolation unadjusted for velocity
-		p_len = 0
+		self.p_len = 0
 		seg_type_dist = int((1.0 - P.angularity) * 10) * [True] + int(P.angularity * 10) * [False]
 		segment_types = [choice(seg_type_dist)] * len(self.points)
 
@@ -262,11 +265,11 @@ class TraceLabFigure(object):
 							p2 = segment
 						else:
 							seg_ok = True
-					p_len += segment[0]
+					self.p_len += segment[0]
 					first_pass_segs.append(segment[1])
 				else:
 					segment = self.__generate_curved_segment__(p1, p2, start)
-					p_len += segment[0]
+					self.p_len += segment[0]
 					first_pass_segs.append(segment[1])
 				i += 1
 				i_curved_fail = False
@@ -288,19 +291,26 @@ class TraceLabFigure(object):
 				else:
 					raise RuntimeError(e)
 		self.raw_segments = first_pass_segs
+
+	def segments_to_frames(self):
 		# use path length and animation duration to establish a velocity and then do a second interpolation
-		velocity = p_len / self.animate_target_time
-		for segment in first_pass_segs:
-			circle = segment[0]
-			try:
-				p1, p2, ctrl = segment[1]
-			except ValueError:
-				p1, p2 = segment[1]
-			if circle:
-				self.segments.append(bezier_interpolation(p1, p2, ctrl, None,  velocity))
+		for i in range(0,2):
+			self.segments = []
+			velocity = self.p_len / self.animate_target_time if i else 5
+			for segment in self.raw_segments:
+				circle = segment[0]
+				try:
+					p1, p2, ctrl = segment[1]
+				except ValueError:
+					p1, p2 = segment[1]
+				if circle:
+					self.segments.append(bezier_interpolation(p1, p2, ctrl, None,  velocity))
+				else:
+					self.segments.append(linear_interpolation(p1, p2, velocity))
+			if i:
+				self.frames = list(chain(*self.segments))
 			else:
-				self.segments.append(linear_interpolation(p1, p2, velocity))
-		self.frames = list(chain(*self.segments))
+				self.extended_interpolation = list(chain(*self.segments))
 
 	def __generate_linear_segment__(self, p1, p2, prev_seg=None):
 		if prev_seg and prev_seg[0]:
@@ -456,10 +466,11 @@ class TraceLabFigure(object):
 		except KeyError:
 			return self.__import_figure__(path, False)
 
-	def render(self, np=True, trace=None):
+	def render(self, np=True, trace=None, extended=False):
 		surf = aggdraw.Draw("RGBA", P.screen_x_y, (0,0,0,255))
-		p_str = "M{0} {1}".format(*self.frames[0])
-		for s in chunk(self.frames, 2):
+		frames = self.frames if not extended else self.extended_interpolation
+		p_str = "M{0} {1}".format(*frames[0])
+		for s in chunk(frames, 2):
 			try:
 				p_str += " L{0} {1} {2} {3}".format(s[0][0], s[0][1], s[1][0], s[1][1])
 			except IndexError:
@@ -481,20 +492,21 @@ class TraceLabFigure(object):
 		return self.rendered
 
 	def draw(self, dots=True, flip=True):
-		self.exp.fill()
-		self.exp.blit(self.render(), flip_x=P.flip_x)
+		fill()
+		blit(self.render(), flip_x=P.flip_x)
 		self.exp.message("Path Length: {0}".format(interpolated_path_len(self.frames), "default", location=(25,50)))
 		if dots:
 			for p in self.points:
-				self.exp.blit(self.r_dot, 5, p, flip_x=P.flip_x)
+				blit(self.r_dot, 5, p, flip_x=P.flip_x)
 				self.exp.message(str(p[0]), "tiny", location=p)
 		if flip:
-			self.exp.flip()
+			flip()
 
 	def prepare_animation(self):
 		if self.animate_target_time is None:
 			self.animate_target_time = self.exp.animate_time
 		self.path_length = interpolated_path_len(self.frames)
+		print "Path Lengths: p_len = {0}, path_length = {1}".format(self.p_len, self.path_length)
 		draw_in = self.animate_target_time * 0.001
 		rate = 0.016666666666667
 		max_frames = int(draw_in / rate)
@@ -521,17 +533,17 @@ class TraceLabFigure(object):
 			# if P.flip_x:
 			# 	f[0] = P.screen_x - f[0]
 			self.exp.ui_request()
-			self.exp.fill()
+			fill()
 			if P.demo_mode:
-				self.exp.blit(self.rendered, 5, P.screen_c, flip_x=P.flip_x)
-			self.exp.blit(self.exp.tracker_dot, 5, f, flip_x=P.flip_x)
-			self.exp.flip()
+				blit(self.rendered, 5, P.screen_c, flip_x=P.flip_x)
+			blit(self.exp.tracker_dot, 5, f, flip_x=P.flip_x)
+			flip()
 			f = list(f)
 			if not P.capture_figures_mode and not practice:
 				updated_a_frames.append((f[0], f[1], P.clock.trial_time - start))
 		if not P.capture_figures_mode and not practice:
 			self.a_frames = updated_a_frames
-			self.animate_time = Params.clock.trial_time
+			self.animate_time = P.clock.trial_time
 
 			self.avg_velocity = self.path_length / self.animate_time
 
@@ -539,27 +551,22 @@ class TraceLabFigure(object):
 
 
 	def write_out(self, file_name=None, trial_data=None):
-		write_png = False
-		write_points = False
-		write_ext_interp = False
-		write_segments = False
 		if not file_name:
 			file_name = self.file_name
 		if not trial_data:
-			write_points = True
-			write_png = True
 			trial_data = self.a_frames
-			write_ext_interp = True
-			write_segments = True
+
 		thumb_file_name = file_name[:-4] + "_preview.png"
-		points_file_name = file_name[:-4] + "_points.txt"
-		ext_interp_file_name = file_name[:-4] + "_.tlfx"
-		segments_file_name = file_name[:-4] + "_.tlfs"
+		thumbx_file_name = file_name[:-4] + "_ext_preview.png"
+		points_file_name = file_name[:-4] + ".tlfp"
+		ext_interp_file_name = file_name[:-4] + ".tlfx"
+		segments_file_name = file_name[:-4] + ".tlfs"
 		fig_path = os.path.join(self.exp.fig_dir, file_name)
 		points_path = os.path.join(self.exp.fig_dir, points_file_name)
 		segments_path = os.path.join(self.exp.fig_dir, segments_file_name)
 		ext_interpolation_path = os.path.join(self.exp.fig_dir, ext_interp_file_name)
 		thumb_path = os.path.join(self.exp.fig_dir, thumb_file_name)
+		thumbx_path = os.path.join(self.exp.fig_dir, thumb_file_name)
 		with zipfile.ZipFile(fig_path[:-3] + "zip", "a", zipfile.ZIP_DEFLATED) as fig_zip:
 			f = open(fig_path, "w+")
 			if P.capture_figures_mode:
@@ -571,33 +578,40 @@ class TraceLabFigure(object):
 				f.write(str(trial_data))
 			f.close()
 
-			if write_ext_interp:
+			if P.gen_tlfx:
 				f = open(ext_interpolation_path, "w+")
 				f.write(str(self.extended_interpolation))
 				f.close()
 				fig_zip.write(ext_interpolation_path, ext_interp_file_name)
 				os.remove(ext_interpolation_path)
 
-			if write_points:
+			if P.gen_tlfp:
 				f = open(points_path, "w+")
 				f.write(str(self.points))
 				f.close()
 				fig_zip.write(points_path, points_file_name)
 				os.remove(points_path)
 
-			if write_segments:
+			if P.gen_tlfs:
 				f = open(segments_path, "w+")
 				f.write(",".join( str(s[1]) for s in self.raw_segments))
 				f.close()
 				fig_zip.write(segments_path, segments_file_name)
 				os.remove(segments_path)
 
-			if write_png:
+			if P.gen_png:
 				png.from_array(self.render(), 'RGBA').save(thumb_path)
 				fig_zip.write(thumb_path, thumb_file_name)
 				os.remove(thumb_path)
+
+			if P.gen_ext_png:
+				png.from_array(self.render(extended=True), 'RGBA').save(thumb_path)
+				fig_zip.write(thumbx_path, thumbx_file_name)
+				os.remove(thumb_path)
+
 			fig_zip.write(fig_path, file_name)
 			os.remove(fig_path)
+
 
 	@property
 	def file_name(self):

@@ -2,15 +2,13 @@
 #
 # Any param that is commented out by default is either deprecated or else not yet implemented--don't uncomment or use
 
-import u3
-
 #########################################
 # Available Hardware
 #########################################
 eye_tracker_available = False
 eye_tracking = False
 labjack_available = False
-labjacking = False
+labjacking = True
 
 #########################################
 # Environment Aesthetic Defaults
@@ -40,6 +38,7 @@ cue_back_size = 1 # deg of visual angle
 #########################################
 multi_session_project = True
 collect_demographics = True
+manual_demographics_collection = True
 run_practice_blocks = False
 trials_per_block = 20
 trials_per_practice_block = 0
@@ -49,10 +48,11 @@ trials_per_participant = 0
 pre_render_block_messages = False
 show_practice_messages = True
 table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA")]}
-figures = ["heart", "fig6"]
+figures = ["heart", "template_1477090164.31", "template_1477106073.55", "template_1477081781.44", "template_1477111169.26", "template_1477121315.85"]
 origin_wait_time = 1000  # ms
 demo_mode = False
 mirror_mode = False
+next_trial_message = "Tap here to continue."
 
 #########################################
 # Development Mode Settings
@@ -98,9 +98,10 @@ btn_instrux = "How many times did the dot change course {0}?"  #  the {0} will c
 ########################################
 generation_timeout = 10  # seconds
 capture_figures_mode = False
+auto_generate = True
+auto_generate_count = 2  # when auto_generate and capture_figures_mode are true, this many figures will be generated
 
 generate_quadrant_intersections = True
-
 outer_margin_v = 50
 outer_margin_h = 50
 inner_margin_v = 10
@@ -121,25 +122,33 @@ peak_shift = (0.25, 0.5)  # 0 == perfect symmetry (ie. bell curve) and 1 == a ri
 curve_sheer = (0.1, 0.3)  # this is hard to describe, but 1 is again an impossible value, and this will grow to lunacy fast
 path_length = -1  # length (px); -1 ignores this parameter; path length will override seg_length params if they conflict
 seg_report_fuzz = (2, 4)
-# seg_count_fuzz_width
-# seg_answer_pos
 
- # NOTE VARIABLE SESSION COUNTS
 
 ########################################
 # Practice Controls
 ########################################
 enable_practice = False
-truncate_practice_animation = True
+truncate_practice_animation = False
 practice_instructions = "The following is a demonstration period. Use this time to learn and then practice the task.\nTap the screen to continue."
-play_narration = False  # toggles the audio component
+play_narration = True  # toggles the audio component
 practice_figure = "heart"
 practice_animation_time = 3500 # ms
 bubble_location = (1550, 275)
+override_practice = True  # only for testing on a monitor which is too small to support practice animations
 
 ########################################
 # Labjack Codes
 ########################################
-origin_red_on_code = 001
-origin_green_on_code = 002
-origin_off_code = 003
+origin_red_on_code = 1.0
+origin_green_on_code = 3.0
+origin_off_code = 5.0
+
+
+########################################
+# tlf Controls
+########################################
+gen_tlfx = False  # extended (5s) interpolation
+gen_tlfs = True  # segments file
+gen_tlfp = True  # points file
+gen_png = True   # image file
+gen_ext_png = False  # image file from extended interpolation

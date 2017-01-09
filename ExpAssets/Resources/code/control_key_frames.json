@@ -3,16 +3,18 @@
         {
             "label": "control instructions",
             "description": "Instructions initially presented. Audio 1 begins.",
-            "duration": 7400,
+            "duration": 10300,
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
                     "asset": "control audio 1",
+                    "registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
                     "asset": "control instructions 1",
+                    "registration": 5,
                     "start": "EVAL: P.screen_c",
                     "end": "EVAL: P.screen_c"
                 }
@@ -26,6 +28,7 @@
             "directives": [
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [480, 360]
                 }
@@ -39,6 +42,7 @@
             "directives": [
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [480, 360],
                     "end": [960, 360],
                     "control": [720, 120]
@@ -53,6 +57,7 @@
             "directives": [
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [960, 360],
                     "end": [1420, 360],
                     "control": [1200, 120]
@@ -67,6 +72,7 @@
             "directives": [
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [1420, 360],
                     "end": [960, 780]
                 }
@@ -80,6 +86,7 @@
             "directives": [
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 }
@@ -88,21 +95,24 @@
         {
             "label": "vertices 1",
             "description": "Initial instructions provided. Audio 2 begins.",
-            "duration": 1700,
+            "duration": 1000,
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
-                 {
+                {
                     "asset": "control audio 2",
+                    "registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
                     "asset": "control instructions 2",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 },
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 }
@@ -111,16 +121,18 @@
         {
             "label": "vertices 2",
             "description": "Dot travels to first vertex.",
-            "duration": 2500,
+            "duration": 2200,
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
                 {
                     "asset": "control instructions 2",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 },
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [480, 360]
                 }
@@ -134,22 +146,25 @@
             "directives": [
                 {
                     "asset": "control instructions 2",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 },
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [480, 360],
                     "end": [480, 360]
                 },
                 {
                     "asset": "target circle",
+                    "registration": 5,
                     "start": [480, 360],
                     "end": [480, 360]
                 }
             ]
         },
-         {
+        {
             "label": "vertices 3.2",
             "description": "Pause to sync audio 2.",
             "duration": 300,
@@ -157,16 +172,19 @@
             "directives": [
                 {
                     "asset": "control instructions 2",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 },
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [480, 360],
                     "end": [480, 360]
                 },
                 {
                     "asset": "target circle",
+                    "registration": 5,
                     "start": [480, 360],
                     "end": [480, 360]
                 }
@@ -180,18 +198,21 @@
             "directives": [
                 {
                     "asset": "control instructions 2",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 },
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [480, 360],
                     "end": [480, 360]
                 },
                 {
                     "asset": "target circle",
-                    "start": [960,780],
-                    "end": [960,780]
+                    "registration": 5,
+                    "start": [960, 780],
+                    "end": [960, 780]
                 }
             ]
         },
@@ -203,11 +224,13 @@
             "directives": [
                 {
                     "asset": "control instructions 3",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 },
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [480, 360],
                     "end": [480, 360]
                 }
@@ -221,19 +244,40 @@
             "directives": [
                 {
                     "asset": "control instructions 3",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 },
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [480, 360],
                     "end": [960, 360],
                     "control": [720, 120]
                 }
             ]
         },
-
-         {
+        {
+            "label": "vertices 6.1.1",
+            "description": "Pause to let audio 2 conclude. ",
+            "duration": 1700,
+            "enabled": "EVAL: not P.truncate_practice_animation",
+            "directives": [
+                {
+                    "asset": "control instructions 3",
+                    "registration": 5,
+                    "start": [960, 150],
+                    "end": [960, 150]
+                },
+                {
+                    "asset": "dot",
+                    "registration": 5,
+                    "start": [960, 360],
+                    "end": [960, 360]
+                }
+            ]
+        },
+        {
             "label": "vertices 6.2",
             "description": "Dot pauses at second vertex. Pause before audio 3 begins. ",
             "duration": 300,
@@ -241,34 +285,39 @@
             "directives": [
                 {
                     "asset": "control instructions 4",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 },
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [960, 360],
                     "end": [960, 360]
                 }
             ]
         },
-         {
+        {
             "label": "vertices 7",
             "description": "Dot pauses at second vertex. Audio 3 begins ",
             "duration": 1000,
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
-                 {
+                {
                     "asset": "control audio 3",
+                    "registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
                     "asset": "control instructions 4",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 },
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [960, 360],
                     "end": [960, 360]
                 }
@@ -282,11 +331,13 @@
             "directives": [
                 {
                     "asset": "control instructions 4",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 },
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [960, 360],
                     "end": [960, 360]
                 }
@@ -298,20 +349,22 @@
             "duration": 1200,
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
-                 {
+                {
                     "asset": "control audio 4",
+                    "registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [960, 360],
                     "end": [1420, 360],
                     "control": [1200, 120]
                 }
             ]
         },
-                {
+        {
             "label": "vertices 10",
             "description": "Dot pauses and up arrow shown",
             "duration": 700,
@@ -319,39 +372,25 @@
             "directives": [
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [1420, 360],
                     "end": [1420, 360]
                 },
-                                {
+                {
+                    "asset": "dotted curve",
+                    "registration": 1,
+                    "start": [960, 360],
+                    "end": [960, 360]
+                },
+                {
                     "asset": "arrow up",
-                    "start": [1190, 240],
-                    "end": [1190, 240]
+                    "registration": 2,
+                    "start": [960, 350],
+                    "end": [960, 350]
                 },
                 {
                     "asset": "control instructions 5",
-                    "start": [960, 150],
-                    "end": [960, 150]
-                }
-            ]
-        },
-        {
-            "label": "vertices 11",
-            "description": "Dot pauses and down arrow shown",
-            "duration": 700,
-            "enabled": false,
-            "directives": [
-                {
-                    "asset": "dot",
-                    "start": [1420, 360],
-                    "end": [1420, 360]
-                },
-                                {
-                    "asset": "arrow down",
-                    "start": [1190, 480],
-                    "end": [1190, 480]
-                },
-                {
-                    "asset": "control instructions 5",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 }
@@ -365,16 +404,25 @@
             "directives": [
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [1420, 360],
                     "end": [1420, 360]
                 },
-                                {
+                {
+                    "asset": "dotted curve",
+                    "registration": 1,
+                    "start": [960, 360],
+                    "end": [960, 360]
+                },
+                {
                     "asset": "arrow right",
-                    "start": [1190, 360],
-                    "end": [1190, 360]
+                    "registration": 4,
+                    "start": [970, 360],
+                    "end": [970, 360]
                 },
                 {
                     "asset": "control instructions 5",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 }
@@ -388,11 +436,13 @@
             "directives": [
                 {
                     "asset": "control instructions 5",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 },
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [1420, 360],
                     "end": [1420, 360]
                 }
@@ -404,24 +454,27 @@
             "duration": 1200,
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
-                  {
+                {
                     "asset": "control audio 5",
+                    "registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
                     "asset": "control instructions 6",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 },
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [1420, 360],
                     "end": [960, 780]
                 }
             ]
         },
-         {
+        {
             "label": "vertices 11",
             "description": "Dot pauses and down arrow shown.",
             "duration": 700,
@@ -429,20 +482,30 @@
             "directives": [
                 {
                     "asset": "control instructions 6",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 },
                 {
+                    "asset": "dotted line",
+                    "registration": 9,
+                    "start": [1420, 360],
+                    "end": [1420, 360]
+                },
+                {
+                    "asset": "arrow down",
+                    "registration": 8,
+                    "start": [1420, 370],
+                    "end": [1420, 370]
+                },
+                {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
-                },
-                                {
-                    "asset": "arrow down",
-                    "start": [1190, 540],
-                    "end": [1190, 540]
                 }
             ]
+
         },
         {
             "label": "vertices 12",
@@ -452,16 +515,25 @@
             "directives": [
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
-                                {
+                {
+                    "asset": "dotted line",
+                    "registration": 9,
+                    "start": [1420, 360],
+                    "end": [1420, 360]
+                },
+                {
                     "asset": "arrow left",
-                    "start": [1190, 540],
-                    "end": [1190, 540]
+                    "registration": 6,
+                    "start": [1410, 360],
+                    "end": [1410, 360]
                 },
                 {
                     "asset": "control instructions 6",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 }
@@ -475,11 +547,13 @@
             "directives": [
                 {
                     "asset": "control instructions 6",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 },
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 }
@@ -491,13 +565,15 @@
             "duration": 18600,
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
-                                {
+                {
                     "asset": "control audio 6",
+                    "registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
                     "asset": "control instructions 7",
+                    "registration": 5,
                     "start": "EVAL: P.screen_c",
                     "end": "EVAL: P.screen_c"
                 }
@@ -511,71 +587,85 @@
             "directives": [
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 3 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box white",
+                    "registration": 5,
                     "start": "EVAL: [P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9)]",
                     "end": "EVAL: [P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9)]"
                 },
                 {
                     "asset": "finish text white",
+                    "registration": 5,
                     "start": "EVAL: [P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9)]",
                     "end": "EVAL: [P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9)]"
                 },
                 {
                     "asset": "control instructions 8",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 },
                 {
                     "asset": "control audio 7",
+                    "registration": 5,
                     "start": 0,
                     "end": null
                 }
@@ -589,71 +679,85 @@
             "directives": [
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 3 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box white",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
                 {
                     "asset": "finish text white",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": "EVAL: (960, P.screen_y)",
                     "end": "EVAL: (P.btn_s_pad + 90 + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 100)"
                 },
                 {
                     "asset": "control instructions 8",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 }
@@ -667,71 +771,85 @@
             "directives": [
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 3 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box white",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
                 {
                     "asset": "finish text white",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 90 + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 100)",
                     "end": "EVAL: (P.btn_s_pad + 90 + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 100)"
                 },
                 {
                     "asset": "control instructions 8",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 }
@@ -745,71 +863,85 @@
             "directives": [
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 3 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box white",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
                 {
                     "asset": "finish text white",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 90 + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 100)",
                     "end": "EVAL: (P.btn_s_pad + 90 + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)"
                 },
                 {
                     "asset": "control instructions 8",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 }
@@ -823,71 +955,85 @@
             "directives": [
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box green",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 green",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 3 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box green",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
                 {
                     "asset": "finish text green",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 90 + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)",
                     "end": "EVAL: (P.btn_s_pad + 90 + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)"
                 },
                 {
                     "asset": "control instructions 8",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 }
@@ -901,76 +1047,91 @@
             "directives": [
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box green",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 green",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 3 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box green",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
                 {
                     "asset": "finish text green",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 90 + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)",
                     "end": "EVAL: (P.btn_s_pad + 90 + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)"
                 },
                 {
                     "asset": "control instructions 9",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 },
-                 {
+                {
                     "asset": "control audio 8",
+                    "registration": 5,
                     "start": 0,
                     "end": null
                 }
@@ -984,71 +1145,85 @@
             "directives": [
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box green",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 green",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 3 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box green",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
                 {
                     "asset": "finish text green",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
-                 {
+                {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 90 + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)",
                     "end": "EVAL: (P.btn_s_pad + 90 + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 100)"
                 },
                 {
                     "asset": "control instructions 9",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 }
@@ -1062,71 +1237,85 @@
             "directives": [
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box green",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 green",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 3 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box green",
+                    "registration": 5,
                     "start": "EVAL: [P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9)]",
                     "end": "EVAL: [P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9)]"
                 },
                 {
                     "asset": "finish text green",
+                    "registration": 5,
                     "start": "EVAL: [P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9)]",
                     "end": "EVAL: [P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9)]"
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 90 + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 100)",
                     "end": "EVAL: (P.btn_s_pad + 90 + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)"
                 },
                 {
                     "asset": "control instructions 9",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 }
@@ -1140,71 +1329,85 @@
             "directives": [
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box green",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 green",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box green",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
                 {
                     "asset": "finish text green",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 90 + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)",
                     "end": "EVAL: (P.btn_s_pad + 90 + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)"
                 },
                 {
                     "asset": "control instructions 9",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 }
@@ -1218,71 +1421,85 @@
             "directives": [
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box green",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 green",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box green",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
                 {
                     "asset": "finish text green",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 90 + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100) + 90, int(P.screen_y * 0.9) + 100)"
                 },
                 {
                     "asset": "control instructions 9",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 }
@@ -1296,71 +1513,85 @@
             "directives": [
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box green",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 green",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box green",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
                 {
                     "asset": "finish text green",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100) + 90, int(P.screen_y * 0.9) + 100)",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100) + 90, int(P.screen_y * 0.9) + 100)"
                 },
                 {
                     "asset": "control instructions 9",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 }
@@ -1374,71 +1605,85 @@
             "directives": [
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box green",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 green",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box green",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
                 {
                     "asset": "finish text green",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100) + 90, int(P.screen_y * 0.9) + 100)",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100) + 90, int(P.screen_y * 0.9) + 110)"
                 },
                 {
                     "asset": "control instructions 9",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 }
@@ -1452,77 +1697,91 @@
             "directives": [
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box green",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 green",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
+                    "registration": 5,
                     "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
                     "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box green",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
                 {
                     "asset": "finish text green",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100) + 90, int(P.screen_y * 0.9) + 110)",
                     "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100) + 90, int(P.screen_y * 0.9) + 110)"
                 },
                 {
                     "asset": "control instructions 9",
+                    "registration": 5,
                     "start": [960, 150],
                     "end": [960, 150]
                 }
             ]
         },
-          {
+        {
             "label": "end practice script",
             "description": "User is told to begin self-initiating practice. Audio 9 begins",
             "duration": 3000,
@@ -1530,17 +1789,17 @@
             "directives": [
                 {
                     "asset": "control audio 9",
+                    "registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
                     "asset": "end practice",
+                    "registration": 5,
                     "start": "EVAL: P.screen_c",
                     "end": "EVAL: P.screen_c"
                 }
             ]
         }
-
-
     ]
 }

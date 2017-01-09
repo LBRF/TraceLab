@@ -24,7 +24,7 @@
         "file": {
             "filename": "arrow_up.png",
             "media_type": "image_f",
-            "resolution": [41, 81],
+            "resolution": [41, 219],
             "duration": null
         },
         "drawbject": null
@@ -34,7 +34,7 @@
         "file": {
             "filename": "arrow_down.png",
             "media_type": "image_f",
-            "resolution": [41, 81],
+            "resolution": [41, 471],
             "duration": null
         },
         "drawbject": null
@@ -44,7 +44,7 @@
         "file": {
             "filename": "arrow_right.png",
             "media_type": "image_f",
-            "resolution": [81, 41],
+            "resolution": [473, 41],
             "duration": null
         },
         "drawbject": null
@@ -54,7 +54,27 @@
         "file": {
             "filename": "arrow_left.png",
             "media_type": "image_f",
-            "resolution": [81, 41],
+            "resolution": [473, 41],
+            "duration": null
+        },
+        "drawbject": null
+    },
+    "dotted line": {
+        "text": null,
+        "file": {
+            "filename": "dotted_line.png",
+            "media_type": "image_f",
+            "resolution": [337, 447],
+            "duration": null
+        },
+        "drawbject": null
+    },
+    "dotted curve": {
+        "text": null,
+        "file": {
+            "filename": "dotted_curve.png",
+            "media_type": "image_f",
+            "resolution": [243, 111],
             "duration": null
         },
         "drawbject": null
@@ -79,10 +99,10 @@
         },
         "drawbject": {
             "shape": "ellipse",
-            "width": 6,
-            "height": 6,
-            "stroke": [2, [255, 255, 255]],
-            "fill": [255, 45, 45]
+            "width": 5,
+            "height": 5,
+            "stroke": [4, [255, 255, 255]],
+            "fill": [11,11,11]
         }
     },
     "target circle": {
@@ -126,7 +146,7 @@
     },
     "physical instructions 1": {
         "text": {
-            "string": "You are about to see a white dot trace out a movement on the screen. \nAll movements begin and end at the same point.\nYou will later be asked to repeat this movement yourself on the touchscreen.\nThis tutorial will show you how to respond.",
+            "string": "You are about to see a white dot trace out a movement on the screen. \nAll movements begin and end at the same point.\nYou will later be asked to repeat this movement yourself on the touchscreen.\nThis tutorial will show you how to respond.\nWhen you tap the touchscreen to continue, the movement will begin.",
             "style": "instructions"
         },
         "file": {
@@ -139,7 +159,7 @@
     },
     "physical instructions 2": {
         "text": {
-            "string": "The red circle indicates that you are now able to respond…\nThis is not a reaction time test — you do not need to respond right away; take your time!",
+            "string": "The red circle indicates that you are now able to respond…\nNote that this is not a reaction time test — you do not need to respond right away; take your time!",
             "style": "instructions"
         },
         "file": {
@@ -178,7 +198,7 @@
     },
     "physical instructions 5": {
         "text": {
-            "string": "...the circle will turn green, indicating that the computer is now recording.\nYour job is to trace out exactly the movement you observed, even matching the speed.",
+            "string": "...the circle will turn green, indicating that the computer is now recording.\nYour job is to trace out exactly the movement you observed, matching the speed.",
             "style": "instructions"
         },
         "file": {
@@ -204,7 +224,7 @@
     },
     "imagery instructions 1": {
         "text": {
-            "string": "You are about to see a white dot trace out a movement on the screen.\nAll movements begin and end at the same point.\nYou will later be asked to repeat this movement using motor imagery.\nThis means you will practice the movement mentally, without actually performing the movement.\nWe want you to imagine what it would look like, and also how it would feel.\nThis tutorial will show you how to respond.",
+            "string": "You are about to see a white dot trace out a movement on the screen.\nAll movements begin and end at the same point.\nYou will later be asked to repeat this movement using motor imagery.\nThis means you will practice the movement mentally, without actually performing the movement.\nWe want you to imagine what it would look like for you to perform the movement,\nand also how it would feel. This tutorial will show you how to respond.\nWhen you tap the touchscreen to continue, the movement will begin.",
             "style": "instructions"
         },
         "file": {
@@ -217,7 +237,7 @@
     },
     "imagery instructions 2": {
         "text": {
-            "string": "The red circle indicates that you are now able to respond.\nThis is not a reaction time test; you do not need to respond right away.\nTake your time!",
+            "string": "The red circle indicates that you are now able to respond.\nNote that this is not a reaction time test; you do not need to respond right away.\nTake your time!",
             "style": "instructions"
         },
         "file": {
@@ -230,7 +250,7 @@
     },
     "imagery instructions 3": {
         "text": {
-            "string": "Once you touch the circle...",
+            "string": "Once you touch the red circle...",
             "style": "instructions"
         },
         "file": {
@@ -243,7 +263,7 @@
     },
     "imagery instructions 4": {
         "text": {
-            "string": "...and begin to move, the circle will turn green.\n This indicates that the computer is now recording.",
+            "string": "...and begin to move, the circle will turn green,\nindicating that the computer is now recording.",
             "style": "instructions"
         },
         "file": {
@@ -256,7 +276,7 @@
     },
     "imagery instructions 5": {
         "text": {
-            "string": "Stop moving, and perform the movement mentally.\n\nRemember: do not actually perform the movement physically.\nJust imagine the movement, visualizing what it would look like and how it would feel to perform it with your fingertip.",
+            "string": "Stop moving, and perform the movement mentally.\n\nRemember: do not actually perform the movement physically.\nJust imagine the movement, visualizing what it would look like for you to do it, and how it would feel.",
             "style": "instructions"
         },
         "file": {
@@ -295,7 +315,7 @@
     },
     "control instructions 1": {
         "text": {
-            "string": "You are about to see a white dot trace out a movement on the screen.\nAll movements begin and end at the same point.\n\nFor example...",
+            "string": "You are about to see a white dot trace out a movement on the screen.\nWhen you tap the touchscreen to continue, the movement will begin.\nAll movements begin and end at the same point.\n\nFor example...",
             "style": "instructions"
         },
         "file": {
@@ -308,7 +328,7 @@
     },
     "control instructions 2": {
         "text": {
-            "string": "All movements will pass through a set of vertices, which we will refer to as corners (including the starting point).\nLooking more closely, you’ll see that the movement appears to bounce.",
+            "string": "All movements in this experiment will hit five corners, including the starting point.\nLooking more closely, you’ll see that the movement appears to bounce from each corner.",
             "style": "instructions"
         },
         "file": {
@@ -321,7 +341,7 @@
     },
     "control instructions 3": {
         "text": {
-            "string": "Looking more closely, you’ll see that the movement appears to bounce.",
+            "string": "Looking more closely, you’ll see that the movement appears to bounce from each corner.",
             "style": "instructions"
         },
         "file": {
@@ -347,7 +367,7 @@
     },
     "control instructions 5": {
         "text": {
-            "string": "The dot moves UP, DOWN and RIGHT between corners.",
+            "string": "The dot moves UP and RIGHT from the corner.",
             "style": "instructions"
         },
         "file": {
@@ -360,7 +380,7 @@
     },
     "control instructions 6": {
         "text": {
-            "string": "And next then the dot moves DOWN and LEFT, back to the starting corner.",
+            "string": "And then the dot moves DOWN and LEFT from the corner.",
             "style": "instructions"
         },
         "file": {
@@ -399,7 +419,7 @@
     },
     "control instructions 9": {
         "text": {
-            "string": "You can always change your answer before finally confirming your answer.",
+            "string": "You can always change your answer before finally confirming it.",
             "style": "instructions"
         },
         "file": {
@@ -639,7 +659,8 @@
             "filename": "CC2.wav",
             "media_type": "audio_f",
             "resolution": null,
-            "duration": 10.5        },
+            "duration": 10.5
+        },
         "drawbject": null
     },
     "control audio 3": {
@@ -751,16 +772,17 @@
             "duration": 22.8
         },
         "drawbject": null
-    }, "imagery audio 5": {
-    "text": null,
-    "file": {
-        "filename": "MI5.wav",
-        "media_type": "audio_f",
-        "resolution": null,
-        "duration": 7.8
     },
-    "drawbject": null
-},
+    "imagery audio 5": {
+        "text": null,
+        "file": {
+            "filename": "MI5.wav",
+            "media_type": "audio_f",
+            "resolution": null,
+            "duration": 7.8
+        },
+        "drawbject": null
+    },
     "imagery audio 6": {
         "text": null,
         "file": {

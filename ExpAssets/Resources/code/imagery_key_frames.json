@@ -8,12 +8,14 @@
             "directives": [
                 {
                     "asset": "imagery audio 1",
+                    "registration": 5,
                     "start": 0,
                     "end": null
                 },
 
                 {
                     "asset": "imagery instructions 1",
+                    "registration": 5,
                     "start": "EVAL: P.screen_c",
                     "end": "EVAL: P.screen_c"
                 }
@@ -27,11 +29,13 @@
             "directives": [
                 {
                     "asset": "imagery instructions 1",
+                    "registration": 5,
                     "start": "EVAL: P.screen_c",
                     "end": "EVAL: P.screen_c"
                 },
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 }
@@ -45,6 +49,7 @@
             "directives": [
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [480, 360]
                 }
@@ -58,6 +63,7 @@
             "directives": [
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [480, 360],
                     "end": [960, 360],
                     "control": [720, 120]
@@ -72,6 +78,7 @@
             "directives": [
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [960, 360],
                     "end": [1420, 360],
                     "control": [1200, 120]
@@ -86,6 +93,7 @@
             "directives": [
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [1420, 360],
                     "end": [960, 780]
                 }
@@ -99,6 +107,7 @@
             "directives": [
                 {
                     "asset": "dot",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 }
@@ -112,16 +121,19 @@
             "directives": [
                 {
                     "asset": "imagery audio 2",
+                    "registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
                     "asset": "imagery instructions 2",
+                    "registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 },
                 {
                     "asset": "origin red",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 }
@@ -135,11 +147,13 @@
             "directives": [
                 {
                     "asset": "origin red",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": [1160, 1000],
                     "end": [1160, 1000]
                 }
@@ -153,11 +167,13 @@
             "directives": [
                 {
                     "asset": "origin red",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": [1160, 1000],
                     "end": [1050, 870]
                 }
@@ -171,17 +187,18 @@
             "directives": [
                 {
                     "asset": "origin red",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": [1050, 870],
                     "end": [1050, 870]
                 }
             ]
         },
-
         {
             "label": "origin 6",
             "description": "Third instructions given. Audio 3 begins.",
@@ -190,21 +207,25 @@
             "directives": [
                 {
                     "asset": "imagery audio 3",
+                    "registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
                     "asset": "origin red",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": [1050, 870],
                     "end": [1050, 870]
                 },
                 {
                     "asset": "imagery instructions 3",
+                    "registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -219,16 +240,19 @@
             "directives": [
                 {
                     "asset": "origin red",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": [1050, 870],
                     "end": [1050, 880]
                 },
                 {
                     "asset": "imagery instructions 3",
+                    "registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -242,16 +266,19 @@
             "directives": [
                 {
                     "asset": "origin red",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": [1050, 880],
                     "end": [1050, 880]
                 },
                 {
                     "asset": "imagery instructions 3",
+                    "registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -265,16 +292,19 @@
             "directives": [
                 {
                     "asset": "imagery audio 4",
+                    "registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
                     "asset": "origin red",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": [1050, 880],
                     "end": [1010, 850]
                 }
@@ -289,11 +319,13 @@
             "directives": [
                 {
                     "asset": "origin red",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": [1010, 850],
                     "end": [1010, 850]
                 }
@@ -308,16 +340,19 @@
             "directives": [
                 {
                     "asset": "origin green",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": [1010, 850],
                     "end": [1010, 850]
                 },
                 {
                     "asset": "imagery instructions 4",
+                    "registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -331,16 +366,19 @@
             "directives": [
                 {
                     "asset": "origin green",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": [1010, 850],
                     "end": [1010, 850]
                 },
                 {
                     "asset": "imagery instructions 5",
+                    "registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -354,21 +392,25 @@
             "directives": [
                 {
                     "asset": "origin green",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": [1010, 850],
                     "end": [1010, 850]
                 },
                 {
                     "asset": "thought bubble",
+                    "registration": 5,
                     "start": "EVAL: P.bubble_location",
                     "end": "EVAL: P.bubble_location"
                 },
                 {
                     "asset": "imagery instructions 5",
+                    "registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -382,26 +424,31 @@
             "directives": [
                 {
                     "asset": "origin green",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": [1010, 850],
                     "end": [1010, 850]
                 },
                 {
                     "asset": "thought bubble",
+                    "registration": 5,
                     "start": "EVAL: P.bubble_location",
                     "end": "EVAL: P.bubble_location"
                 },
                 {
                     "asset": "pointer small",
+                    "registration": 5,
                     "start": [1550, 375],
                     "end": [1550, 375]
                 },
                 {
                     "asset": "imagery instructions 5",
+                    "registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -415,27 +462,32 @@
             "directives": [
                 {
                     "asset": "origin green",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
 
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": [1010, 850],
                     "end": [1010, 850]
                 },
                 {
                     "asset": "thought bubble",
+                    "registration": 5,
                     "start": "EVAL: P.bubble_location",
                     "end": "EVAL: P.bubble_location"
                 },
                 {
                     "asset": "pointer small",
+                    "registration": 5,
                     "start": [1550, 375],
                     "end": [1400, 200]
                 },
                 {
                     "asset": "imagery instructions 5",
+                    "registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -449,27 +501,32 @@
             "directives": [
                 {
                     "asset": "origin green",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": [1010, 850],
                     "end": [1010, 850]
                 },
                 {
                     "asset": "thought bubble",
+                    "registration": 5,
                     "start": "EVAL: P.bubble_location",
                     "end": "EVAL: P.bubble_location"
                 },
                 {
                     "asset": "pointer small",
+                    "registration": 5,
                     "start": [1400, 200],
                     "end": [1550, 200],
                     "control": [1475, 130]
                 },
                 {
                     "asset": "imagery instructions 5",
+                    "registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -483,27 +540,32 @@
             "directives": [
                 {
                     "asset": "origin green",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": [1010, 850],
                     "end": [1010, 850]
                 },
                 {
                     "asset": "thought bubble",
+                    "registration": 5,
                     "start": "EVAL: P.bubble_location",
                     "end": "EVAL: P.bubble_location"
                 },
                 {
                     "asset": "pointer small",
+                    "registration": 5,
                     "start": [1550, 200],
                     "end": [1700, 200],
                     "control": [1625, 130]
                 },
                 {
                     "asset": "imagery instructions 5",
+                    "registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -517,26 +579,31 @@
             "directives": [
                 {
                     "asset": "origin green",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": [1010, 850],
                     "end": [1010, 850]
                 },
                 {
                     "asset": "thought bubble",
+                    "registration": 5,
                     "start": "EVAL: P.bubble_location",
                     "end": "EVAL: P.bubble_location"
                 },
                 {
                     "asset": "pointer small",
+                    "registration": 5,
                     "start": [1700, 200],
                     "end": [1700, 200]
                 },
                 {
                     "asset": "imagery instructions 5",
+                    "registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -550,26 +617,31 @@
             "directives": [
                 {
                     "asset": "origin green",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": [1010, 850],
                     "end": [1010, 850]
                 },
                 {
                     "asset": "thought bubble",
+                    "registration": 5,
                     "start": "EVAL: P.bubble_location",
                     "end": "EVAL: P.bubble_location"
                 },
                 {
                     "asset": "pointer small",
+                    "registration": 5,
                     "start": [1700, 200],
                     "end": [1550, 375]
                 },
                 {
                     "asset": "imagery instructions 5",
+                    "registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -583,26 +655,31 @@
             "directives": [
                 {
                     "asset": "origin green",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": [1010, 850],
                     "end": [1010, 850]
                 },
                 {
                     "asset": "thought bubble",
+                    "registration": 5,
                     "start": "EVAL: P.bubble_location",
                     "end": "EVAL: P.bubble_location"
                 },
                 {
                     "asset": "pointer small",
+                    "registration": 5,
                     "start": [1550, 375],
                     "end": [1550, 375]
                 },
                 {
                     "asset": "imagery instructions 5",
+                    "registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -616,22 +693,25 @@
             "directives": [
                 {
                     "asset": "origin green",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": [1010, 850],
                     "end": [1010, 840]
                 },
                 {
                     "asset": "imagery instructions 6",
+                    "registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
             ]
         },
-         {
+        {
             "label": "pointer 1",
             "description": "Pause to allow audio 5 to finish",
             "duration": 1600,
@@ -639,40 +719,45 @@
             "directives": [
                 {
                     "asset": "origin green",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
                     "asset": "pointer",
+                    "registration": 5,
                     "start": [1010, 840],
                     "end": [1010, 840]
                 },
                 {
                     "asset": "imagery instructions 6",
+                    "registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
             ]
         },
-
         {
             "label": "pointer 3",
             "description": "Pointer removed and seventh instructions given. Audio 5 begins.",
             "duration": 3500,
             "enabled": "EVAL: not P.truncate_practice_animation",
             "directives": [
-                 {
+                {
                     "asset": "imagery audio 5",
+                    "registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
                     "asset": "origin green",
+                    "registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
                     "asset": "imagery instructions 7",
+                    "registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -686,6 +771,7 @@
             "directives": [
                 {
                     "asset": "imagery instructions 7",
+                    "registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 }
@@ -699,11 +785,13 @@
             "directives": [
                 {
                     "asset": "physical audio 6",
+                    "registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
                     "asset": "end practice",
+                    "registration": 5,
                     "start": "EVAL: P.screen_c",
                     "end": "EVAL: P.screen_c"
                 }
