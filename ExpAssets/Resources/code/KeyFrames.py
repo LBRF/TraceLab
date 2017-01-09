@@ -1,10 +1,14 @@
 __author__ = 'jono'
 # import sys
 # sys.path.append("ExpAssets/Resources/code/")
-
+from os.path import join
+from time import time
 from klibs import P
-from klibs.KLNumpySurface import NumpySurface as NpS
-from klibs.KLDraw import *
+from klibs.KLGraphics import blit, flip, fill
+from klibs.KLGraphics.KLNumpySurface import NumpySurface as NpS
+from klibs.KLGraphics.KLDraw import *
+from klibs.KLCommunication import message
+from klibs.KLUserInterface import ui_request
 from klibs.KLAudio import AudioClip
 from klibs.KLUtilities import line_segment_len
 from TraceLabFigure import bezier_interpolation,  linear_interpolation
@@ -25,7 +29,7 @@ class KeyFrameAsset(object):
 
 		if data.text:
 			# todo: make style optional
-			self.contents = exp.message(data.text.string, data.text.style, blit=False)
+			self.contents = message(data.text.string, data.text.style, blit_txt=False)
 		elif data.drawbject:
 			d = data.drawbject
 			if d.shape == "rectangle":
@@ -38,9 +42,9 @@ class KeyFrameAsset(object):
 			self.media_type = data.file.media_type
 			if self.is_audio:
 				self.duration = data.file
-				self.contents = AudioClip(os.path.join(P.resources_dir, "audio", data.file.filename))
+				self.contents = AudioClip(join(P.resources_dir, "audio", data.file.filename))
 			else:
-				self.contents = NpS(os.path.join(P.image_dir, data.file.filename))
+				self.contents = NpS(join(P.image_dir, data.file.filename))
 
 		try:
 			self.height = self.contents.height
@@ -84,22 +88,22 @@ class KeyFrame(object):
 				self.audio_track.started = False
 		except AttributeError:
 			pass
-		start = time.time()
+		start = time()
 		frames_played = False
-		while time.time() - start < self.duration:
-			self.exp.ui_request()
+		while time() - start < self.duration:
+			ui_request()
 			if not frames_played:
 				for frame in self.asset_frames:
 					try:
-						if time.time() - start >= self.audio_start_time and not self.audio_track.started:
+						if time() - start >= self.audio_start_time and not self.audio_track.started:
 							self.audio_track.play()
 					except AttributeError:
 						pass
-					self.exp.ui_request()
-					self.exp.fill()
+					ui_request()
+					fill()
 					for asset in frame:
-						self.exp.blit(asset[0], 5, asset[1])
-					self.exp.flip()
+						blit(asset[0], asset[2], asset[1])
+					flip()
 				frames_played = True
 
 	def __render_frames__(self):
@@ -130,23 +134,27 @@ class KeyFrame(object):
 
 
 			if len(img_drctvs) == num_static_directives:
-				self.asset_frames = self.asset_frames = [[(self.assets[d.asset].contents, d.start) for d in img_drctvs]]
+				self.asset_frames = self.asset_frames = [[(self.assets[d.asset].contents, d.start, d.registration) for d in img_drctvs]]
 				return
 
 			for d in img_drctvs:
 				asset = self.assets[d.asset].contents
 				if d.start == d.end:
-					asset_frames.append([(asset, d.start)])
+					asset_frames.append([(asset, d.start, d.registration)])
 					continue
 				frames = []
 				try:
 					path_len = bezier_interpolation(d.start, d.end, d.control)[0]
 					raw_frames = bezier_interpolation(d.start, d.end, d.control, velocity=path_len / self.duration)
 				except AttributeError:
-					v = line_segment_len(d.start, d.end) / self.duration
+					try:
+						v = line_segment_len(d.start, d.end) / self.duration
+					except TypeError:
+						raise ValueError("Image assets require their 'start' and 'end' attributes to be an x,y pair.")
+
 					raw_frames = linear_interpolation(d.start, d.end, v)
 				for p in raw_frames :
-					frames.append([asset, p])
+					frames.append([asset, p, d.registration])
 				if len(frames) > total_frames:
 					total_frames = len(frames)
 				asset_frames.append(frames)
@@ -160,8 +168,7 @@ class KeyFrame(object):
 			else:
 				self.asset_frames = asset_frames
 
-		except (IndexError, AttributeError, TypeError, ValueError) as e:
-			for d in self.directives: print d
+		except (IndexError, AttributeError, TypeError) as e:
 			e_msg = "An error occurred when rendering this frame. This is usually do an unexpected return " \
 					"from an 'EVAL:' entry in the JSON script. The original error was:\n\n\t{0}: {1}".format(e.__class__, e.message)
 			raise RuntimeError(e_msg)
@@ -174,10 +181,10 @@ class FrameSet(object):
 		self.key_frames = []
 		self.assets = {}
 		if assets_file:
-			self.assets_file = os.path.join(P.resources_dir, "code", assets_file + ".json")
+			self.assets_file = join(P.resources_dir, "code", assets_file + ".json")
 		else:
 			self.assets_file = None
-		self.key_frames_file = os.path.join(P.resources_dir, "code", key_frames_file + ".json")
+		self.key_frames_file = join(P.resources_dir, "code", key_frames_file + ".json")
 		self.generate_key_frames()
 
 

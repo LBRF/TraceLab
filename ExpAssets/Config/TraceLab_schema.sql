@@ -39,15 +39,13 @@ CREATE TABLE participants (
 	age integer not null,
 	handedness text not null,
 	created text not null,
-	klibs_commit text not null
+	klibs_commit text not null,
+	exp_condition integer,
+	session_count integer,
+	feedback_type text,
+	sessions_completed integer
 );
 
-CREATE TABLE sessions (
-	id integer primary key autoincrement not null,
-	participant_id integer key not null,
-  exp_condition text not null,
-  sessions_completed integer not null
-);
 
 CREATE TABLE trials (
 	id integer primary key autoincrement not null,

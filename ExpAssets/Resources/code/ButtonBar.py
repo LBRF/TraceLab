@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 __author__ = 'jono'
 import klibs.KLParams as P
-from klibs.KLDraw import Circle, Rectangle
-from klibs.KLMixins import BoundaryInspector
+from klibs.KLConstants import RECT_BOUNDARY, CIRCLE_BOUNDARY
+from klibs.KLGraphics import blit, fill, flip
+from klibs.KLGraphics.KLDraw import Circle, Rectangle
+from klibs.KLCommunication import message
+from klibs.KLBoundary import BoundaryInspector
 from klibs.KLUtilities import *
 from random import randrange
 
@@ -33,10 +36,10 @@ class Slider(BoundaryInspector):
 		self.bar = Rectangle(self.bar_size[0], self.bar_size[1], fill=self.bar_color, stroke=self.bar_stroke)
 		self.add_boundary("handle", [(self.pos[0] + self.handle_radius, self.pos[1]), self.handle_radius],
 						  CIRCLE_BOUNDARY)
-		self.msg = self.exp.message("How many corners did the dot traverse?", "default", blit=False)
+		self.msg = message("How many corners did the dot traverse?", "default", blit_txt=False)
 		self.lb_msg = None
 		self.ub_msg = None
-		self.ok_text = self.exp.message("OK", blit=False)
+		self.ok_text = message("OK", blit_txt=False)
 		self.ok_inactive_button = Rectangle(100, 50, (1, (255,255,255)), (125,125,125)).render()
 		self.ok_active_button = Rectangle(100, 50, (1, (255,255,255)), (5,175,45)).render()
 		self.button_active = False
@@ -56,7 +59,7 @@ class Slider(BoundaryInspector):
 			value = self.lower_bound + i * self.increment_by
 			self.increments.append([i_range, value])
 		for i in range(self.lower_bound, self.upper_bound + 1):
-			self.increment_surfs[i] = (self.exp.message(str(i), "small", blit=False))
+			self.increment_surfs[i] = (message(str(i), "small", blit=False))
 
 	def __update_handle_boundary(self):
 		if not self.handle_pos:
@@ -67,8 +70,8 @@ class Slider(BoundaryInspector):
 		# this originally did some randomization around a given number and was later changed to hard values
 		self.lower_bound = 1
 		self.upper_bound = 5
-		self.lb_msg = self.exp.message(str(self.lower_bound), "small", blit=False)
-		self.ub_msg = self.exp.message(str(self.upper_bound), "small", blit=False)
+		self.lb_msg = message(str(self.lower_bound), "small", blit=False)
+		self.ub_msg = message(str(self.upper_bound), "small", blit=False)
 		self.__build_increments()
 
 	def slide(self):
@@ -109,16 +112,16 @@ class Slider(BoundaryInspector):
 		return False
 
 	def blit(self):
-		self.exp.fill()
-		self.exp.blit(self.ok_active_button if self.button_active else self.ok_inactive_button, 5, self.button_pos, flip_x=P.flip_x)
-		self.exp.blit(self.ok_text, 5, self.button_pos, flip_x=P.flip_x)
-		self.exp.blit(self.bar, 7, self.pos, flip_x=P.flip_x)
-		self.exp.blit(self.handle, 5, self.handle_pos, flip_x=P.flip_x)
-		self.exp.blit(self.increment_surfs[self.handle_value()], registration=5, location=self.message_pos, flip_x=P.flip_x)
-		self.exp.blit(self.lb_msg, 5, (self.pos[0], self.pos[1] - 15), flip_x=P.flip_x)
-		self.exp.blit(self.ub_msg, 5, (self.pos[0] + self.bar_size[0], self.pos[1] - 15), flip_x=P.flip_x)
-		self.exp.blit(self.msg, 5, P.screen_c, flip_x=P.flip_x)
-		self.exp.flip()
+		fill()
+		blit(self.ok_active_button if self.button_active else self.ok_inactive_button, 5, self.button_pos, flip_x=P.flip_x)
+		blit(self.ok_text, 5, self.button_pos, flip_x=P.flip_x)
+		blit(self.bar, 7, self.pos, flip_x=P.flip_x)
+		blit(self.handle, 5, self.handle_pos, flip_x=P.flip_x)
+		blit(self.increment_surfs[self.handle_value()], registration=5, location=self.message_pos, flip_x=P.flip_x)
+		blit(self.lb_msg, 5, (self.pos[0], self.pos[1] - 15), flip_x=P.flip_x)
+		blit(self.ub_msg, 5, (self.pos[0] + self.bar_size[0], self.pos[1] - 15), flip_x=P.flip_x)
+		blit(self.msg, 5, P.screen_c, flip_x=P.flip_x)
+		flip()
 
 	def handle_value(self):
 		for i in self.increments:
@@ -153,8 +156,8 @@ class Button(object):
 		self.exp = exp
 		self.size = button_size
 		self.button_text = button_text
-		self.button_rtext_a = exp.message(button_text, "button_active", blit=False)
-		self.button_rtext_i = exp.message(button_text, "button_inactive", blit=False)
+		self.button_rtext_a = message(button_text, "button_active", blit_txt=False)
+		self.button_rtext_i = message(button_text, "button_inactive", blit_txt=False)
 		self.frame_i = Rectangle(button_size[0], button_size[1], fill=None, stroke=(5, (255,255,255)))
 		self.frame_a = Rectangle(button_size[0], button_size[1], fill=None, stroke=(5, (150,255,150)))
 		self.active = False
@@ -165,11 +168,11 @@ class Button(object):
 
 	def blit(self):
 		if self.active:
-			self.exp.blit(self.frame_a, 5, self.location)
-			self.exp.blit(self.button_rtext_a, 5, self.location)
+			blit(self.frame_a, 5, self.location)
+			blit(self.button_rtext_a, 5, self.location)
 		else:
-			self.exp.blit(self.frame_i, 5, self.location)
-			self.exp.blit(self.button_rtext_i, 5, self.location)
+			blit(self.frame_i, 5, self.location)
+			blit(self.button_rtext_i, 5, self.location)
 
 	def create_boundary(self):
 		x1 = self.location[0] - self.size[0] // 2
@@ -181,11 +184,11 @@ class Button(object):
 
 class ButtonBar(BoundaryInspector):
 
-	def __init__(self, exp, buttons, button_size, screen_margins, y_offset, message=None, finish_button=True):
+	def __init__(self, exp, buttons, button_size, screen_margins, y_offset, message_txt=None, finish_button=True):
 		super(ButtonBar, self).__init__()
 		self.exp = exp
-		self.exp.text_manager.add_style('button_inactive', 24, [255, 255, 255, 255])
-		self.exp.text_manager.add_style('button_active', 24, [150, 255, 150, 255])
+		self.exp.txtm.add_style('button_inactive', 24, [255, 255, 255, 255])
+		self.exp.txtm.add_style('button_active', 24, [150, 255, 150, 255])
 		self.b_count = len(buttons)
 		self.button_data = buttons
 		self.buttons = []
@@ -197,13 +200,13 @@ class ButtonBar(BoundaryInspector):
 			self.b_height = button_size
 		self.screen_margins = screen_margins
 		self.y_offset = y_offset
-		self.b_pad = (Params.screen_x - (self.b_width * self.b_count + 2 * self.screen_margins)) // (self.b_count - 1)
+		self.b_pad = (P.screen_x - (self.b_width * self.b_count + 2 * self.screen_margins)) // (self.b_count - 1)
 		self.gen_finish_button = finish_button
 		self.finish_b = None
-		self.message = message
-		if message:
-			self.message_r = self.exp.message(message, "instructions", blit=False)
-			self.message_loc = (Params.screen_c[0], self.y_offset - (self.message_r.height * 2))
+		self.message_txt = message_txt
+		if message_txt:
+			self.message_r = message(message, "instructions", blit_txt=False)
+			self.message_loc = (P.screen_c[0], self.y_offset - (self.message_r.height * 2))
 		self.gen_buttons()
 		self.start = None
 		self.mt = None
@@ -224,16 +227,16 @@ class ButtonBar(BoundaryInspector):
 								   (P.screen_x - (self.screen_margins + self.b_width), int(P.screen_y * 0.9)))
 
 	def render(self):
-		self.exp.fill()
+		fill()
 		for b in self.buttons:
 			b.blit()
 		try:
 			self.finish_b.blit()
 		except AttributeError:
 			pass
-		if self.message:
-			self.exp.blit(self.message_r, 5, self.message_loc)
-		self.exp.flip()
+		if self.message_txt:
+			blit(self.message_r, 5, self.message_loc)
+		flip()
 
 	def collect_response(self):
 		self.start = time.time()
@@ -275,8 +278,8 @@ class ButtonBar(BoundaryInspector):
 			except AttributeError:
 				pass
 			self.render()
-		self.exp.fill()
-		self.exp.flip()
+		fill()
+		flip()
 		hide_mouse_cursor()
 
 	def toggle(self, button):
@@ -296,6 +299,6 @@ class ButtonBar(BoundaryInspector):
 			pass
 
 	def update_message(self, message_text):
-		self.message = message_text
-		self.message_r = self.exp.message(message_text, "instructions", blit=False)
+		self.message_txt = message_text
+		self.message_r = message(message_text, "instructions", blit_txt=False)
 
