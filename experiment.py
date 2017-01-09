@@ -2,7 +2,10 @@
 __author__ = "Jonathan Mulle"
 import shutil, sys
 sys.path.append("ExpAssets/Resources/code/")
+from sdl2 import SDL_MOUSEBUTTONDOWN
 from random import choice
+from copy import copy
+
 from klibs.KLExceptions import TrialException
 from klibs import P
 from klibs.KLConstants import NA, RC_DRAW, RECT_BOUNDARY, CIRCLE_BOUNDARY, STROKE_OUTER, QUERY_UPD
@@ -40,6 +43,16 @@ FB_ALL = "all_feedback"
 SESSION_FIG =  "figure_capture"
 SESSION_TRN = "training"
 SESSION_TST = "testing"
+
+"""
+Notes:
+
+1) Currently ALL exp conditions still run the physical practice on the LAST session
+2) To include random figures in the figure set, add a "random" line
+3) if no figure set is provided, the figures listed in TraceLab_independent_variables.py are used
+4) set names can't contain underscores for stupid reasons
+"""
+
 
 class TraceLab(Experiment, BoundaryInspector):
 
@@ -84,7 +97,6 @@ class TraceLab(Experiment, BoundaryInspector):
 	response_window = None  # animate_time + constant
 
 	# debug & configuration
-	show_drawing = True
 	sample_exposure_time = 4500
 
 	# dynamic trial vars
@@ -107,6 +119,8 @@ class TraceLab(Experiment, BoundaryInspector):
 	# configured trial factors (dynamically loaded per-trial
 	animate_time = None
 	figure_name = None
+	figure_set = None
+	figure_set_name = None
 
 	# practice stuff
 	narration = None
@@ -120,9 +134,61 @@ class TraceLab(Experiment, BoundaryInspector):
 		super(TraceLab, self).__init__(*args, **kwargs)
 		P.flip_x = P.mirror_mode
 
+	def __practice__(self):
+		self.figure_name = P.practice_figure
+		self.animate_time = P.practice_animation_time
+		self.setup_response_collector()
+		self.trial_prep()
+		P.clock.start()
+		self.trial()
+		P.clock.stop()
+		self.trial_clean_up()
+
+	def __review_figure__(self):
+		fill()
+		if P.auto_generate:
+			msg = "Generating figure {0} of {1}".format((P.auto_generate_count + 1) - self.auto_generate_count, P.auto_generate_count)
+			message(msg, "default", registration=5, location=P.screen_c, flip=True)
+
+		while not self.figure:
+			ui_request()
+			try:
+				self.figure = TraceLabFigure(self)
+			except RuntimeError:
+				pass
+		self.animate_time = 5000.0
+		self.figure.render()
+		self.figure.prepare_animation()
+		if not P.auto_generate:
+			self.figure.animate()
+			flip()
+			any_key()
+			resp = self.query("(s)ave, (d)iscard, (r)eplay or (q)uit?", accepted=['s', 'd', 'r', 'q'])
+			if resp == "q":
+				return True
+			if resp == "r":
+				return False
+			if resp == "d":
+				self.figure = None
+				return False
+			if resp == "s":
+				f_name = self.query("Enter a filename for this figure (omitting suffixes):") + ".tlf"
+				fill()
+				message("Saving... ", flip=True)
+				self.figure.write_out(f_name)
+
+		if P.auto_generate:
+			self.auto_generate_count -= 1
+			self.figure.write_out("template_{0}.tlf".format(time.time()))
+			if self.auto_generate_count == 0:
+				return True
+
+		# reset stuff before the experiment proper begins
+
 	def setup(self):
 		from klibs.KLCommunication import user_queries
-		self.init_session(query(user_queries.experimental[1]))
+
+		self.init_session(query(user_queries.experimental[1]) if not P.development_mode else False)
 
 		if P.labjacking:
 			self.lj = u3.U3()
@@ -173,9 +239,9 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.origin_proto.fill = self.origin_inactive_color
 		self.origin_inactive = self.origin_proto.render()
 		instructions_file = "{0}_group_instructions.txt"
-		if P.exp_condition == PHYS:
+		if self.exp_condition == PHYS:
 			instructions_file = instructions_file.format("physical")
-		elif P.exp_condition == MOTR:
+		elif self.exp_condition == MOTR:
 			instructions_file = instructions_file.format("imagery")
 		else:
 			instructions_file = instructions_file.format("control")
@@ -193,10 +259,10 @@ class TraceLab(Experiment, BoundaryInspector):
 		#####
 		# practice session vars & elements
 		#####
-		if not P.override_practice:
-			if P.exp_condition == PHYS or P.session_number == 5:
+		if not P.dm_override_practice:
+			if (self.exp_condition == PHYS and self.session_number == 1) or P.session_number == self.session_count:
 				key_frames_f = "physical_key_frames"
-			elif P.exp_condition == MOTR:
+			elif self.exp_condition == MOTR:
 				key_frames_f = "imagery_key_frames"
 			else:
 				key_frames_f = "control_key_frames"
@@ -291,7 +357,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		while not next_trial_button_clicked:
 			event_queue = pump(True)
 			for e in event_queue:
-				if e.type == sdl2.SDL_MOUSEBUTTONDOWN:
+				if e.type == SDL_MOUSEBUTTONDOWN:
 					next_trial_button_clicked = self.within_boundary("next trial button", [e.button.x, e.button.y])
 				ui_request(e)
 		if P.demo_mode:
@@ -301,14 +367,14 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.figure.animate()
 		self.animate_finish = P.clock.trial_time
 		try:
-			if P.exp_condition == PHYS:
+			if self.exp_condition == PHYS:
 				self.physical_trial()
-			if P.exp_condition == MOTR:
+			if self.exp_condition == MOTR:
 				if P.session_number == 5:
 					self.physical_trial()
 				else:
 					self.imagery_trial()
-			if P.exp_condition == CTRL:
+			if self.exp_condition == CTRL:
 				if P.session_number == 5:
 					self.physical_trial()
 				else:
@@ -333,17 +399,17 @@ class TraceLab(Experiment, BoundaryInspector):
 			"block_num": P.block_number,
 			"trial_num": P.trial_number,
 			"session_num": P.session_number,
-			"condition": P.exp_condition,
+			"condition": self.exp_condition,
 			"figure_type": self.figure_name,
 			"figure_file": self.figure.file_name,
 			"stimulus_gt": self.animate_time,
 			"stimulus_mt": self.figure.animate_time,
 			"avg_velocity": self.figure.avg_velocity,
 			"path_length": self.figure.path_length,
-			"trace_file": self.tracing_name if P.exp_condition in PHYS else NA,
+			"trace_file": self.tracing_name if self.exp_condition in PHYS else NA,
 			"rt": self.rt,
 			"it": self.it,
-			"control_question": self.control_question if P.exp_condition == CTRL else NA,
+			"control_question": self.control_question if self.exp_condition == CTRL else NA,
 			"control_response": self.control_response,
 			"mt": self.mt,
 		}
@@ -355,16 +421,17 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.rc.draw_listener.reset()
 		self.button_bar.reset()
 
+
 	def clean_up(self):
 		# if the entire experiment is successfully completed, update the sessions_completed column
 		q_str = "UPDATE `participants` SET `sessions_completed` = ? WHERE `id` = ?"
-		self.database.query(q_str, QUERY_UPD, q_vars = [P.session_number, P.participant_id])
+		self.db.query(q_str, QUERY_UPD, q_vars = [P.session_number, P.participant_id])
 
 	def display_refresh(self, flip=True):
 		fill()
 		origin = self.origin_active  if self.rc.draw_listener.active else self.origin_inactive
 		blit(origin, 5, self.origin_pos, flip_x=P.flip_x)
-		if self.show_drawing:
+		if P.dm_render_progress or self.feedback_type in (FB_ALL, FB_DRAW):
 			try:
 				drawing = self.rc.draw_listener.render_progress()
 				blit(drawing, 5, P.screen_c, flip_x=P.flip_x)
@@ -373,14 +440,17 @@ class TraceLab(Experiment, BoundaryInspector):
 		if flip:
 			flip()
 
+
 	def init_session(self, id_str=None):
 		from klibs.KLCommunication import user_queries
+
+		new_participant = id_str is None
 
 		if id_str:
 			try:
 				userhash = sha1(id_str).hexdigest()
 				user_data_str = "SELECT * FROM `participants` WHERE `userhash` = ?"
-				user_data = self.database.query(user_data_str, q_vars=[userhash]).fetchall()[0]
+				user_data = self.db.query(user_data_str, q_vars=[userhash]).fetchall()[0]
 				P.participant_id = user_data[0]
 				P.random_seed = str(user_data[2])
 				if not self.restore_session():
@@ -397,20 +467,36 @@ class TraceLab(Experiment, BoundaryInspector):
 					self.quit()
 		else:
 			P.session_number = 1
-			q_str = "SELECT * FROM `participants` WHERE `id` = ?"
+			user_data_str = "SELECT * FROM `participants` WHERE `id` = ?"
 			try:
-				user_data = self.database.query(q_str, q_vars=[P.participant_id]).fetchall()[0]
+				user_data = self.db.query(user_data_str, q_vars=[P.participant_id]).fetchall()[0]
 			except IndexError:
+				# new user, get demographics
 				from klibs.KLCommunication import collect_demographics
-				collect_demographics(False) # no users exist yet, let demographics be properly collected first
-				user_data = self.database.query(q_str, q_vars=[P.participant_id]).fetchall()[0]
+				collect_demographics(P.development_mode)
+
+				# set the number of sessions completed to 0
+				self.db.query("UPDATE `participants` SET `sessions_completed` = ? WHERE `id` = ?",
+							  QUERY_UPD, q_vars=[0, P.participant_id])
+
+				# now set updated user data in the experiment context
+				user_data = self.db.query(user_data_str, q_vars=[P.participant_id]).fetchall()[0]
+
+				# manage figure sets, if in use for this participant
+				if query(user_queries.experimental[3]) == "y":
+					q_str = "UPDATE `participants` SET `figure_set` = ? WHERE `id` = ?"
+					self.figure_set_name = query(user_queries.experimental[4])
+					self.db.query(q_str, QUERY_UPD, q_vars=[self.figure_set_name, P.participant_id])
+
+
+		self.import_figure_set()
 
 		P.user_data = user_data
 
 		# delete previous trials for this session if any exist (essentially assume a do-over)
 		if not P.capture_figures_mode:
 			q_str = "DELETE FROM `trials` WHERE `participant_id` = ? AND `session_num` = ?"
-			self.database.query(q_str, q_vars=[P.participant_id, P.session_number])
+			self.db.query(q_str, q_vars=[P.participant_id, P.session_number])
 			if P.session_number == 1:
 				if not self.restore_session():
 					self.parse_exp_condition(query(user_queries.experimental[2]))
@@ -420,18 +506,49 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.training_session = True
 			self.session_type = SESSION_FIG
 		P.demographics_collected = True
+	
+	def import_figure_set(self):
+		if not self.figure_set_name:
+			return
+
+		from klibs.KLIndependentVariable import IndependentVariableSet
+		from imp import load_source
+
+		self.figure_set = []
+		for f in open(os.path.join(P.resources_dir, "figure_sets", self.figure_set_name+".txt")).read().split("\n"):
+			f_path = os.path.join(P.resources_dir, "figures", f + ".zip")
+			if not os.path.exists(f_path):
+				fill()
+				e_msg = "One or more figures listed in the figure set '{0}' weren't found.\n " \
+						"Please check for errors and try again. TraceLab will now exit.".format(self.figure_set_name)
+				message(e_msg, location=P.screen_c, registration=5, flip_screen=True)
+				any_key()
+				self.quit()
+
+		 	# ensure all figures are pre-loaded, even if not on the default figure list
+			if f not in P.figures:
+				self.test_figures[f] = TraceLabFigure(self, f_path)
+			self.figure_set.append(f)
+
+		# load original ivars file into a named object
+		sys.path.append(P.ind_vars_file_path)
+		for k, v in load_source("*", P.ind_vars_file_path).__dict__.iteritems():
+			if isinstance(v, IndependentVariableSet):
+				new_exp_factors = v
+		new_exp_factors.delete('figure_name')
+		new_exp_factors.add_variable('figure_name', str, self.figure_set)
+
+		self.trial_factory.generate(new_exp_factors)
 
 
 	def restore_session(self):
-		session_data_str = "SELECT `exp_condition`,`feedback_type`, `session_count`, `sessions_completed` FROM `participants` WHERE `id` = ?"
+		session_data_str = "SELECT `exp_condition`,`feedback_type`, `session_count`, `sessions_completed`, `figure_set` FROM `participants` WHERE `id` = ?"
 		try:
-			session_data = self.database.query(session_data_str, q_vars=[P.participant_id]).fetchall()[0]
-			P.exp_condition = session_data[0]
-			P.feedback_type = session_data[1]
-			P.session_count = session_data[2]
-			P.session_number = session_data[3] + 1
+			session_data = self.db.query(session_data_str, q_vars=[P.participant_id]).fetchall()[0]
+			self.exp_condition, self.feedback_type, self.session_count, P.session_number, self.figure_set_name = session_data
+			P.session_number += 1
 
-			if P.session_number == 1 or (P.exp_condition in [MOTR, CTRL] and P.session_number == P.session_count):
+			if P.session_number == 1 or (self.exp_condition in [MOTR, CTRL] and P.session_number == P.session_count):
 				self.practice_session = True
 
 		except (IndexError, TypeError):
@@ -464,6 +581,8 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.feedback_type = FB_RES
 		elif feedback == "VR":
 			self.feedback_type = FB_ALL
+		elif feedback == "XX":
+			pass
 		else:
 			e_msg = "{0} is not a valid feedback state.".format(exp_cond)
 			raise ValueError(e_msg)
@@ -475,11 +594,10 @@ class TraceLab(Experiment, BoundaryInspector):
 			raise ValueError(e_msg)
 
 		q_str = "UPDATE `participants` SET `exp_condition` = ?, `session_count` = ?, `feedback_type` = ? WHERE `id` = ?"
-		self.database.query(q_str, QUERY_UPD, q_vars=[P.exp_condition, P.session_count, P.feedback_type, P.participant_id])
+		self.db.query(q_str, QUERY_UPD, q_vars=[self.exp_condition, self.session_count, self.feedback_type, P.participant_id])
 
-		if P.session_number == 1 or (P.exp_condition in [MOTR, CTRL] and P.session_number == P.session_count):
+		if P.session_number == 1 or (self.exp_condition in [MOTR, CTRL] and P.session_number == P.session_count):
 			self.practice_session = True
-
 
 	def imagery_trial(self):
 		fill()
@@ -524,7 +642,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.it = self.rc.draw_listener.first_sample_time - (self.rt + start)
 
 		self.mt = self.rc.draw_listener.responses[0][1]
-		if self.feedback and not self.__practicing__:
+		if self.feedback_type in (FB_ALL, FB_RES) and not self.__practicing__:
 			flush()
 			fill()
 			blit(self.figure.render(trace=self.drawing), 5, P.screen_c, flip_x=P.flip_x)
@@ -570,45 +688,6 @@ class TraceLab(Experiment, BoundaryInspector):
 					break
 		self.quit()
 
-	def __review_figure__(self):
-		fill()
-		if P.auto_generate:
-			msg = "Generating figure {0} of {1}".format((P.auto_generate_count + 1) - self.auto_generate_count, P.auto_generate_count)
-			message(msg, "default", registration=5, location=P.screen_c, flip=True)
-
-		while not self.figure:
-			ui_request()
-			try:
-				self.figure = TraceLabFigure(self)
-			except RuntimeError:
-				pass
-		self.animate_time = 5000.0
-		self.figure.render()
-		self.figure.prepare_animation()
-		if not P.auto_generate:
-			self.figure.animate()
-			flip()
-			any_key()
-			resp = self.query("(s)ave, (d)iscard, (r)eplay or (q)uit?", accepted=['s', 'd', 'r', 'q'])
-			if resp == "q":
-				return True
-			if resp == "r":
-				return False
-			if resp == "d":
-				self.figure = None
-				return False
-			if resp == "s":
-				f_name = self.query("Enter a filename for this figure (omitting suffixes):") + ".tlf"
-				fill()
-				message("Saving... ", flip=True)
-				self.figure.write_out(f_name)
-
-		if P.auto_generate:
-			self.auto_generate_count -= 1
-			self.figure.write_out("template_{0}.tlf".format(time.time()))
-			if self.auto_generate_count == 0:
-				return True
-
 	def practice(self, play_key_frames=True, callback=None):
 		self.__practicing__ = True
 
@@ -633,18 +712,6 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.__practicing__ = False
 
 		return self.practice(callback=cb)
-
-		# reset stuff before the experiment proper begins
-
-	def __practice__(self):
-		self.figure_name = P.practice_figure
-		self.animate_time = P.practice_animation_time
-		self.setup_response_collector()
-		self.trial_prep()
-		P.clock.start()
-		self.trial()
-		P.clock.stop()
-		self.trial_clean_up()
 
 
 

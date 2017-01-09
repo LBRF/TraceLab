@@ -7,7 +7,7 @@
 #########################################
 eye_tracker_available = False
 eye_tracking = False
-labjack_available = False
+labjack_available = True
 labjacking = True
 
 #########################################
@@ -59,7 +59,8 @@ next_trial_message = "Tap here to continue."
 #########################################
 dm_suppress_debug_pane = False
 dm_auto_threshold = True
-
+dm_override_practice = False  # only for testing on a monitor which is too small to support practice animations
+dm_render_progress = False  # if true, user's attempts to draw the figure will always be rendered
 
 # For everything involving color,  http://www.colorspire.com/rgb-color-wheel/ will let you get the rgb values
 # for any color you prefer
@@ -123,7 +124,6 @@ curve_sheer = (0.1, 0.3)  # this is hard to describe, but 1 is again an impossib
 path_length = -1  # length (px); -1 ignores this parameter; path length will override seg_length params if they conflict
 seg_report_fuzz = (2, 4)
 
-
 ########################################
 # Practice Controls
 ########################################
@@ -134,7 +134,6 @@ play_narration = True  # toggles the audio component
 practice_figure = "heart"
 practice_animation_time = 3500 # ms
 bubble_location = (1550, 275)
-override_practice = True  # only for testing on a monitor which is too small to support practice animations
 
 ########################################
 # Labjack Codes
