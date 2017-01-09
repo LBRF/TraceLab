@@ -15,7 +15,7 @@ from klibs.KLExceptions import TrialException
 import klibs.KLParams as P
 from klibs.KLUtilities import *
 from klibs.KLGraphics.KLDraw import Ellipse
-
+from klibs.KLEnvironment import EnvAgent
 def pascal_row(n):
 	# This returns the nth row of Pascal's Triangle
 	result = [1]
@@ -99,7 +99,7 @@ def bezier_interpolation(origin, destination, control_o, control_d=None, velocit
 	return [ (int(p[0]), int(p[1])) for p in final_curve]
 
 
-class TraceLabFigure(object):
+class TraceLabFigure(EnvAgent):
 	allow_verbosity = False
 
 	def __init__(self, exp, import_path=None, animate_time=None, manufacture=None):
@@ -527,7 +527,7 @@ class TraceLabFigure(object):
 	def animate(self, practice=False):
 		updated_a_frames = []
 		if not P.capture_figures_mode and not practice:
-				start = P.clock.trial_time
+				start = self.evm.trial_time
 
 		for f in self.a_frames:
 			# if P.flip_x:
@@ -540,10 +540,10 @@ class TraceLabFigure(object):
 			flip()
 			f = list(f)
 			if not P.capture_figures_mode and not practice:
-				updated_a_frames.append((f[0], f[1], P.clock.trial_time - start))
+				updated_a_frames.append((f[0], f[1], self.evm.trial_time - start))
 		if not P.capture_figures_mode and not practice:
 			self.a_frames = updated_a_frames
-			self.animate_time = P.clock.trial_time
+			self.animate_time = self.evm.trial_time
 
 			self.avg_velocity = self.path_length / self.animate_time
 

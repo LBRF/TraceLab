@@ -238,6 +238,74 @@
                 },
                 "password": false,
                 "range": null,
+                "case_sensitive": false,
+                "accept_as_true": null,
+                "action": "uppercase"
+            },
+            "anonymous_value": null,
+            "active": true
+    },
+        {
+            "title": "use figure set",
+            "database_field": null,
+            "query": "Would  you like to choose a figure set for this participant?",
+            "accepted": ["y","n"],
+            "allow_null": false,
+            "format": {
+                "type": "str",
+                "styles": {
+                    "query": "default",
+                    "input": "default",
+                    "error": "alert"
+                },
+                "positions": {
+                    "locations": {
+                        "query": "auto",
+                        "input": "auto",
+                        "error": "auto"
+                    },
+                    "registrations": {
+                        "query": "auto",
+                        "input": "auto",
+                        "error": "auto"
+                    }
+                },
+                "password": false,
+                "range": null,
+                "case_sensitive": false,
+                "accept_as_true": null,
+                "action": null
+            },
+            "anonymous_value": null,
+            "active": true
+    },
+        {
+            "title": "choose figure set",
+            "database_field": null,
+            "query": "Please enter the name of the figure set file, excluding the document suffix:",
+            "accepted": null,
+            "allow_null": false,
+            "format": {
+                "type": "str",
+                "styles": {
+                    "query": "default",
+                    "input": "default",
+                    "error": "alert"
+                },
+                "positions": {
+                    "locations": {
+                        "query": "auto",
+                        "input": "auto",
+                        "error": "auto"
+                    },
+                    "registrations": {
+                        "query": "auto",
+                        "input": "auto",
+                        "error": "auto"
+                    }
+                },
+                "password": false,
+                "range": null,
                 "case_sensitive": true,
                 "accept_as_true": null,
                 "action": null
