@@ -1,8 +1,8 @@
 {
     "default_strings": {
-      "answer_not_supplied": "Please provide an answer.",
-      "invalid_answer": "Your answer must be one of the following: {0}",
-      "block_break": "Whew! You've completed block {0} of {1}. When you're ready to continue, press any key."
+        "answer_not_supplied": "Please provide an answer.",
+        "invalid_answer": "Your answer must be one of the following: {0}",
+        "block_break": "Whew! You've completed block {0} of {1}. When you're ready to continue, press any key."
     },
     "demographic": [
         {
@@ -37,6 +37,40 @@
                 "action": "hash"
             },
             "anonymous_value": "EVAL: now()",
+            "active": false
+        },
+        {
+            "title": "local_id",
+            "database_field": "local_id",
+            "query": "Enter the participant number:",
+            "accepted": null,
+            "allow_null": false,
+            "format": {
+                "type": "str",
+                "styles": {
+                    "query": "default",
+                    "input": "default",
+                    "error": "alert"
+                },
+                "positions": {
+                    "locations": {
+                        "query": "auto",
+                        "input": "auto",
+                        "error": "auto"
+                    },
+                    "registrations": {
+                        "query": "auto",
+                        "input": "auto",
+                        "error": "auto"
+                    }
+                },
+                "password": true,
+                "range": null,
+                "case_sensitive": true,
+                "accept_as_true": null,
+                "action": null
+            },
+            "anonymous_value": "EVAL: now()",
             "active": true
         },
         {
@@ -52,7 +86,7 @@
                     "input": "default",
                     "error": "alert"
                 },
-                 "positions": {
+                "positions": {
                     "locations": {
                         "query": "auto",
                         "input": "auto",
@@ -176,7 +210,7 @@
             },
             "anonymous_value": null,
             "active": true
-    },
+        },
         {
             "title": "session id",
             "database_field": null,
@@ -210,7 +244,7 @@
             },
             "anonymous_value": null,
             "active": true
-    },
+        },
         {
             "title": "exp condition",
             "database_field": null,
@@ -244,12 +278,12 @@
             },
             "anonymous_value": null,
             "active": true
-    },
+        },
         {
             "title": "use figure set",
             "database_field": null,
-            "query": "Would  you like to choose a figure set for this participant?",
-            "accepted": ["y","n"],
+            "query": "Would you like to choose a figure set for this participant?",
+            "accepted": ["y", "n"],
             "allow_null": false,
             "format": {
                 "type": "str",
@@ -278,7 +312,7 @@
             },
             "anonymous_value": null,
             "active": true
-    },
+        },
         {
             "title": "choose figure set",
             "database_field": null,
@@ -312,6 +346,6 @@
             },
             "anonymous_value": null,
             "active": true
-    }
+        }
     ]
 }
