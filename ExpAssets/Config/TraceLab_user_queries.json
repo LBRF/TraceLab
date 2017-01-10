@@ -64,7 +64,7 @@
                         "error": "auto"
                     }
                 },
-                "password": true,
+                "password": false,
                 "range": null,
                 "case_sensitive": true,
                 "accept_as_true": null,
@@ -236,7 +236,7 @@
                         "error": "auto"
                     }
                 },
-                "password": true,
+                "password": false,
                 "range": null,
                 "case_sensitive": true,
                 "accept_as_true": null,

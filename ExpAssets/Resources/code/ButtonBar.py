@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 __author__ = 'jono'
+import sdl2
+
 import klibs.KLParams as P
 from klibs.KLConstants import RECT_BOUNDARY, CIRCLE_BOUNDARY
 from klibs.KLGraphics import blit, fill, flip
@@ -7,12 +9,15 @@ from klibs.KLGraphics.KLDraw import Circle, Rectangle
 from klibs.KLCommunication import message
 from klibs.KLBoundary import BoundaryInspector
 from klibs.KLUtilities import *
+from klibs.KLUserInterface import ui_request
+from klibs.KLEnvironment import EnvAgent
 from random import randrange
 
-class Slider(BoundaryInspector):
-	def __init__(self, experiment, y_pos, bar_length, bar_height, handle_radius, bar_fill, handle_fill):
+class Slider(BoundaryInspector, EnvAgent):
+	def __init__(self, y_pos, bar_length, bar_height, handle_radius, bar_fill, handle_fill):
+		BoundaryInspector.__init__(self)
+		EnvAgent.__init__(self)
 		self.boundaries = {}
-		self.exp = experiment
 		self.pos = (P.screen_c[0] - bar_length // 2, y_pos)  # upper-left
 		self.message_pos = (P.screen_c[0], y_pos - 50)
 		self.__handle_pos = (self.pos[0], self.pos[1] + bar_height // 2)
@@ -83,7 +88,7 @@ class Slider(BoundaryInspector):
 			if not dragging:
 				m_pos = mouse_pos()
 				for event in pump(True):
-					self.exp.ui_request(event)
+					ui_request(event)
 					if event.type in (sdl2.SDL_MOUSEBUTTONDOWN, sdl2.SDL_MOUSEBUTTONDOWN):
 						within_button = self.within_boundary("button", m_pos)
 						if self.button_active and within_button:
@@ -95,7 +100,7 @@ class Slider(BoundaryInspector):
 				button_up = False
 				off_handle = False
 				for event in pump(True):
-					self.exp.ui_request(event)
+					ui_request(event)
 					if event.type == sdl2.SDL_MOUSEBUTTONUP:
 						button_up = True
 
@@ -148,12 +153,12 @@ class Slider(BoundaryInspector):
 		self.__update_handle_boundary()
 
 
-class Button(object):
+class Button(EnvAgent):
 
-	def __init__(self, bar, exp, button_text, button_size, location, callback=None):
+	def __init__(self, bar, button_text, button_size, location, callback=None):
 		super(Button, self).__init__()
+		super(EnvAgent, self).__init__()
 		self.bar = bar
-		self.exp = exp
 		self.size = button_size
 		self.button_text = button_text
 		self.button_rtext_a = message(button_text, "button_active", blit_txt=False)
@@ -182,13 +187,13 @@ class Button(object):
 		self.bar.add_boundary(self.button_text, ((x1,y1), (x2,y2)), RECT_BOUNDARY)
 
 
-class ButtonBar(BoundaryInspector):
+class ButtonBar(BoundaryInspector, EnvAgent):
 
-	def __init__(self, exp, buttons, button_size, screen_margins, y_offset, message_txt=None, finish_button=True):
+	def __init__(self, buttons, button_size, screen_margins, y_offset, message_txt=None, finish_button=True):
 		super(ButtonBar, self).__init__()
-		self.exp = exp
-		self.exp.txtm.add_style('button_inactive', 24, [255, 255, 255, 255])
-		self.exp.txtm.add_style('button_active', 24, [150, 255, 150, 255])
+		super(EnvAgent, self).__init__()
+		self.txtm.add_style('button_inactive', 24, [255, 255, 255, 255])
+		self.txtm.add_style('button_active', 24, [150, 255, 150, 255])
 		self.b_count = len(buttons)
 		self.button_data = buttons
 		self.buttons = []
@@ -219,11 +224,11 @@ class ButtonBar(BoundaryInspector):
 			loc = (self.screen_margins + (i * self.b_width) + (i * self.b_pad) + self.b_width // 2, \
 				   self.y_offset + self.b_height // 2)
 			try:
-				self.buttons.append(Button(self, self.exp, str(b[0]), (self.b_width, self.b_height), loc, b[2]))
+				self.buttons.append(Button(self, str(b[0]), (self.b_width, self.b_height), loc, b[2]))
 			except IndexError:
-				self.buttons.append(Button(self, self.exp, str(b[0]), (self.b_width,self.b_height), loc))
+				self.buttons.append(Button(self, str(b[0]), (self.b_width,self.b_height), loc))
 		if self.gen_finish_button:
-			self.finish_b = Button(self, self.exp, "Done", (100,50), \
+			self.finish_b = Button(self, "Done", (100,50), \
 								   (P.screen_x - (self.screen_margins + self.b_width), int(P.screen_y * 0.9)))
 
 	def render(self):
@@ -248,8 +253,8 @@ class ButtonBar(BoundaryInspector):
 		while not finished:
 			show_mouse_cursor()
 			events = pump(True)
-			self.exp.ui_request(events)
 			for e in events:
+				ui_request(e)
 				if e.type == sdl2.SDL_MOUSEBUTTONDOWN:
 					selection = None
 					for b in self.buttons:

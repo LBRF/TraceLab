@@ -15,20 +15,24 @@ from klibs.KLExceptions import TrialException
 import klibs.KLParams as P
 from klibs.KLUtilities import *
 from klibs.KLGraphics.KLDraw import Ellipse
+from klibs.KLUserInterface import ui_request
 from klibs.KLEnvironment import EnvAgent
+
+
 def pascal_row(n):
 	# This returns the nth row of Pascal's Triangle
 	result = [1]
 	x, numerator = 1, n
-	for denominator in range(1, n//2+1):
+	for denominator in range(1, n // 2 + 1):
 		# print(numerator,denominator,x)
 		x *= numerator
 		x /= denominator
 		result.append(x)
 		numerator -= 1
-					  # n is even							  n is odd
+		# n is even							  n is odd
 		result.extend(reversed(result[:-1]) if n & 1 == 0 else reversed(result))
 	return result
+
 
 global drawable_area
 
@@ -36,13 +40,15 @@ global drawable_area
 Velocity is measured in (whatever units your distance function uses)/(draw call)
 dt is time between draw calls
 """
+
+
 def linear_interpolation(origin, destination, velocity=None, dt=0.01666667):
-	#Ensure the point travels along straight segments at the expected velocity
+	# Ensure the point travels along straight segments at the expected velocity
 	angle = angle_between(origin, destination)
 	distance = line_segment_len(origin, destination)
-	time_to_complete = distance/velocity
+	time_to_complete = distance / velocity
 	###
-	steps = int(time_to_complete/dt) #abs(d_x) if abs(d_x) < abs(d_y) else abs(d_y)
+	steps = int(time_to_complete / dt)  # abs(d_x) if abs(d_x) < abs(d_y) else abs(d_y)
 	step_size = distance / steps
 	points = [origin]
 	for i in range(steps):
@@ -54,10 +60,12 @@ def linear_interpolation(origin, destination, velocity=None, dt=0.01666667):
 	# else:
 	return points
 
+
 """
-Velocity is measured in (whatever units your distance function uses)/(draw call)
-dt is time between draw calls
+Velocity is measured in (whatever units your distance function uses)/(draw call) dt is time between draw calls
 """
+
+
 def bezier_interpolation(origin, destination, control_o, control_d=None, velocity=None, dt=0.016666666667):
 	global drawable_area
 	destination = tuple(destination)
@@ -92,18 +100,17 @@ def bezier_interpolation(origin, destination, control_o, control_d=None, velocit
 	# If you want to resolve issues of dt not dividing time to complete
 	# another way, feel free. The shorter the lines relative to the
 	# velocity, the more error this introduces.
-	steps = int(math.ceil(time_to_completion/dt))
+	steps = int(math.ceil(time_to_completion / dt))
 	# The +1 ensures we get to the end
-	final_curve = bezier([t/float(steps) for t in range(steps+1)])
+	final_curve = bezier([t / float(steps) for t in range(steps + 1)])
 
-	return [ (int(p[0]), int(p[1])) for p in final_curve]
+	return [(int(p[0]), int(p[1])) for p in final_curve]
 
 
 class TraceLabFigure(EnvAgent):
 	allow_verbosity = False
 
-	def __init__(self, exp, import_path=None, animate_time=None, manufacture=None):
-		self.exp = exp
+	def __init__(self, import_path=None, animate_time=None, manufacture=None):
 		self.animate_target_time = animate_time if animate_time else self.exp.animate_time
 		self.seg_count = None
 		self.min_spq = P.avg_seg_per_q[0] - P.avg_seg_per_q[1]
@@ -131,7 +138,7 @@ class TraceLabFigure(EnvAgent):
 		if P.outer_margin_v + P.inner_margin_v // 2 > P.screen_c[1]:
 			raise ValueError("Margins too large; no drawable area remains.")
 		self.quad_ranges = None
-		self.dot = Ellipse(5, fill=(255,45,45))
+		self.dot = Ellipse(5, fill=(255, 45, 45))
 		self.r_dot = self.dot.render()
 		self.total_spf = 0
 		self.points = []
@@ -165,12 +172,12 @@ class TraceLabFigure(EnvAgent):
 			self.__gen_real_points__(not P.generate_quadrant_intersections)
 			self.__gen_segments__()
 			self.segments_to_frames()
-			# self.extended_interpolation = self.frames
-			# self.frames = []
-			# self.segments = []
-			# self.animate_target_time =
-			# self.segments_to_frames()
-			# # self.__gen_segments__()
+		# self.extended_interpolation = self.frames
+		# self.frames = []
+		# self.segments = []
+		# self.animate_target_time =
+		# self.segments_to_frames()
+		# # self.__gen_segments__()
 
 	def __generate_null_points__(self):
 		# make sure minimums won't exceed randomly generated total
@@ -188,7 +195,7 @@ class TraceLabFigure(EnvAgent):
 
 		# distribute the remainder, if any, randomly
 		while (self.total_spf - sum([len(q) for q in self.points])) > 0:
-			q = randrange(0,4)
+			q = randrange(0, 4)
 			if len(self.points[q]) < self.max_spq:
 				self.points[q].append(None)
 
@@ -202,7 +209,7 @@ class TraceLabFigure(EnvAgent):
 		s_c = P.screen_c
 		s_x = P.screen_x
 		s_y = P.screen_y
-		drawable_area = {"x": range(o_mh, P.screen_x - o_mh), "y":range(o_mv, P.screen_y - o_mv)}
+		drawable_area = {"x": range(o_mh, P.screen_x - o_mh), "y": range(o_mv, P.screen_y - o_mv)}
 
 		self.quad_ranges = [
 			[(o_mh, s_c[1] + i_mv), (s_c[0] - i_mh, s_y - o_mv)],
@@ -256,8 +263,8 @@ class TraceLabFigure(EnvAgent):
 					while not seg_ok:
 						if time.time() - start > P.generation_timeout:
 							raise RuntimeError("Figure generation timed out.")
-						if P.verbose_mode and self.allow_verbosity: print "{0} of {1}".format(i+1, len(self.points))
-						self.exp.ui_request()
+						if P.verbose_mode and self.allow_verbosity: print "{0} of {1}".format(i + 1, len(self.points))
+						ui_request()
 						segment = self.__generate_linear_segment__(p1, p2, prev_seg)
 						if all(type(n) is int for n in segment):
 							if not len(segment_types):
@@ -294,7 +301,7 @@ class TraceLabFigure(EnvAgent):
 
 	def segments_to_frames(self):
 		# use path length and animation duration to establish a velocity and then do a second interpolation
-		for i in range(0,2):
+		for i in range(0, 2):
 			self.segments = []
 			velocity = self.p_len / self.animate_target_time if i else 5
 			for segment in self.raw_segments:
@@ -304,7 +311,7 @@ class TraceLabFigure(EnvAgent):
 				except ValueError:
 					p1, p2 = segment[1]
 				if circle:
-					self.segments.append(bezier_interpolation(p1, p2, ctrl, None,  velocity))
+					self.segments.append(bezier_interpolation(p1, p2, ctrl, None, velocity))
 				else:
 					self.segments.append(linear_interpolation(p1, p2, velocity))
 			if i:
@@ -343,7 +350,7 @@ class TraceLabFigure(EnvAgent):
 		if line_segment_len(p1, P.screen_x_y) > line_segment_len(p2, P.screen_x_y):
 			p_ref = p2
 
-		#  gets the radial rotation between p1 and p2
+		# gets the radial rotation between p1 and p2
 		r = angle_between(p_ref, p2 if p_ref == p1 else p1)
 
 		#  depending on the qudrant, p1->p2
@@ -351,7 +358,7 @@ class TraceLabFigure(EnvAgent):
 		if len(q) > 1:  # if p1 is directly on an axis line an ambiguous answer is returned; check p2 instead
 			q = self.__quadrant_from_point__([p2])
 
-		#  decides the radial direction from p1->p2, clockwise or counterclockwise, from which the curve will extend
+		# decides the radial direction from p1->p2, clockwise or counterclockwise, from which the curve will extend
 		c_spin = choice([True, False])
 		if report: print "p_ref: {0}\nr: {1}\nq: {2}\n c_spin: {3}".format(p_ref, r, q, c_spin)
 
@@ -361,7 +368,8 @@ class TraceLabFigure(EnvAgent):
 
 		#  next lines decide location of the perpendicular extension from control point and p1->p2
 		c_base_shift = choice(self.peak_shift_range) * d_p1p2
-		c_base_amp = c_base_shift if choice([1,0]) else d_p1p2 - c_base_shift #  ensure shift not always away from p_ref
+		c_base_amp = c_base_shift if choice(
+			[1, 0]) else d_p1p2 - c_base_shift  # ensure shift not always away from p_ref
 		p_c_base = point_pos(p_ref, c_base_amp, r)
 		if report: print "c_base_amp: {0}\np_c_base: {1}".format(c_base_amp, p_c_base)
 
@@ -371,22 +379,25 @@ class TraceLabFigure(EnvAgent):
 		else:
 			p_c_ref = p2 if p_ref == p2 else p1
 
-		#  choose an angle, deviating from 90 (+/-) by some random value, for p_c_ref -> p_c_base -> p_c
+		# choose an angle, deviating from 90 (+/-) by some random value, for p_c_ref -> p_c_base -> p_c
 		try:
 			sheer = choice(self.c_sheer_range)
 		except IndexError:
 			sheer = 0
-		a_c = 90 + sheer if choice([0,1]) else 90 - sheer
+		a_c = 90 + sheer if choice([0, 1]) else 90 - sheer
 
-		if report: print "P.curve_sheer: {3}, c_angle_max: {0}\nc_angle_min: {1}\nc_angle: {2}".format(self.a_c_min,self.a_c_max, a_c, P.curve_sheer)
+		if report: print "P.curve_sheer: {3}, c_angle_max: {0}\nc_angle_min: {1}\nc_angle: {2}".format(self.a_c_min,
+																									   self.a_c_max,
+																									   a_c,
+																									   P.curve_sheer)
 		#  get the range of x,y values for p_c
 		v_c_base = [p_c_base, a_c, r, c_spin]  # ie. p_c_base as origin
 		v_c_min = [p_c_ref, self.curve_min_slope, r, not c_spin]  # ie. p_c_ref as origin
 		v_c_max = [p_c_ref, self.curve_max_slope, r, not c_spin]  # ie. p_c_ref as origin
 		p_c_min = linear_intersection(v_c_min, v_c_base)
 		p_c_max = linear_intersection(v_c_max, v_c_base)
-		if report:  print "v_c_min: {0}\nv_c_maz: {1}\np_c_min: {2}\np_c_max: {3}".format(v_c_min, v_c_max, p_c_min, p_c_max)
-
+		if report:  print "v_c_min: {0}\nv_c_maz: {1}\np_c_min: {2}\np_c_max: {3}".format(v_c_min, v_c_max, p_c_min,
+																						  p_c_max)
 
 		#  choose an initial p_c; depending on quadrant, no guarantee x,y values in p_c_min are less than p_c_max
 		try:
@@ -404,7 +415,6 @@ class TraceLabFigure(EnvAgent):
 				p_c = (p_c_x, randrange(p_c_max[1], p_c_min[1]))
 			except ValueError:
 				p_c = (p_c_x, p_c_max[1])
-
 
 		v_c_b_len = line_segment_len(p_c_ref, p_c)
 		initial_v_c_b_len = v_c_b_len
@@ -467,7 +477,7 @@ class TraceLabFigure(EnvAgent):
 			return self.__import_figure__(path, False)
 
 	def render(self, np=True, trace=None, extended=False):
-		surf = aggdraw.Draw("RGBA", P.screen_x_y, (0,0,0,255))
+		surf = aggdraw.Draw("RGBA", P.screen_x_y, (0, 0, 0, 255))
 		frames = self.frames if not extended else self.extended_interpolation
 		p_str = "M{0} {1}".format(*frames[0])
 		for s in chunk(frames, 2):
@@ -494,11 +504,11 @@ class TraceLabFigure(EnvAgent):
 	def draw(self, dots=True, flip=True):
 		fill()
 		blit(self.render(), flip_x=P.flip_x)
-		self.exp.message("Path Length: {0}".format(interpolated_path_len(self.frames), "default", location=(25,50)))
+		message("Path Length: {0}".format(interpolated_path_len(self.frames), "default", location=(25, 50)))
 		if dots:
 			for p in self.points:
 				blit(self.r_dot, 5, p, flip_x=P.flip_x)
-				self.exp.message(str(p[0]), "tiny", location=p)
+				message(str(p[0]), "tiny", location=p)
 		if flip:
 			flip()
 
@@ -506,7 +516,6 @@ class TraceLabFigure(EnvAgent):
 		if self.animate_target_time is None:
 			self.animate_target_time = self.exp.animate_time
 		self.path_length = interpolated_path_len(self.frames)
-		print "Path Lengths: p_len = {0}, path_length = {1}".format(self.p_len, self.path_length)
 		draw_in = self.animate_target_time * 0.001
 		rate = 0.016666666666667
 		max_frames = int(draw_in / rate)
@@ -516,7 +525,7 @@ class TraceLabFigure(EnvAgent):
 		for i in range(0, len(self.frames)):
 			p1 = [float(p) for p in self.frames[i]]
 			try:
-				p2 = [float(p) for p in self.frames[i+1]]
+				p2 = [float(p) for p in self.frames[i + 1]]
 			except IndexError:
 				p2 = [float(p) for p in self.frames[0]]
 			seg_len += line_segment_len(p1, p2)
@@ -527,12 +536,12 @@ class TraceLabFigure(EnvAgent):
 	def animate(self, practice=False):
 		updated_a_frames = []
 		if not P.capture_figures_mode and not practice:
-				start = self.evm.trial_time
+			start = self.evm.trial_time
 
 		for f in self.a_frames:
 			# if P.flip_x:
 			# 	f[0] = P.screen_x - f[0]
-			self.exp.ui_request()
+			ui_request()
 			fill()
 			if P.demo_mode:
 				blit(self.rendered, 5, P.screen_c, flip_x=P.flip_x)
@@ -594,7 +603,7 @@ class TraceLabFigure(EnvAgent):
 
 			if P.gen_tlfs:
 				f = open(segments_path, "w+")
-				f.write(",".join( str(s[1]) for s in self.raw_segments))
+				f.write(",".join(str(s[1]) for s in self.raw_segments))
 				f.close()
 				fig_zip.write(segments_path, segments_file_name)
 				os.remove(segments_path)
@@ -611,7 +620,6 @@ class TraceLabFigure(EnvAgent):
 
 			fig_zip.write(fig_path, file_name)
 			os.remove(fig_path)
-
 
 	@property
 	def file_name(self):
