@@ -14,6 +14,7 @@ from klibs.KLGraphics import blit, fill, flip, clear
 from klibs.KLGraphics.KLDraw import Ellipse, Rectangle
 from klibs.KLCommunication import message, query, collect_demographics
 from klibs.KLUserInterface import any_key, ui_request
+from klibs.KLTime import CountDown
 from klibs.KLExperiment import Experiment
 from TraceLabFigure import TraceLabFigure
 from ButtonBar import Button, ButtonBar
@@ -51,6 +52,7 @@ Notes:
 2) To include random figures in the figure set, add a "random" line
 3) if no figure set is provided, the figures listed in TraceLab_independent_variables.py are used
 4) set names can't contain underscores for stupid reasons
+5) need to write data-export script to include sessions
 """
 
 
@@ -140,7 +142,10 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.setup_response_collector()
 		self.trial_prep()
 		P.clock.start()
-		self.trial()
+		try:
+			self.trial()
+		except:
+			pass
 		P.clock.stop()
 		self.trial_clean_up()
 
@@ -260,11 +265,11 @@ class TraceLab(Experiment, BoundaryInspector):
 		# practice session vars & elements
 		#####
 		if not P.dm_override_practice:
-			if (self.exp_condition == PHYS and self.session_number == 1) or P.session_number == self.session_count:
+			if (self.exp_condition == PHYS and self.session_number == 1) or (P.session_number == self.session_count and self.exp_condition != PHYS):
 				key_frames_f = "physical_key_frames"
-			elif self.exp_condition == MOTR:
+			elif self.exp_condition == MOTR and self.session_number == 1:
 				key_frames_f = "imagery_key_frames"
-			else:
+			elif self.session_number == 1:
 				key_frames_f = "control_key_frames"
 
 			self.practice_kf = FrameSet(self, key_frames_f, "assets")
@@ -420,12 +425,15 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.figure.write_out(self.tracing_name, self.drawing)
 		self.rc.draw_listener.reset()
 		self.button_bar.reset()
-
+		inter_trial_rest = CountDown(P.intertrial_rest_interval)
+		while inter_trial_rest.counting():
+			ui_request()
 
 	def clean_up(self):
 		# if the entire experiment is successfully completed, update the sessions_completed column
 		q_str = "UPDATE `participants` SET `sessions_completed` = ? WHERE `id` = ?"
 		self.db.query(q_str, QUERY_UPD, q_vars = [P.session_number, P.participant_id])
+		self.db.insert("sessions", [P.participant_id, now()])
 
 	def display_refresh(self, flip=True):
 		fill()
@@ -635,21 +643,27 @@ class TraceLab(Experiment, BoundaryInspector):
 			hide_mouse_cursor()
 
 	def physical_trial(self):
-		start = P.clock.trial_time
-		self.rc.collect()
-		self.rt = self.rc.draw_listener.start_time - start
-		self.drawing = self.rc.draw_listener.responses[0][0]
-		self.it = self.rc.draw_listener.first_sample_time - (self.rt + start)
+		try:
+			start = P.clock.trial_time
+			self.rc.collect()
+			self.rt = self.rc.draw_listener.start_time - start
+			self.drawing = self.rc.draw_listener.responses[0][0]
+			self.it = self.rc.draw_listener.first_sample_time - (self.rt + start)
 
-		self.mt = self.rc.draw_listener.responses[0][1]
-		if self.feedback_type in (FB_ALL, FB_RES) and not self.__practicing__:
-			flush()
+			self.mt = self.rc.draw_listener.responses[0][1]
+			if self.feedback_type in (FB_ALL, FB_RES) and not self.__practicing__:
+				flush()
+				fill()
+				blit(self.figure.render(trace=self.drawing), 5, P.screen_c, flip_x=P.flip_x)
+				flip()
+				start = time.time()
+				while time.time() - start < P.max_feedback_time / 1000.0:
+					ui_request()
+		except:
 			fill()
-			blit(self.figure.render(trace=self.drawing), 5, P.screen_c, flip_x=P.flip_x)
-			flip()
-			start = time.time()
-			while time.time() - start < P.max_feedback_time / 1000.0:
-				ui_request()
+			message("Missed origin!", "error", location=P.screen_c, registration=5, flip_screen=True)
+			time.sleep(1)
+			raise TrialException("Missed origin")
 
 	def control_trial(self):
 		self.button_bar.update_message(P.btn_instrux.format(self.control_question))
