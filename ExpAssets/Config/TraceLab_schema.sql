@@ -62,18 +62,18 @@ CREATE TABLE trials (
 	avg_velocity float not null,
 	path_length float not null,
 	trace_file text not null,
-  rt  float not null,  /* initiation time for all conditions*/
-  it  float not null,  /* time between RT and MT for physical conditions, ie. lingering at origin*/
+    rt  float not null,  /* initiation time for all conditions*/
+    it  float not null,  /* time between RT and MT for physical conditions, ie. lingering at origin*/
 	control_question text not null,
 	control_response integer not null,
 	mt float not null
 );
 
 CREATE TABLE sessions (
-  id integer primary key autoincrement not null,
-	participant_id integer key not null,
+    id integer primary key autoincrement not null,
+    participant_id integer key not null,
 	completed text
-)
+);
 
 
 CREATE TABLE events (
