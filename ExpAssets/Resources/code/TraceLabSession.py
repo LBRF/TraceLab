@@ -116,11 +116,6 @@ class TraceLabSession(EnvAgent):
 			self.exp.session_type = SESSION_FIG
 		self.db.query(self.queries["set_initialized"], QUERY_UPD, q_vars=[P.p_id])
 		P.demographics_collected = True
-		for ti in self.exp.trial_factory.export_trials():
-			for t in ti:
-				print t
-		self.exp.quit()
-
 
 	def import_figure_set(self):
 		if not self.exp.figure_set_name:
@@ -175,7 +170,6 @@ class TraceLabSession(EnvAgent):
 				"Experimental condition identifiers must be separated by hyphens, and hyphens only. Please try again")
 			any_key()
 			return self.parse_exp_condition(query(user_queries.experimental[2]))
-		print exp_cond, feedback, sessions
 		# first parse the experimental condition
 		if exp_cond == "PP":
 			self.exp.exp_condition = PHYS
