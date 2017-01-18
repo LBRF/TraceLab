@@ -5,22 +5,23 @@ import shutil, sys
 sys.path.append("ExpAssets/Resources/code/")
 from sdl2 import SDL_MOUSEBUTTONDOWN
 from random import choice
-from copy import copy
 
 from klibs.KLExceptions import TrialException
 from klibs import P
-from klibs.KLConstants import NA, RC_DRAW, RECT_BOUNDARY, CIRCLE_BOUNDARY, STROKE_OUTER, QUERY_UPD
+from klibs.KLConstants import NA, RC_DRAW, RECT_BOUNDARY, CIRCLE_BOUNDARY, STROKE_OUTER
 from klibs.KLUtilities import *
 from klibs.KLGraphics import blit, fill, flip, clear
 from klibs.KLGraphics.KLDraw import Ellipse, Rectangle
-from klibs.KLCommunication import message, query, collect_demographics
+from klibs.KLCommunication import message, query
 from klibs.KLUserInterface import any_key, ui_request
 from klibs.KLTime import CountDown
 from klibs.KLExperiment import Experiment
 from TraceLabFigure import TraceLabFigure
+from klibs.KLBoundary import BoundaryInspector
+
 from ButtonBar import Button, ButtonBar
 from KeyFrames import KeyFrame, FrameSet
-from klibs.KLBoundary import BoundaryInspector
+from TraceLabSession import TraceLabSession
 
 try:
 	import u3
@@ -121,8 +122,9 @@ class TraceLab(Experiment, BoundaryInspector):
 	# configured trial factors (dynamically loaded per-trial
 	animate_time = None
 	figure_name = None
-	figure_set = None
-	figure_set_name = None
+	figure_sets = {}   # complete set of available figure sets
+	figure_set = []  # figure set currently in use for this participant
+	figure_set_name = None  # key for current figure set
 
 	# practice stuff
 	narration = None
@@ -135,6 +137,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	def __init__(self, *args, **kwargs):
 		super(TraceLab, self).__init__(*args, **kwargs)
 		P.flip_x = P.mirror_mode
+
 
 	def __practice__(self):
 		self.figure_name = P.practice_figure
@@ -194,6 +197,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	def setup(self):
 		from klibs.KLCommunication import user_queries
 
+		self.session = TraceLabSession()
 		self.init_session(query(user_queries.experimental[1]) if not P.development_mode else False)
 
 		if P.labjacking:
@@ -447,166 +451,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		if flip_screen:
 			flip()
 
-	def init_session(self, id_str=None):
-		from klibs.KLCommunication import user_queries
 
-		if id_str:
-			try:
-				user_data_str = "SELECT * FROM `participants` WHERE `local_id` = ?"
-				user_data = self.db.query(user_data_str, q_vars=[id_str]).fetchall()[0]
-				P.participant_id = user_data[0]
-				P.random_seed = str(user_data[2])
-				if not self.restore_session():
-					P.session_number = 1
-			except IndexError:
-				retry = query(user_queries.experimental[0])
-				if retry == 'y':
-					return self.init_session(query(user_queries.experimental[1]))
-				else:
-					fill()
-					message("Thanks for participating!", location=P.screen_c, flip_x=P.flip_x)
-					flip()
-					any_key()
-					self.quit()
-		else:
-			P.session_number = 1
-			user_data_str = "SELECT * FROM `participants` WHERE `id` = ?"
-			try:
-				user_data = self.db.query(user_data_str, q_vars=[P.participant_id]).fetchall()[0]
-			except IndexError:
-				# new user, get demographics
-				from klibs.KLCommunication import collect_demographics
-				collect_demographics(P.development_mode)
-
-				# set the number of sessions completed to 0
-				self.db.query("UPDATE `participants` SET `sessions_completed` = ? WHERE `id` = ?",
-							  QUERY_UPD, q_vars=[0, P.participant_id])
-
-
-				# now set updated user data in the experiment context
-				user_data = self.db.query(user_data_str, q_vars=[P.participant_id]).fetchall()[0]
-
-				# manage figure sets, if in use for this participant
-				if query(user_queries.experimental[3]) == "y":
-					q_str = "UPDATE `participants` SET `figure_set` = ? WHERE `id` = ?"
-					self.figure_set_name = query(user_queries.experimental[4])
-					self.db.query(q_str, QUERY_UPD, q_vars=[self.figure_set_name, P.participant_id])
-
-
-		self.import_figure_set()
-
-		P.user_data = user_data
-
-		# delete previous trials for this session if any exist (essentially assume a do-over)
-		if not P.capture_figures_mode:
-			q_str = "DELETE FROM `trials` WHERE `participant_id` = ? AND `session_num` = ?"
-			self.db.query(q_str, q_vars=[P.participant_id, P.session_number])
-
-			if P.session_number == 1:
-				if not self.restore_session():
-					self.parse_exp_condition(query(user_queries.experimental[2]))
-			self.training_session = P.session_number not in (1, 5)
-			self.session_type = SESSION_TRN if self.training_session else SESSION_TST
-		else:
-			self.training_session = True
-			self.session_type = SESSION_FIG
-		P.demographics_collected = True
-
-	def import_figure_set(self):
-		if not self.figure_set_name:
-			return
-
-		from klibs.KLIndependentVariable import IndependentVariableSet
-		from imp import load_source
-
-		self.figure_set = []
-		for f in open(os.path.join(P.resources_dir, "figure_sets", self.figure_set_name + ".txt")).read().split("\n"):
-			f_path = os.path.join(P.resources_dir, "figures", f + ".zip")
-			if not os.path.exists(f_path):
-				fill()
-				e_msg = "One or more figures listed in the figure set '{0}' weren't found.\n " \
-						"Please check for errors and try again. TraceLab will now exit.".format(self.figure_set_name)
-				message(e_msg, location=P.screen_c, registration=5, flip_screen=True)
-				any_key()
-				self.quit()
-
-			# ensure all figures are pre-loaded, even if not on the default figure list
-			if f not in P.figures:
-				self.test_figures[f] = TraceLabFigure(f_path)
-			self.figure_set.append(f)
-
-		# load original ivars file into a named object
-		sys.path.append(P.ind_vars_file_path)
-		for k, v in load_source("*", P.ind_vars_file_path).__dict__.iteritems():
-			if isinstance(v, IndependentVariableSet):
-				new_exp_factors = v
-		new_exp_factors.delete('figure_name')
-		new_exp_factors.add_variable('figure_name', str, self.figure_set)
-
-		self.trial_factory.generate(new_exp_factors)
-
-	def restore_session(self):
-		import unicodedata
-		session_data_str = "SELECT `exp_condition`,`feedback_type`, `session_count`, `sessions_completed`, `figure_set` FROM `participants` WHERE `id` = ?"
-		try:
-			session_data = list(self.db.query(session_data_str, q_vars=[P.participant_id]).fetchall()[0])
-			session_data[0] = unicodedata.normalize('NFKD', session_data[0]).encode('ascii', 'ignore')
-			session_data[1] = unicodedata.normalize('NFKD', session_data[1]).encode('ascii', 'ignore')
-			self.exp_condition, self.feedback_type, self.session_count, P.session_number, self.figure_set_name = session_data
-			P.session_number += 1
-
-			if P.session_number == 1 or (self.exp_condition in [MOTR, CTRL] and P.session_number == P.session_count):
-				self.practice_session = True
-
-		except (IndexError, TypeError):
-			return False
-		return True
-
-	def parse_exp_condition(self, condition_str):
-		try:
-			exp_cond, feedback, sessions = condition_str.split("-")
-		except ValueError:
-			from klibs.KLCommunication import user_queries
-			message(
-				"Experimental condition identifiers must be separated by hyphens, and hyphens only. Please try again")
-			any_key()
-			return self.parse_exp_condition(query(user_queries.experimental[2]))
-		print exp_cond, feedback, sessions
-		# first parse the experimental condition
-		if exp_cond == "PP":
-			self.exp_condition = PHYS
-		elif exp_cond == "MI":
-			self.exp_condition = MOTR
-		elif exp_cond == "CC":
-			self.exp_condition = CTRL
-		else:
-			e_msg = "{0} is not a valid experimental condition identifier.".format(exp_cond)
-			raise ValueError(e_msg)
-
-		# then parse the feedback type, if any
-		if feedback == "VV":
-			self.feedback_type = FB_DRAW
-		elif feedback == "RR":
-			self.feedback_type = FB_RES
-		elif feedback == "VR":
-			self.feedback_type = FB_ALL
-		elif feedback == "XX":
-			pass
-		else:
-			e_msg = "{0} is not a valid feedback state.".format(exp_cond)
-			raise ValueError(e_msg)
-
-		try:
-			self.session_count = int(sessions)
-		except ValueError:
-			e_msg = "Session count requires an integer."
-			raise ValueError(e_msg)
-
-		q_str = "UPDATE `participants` SET `exp_condition` = ?, `session_count` = ?, `feedback_type` = ? WHERE `id` = ?"
-		self.db.query(q_str, QUERY_UPD, q_vars=[self.exp_condition, self.session_count, self.feedback_type, P.participant_id])
-
-		if P.session_number == 1 or (self.exp_condition in [MOTR, CTRL] and P.session_number == P.session_count):
-			self.practice_session = True
 
 	def imagery_trial(self):
 		fill()
