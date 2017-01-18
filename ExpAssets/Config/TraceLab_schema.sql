@@ -38,13 +38,14 @@ CREATE TABLE participants (
 	sex text not null,
 	age integer not null,
 	handedness text not null,
-	created text not null,
 	klibs_commit text not null,
 	exp_condition integer,
 	session_count integer,
 	feedback_type text,
 	sessions_completed integer,
-  figure_set text
+  figure_set text,
+	created text not null,
+  initialized integer default 0
 );
 
 
