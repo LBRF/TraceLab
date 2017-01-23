@@ -62,6 +62,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	# session vars
 	p_dir = None
 	fig_dir = None
+	session = None
 	training_session = None
 	session_type = None
 	exp_condition = None
@@ -138,7 +139,6 @@ class TraceLab(Experiment, BoundaryInspector):
 		super(TraceLab, self).__init__(*args, **kwargs)
 		P.flip_x = P.mirror_mode
 
-
 	def __practice__(self):
 		self.figure_name = P.practice_figure
 		self.animate_time = P.practice_animation_time
@@ -195,10 +195,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			# reset stuff before the experiment proper begins
 
 	def setup(self):
-		from klibs.KLCommunication import user_queries
-
 		self.session = TraceLabSession()
-		self.init_session(query(user_queries.experimental[1]) if not P.development_mode else False)
 
 		if P.labjacking:
 			self.lj = u3.U3()

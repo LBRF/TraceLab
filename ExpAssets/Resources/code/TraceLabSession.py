@@ -22,6 +22,7 @@ from klibs.KLEnvironment import EnvAgent
 from TraceLabFigure import TraceLabFigure
 from FigureSet import FigureSet
 
+
 PHYS = "physical"
 MOTR = "motor"
 CTRL = "control"
@@ -46,8 +47,9 @@ class TraceLabSession(EnvAgent):
 	}
 
 	def __init__(self):
+		from klibs.KLCommunication import user_queries
 		self.__import_figure_sets__()
-		self.init_session()
+		self.init_session(query(user_queries.experimental[1]) if not P.development_mode else False)
 
 	def __import_figure_sets__(self):
 		# load original complete set of FigureSets for use
