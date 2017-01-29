@@ -140,7 +140,6 @@ class JSON_Object(object):
 					converted.append(i)
 		return converted
 
-
 	def __iter__(self):
 		return self
 

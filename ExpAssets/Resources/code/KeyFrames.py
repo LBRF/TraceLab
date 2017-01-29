@@ -1,6 +1,5 @@
 __author__ = 'jono'
-# import sys
-# sys.path.append("ExpAssets/Resources/code/")
+
 from os.path import join
 from time import time
 from klibs import P
@@ -10,7 +9,8 @@ from klibs.KLGraphics.KLDraw import *
 from klibs.KLCommunication import message
 from klibs.KLUserInterface import ui_request
 from klibs.KLAudio import AudioClip
-from klibs.KLUtilities import line_segment_len
+from klibs.KLUtilities import line_segment_len, full_trace
+from klibs.KLUtilities import colored_stdout as cso
 from TraceLabFigure import bezier_interpolation,  linear_interpolation
 from JSON_Object import JSON_Object
 
@@ -111,10 +111,11 @@ class KeyFrame(object):
 		asset_frames = []
 		num_static_directives = 0
 		img_drctvs = []
-
+		last_directive = None
 		try:
 			# strip out audio track if there is one, first
 			for d in self.directives:
+				last_directive = d
 				try:
 					asset = self.assets[d.asset].contents
 				except KeyError:
@@ -146,12 +147,14 @@ class KeyFrame(object):
 				try:
 					path_len = bezier_interpolation(d.start, d.end, d.control)[0]
 					raw_frames = bezier_interpolation(d.start, d.end, d.control, velocity=path_len / self.duration)
+				except TypeError:
+					print cso("<red>\tWarning: KeyFrame {0} does not fit in drawable area and will not be rendered.</red>".format(self.label))
+					continue
 				except AttributeError:
 					try:
 						v = line_segment_len(d.start, d.end) / self.duration
 					except TypeError:
 						raise ValueError("Image assets require their 'start' and 'end' attributes to be an x,y pair.")
-
 					raw_frames = linear_interpolation(d.start, d.end, v)
 				for p in raw_frames :
 					frames.append([asset, p, d.registration])
@@ -169,9 +172,14 @@ class KeyFrame(object):
 				self.asset_frames = asset_frames
 
 		except (IndexError, AttributeError, TypeError) as e:
-			e_msg = "An error occurred when rendering this frame. This is usually do an unexpected return " \
-					"from an 'EVAL:' entry in the JSON script. The original error was:\n\n\t{0}: {1}".format(e.__class__, e.message)
-			raise RuntimeError(e_msg)
+			import sys, traceback
+			print "An error occurred when rendering this frame. This is usually do an unexpected return " \
+				  "from an 'EVAL:' entry in the JSON script."
+			print "The error occurred in keyframe {0} and the last attempted directive was:".format(self.label)
+			last_directive.report()
+			print "\nThe original error was:\n"
+			traceback.print_exception(*sys.exc_info())
+			self.exp.quit()
 
 
 class FrameSet(object):
@@ -187,7 +195,6 @@ class FrameSet(object):
 		self.key_frames_file = join(P.resources_dir, "code", key_frames_file + ".json")
 		self.generate_key_frames()
 
-
 	def __load_assets__(self, assets_file):
 		j_ob = JSON_Object(assets_file)
 		for a in j_ob:
@@ -199,7 +206,6 @@ class FrameSet(object):
 		j_ob = JSON_Object(self.key_frames_file)
 		for kf in j_ob.keyframes:
 			self.key_frames.append(KeyFrame(self.exp, kf, self.assets))
-
 
 	def play(self):
 		for kf in self.key_frames:
