@@ -78,7 +78,3 @@ fig_set_3.add_figures(("heart",3), "template_1477090164.31")
 fig_set_4 = FigureSet("test3")
 fig_set_4.add_figures(("heart",3), "template_1477090164.31")
 
-# # create a master inventory and add each figure set
-# trace_lab_figure_sets = NamedInventory()
-# trace_lab_figure_sets.add(fig_set_1)
-# trace_lab_figure_sets.add(fig_set_2)

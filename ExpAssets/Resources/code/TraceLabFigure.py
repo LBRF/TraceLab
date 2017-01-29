@@ -558,7 +558,6 @@ class TraceLabFigure(EnvAgent):
 
 	# def feedback(self, trace):
 
-
 	def write_out(self, file_name=None, trial_data=None):
 		if not file_name:
 			file_name = self.file_name

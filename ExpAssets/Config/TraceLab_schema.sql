@@ -32,67 +32,66 @@ This wil export the database in it's current state to text files found in /Users
 */
 
 CREATE TABLE participants (
-	id integer primary key autoincrement not null,
-	local_id text not null unique,
-	random_seed text not null,
-	sex text not null,
-	age integer not null,
-	handedness text not null,
-	klibs_commit text not null,
-	exp_condition integer,
-	session_count integer,
-	feedback_type text,
-	sessions_completed integer,
-  figure_set text,
-	created text not null,
-  initialized integer default 0
+	id                 INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	local_id           TEXT                              NOT NULL UNIQUE,
+	random_seed        TEXT                              NOT NULL,
+	sex                TEXT                              NOT NULL,
+	age                INTEGER                           NOT NULL,
+	handedness         TEXT                              NOT NULL,
+	klibs_commit       TEXT                              NOT NULL,
+	exp_condition      INTEGER,
+	session_count      INTEGER,
+	feedback_type      TEXT,
+	sessions_completed INTEGER,
+	figure_set         TEXT,
+	created            TEXT                              NOT NULL,
+	initialized        INTEGER DEFAULT 0
 );
 
-
 CREATE TABLE trials (
-	id integer primary key autoincrement not null,
-	participant_id integer key not null,
-	block_num integer not null,
-	session_num integer not null,
-	condition text not null,
-	trial_num integer not null,
-	figure_type text not null, /* rehearsal figure vs random */
-	figure_file text not null,
-	stimulus_gt float not null, /* goal animation time */
-	stimulus_mt float not null, /* real animation time */
-	avg_velocity float not null,
-	path_length float not null,
-	trace_file text not null,
-    rt  float not null,  /* initiation time for all conditions*/
-    it  float not null,  /* time between RT and MT for physical conditions, ie. lingering at origin*/
-	control_question text not null,
-	control_response integer not null,
-	mt float not null
+	id               INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	participant_id   INTEGER                           NOT NULL,
+	block_num        INTEGER                           NOT NULL,
+	session_num      INTEGER                           NOT NULL,
+	exp_condition    TEXT                              NOT NULL,
+	trial_num        INTEGER                           NOT NULL,
+	figure_type      TEXT                              NOT NULL,
+	figure_file      TEXT                              NOT NULL,
+	stimulus_gt      FLOAT                             NOT NULL,
+	stimulus_mt      FLOAT                             NOT NULL,
+	avg_velocity     FLOAT                             NOT NULL,
+	path_length      FLOAT                             NOT NULL,
+	trace_file       TEXT                              NOT NULL,
+	rt               FLOAT                             NOT NULL,
+	it               FLOAT                             NOT NULL,
+	control_question TEXT                              NOT NULL,
+	control_response INTEGER                           NOT NULL,
+	mt               FLOAT                             NOT NULL
 );
 
 CREATE TABLE sessions (
-    id integer primary key autoincrement not null,
-    participant_id integer key not null,
-	completed text
+	id             INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	participant_id INTEGER                           NOT NULL,
+	completed      TEXT
 );
 
 
 CREATE TABLE events (
-	id integer primary key autoincrement not null,
-	user_id integer not null,
-	trial_id integer not null,
-	trial_num integer not null,
-	label text not null,
-	trial_clock float not null,
-	eyelink_clock integer
+	id            INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	user_id       INTEGER                           NOT NULL,
+	trial_id      INTEGER                           NOT NULL,
+	trial_num     INTEGER                           NOT NULL,
+	label         TEXT                              NOT NULL,
+	trial_clock   FLOAT                             NOT NULL,
+	eyelink_clock INTEGER
 );
 
 CREATE TABLE logs (
-	id integer primary key autoincrement not null,
-	user_id integer not null,
-	message text not null,
-	trial_clock float not null,
-	eyelink_clock integer
+	id            INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	user_id       INTEGER                           NOT NULL,
+	message       TEXT                              NOT NULL,
+	trial_clock   FLOAT                             NOT NULL,
+	eyelink_clock INTEGER
 );
 
 

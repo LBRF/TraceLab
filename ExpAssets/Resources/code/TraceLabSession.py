@@ -43,7 +43,9 @@ class TraceLabSession(EnvAgent):
 	"assign_figure_set": "UPDATE `participants` SET `figure_set` = ? WHERE `id` = ?",
 	"set_initialized": "UPDATE `participants` set `initialized` = 1 WHERE `id` = ?",
 	"delete_anon": "DELETE FROM `trials` WHERE `participant_id` = ? AND `session_num` = ?",
-	"delete_incomplete": "DELETE FROM `participants` WHERE `initialized` = 0"
+	"delete_incomplete": "DELETE FROM `participants` WHERE `initialized` = 0",
+	"exp_condition": "UPDATE `participants` SET `exp_condition` = ?, `session_count` = ?, `feedback_type` = ? WHERE `id` = ?",
+	"session_data": "SELECT `exp_condition`,`feedback_type`, `session_count`, `sessions_completed`, `figure_set` FROM `participants` WHERE `id` = ?"
 	}
 
 	def __init__(self):
@@ -53,7 +55,10 @@ class TraceLabSession(EnvAgent):
 
 	def __import_figure_sets__(self):
 		# load original complete set of FigureSets for use
-		for k, v in load_source("*", join(P.resources_dir, "figure_sets.py")).__dict__.iteritems():
+		fig_sets_f = join(P.config_dir, "figure_sets.py")
+		if exists(join(P.local_dir, "figure_sets.py")):
+			fig_sets_f = join(P.local_dir, "figure_sets.py")
+		for k, v in load_source("*", fig_sets_f).__dict__.iteritems():
 			if isinstance(v, FigureSet):
 				self.exp.figure_sets[v.name] = v
 
@@ -66,12 +71,14 @@ class TraceLabSession(EnvAgent):
 		# if an id is provided, continue from a previous or incomplete session
 		if local_id:
 			try:
-				user_data = self.db.query(self.queries['user_data_prev'], q_vars=[local_id]).fetchall()[0]
-				P.p_id = user_data[0]
+				user_data = self.db.query(self.queries['user_data_prev'], q_vars=[local_id])[0]
+				P.participant_id = user_data[0]
+				self.exp.log_f = open(join(P.local_dir, "logs", "P{0}_log_f.txt".format(P.participant_id)), "w+")
+				P.p_id = P.participant_id
 				P.random_seed = str(user_data[2])
 				if not self.restore_session():
 					P.session_number = 1
-			except IndexError:
+			except KeyError as e:
 				retry = query(user_queries.experimental[0])
 				if retry == 'y':
 					return self.init_session(query(user_queries.experimental[1]))
@@ -83,41 +90,53 @@ class TraceLabSession(EnvAgent):
 					self.quit()
 		else:
 			P.session_number = 1
-			try:
-				user_data = self.db.query(self.queries['user_data_new'], q_vars=[P.p_id]).fetchall()[0]
-			except IndexError:
-				# new user, get demographics
-				from klibs.KLCommunication import collect_demographics
-				collect_demographics(P.development_mode)
+			# try:
+			# 	user_data = self.db.query(self.queries['user_data_new'], q_vars=[P.p_id])[0]
+			# except KeyError:
+			# new user, get demographics
+			from klibs.KLCommunication import collect_demographics
+			collect_demographics(P.development_mode)
+			self.exp.log_f = open(join(P.local_dir, "logs", "P{0}_log_f.txt".format(P.participant_id)), "w+")
+			self.parse_exp_condition(query(user_queries.experimental[2]))
+			# set the number of sessions completed to 0
+			self.db.query(self.queries['session_update'], QUERY_UPD, q_vars=[0, P.p_id])
+			# now set updated user data in the experiment context
+			user_data = self.db.query(self.queries['user_data_new'], q_vars=[P.p_id])[0]
 
-				# set the number of sessions completed to 0
-				self.db.query(self.queries['session_update'], QUERY_UPD, q_vars=[0, P.p_id])
-				# now set updated user data in the experiment context
-				user_data = self.db.query(self.queries['user_data_new'], q_vars=[P.p_id]).fetchall()[0]
-
-				# manage figure sets, if in use for this participant
-				if query(user_queries.experimental[3]) == "y":
-					self.exp.figure_set_name = query(user_queries.experimental[4])
-					self.db.query(self.queries["assign_figure_set"], QUERY_UPD, q_vars=[self.exp.figure_set_name, P.p_id])
+			# manage figure sets, if in use for this participant
+			if query(user_queries.experimental[3]) == "y":
+				self.exp.figure_set_name = query(user_queries.experimental[4])
+				self.db.query(self.queries["assign_figure_set"], QUERY_UPD, q_vars=[self.exp.figure_set_name, P.p_id])
 
 		self.import_figure_set()
 
 		P.user_data = user_data
 
 		# delete previous trials for this session if any exist (essentially assume a do-over)
-		if not P.capture_figures_mode:
-			self.db.query(self.queries["delete_anon"], q_vars=[P.p_id, P.session_number])
-
-			if P.session_number == 1:
-				if not self.restore_session():
-					self.parse_exp_condition(query(user_queries.experimental[2]))
-			self.exp.training_session = P.session_number not in (1, 5)
-			self.exp.session_type = SESSION_TRN if self.exp.training_session else SESSION_TST
-		else:
+		if P.capture_figures_mode:
 			self.exp.training_session = True
 			self.exp.session_type = SESSION_FIG
+		else:
+			self.db.query(self.queries["delete_anon"], q_vars=[P.p_id, P.session_number])
+
+			# if P.session_number == 1:
+			# 	if not self.restore_session():
+			# 		self.parse_exp_condition(query(user_queries.experimental[2]))
+			self.exp.training_session = P.session_number not in (1, 5)
+			self.exp.session_type = SESSION_TRN if self.exp.training_session else SESSION_TST
 		self.db.query(self.queries["set_initialized"], QUERY_UPD, q_vars=[P.p_id])
 		P.demographics_collected = True
+
+		header = {"exp_condition": self.exp.exp_condition,
+				  "feedback": self.exp.feedback_type,
+				  "figure_set": self.exp.figure_set_name,
+				  "practice_session": self.exp.practice_session,
+		}
+		self.exp.log("*************** HEADER START****************\n")
+		if P.use_log_file:
+			for k in header:
+				self.exp.log("{0}: {1}\n".format(k, header[k]))
+		self.exp.log("*************** HEADER END *****************\n")
 
 	def import_figure_set(self):
 		if not self.exp.figure_set_name:
@@ -147,12 +166,8 @@ class TraceLabSession(EnvAgent):
 		self.exp.trial_factory.generate(new_exp_factors)
 
 	def restore_session(self):
-		import unicodedata
-		session_data_str = "SELECT `exp_condition`,`feedback_type`, `session_count`, `sessions_completed`, `figure_set` FROM `participants` WHERE `id` = ?"
 		try:
-			session_data = list(self.db.query(session_data_str, q_vars=[P.p_id]).fetchall()[0])
-			session_data[0] = unicodedata.normalize('NFKD', session_data[0]).encode('ascii', 'ignore')
-			session_data[1] = unicodedata.normalize('NFKD', session_data[1]).encode('ascii', 'ignore')
+			session_data = self.db.query(self.queries["session_data"], q_vars=[P.p_id])[0]
 			self.exp.exp_condition, self.exp.feedback_type, self.exp.session_count, P.session_number, self.exp.figure_set_name = session_data
 			P.session_number += 1
 
@@ -201,9 +216,8 @@ class TraceLabSession(EnvAgent):
 		except ValueError:
 			e_msg = "Session count requires an integer."
 			raise ValueError(e_msg)
-
-		q_str = "UPDATE `participants` SET `exp_condition` = ?, `session_count` = ?, `feedback_type` = ? WHERE `id` = ?"
-		self.db.query(q_str, QUERY_UPD, q_vars=[self.exp.exp_condition, self.exp.session_count, self.exp.feedback_type, P.p_id])
+		q_vars = [self.exp.exp_condition, self.exp.session_count, self.exp.feedback_type, P.p_id]
+		self.db.query(self.queries["exp_condition"], QUERY_UPD, q_vars=q_vars)
 
 		if P.session_number == 1 or (self.exp.exp_condition in [MOTR, CTRL] and P.session_number == P.session_count):
 			self.exp.practice_session = True

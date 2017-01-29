@@ -5,6 +5,7 @@ import shutil, sys
 sys.path.append("ExpAssets/Resources/code/")
 from sdl2 import SDL_MOUSEBUTTONDOWN
 from random import choice
+from os.path import join
 
 from klibs.KLExceptions import TrialException
 from klibs import P
@@ -47,16 +48,6 @@ SESSION_FIG = "figure_capture"
 SESSION_TRN = "training"
 SESSION_TST = "testing"
 
-"""
-Notes:
-
-1) Currently ALL exp conditions still run the physical practice on the LAST session
-2) To include random figures in the figure set, add a "random" line
-3) if no figure set is provided, the figures listed in TraceLab_independent_variables.py are used
-4) set names can't contain underscores for stupid reasons
-5) need to write data-export script to include sessions
-"""
-
 
 class TraceLab(Experiment, BoundaryInspector):
 	# session vars
@@ -91,6 +82,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	button_bar = None
 
 	instructions = None
+	handedness = None
 	loading_msg = None
 	control_fail_msg = None
 	next_trial_msg = None
@@ -134,6 +126,9 @@ class TraceLab(Experiment, BoundaryInspector):
 	practice_instructions = None
 	practice_button_bar = None
 	practice_kf = None
+
+	intertrial_timing_logs = []
+	ev_times = []
 
 	def __init__(self, *args, **kwargs):
 		super(TraceLab, self).__init__(*args, **kwargs)
@@ -259,7 +254,7 @@ class TraceLab(Experiment, BoundaryInspector):
 										blit_txt=False)
 		self.next_trial_msg = message(P.next_trial_message, 'default', blit_txt=False)
 		self.next_trial_box = Rectangle(300, 75, (2, (255, 255, 255)))
-		self.next_trial_button_loc = (P.screen_c[0], P.screen_c[1] - 50)
+		self.next_trial_button_loc = (250 if P.user_data[5] == "l" else P.screen_x - 250, P.screen_y - 100)
 		xy_1 = (self.next_trial_button_loc[0] - 150, self.next_trial_button_loc[1] - 33)
 		xy_2 = (self.next_trial_button_loc[0] + 150, self.next_trial_button_loc[1] + 33)
 		self.add_boundary("next trial button", (xy_1, xy_2), RECT_BOUNDARY)
@@ -315,10 +310,15 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.rc.draw_listener.interrupts = True
 		self.rc.display_callback = self.display_refresh
 		self.rc.display_callback_args = [True]
+		if P.always_show_cursor:
+			self.rc.draw_listener.show_active_cursor = True
+			self.rc.draw_listener.show_inactive_cursor = True
 		if P.demo_mode:
 			self.rc.draw_listener.render_real_time = True
 
 	def trial_prep(self):
+		self.log("\n\n********** TRIAL {0} ***********\n".format(P.trial_number))
+		self.log("t{0}_trial_prep_start", True)
 		self.control_question = choice(["LEFT", "RIGHT", "UP", "DOWN"])
 		self.rt = 0.0
 		self.it = 0.0
@@ -362,7 +362,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		flip()
 		flush()
 		next_trial_button_clicked = False
-		if P.demo_mode:
+		if P.demo_mode or P.always_show_cursor:
 			show_mouse_cursor()
 		while not next_trial_button_clicked:
 			event_queue = pump(True)
@@ -370,10 +370,12 @@ class TraceLab(Experiment, BoundaryInspector):
 				if e.type == SDL_MOUSEBUTTONDOWN:
 					next_trial_button_clicked = self.within_boundary("next trial button", [e.button.x, e.button.y])
 				ui_request(e)
-		if P.demo_mode:
+		if P.demo_mode or P.always_show_cursor:
 			hide_mouse_cursor()
+		self.log("t{0}_trial_prep_end", True)
 
 	def trial(self):
+		self.log("t{0}_trial_start", True)
 		self.figure.animate()
 		self.animate_finish = self.evm.trial_time
 		try:
@@ -400,18 +402,20 @@ class TraceLab(Experiment, BoundaryInspector):
 		if self.__practicing__:
 			return
 
+		self.log("t{0}_trial_end", True)
+
 		return {
 			"block_num": P.block_number,
 			"trial_num": P.trial_number,
 			"session_num": P.session_number,
-			"condition": self.exp_condition,
+			"exp_condition": self.exp_condition,
 			"figure_type": self.figure_name,
 			"figure_file": self.figure.file_name,
 			"stimulus_gt": self.animate_time,
 			"stimulus_mt": self.figure.animate_time,
 			"avg_velocity": self.figure.avg_velocity,
 			"path_length": self.figure.path_length,
-			"trace_file": self.tracing_name if self.exp_condition in PHYS else NA,
+			"trace_file": self.tracing_name if self.exp_condition == PHYS else NA,
 			"rt": self.rt,
 			"it": self.it,
 			"control_question": self.control_question if self.exp_condition == CTRL else NA,
@@ -419,15 +423,23 @@ class TraceLab(Experiment, BoundaryInspector):
 			"mt": self.mt,
 		}
 
+
 	def trial_clean_up(self):
+		self.log("t{0}_trial_clean_up_start", True)
 		if not self.__practicing__:
 			self.figure.write_out()
 			self.figure.write_out(self.tracing_name, self.drawing)
 		self.rc.draw_listener.reset()
 		self.button_bar.reset()
+		self.log("t{0}_trial_clean_up_end", True)
+
 		inter_trial_rest = CountDown(P.intertrial_rest_interval)
+		self.log("t{0}_intertrial_interval_start", True)
 		while inter_trial_rest.counting():
 			ui_request()
+		self.log("t{0}_intertrial_interval_end", True)
+		self.log("write_out")
+
 
 	def clean_up(self):
 		# if the entire experiment is successfully completed, update the sessions_completed column
@@ -447,8 +459,6 @@ class TraceLab(Experiment, BoundaryInspector):
 				pass
 		if flip_screen:
 			flip()
-
-
 
 	def imagery_trial(self):
 		fill()
@@ -502,7 +512,6 @@ class TraceLab(Experiment, BoundaryInspector):
 			start = time.time()
 			while time.time() - start < P.max_feedback_time / 1000.0:
 				ui_request()
-
 
 	def control_trial(self):
 		self.button_bar.update_message(P.btn_instrux.format(self.control_question))
@@ -566,6 +575,72 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.__practicing__ = False
 
 		return self.practice(callback=cb)
+
+	def log(self, msg, t=None):
+		if P.use_log_file:
+			if msg != "write_out":
+				if t:
+					if len(self.intertrial_timing_logs) < P.trial_number:
+						print "appending a dict on trial %s" % str(P.trial_number)
+						self.intertrial_timing_logs.append(dict())
+					self.intertrial_timing_logs[P.trial_number - 1][msg.format(P.trial_number)] = time.time()
+				else:
+					self.log_f.write(msg)
+			else:
+				tot_avg_times = []
+				for t in self.intertrial_timing_logs[P.trial_number - 1]:
+					self.log_f.write(str_pad(t+":", 32) + str(self.intertrial_timing_logs[P.trial_number - 1][t]) + "\n")
+				times = self.intertrial_timing_logs[P.trial_number - 1]
+				keys = ['t{0}_trial_clean_up_start'.format(P.trial_number),
+						 't{0}_trial_prep_end'.format(P.trial_number),
+						 't{0}_trial_prep_start'.format(P.trial_number),
+						 't{0}_trial_clean_up_end'.format(P.trial_number),
+						 't{0}_intertrial_interval_start'.format(P.trial_number),
+						 't{0}_intertrial_interval_end'.format(P.trial_number),
+						 't{0}_trial_start'.format(P.trial_number),
+						 't{0}_trial_end'.format(P.trial_number)
+						]
+				ev_times = dict()
+				ev_times["prep_time"] = times[keys[1]] - times[keys[2]]
+				ev_times["trial_time"] = times[keys[7]] - times[keys[6]]
+				ev_times["clean_up_time"] = times[keys[3]] - times[keys[0]]
+				ev_times["intertrial_interval"] = times[keys[5]] - times[keys[4]]
+
+				if len(self.intertrial_timing_logs) > 1:
+					last_ivi_end = self.intertrial_timing_logs[P.trial_number - 2]['t{0}_trial_end'.format(P.trial_number -1)]
+					ev_times["real_intertrial_interval"] = times[keys[7]] - last_ivi_end
+				self.ev_times.append(ev_times)
+				self.log_f.write("\n")
+				for k in ev_times:
+					self.log_f.write(str_pad(k+":", 32) + str(ev_times[k]) + "\n")
+
+	def quit(self):
+		prep = []
+		trial = []
+		clean_up = []
+		iti = []
+		riti = []
+		for evt in self.ev_times:
+			for t in evt:
+				if t == "prep_time":
+					prep.append(evt[t])
+			   	elif t == "trial_time":
+					trial.append(evt[t])
+				elif t == "clean_up_time":
+					clean_up.append(evt[t])
+				elif t == "real_intertrial_interval":
+					riti.append(evt[t])
+				else:
+					iti.append(evt[t])
+		self.log_f.write("\n\n*********** AVG TIMES ************\n")
+		self.log_f.write("Samples: {0}\n".format(len(trial)))
+		self.log_f.write("prep     : " + str(sum(prep)/len(prep)) + "\n")
+		self.log_f.write("trial    : " + str(sum(trial)/len(trial)) + "\n")
+		self.log_f.write("clean_up : " + str(sum(clean_up)/len(clean_up)) + "\n")
+		self.log_f.write("iti      : " + str(sum(iti)/len(iti)) + "\n")
+		self.log_f.write("riti     : " + str(sum(riti)/len(riti)) + "\n")
+		self.log_f.close()
+		super(TraceLab, self).quit()
 
 	@property
 	def tracing_name(self):

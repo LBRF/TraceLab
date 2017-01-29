@@ -62,7 +62,9 @@ dm_suppress_debug_pane = False
 dm_auto_threshold = True
 dm_override_practice = False  # only for testing on a monitor which is too small to support practice animations
 dm_render_progress = False  # if true, user's attempts to draw the figure will always be rendered
-
+dm_setup_only = True
+always_show_cursor = False
+use_log_file = False
 # For everything involving color,  http://www.colorspire.com/rgb-color-wheel/ will let you get the rgb values
 # for any color you prefer
 
