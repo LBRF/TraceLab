@@ -504,7 +504,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.it = self.rc.draw_listener.first_sample_time - (self.rt + start)
 
 		self.mt = self.rc.draw_listener.responses[0][1]
-		if self.feedback_type in (FB_ALL, FB_RES) and not self.__practicing__:
+		if self.feedback_type in (FB_ALL, FB_DRAW) and not self.__practicing__:
 			flush()
 			fill()
 			blit(self.figure.render(trace=self.drawing), 5, P.screen_c, flip_x=P.flip_x)
