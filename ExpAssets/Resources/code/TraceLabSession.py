@@ -1,7 +1,7 @@
 __author__ = 'jono'
 
 """
-NOTE: this entire document only exists because experiment.py was getting too cluttered and I decided to
+NOTE: this entire document only exists because experiment.previous.py was getting too cluttered and I decided to
 relocate all session-init logic to a separate class to tidy things up. previous versions of the experiment
 all included these methods as part of the experiment class
 """

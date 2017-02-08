@@ -16,6 +16,7 @@ import klibs.KLParams as P
 from klibs.KLUtilities import *
 from klibs.KLGraphics.KLDraw import Ellipse
 from klibs.KLUserInterface import ui_request
+from klibs. KLCommunication import message
 from klibs.KLEnvironment import EnvAgent
 
 
@@ -556,9 +557,8 @@ class TraceLabFigure(EnvAgent):
 
 			self.avg_velocity = self.path_length / self.animate_time
 
-	# def feedback(self, trace):
-
 	def write_out(self, file_name=None, trial_data=None):
+		writing_tracing = file_name is not None
 		if not file_name:
 			file_name = self.file_name
 		if not trial_data:
@@ -586,28 +586,28 @@ class TraceLabFigure(EnvAgent):
 				f.write(str(trial_data))
 			f.close()
 
-			if P.gen_tlfx:
+			if P.gen_tlfx and not writing_tracing:
 				f = open(ext_interpolation_path, "w+")
 				f.write(str(self.extended_interpolation))
 				f.close()
 				fig_zip.write(ext_interpolation_path, ext_interp_file_name)
 				os.remove(ext_interpolation_path)
 
-			if P.gen_tlfp:
+			if P.gen_tlfp and not writing_tracing:
 				f = open(points_path, "w+")
 				f.write(str(self.points))
 				f.close()
 				fig_zip.write(points_path, points_file_name)
 				os.remove(points_path)
 
-			if P.gen_tlfs:
+			if P.gen_tlfs and not writing_tracing:
 				f = open(segments_path, "w+")
 				f.write(",".join(str(s[1]) for s in self.raw_segments))
 				f.close()
 				fig_zip.write(segments_path, segments_file_name)
 				os.remove(segments_path)
 
-			if P.gen_png:
+			if P.gen_png and not writing_tracing:
 				png.from_array(self.render(), 'RGBA').save(thumb_path)
 				fig_zip.write(thumb_path, thumb_file_name)
 				os.remove(thumb_path)

@@ -130,7 +130,8 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	intertrial_start = None
 	intertrial_end = None
-	intertrial_timing_logs = {}
+	intertrial_timing_logs = []
+	ev_times = []
 
 	def __init__(self, *args, **kwargs):
 		super(TraceLab, self).__init__(*args, **kwargs)
@@ -320,6 +321,7 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def trial_prep(self):
 		self.log("\n\n********** TRIAL {0} ***********\n".format(P.trial_number))
+		self.log("t{0}_trial_prep_start", True)
 		self.control_question = choice(["LEFT", "RIGHT", "UP", "DOWN"])
 		self.rt = 0.0
 		self.it = 0.0
@@ -327,7 +329,8 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.drawing = NA
 		self.control_response = -1
 		fill()
-		blit(self.loading_msg, 5, P.screen_c, flip_x=P.flip_x)
+		if self.training_session:
+			blit(self.loading_msg, 5, P.screen_c, flip_x=P.flip_x)
 		flip()
 		failed_generations = 0
 		self.figure = None
@@ -355,23 +358,6 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.figure.render()
 		self.figure.prepare_animation()
 
-		#  now that prep is finished, start the intertrial interval calculation
-		if self.intertrial_start:
-			self.intertrial_end = time.time()
-			intertrial_interval = self.intertrial_end - self.intertrial_start
-			self.log_f.write(str(intertrial_interval) + "\n")
-			if intertrial_interval > P.intertrial_rest_interval:
-				cso("\t<red>Warning: trial preparation for this trial exceeded intertrial rest interval.</red>")
-			else:
-				inter_trial_rest = CountDown(P.intertrial_rest_interval - intertrial_interval)
-				while inter_trial_rest.counting():
-					ui_request()
-		if P.trial_number > 1:
-			self.log("t{0}_intertrial_interval_end".format(P.trial_number - 1), True)
-			self.log("write_out")
-		self.log("t{0}_intertrial_interval_start".format(P.trial_number), True)
-		self.intertrial_start = time.time()
-
 		# let participant self-initiate next trial
 		fill()
 		blit(self.next_trial_box, 5, self.next_trial_button_loc, flip_x=P.flip_x)
@@ -381,6 +367,19 @@ class TraceLab(Experiment, BoundaryInspector):
 		next_trial_button_clicked = False
 		if P.demo_mode or P.always_show_cursor:
 			show_mouse_cursor()
+		if self.intertrial_start:
+			intertrial_interval = self.intertrial_start - self.intertrial_end
+			if intertrial_interval > P.intertrial_rest_interval:
+				cso("\t<red>Warning: trial preparation for this trial exceeded intertrial rest interval.</red>")
+			else:
+				inter_trial_rest = CountDown(P.intertrial_rest_interval - intertrial_interval)
+				while inter_trial_rest.counting():
+					ui_request()
+		self.log("t{0}_trial_prep_end", True)
+		self.log("t{0}_intertrial_interval_end", True)
+		if P.trial_number > 1:
+			self.log("write_out")
+		self.intertrial_start = time.time()
 
 		while not next_trial_button_clicked:
 			event_queue = pump(True)
@@ -392,6 +391,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			hide_mouse_cursor()
 
 	def trial(self):
+		self.log("t{0}_trial_start", True)
 		self.figure.animate()
 		self.animate_finish = self.evm.trial_time
 		try:
@@ -418,6 +418,8 @@ class TraceLab(Experiment, BoundaryInspector):
 		if self.__practicing__:
 			return
 
+		self.log("t{0}_trial_end", True)
+
 		return {
 			"block_num": P.block_number,
 			"trial_num": P.trial_number,
@@ -437,12 +439,19 @@ class TraceLab(Experiment, BoundaryInspector):
 			"mt": self.mt,
 		}
 
+
 	def trial_clean_up(self):
+		self.log("t{0}_trial_clean_up_start", True)
 		if not self.__practicing__:
 			self.figure.write_out()
 			self.figure.write_out(self.tracing_name, self.drawing)
 		self.rc.draw_listener.reset()
 		self.button_bar.reset()
+		self.log("t{0}_trial_clean_up_end", True)
+
+		self.intertrial_end = time.time()
+		self.log("t{0}_intertrial_interval_start", True)
+
 
 	def clean_up(self):
 		# if the entire experiment is successfully completed, update the sessions_completed column
@@ -583,15 +592,65 @@ class TraceLab(Experiment, BoundaryInspector):
 		if P.use_log_file:
 			if msg != "write_out":
 				if t:
-					self.intertrial_timing_logs[msg] = time.time()
+					if len(self.intertrial_timing_logs) < P.trial_number:
+						print "appending a dict on trial %s" % str(P.trial_number)
+						self.intertrial_timing_logs.append(dict())
+					self.intertrial_timing_logs[P.trial_number - 1][msg.format(P.trial_number)] = time.time()
 				else:
 					self.log_f.write(msg)
 			else:
-				ivi_start = self.intertrial_timing_logs['t{0}_intertrial_interval_start'.format(P.trial_number - 1)]
-				ivi_end = self.intertrial_timing_logs['t{0}_intertrial_interval_end'.format(P.trial_number - 1)]
-				self.log_f.write(str_pad("intertrial_interval" + ":", 32) + str(ivi_end - ivi_start) + "\n")
+				tot_avg_times = []
+				for t in self.intertrial_timing_logs[P.trial_number - 1]:
+					self.log_f.write(str_pad(t+":", 32) + str(self.intertrial_timing_logs[P.trial_number - 1][t]) + "\n")
+				times = self.intertrial_timing_logs[P.trial_number - 1]
+				keys = ['t{0}_trial_clean_up_start'.format(P.trial_number),
+						 't{0}_trial_prep_end'.format(P.trial_number),
+						 't{0}_trial_prep_start'.format(P.trial_number),
+						 't{0}_trial_clean_up_end'.format(P.trial_number),
+						 't{0}_intertrial_interval_start'.format(P.trial_number),
+						 't{0}_intertrial_interval_end'.format(P.trial_number),
+						 't{0}_trial_start'.format(P.trial_number),
+						 't{0}_trial_end'.format(P.trial_number)
+						]
+				ev_times = dict()
+				ev_times["prep_time"] = times[keys[1]] - times[keys[2]]
+				ev_times["trial_time"] = times[keys[7]] - times[keys[6]]
+				ev_times["clean_up_time"] = times[keys[3]] - times[keys[0]]
+				ev_times["intertrial_interval"] = times[keys[5]] - times[keys[4]]
+
+				if len(self.intertrial_timing_logs) > 1:
+					last_ivi_end = self.intertrial_timing_logs[P.trial_number - 2]['t{0}_trial_end'.format(P.trial_number -1)]
+					ev_times["real_intertrial_interval"] = times[keys[7]] - last_ivi_end
+				self.ev_times.append(ev_times)
+				self.log_f.write("\n")
+				for k in ev_times:
+					self.log_f.write(str_pad(k+":", 32) + str(ev_times[k]) + "\n")
 
 	def quit(self):
+		prep = []
+		trial = []
+		clean_up = []
+		iti = []
+		riti = []
+		for evt in self.ev_times:
+			for t in evt:
+				if t == "prep_time":
+					prep.append(evt[t])
+			   	elif t == "trial_time":
+					trial.append(evt[t])
+				elif t == "clean_up_time":
+					clean_up.append(evt[t])
+				elif t == "real_intertrial_interval":
+					riti.append(evt[t])
+				else:
+					iti.append(evt[t])
+		self.log_f.write("\n\n*********** AVG TIMES ************\n")
+		self.log_f.write("Samples: {0}\n".format(len(trial)))
+		self.log_f.write("prep     : " + str(sum(prep)/len(prep)) + "\n")
+		self.log_f.write("trial    : " + str(sum(trial)/len(trial)) + "\n")
+		self.log_f.write("clean_up : " + str(sum(clean_up)/len(clean_up)) + "\n")
+		self.log_f.write("iti      : " + str(sum(iti)/len(iti)) + "\n")
+		self.log_f.write("riti     : " + str(sum(riti)/len(riti)) + "\n")
 		self.log_f.close()
 		super(TraceLab, self).quit()
 
