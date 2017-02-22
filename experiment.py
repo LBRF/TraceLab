@@ -448,6 +448,8 @@ class TraceLab(Experiment, BoundaryInspector):
 		q_str = "UPDATE `participants` SET `sessions_completed` = ? WHERE `id` = ?"
 		self.db.query(q_str, QUERY_UPD, q_vars=[P.session_number, P.participant_id])
 		self.db.insert("sessions", [P.participant_id, now()])
+		message(P.experiment_complete_message, "instructions", registration=5, location=P.screen_c)
+		any_key()
 
 	def display_refresh(self, flip_screen=True):
 		fill()
