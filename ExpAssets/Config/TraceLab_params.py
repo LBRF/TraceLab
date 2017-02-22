@@ -53,6 +53,7 @@ origin_wait_time = 1000  # ms
 demo_mode = False
 mirror_mode = False
 next_trial_message = "Tap here to continue."
+experiment_complete_message = "Thanks for participating. You're all finished."
 intertrial_rest_interval = 20  # seconds
 
 #########################################
