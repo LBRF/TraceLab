@@ -193,7 +193,6 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def setup(self):
 		self.session = TraceLabSession()
-
 		if P.labjacking:
 			self.lj = u3.U3()
 			self.getCalibrationData()
@@ -315,7 +314,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		if P.always_show_cursor:
 			self.rc.draw_listener.show_active_cursor = True
 			self.rc.draw_listener.show_inactive_cursor = True
-		if P.demo_mode:
+		if P.demo_mode or self.feedback_type in (FB_DRAW, FB_ALL):
 			self.rc.draw_listener.render_real_time = True
 
 	def trial_prep(self):
@@ -507,7 +506,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.it = self.rc.draw_listener.first_sample_time - (self.rt + start)
 
 		self.mt = self.rc.draw_listener.responses[0][1]
-		if self.feedback_type in (FB_ALL, FB_DRAW) and not self.__practicing__:
+		if self.feedback_type in (FB_ALL, FB_RES) and not self.__practicing__:
 			flush()
 			fill()
 			blit(self.figure.render(trace=self.drawing), 5, P.screen_c, flip_x=P.flip_x)
