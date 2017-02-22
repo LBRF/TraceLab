@@ -131,7 +131,7 @@ seg_report_fuzz = (2, 4)
 ########################################
 # Practice Controls
 ########################################
-enable_practice = False
+enable_practice = True
 truncate_practice_animation = False
 practice_instructions = "The following is a demonstration period. Use this time to learn and then practice the task.\nTap the screen to continue."
 play_narration = True  # toggles the audio component

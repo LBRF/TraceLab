@@ -126,7 +126,7 @@ class TraceLabSession(EnvAgent):
 			self.exp.session_type = SESSION_TRN if self.exp.training_session else SESSION_TST
 		self.db.query(self.queries["set_initialized"], QUERY_UPD, q_vars=[P.p_id])
 		P.demographics_collected = True
-
+		P.practice_session = P.session_number == 1 or (P.session_number == self.session_count and self.exp_condition != PHYS)
 		header = {"exp_condition": self.exp.exp_condition,
 				  "feedback": self.exp.feedback_type,
 				  "figure_set": self.exp.figure_set_name,
