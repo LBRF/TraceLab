@@ -150,9 +150,9 @@ class TraceLabSession(EnvAgent):
 
 		# ensure all figures are pre-loaded, even if not on the default figure list
 		for f in figure_set:
-			if f[0] not in P.figures:
+			if f[0] not in P.figures and f[0] != "random":
 				f_path = join(P.resources_dir, "figures", f[0])
-				self.exp.test_figures[f] = TraceLabFigure(f_path)
+				self.exp.test_figures[f[0]] = TraceLabFigure(f_path)
 			self.exp.figure_set.append(f)
 
 		# load original ivars file into a named object
