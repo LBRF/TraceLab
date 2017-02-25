@@ -102,7 +102,6 @@ class TraceLabSession(EnvAgent):
 			self.db.query(self.queries['session_update'], QUERY_UPD, q_vars=[0, P.p_id])
 			# now set updated user data in the experiment context
 			user_data = self.db.query(self.queries['user_data_new'], q_vars=[P.p_id])[0]
-
 			# manage figure sets, if in use for this participant
 			if query(user_queries.experimental[3]) == "y":
 				self.exp.figure_set_name = query(user_queries.experimental[4])
@@ -111,7 +110,7 @@ class TraceLabSession(EnvAgent):
 		self.import_figure_set()
 
 		P.user_data = user_data
-
+		print P.user_data
 		# delete previous trials for this session if any exist (essentially assume a do-over)
 		if P.capture_figures_mode:
 			self.exp.training_session = True
@@ -126,7 +125,7 @@ class TraceLabSession(EnvAgent):
 			self.exp.session_type = SESSION_TRN if self.exp.training_session else SESSION_TST
 		self.db.query(self.queries["set_initialized"], QUERY_UPD, q_vars=[P.p_id])
 		P.demographics_collected = True
-		P.practice_session = P.session_number == 1 or (P.session_number == self.exp.session_count and self.exp_condition != PHYS)
+		P.practice_session = P.session_number == 1 or (P.session_number == self.exp.session_count and self.exp.exp_condition != PHYS)
 		header = {"exp_condition": self.exp.exp_condition,
 				  "feedback": self.exp.feedback_type,
 				  "figure_set": self.exp.figure_set_name,
