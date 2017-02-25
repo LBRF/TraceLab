@@ -346,6 +346,74 @@
             },
             "anonymous_value": null,
             "active": true
+        },
+		 {
+            "title": "learned a shape",
+            "database_field": null,
+            "query": "Do you feel that you learned a shape?\nIt is okay if you do not think you learned a shape or if there was a repeating shape.\nAnswer with Y or N.",
+            "accepted": ["y", "n"],
+            "allow_null": false,
+            "format": {
+                "type": "str",
+                "styles": {
+                    "query": "default",
+                    "input": "default",
+                    "error": "alert"
+                },
+                "positions": {
+                    "locations": {
+                        "query": "auto",
+                        "input": "auto",
+                        "error": "auto"
+                    },
+                    "registrations": {
+                        "query": "auto",
+                        "input": "auto",
+                        "error": "auto"
+                    }
+                },
+                "password": false,
+                "range": null,
+                "case_sensitive": false,
+                "accept_as_true": null,
+                "action": null
+            },
+            "anonymous_value": null,
+            "active": true
+        },
+		{
+            "title": "learned another shape",
+            "database_field": null,
+            "query": "Do you feel that you learned another shape?\nAnswer with Y or N.",
+            "accepted": ["y", "n"],
+            "allow_null": false,
+            "format": {
+                "type": "str",
+                "styles": {
+                    "query": "default",
+                    "input": "default",
+                    "error": "alert"
+                },
+                "positions": {
+                    "locations": {
+                        "query": "auto",
+                        "input": "auto",
+                        "error": "auto"
+                    },
+                    "registrations": {
+                        "query": "auto",
+                        "input": "auto",
+                        "error": "auto"
+                    }
+                },
+                "password": false,
+                "range": null,
+                "case_sensitive": false,
+                "accept_as_true": null,
+                "action": null
+            },
+            "anonymous_value": null,
+            "active": true
         }
     ]
 }

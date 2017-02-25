@@ -5,7 +5,8 @@ import shutil, sys
 sys.path.append("ExpAssets/Resources/code/")
 from sdl2 import SDL_MOUSEBUTTONDOWN
 from random import choice
-from os.path import join
+from os.path import join, exists
+from os import makedirs
 
 from klibs.KLExceptions import TrialException
 from klibs import P
@@ -141,12 +142,12 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.animate_time = P.practice_animation_time
 		self.setup_response_collector()
 		self.trial_prep()
-		self.evm.start()
+		self.evm.start_clock()
 		try:
 			self.trial()
 		except:
 			pass
-		self.evm.stop()
+		self.evm.stop_clock()
 		self.trial_clean_up()
 
 	def __review_figure__(self):
@@ -302,7 +303,7 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def setup_response_collector(self):
 		self.rc.uses(RC_DRAW)
-		self.rc.end_collection_event = 'response_period_end'
+		# self.rc.end_collection_event = 'response_period_end'
 		self.rc.draw_listener.start_boundary = 'start'
 		self.rc.draw_listener.stop_boundary = 'stop'
 		self.rc.draw_listener.show_active_cursor = False
@@ -444,11 +445,27 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.button_bar.reset()
 
 	def clean_up(self):
+		if P.session_number == self.session_count and P.enable_learned_figures_querying:
+			from klibs.KLCommunication import user_queries
+			self.fig_dir =  join(self.p_dir, "learned")
+			if not exists(self.fig_dir):
+				makedirs(self.fig_dir)
+
+			learned_fig_num = 1
+			if query(user_queries.experimental[5]) == "y":
+				while True:
+					self.capture_learned_figure(learned_fig_num)
+					if query(user_queries.experimental[6]) == "y":
+						learned_fig_num += 1
+					else:
+						break
+
 		# if the entire experiment is successfully completed, update the sessions_completed column
 		q_str = "UPDATE `participants` SET `sessions_completed` = ? WHERE `id` = ?"
 		self.db.query(q_str, QUERY_UPD, q_vars=[P.session_number, P.participant_id])
-		self.db.insert("sessions", [P.participant_id, now()])
-		message(P.experiment_complete_message, "instructions", registration=5, location=P.screen_c)
+		self.db.insert([P.participant_id, P.session_number, now(True)], "sessions")
+		fill()
+		message(P.experiment_complete_message, "instructions", registration=5, location=P.screen_c, flip_screen=True)
 		any_key()
 
 	def display_refresh(self, flip_screen=True):
@@ -555,6 +572,14 @@ class TraceLab(Experiment, BoundaryInspector):
 					break
 		self.quit()
 
+	def capture_learned_figure(self, fig_number):
+		self.evm.start_clock()
+		fig_name = "p{0}_learned_figure_{1}.tlt".format(P.participant_id, fig_number)
+		self.rc.draw_listener.reset()
+		self.rc.collect()
+		self.figure.write_out(fig_name, self.rc.draw_listener.responses[0][0])
+		self.evm.stop_clock()
+
 	def practice(self, play_key_frames=True, callback=None):
 		self.__practicing__ = True
 
@@ -572,9 +597,9 @@ class TraceLab(Experiment, BoundaryInspector):
 
 		self.practice_button_bar.reset()
 		self.practice_button_bar.render()
-		self.evm.start()
+		self.evm.start_clock()
 		cb = self.practice_button_bar.collect_response()
-		self.evm.stop()
+		self.evm.stop_clock()
 
 		self.__practicing__ = False
 
