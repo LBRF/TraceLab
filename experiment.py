@@ -264,7 +264,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		#####
 		# practice session vars & elements
 		#####
-		if not P.dm_override_practice:
+		if not P.dm_override_practice and P.practice_session:
 			if (self.exp_condition == PHYS and P.session_number == 1) or (
 					P.session_number == self.session_count and self.exp_condition != PHYS):
 				key_frames_f = "physical_key_frames"
