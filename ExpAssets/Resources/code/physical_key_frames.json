@@ -867,7 +867,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "	physical audio 6",
+                    "asset":  "physical audio 6",
 					"registration": 5,
                     "start": 0,
                     "end": null
