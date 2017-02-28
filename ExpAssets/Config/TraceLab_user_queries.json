@@ -40,8 +40,8 @@
             "active": false
         },
         {
-            "title": "local_id",
-            "database_field": "local_id",
+            "title": "user_id",
+            "database_field": "user_id",
             "query": "Enter the participant number:",
             "accepted": null,
             "allow_null": false,

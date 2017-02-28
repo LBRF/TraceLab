@@ -67,10 +67,10 @@ from FigureSet import FigureSet
 
 # create the figure sets
 fig_set_1 = FigureSet("test")
-fig_set_1.add_figures("heart", ("template_1477081781.44", 3))
+fig_set_1.add_figures(("heart",2), "template_1477081781.44")
 
 fig_set_2 = FigureSet("test1")
-fig_set_2.add_figures(("heart",3), "template_1477090164.31")
+fig_set_2.add_figures("heart", "template_1477090164.31")
 
 fig_set_3 = FigureSet("test2")
 fig_set_3.add_figures(("heart",3), "template_1477090164.31")
