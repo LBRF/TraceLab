@@ -56,6 +56,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	p_dir = None
 	fig_dir = None
 	session = None
+	session_number = None
 	training_session = None
 	session_type = None
 	exp_condition = None
@@ -119,7 +120,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	figure_name = None
 	figure_sets = {}   # complete set of available figure sets
 	figure_set = []  # figure set currently in use for this participant
-	figure_set_name = None  # key for current figure set
+	figure_key = None  # key for current figure set
 
 	# practice stuff
 	narration = None
@@ -193,7 +194,13 @@ class TraceLab(Experiment, BoundaryInspector):
 			# reset stuff before the experiment proper begins
 
 	def setup(self):
+		self.txtm.add_style('instructions', 18, [255, 255, 255, 255])
+		self.txtm.add_style('error', 18, [255, 0, 0, 255])
+		self.txtm.add_style('tiny', 12, [255, 255, 255, 255])
+		self.txtm.add_style('small', 14, [255, 255, 255, 255])
 		self.session = TraceLabSession()
+		self.trial_factory.dump()
+		self.quit()
 		if P.labjacking:
 			self.lj = u3.U3()
 			self.getCalibrationData()
@@ -227,10 +234,6 @@ class TraceLab(Experiment, BoundaryInspector):
 			tracker_dot_stroke = None
 		self.tracker_dot_proto = Ellipse(P.tracker_dot_size, stroke=tracker_dot_stroke, fill=P.tracker_dot_color)
 		self.tracker_dot = self.tracker_dot_proto.render()
-		self.txtm.add_style('instructions', 18, [255, 255, 255, 255])
-		self.txtm.add_style('error', 18, [255, 0, 0, 255])
-		self.txtm.add_style('tiny', 12, [255, 255, 255, 255])
-		self.txtm.add_style('small', 14, [255, 255, 255, 255])
 
 		if P.capture_figures_mode:
 			self.capture_figures()
@@ -262,7 +265,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.add_boundary("next trial button", (xy_1, xy_2), RECT_BOUNDARY)
 
 		#####
-		# practice session vars & elements
+		# prac BBB                                                                                 QDW                                                                                                                                                                                          BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBVVVVVVVVVVVVVVVVVVVVVVVVVVVV                                                         tice session vars & elements
 		#####
 		if not P.dm_override_practice and P.practice_session:
 			if (self.exp_condition == PHYS and P.session_number == 1) or (
