@@ -37,11 +37,10 @@ SESSION_TST = "testing"
 class TraceLabSession(EnvAgent):
 	
 	queries = {
-	"user_data_new": "SELECT * FROM `participants` WHERE `id` = ?",
+	"user_data": "SELECT `id`,`random_seed`,`exp_condition`,`feedback_type`, `session_count`, `sessions_completed`, `figure_set` FROM `participants` WHERE `user_id` = ?",
 	"get_user_id": "SELECT `user_id` FROM `participants` WHERE `id` = ?",
-	"user_data_prev": "SELECT * FROM `participants` WHERE `user_id` = ?",
 	"session_update": "UPDATE `participants` SET `sessions_completed` = ? WHERE `id` = ?",
-	"assign_figure_set": "UPDATE `participants` SET `figure_set` = ?, `figure_set` = ?  WHERE `id` = ?",
+	"assign_figure_set": "UPDATE `participants` SET `figure_set` = ?  WHERE `id` = ?",
 	"set_initialized": "UPDATE `participants` set `initialized` = 1 WHERE `id` = ?",
 	"delete_anon": "DELETE FROM `trials` WHERE `participant_id` = ? AND `session_num` = ?",
 	"delete_incomplete": "DELETE FROM `participants` WHERE `initialized` = 0",
@@ -67,10 +66,8 @@ class TraceLabSession(EnvAgent):
 			self.init_session(False)
 		else:
 			self.user_id = query(uq.experimental[1])
-			print "LID 1: {0}".format(self.user_id)
 			if self.user_id is None:
 				self.generate_user_id()
-				print "LID 3: {0}".format(self.user_id)
 			self.init_session()
 
 	def __import_figure_sets__(self):
@@ -78,11 +75,13 @@ class TraceLabSession(EnvAgent):
 		fig_sets_f = join(P.config_dir, "figure_sets.py")
 		fig_sets_local_f = join(P.local_dir, "figure_sets.py")
 		try:
+			if P.dm_ignore_local_overrides:
+				raise RuntimeError("ignoring local files")
 			sys.path.append(fig_sets_local_f)
 			for k, v in load_source("*", fig_sets_f).__dict__.iteritems():
 				if isinstance(v, FigureSet):
 					self.exp.figure_sets[v.name] = v
-		except IOError:
+		except (IOError, RuntimeError):
 			sys.path.append(fig_sets_f)
 			for k, v in load_source("*", fig_sets_f).__dict__.iteritems():
 				if isinstance(v, FigureSet):
@@ -90,10 +89,10 @@ class TraceLabSession(EnvAgent):
 
 	def generate_user_id(self):
 		from klibs.KLCommunication import collect_demographics
-
+		# delete all incomplete attempts to create a user to free up username space; no associated records to remove
+		self.db.query(self.queries["delete_incomplete"])
 		collect_demographics(P.development_mode)
-		self.user_id = str(self.db.query(self.queries["get_user_id"], q_vars=[P.p_id])[0][0])
-		print "LID 2: {0}".format(self.user_id)
+		self.user_id = self.db.query(self.queries["get_user_id"], q_vars=[P.p_id])[0][0]
 		self.parse_exp_condition(query(uq.experimental[2]))
 		if query(uq.experimental[3]) == "y":
 			self.exp.figure_key = query(uq.experimental[4])
@@ -102,14 +101,10 @@ class TraceLabSession(EnvAgent):
 
 	def init_session(self):
 		# from klibs.KLCommunication import user_queries as uq
-		# delete all incomplete attempts to create a user to free up username space; no associated records to remove
-		self.db.query(self.queries["delete_incomplete"])
-		print "LID 4: {0}".format(self.user_id)
-		user_data = self.db.query(self.queries['user_data_prev'], q_vars=[self.user_id], fetch_all=False)
-		print user_data.fetchall()
+		user_data = self.db.query(self.queries['user_data'], q_vars=[self.user_id])[0]
 
-		if not self.restore_session(user_data):
-			self.exp.session_number = 1
+		self.restore_session(user_data)
+			# self.exp.session_number = 1
 		# try:
 		# except KeyError as e:
 		# 	if query(uq.experimental[0]) == "y":
@@ -157,7 +152,7 @@ class TraceLabSession(EnvAgent):
 		return True
 
 	def import_figure_set(self):
-		if not self.exp.figure_set_name:
+		if not self.exp.figure_set_name or self.exp.figure_set_name == NA:
 			return
 
 		if not self.exp.figure_set_name in self.exp.figure_sets:
