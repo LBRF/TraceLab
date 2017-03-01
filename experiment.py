@@ -219,7 +219,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.fig_dir = os.path.join(P.resources_dir, "figures")
 		else:
 			self.p_dir = os.path.join(P.data_dir, "p{0}_{1}".format(P.user_data[0], P.user_data[-2]))
-			self.fig_dir = os.path.join(self.p_dir, self.session_type, "session_" + str(P.session_number))
+			self.fig_dir = os.path.join(self.p_dir, self.session_type, "session_" + str(self.session_number))
 			if os.path.exists(self.fig_dir):
 				shutil.rmtree(self.fig_dir)
 			os.makedirs(self.fig_dir)
@@ -238,7 +238,7 @@ class TraceLab(Experiment, BoundaryInspector):
 
 		btn_vars = ([(str(i), P.btn_size, None) for i in range(1, 6)], P.btn_size, P.btn_s_pad, P.y_pad, P.btn_instrux)
 		self.button_bar = ButtonBar(*btn_vars)
-		self.use_random_figures = P.session_number not in (1, 5)
+		self.use_random_figures = self.session_number not in (1, 5)
 		self.origin_proto.fill = self.origin_active_color
 		self.origin_active = self.origin_proto.render()
 		self.origin_proto.fill = self.origin_inactive_color
@@ -266,12 +266,12 @@ class TraceLab(Experiment, BoundaryInspector):
 		# prac BBB                                                                                 QDW                                                                                                                                                                                          BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBVVVVVVVVVVVVVVVVVVVVVVVVVVVV                                                         tice session vars & elements
 		#####
 		if not P.dm_override_practice and P.practice_session:
-			if (self.exp_condition == PHYS and P.session_number == 1) or (
-					P.session_number == self.session_count and self.exp_condition != PHYS):
+			if (self.exp_condition == PHYS and self.session_number == 1) or (
+					self.session_number == self.session_count and self.exp_condition != PHYS):
 				key_frames_f = "physical_key_frames"
-			elif self.exp_condition == MOTR and P.session_number == 1:
+			elif self.exp_condition == MOTR and self.session_number == 1:
 				key_frames_f = "imagery_key_frames"
-			elif P.session_number == 1:
+			elif self.session_number == 1:
 				key_frames_f = "control_key_frames"
 
 			self.practice_kf = FrameSet(self, key_frames_f, "assets")
@@ -396,7 +396,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.figure.animate()
 		self.animate_finish = self.evm.trial_time
 		try:
-			if self.exp_condition == PHYS or P.session_number == self.session_count:
+			if self.exp_condition == PHYS or self.session_number == self.session_count:
 				self.physical_trial()
 			elif self.exp_condition == MOTR:
 				self.imagery_trial()
@@ -422,7 +422,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		return {
 			"block_num": P.block_number,
 			"trial_num": P.trial_number,
-			"session_num": P.session_number,
+			"session_num": self.session_number,
 			"exp_condition": self.exp_condition,
 			"figure_type": self.figure_name,
 			"figure_file": self.figure.file_name,
@@ -446,7 +446,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.button_bar.reset()
 
 	def clean_up(self):
-		if P.session_number == self.session_count and P.enable_learned_figures_querying:
+		if self.session_number == self.session_count and P.enable_learned_figures_querying:
 			from klibs.KLCommunication import user_queries
 			self.fig_dir =  join(self.p_dir, "learned")
 			if not exists(self.fig_dir):
@@ -463,8 +463,8 @@ class TraceLab(Experiment, BoundaryInspector):
 
 		# if the entire experiment is successfully completed, update the sessions_completed column
 		q_str = "UPDATE `participants` SET `sessions_completed` = ? WHERE `id` = ?"
-		self.db.query(q_str, QUERY_UPD, q_vars=[P.session_number, P.participant_id])
-		self.db.insert([P.participant_id, P.session_number, now(True)], "sessions")
+		self.db.query(q_str, QUERY_UPD, q_vars=[self.session_number, P.participant_id])
+		self.db.insert([P.participant_id, self.session_number, now(True)], "sessions")
 		fill()
 		message(P.experiment_complete_message, "instructions", registration=5, location=P.screen_c, flip_screen=True)
 		any_key()
@@ -624,5 +624,5 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	@property
 	def tracing_name(self):
-		fname_data = [P.participant_id, P.block_number, P.trial_number, now(True, "%Y-%m-%d"), P.session_number]
+		fname_data = [P.participant_id, P.block_number, P.trial_number, now(True, "%Y-%m-%d"), self.session_number]
 		return "p{0}_s{4}_b{1}_t{2}_{3}.tlt".format(*fname_data)
