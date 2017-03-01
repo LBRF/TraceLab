@@ -78,7 +78,6 @@ class TraceLabSession(EnvAgent):
 			sys.path.append(fig_sets_local_f)
 			for k, v in load_source("*", fig_sets_local_f).__dict__.iteritems():
 				if isinstance(v, FigureSet):
-					print k, v
 					self.exp.figure_sets[v.name] = v
 			if P.dm_ignore_local_overrides:
 				raise RuntimeError("ignoring local files")
