@@ -199,8 +199,6 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.txtm.add_style('tiny', 12, [255, 255, 255, 255])
 		self.txtm.add_style('small', 14, [255, 255, 255, 255])
 		self.session = TraceLabSession()
-		self.trial_factory.dump()
-		self.quit()
 		if P.labjacking:
 			self.lj = u3.U3()
 			self.getCalibrationData()
