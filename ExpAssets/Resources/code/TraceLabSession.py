@@ -37,7 +37,7 @@ SESSION_TST = "testing"
 class TraceLabSession(EnvAgent):
 	
 	queries = {
-	"user_data": "SELECT `id`,`random_seed`,`exp_condition`,`feedback_type`, `session_count`, `sessions_completed`, `figure_set` FROM `participants` WHERE `user_id` = ?",
+	"user_data": "SELECT `id`,`random_seed`,`exp_condition`,`feedback_type`, `session_count`, `sessions_completed`, `figure_set`, `handedness`,`created` FROM `participants` WHERE `user_id` = ?",
 	"get_user_id": "SELECT `user_id` FROM `participants` WHERE `id` = ?",
 	"session_update": "UPDATE `participants` SET `sessions_completed` = ? WHERE `id` = ?",
 	"assign_figure_set": "UPDATE `participants` SET `figure_set` = ?  WHERE `id` = ?",
@@ -60,14 +60,14 @@ class TraceLabSession(EnvAgent):
 	user_id = None
 
 	def __init__(self):
-
+		self.__user_id__ = None
 		self.__import_figure_sets__()
 		if P.development_mode:
 			self.init_session(False)
 		else:
 			self.user_id = query(uq.experimental[1])
 			if self.user_id is None:
-				self.generate_user_id()
+				self.__generate_user_id__()
 			self.init_session()
 
 	def __import_figure_sets__(self):
@@ -87,7 +87,7 @@ class TraceLabSession(EnvAgent):
 				if isinstance(v, FigureSet):
 					self.exp.figure_sets[v.name] = v
 
-	def generate_user_id(self):
+	def __generate_user_id__(self):
 		from klibs.KLCommunication import collect_demographics
 		# delete all incomplete attempts to create a user to free up username space; no associated records to remove
 		self.db.query(self.queries["delete_incomplete"])
@@ -100,22 +100,25 @@ class TraceLabSession(EnvAgent):
 
 	def init_session(self):
 		# from klibs.KLCommunication import user_queries as uq
-		user_data = self.db.query(self.queries['user_data'], q_vars=[self.user_id])[0]
 
-		self.restore_session(user_data)
 			# self.exp.session_number = 1
-		# try:
-		# except KeyError as e:
-		# 	if query(uq.experimental[0]) == "y":
-		# 		return self.init_session(query(uq.experimental[1]))
-		# 	else:
-		# 		message("Thanks for participating!", "default", P.screen_c, 5, blit_txt=True, fill_screen=True, flip_screen=True)
-		# 		any_key()
-		# 		self.quit()
+		try:
+			user_data = self.db.query(self.queries['user_data'], q_vars=[self.user_id])[0]
+			self.restore_session(user_data)
+		except KeyError as e:
+			if query(uq.experimental[0]) == "y":
+				self.user_id = query(uq.experimental[1])
+				if self.user_id is None:
+					self.__generate_user_id__()
+				return self.init_session()
+			else:
+				message("Thanks for participating!", "default", P.screen_c, 5, blit_txt=True, fill_screen=True, flip_screen=True)
+				any_key()
+				self.quit()
 
 		self.import_figure_set()
 
-		P.user_data = user_data
+		# P.user_data = user_data  # used in experiment.py for creating file na,es
 		# delete previous trials for this session if any exist (essentially assume a do-over)
 		if P.capture_figures_mode:
 			self.exp.training_session = True
@@ -143,9 +146,11 @@ class TraceLabSession(EnvAgent):
 
 	def restore_session(self, user_data):
 		# `id`,`random_seed`,`exp_condition`,`session_count`,`feedback_type`,`sessions_completed`,`figure_set`
-		P.participant_id, P.random_seed, self.exp.exp_condition, self.exp.feedback_type, self.exp.session_count, self.exp.session_number, self.exp.figure_set_name  = user_data
+		P.participant_id, P.random_seed, self.exp.exp_condition, self.exp.feedback_type, self.exp.session_count, self.exp.session_number, self.exp.figure_set_name, self.exp.handedness, self.exp.created = user_data
+		self.exp.session_number += 1
 		self.exp.log_f = open(join(P.local_dir, "logs", "P{0}_log_f.txt".format(P.participant_id)), "w+")
-		if any([self.exp.session_number == 1, self.exp.exp_condition != PHYS and self.exp.session_number == self.exp.session_count]):
+		print "Practice Conditions: {0}, {1}".format(self.exp.session_number == 1, (self.exp.exp_condition != PHYS and self.exp.session_number == self.exp.session_count))
+		if self.exp.session_number == 1 or (self.exp.exp_condition != PHYS and self.exp.session_number == self.exp.session_count):
 			self.exp.practice_session = True
 
 		return True
@@ -177,11 +182,11 @@ class TraceLabSession(EnvAgent):
 			for k, v in load_source("*", P.ind_vars_file_path).__dict__.iteritems():
 				if isinstance(v, IndependentVariableSet):
 					new_exp_factors = v
-
 		new_exp_factors.delete('figure_name')
 		new_exp_factors.add_variable('figure_name', str, self.exp.figure_set)
 
 		self.exp.trial_factory.generate(new_exp_factors)
+		self.exp.blocks = self.exp.trial_factory.export_trials()
 
 	def parse_exp_condition(self, condition_str):
 		# from klibs.KLCommunication import user_queries as uq
@@ -245,5 +250,13 @@ class TraceLabSession(EnvAgent):
 		q_vars = [self.exp.exp_condition, self.exp.session_count, self.exp.feedback_type, P.participant_id]
 		self.db.query(self.queries["exp_condition"], QUERY_UPD, q_vars=q_vars)
 
-		if self.exp.session_number == 1 or (self.exp.exp_condition in [MOTR, CTRL] and self.exp.session_number == P.session_count):
+		if self.exp.session_number == 1 or (self.exp.exp_condition in [MOTR, CTRL] and self.exp.session_number == self.exp.session_count):
 			self.exp.practice_session = True
+
+	@property
+	def user_id(self):
+		return self.__user_id__
+
+	@user_id.setter
+	def user_id(self, uid):
+		self.__user_id__ = uid

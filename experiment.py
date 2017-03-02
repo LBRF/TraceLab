@@ -7,6 +7,7 @@ from sdl2 import SDL_MOUSEBUTTONDOWN
 from random import choice
 from os.path import join, exists
 from os import makedirs
+from operator import  sub
 
 from klibs.KLExceptions import TrialException
 from klibs import P
@@ -16,7 +17,7 @@ from klibs.KLUtilities import colored_stdout as cso
 from klibs.KLGraphics import blit, fill, flip, clear
 from klibs.KLGraphics.KLDraw import Ellipse, Rectangle
 from klibs.KLCommunication import message, query
-from klibs.KLUserInterface import any_key, ui_request
+from klibs.KLUserInterface import any_key, ui_request, konami_code
 from klibs.KLTime import CountDown
 from klibs.KLExperiment import Experiment
 from TraceLabFigure import TraceLabFigure
@@ -49,7 +50,8 @@ FB_ALL = "all_feedback"
 SESSION_FIG = "figure_capture"
 SESSION_TRN = "training"
 SESSION_TST = "testing"
-
+LEFT_HANDED = "l"
+RIGHT_HANDED = "r"
 
 class TraceLab(Experiment, BoundaryInspector):
 	# session vars
@@ -62,6 +64,8 @@ class TraceLab(Experiment, BoundaryInspector):
 	exp_condition = None
 	session_count = None
 	feedback_type = False
+	handedness = None
+	created = None
 	practice_session = False  # ie. this session should include the practice display
 	lj_codes = None
 	lj_spike_interval = 0.01
@@ -219,7 +223,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		if P.capture_figures_mode:
 			self.fig_dir = os.path.join(P.resources_dir, "figures")
 		else:
-			self.p_dir = os.path.join(P.data_dir, "p{0}_{1}".format(P.user_data[0], P.user_data[-2]))
+			self.p_dir = os.path.join(P.data_dir, "p{0}_{1}".format(P.participant_id, self.created))
 			self.fig_dir = os.path.join(self.p_dir, self.session_type, "session_" + str(self.session_number))
 			if os.path.exists(self.fig_dir):
 				shutil.rmtree(self.fig_dir)
@@ -258,7 +262,7 @@ class TraceLab(Experiment, BoundaryInspector):
 										blit_txt=False)
 		self.next_trial_msg = message(P.next_trial_message, 'default', blit_txt=False)
 		self.next_trial_box = Rectangle(300, 75, (2, (255, 255, 255)))
-		self.next_trial_button_loc = (250 if P.user_data[5] == "l" else P.screen_x - 250, P.screen_y - 100)
+		self.next_trial_button_loc = (250 if self.handedness == LEFT_HANDED else P.screen_x - 250, P.screen_y - 100)
 		xy_1 = (self.next_trial_button_loc[0] - 150, self.next_trial_button_loc[1] - 33)
 		xy_2 = (self.next_trial_button_loc[0] + 150, self.next_trial_button_loc[1] + 33)
 		self.add_boundary("next trial button", (xy_1, xy_2), RECT_BOUNDARY)
@@ -266,7 +270,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		#####
 		# prac BBB                                                                                 QDW                                                                                                                                                                                          BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBVVVVVVVVVVVVVVVVVVVVVVVVVVVV                                                         tice session vars & elements
 		#####
-		if not P.dm_override_practice and P.practice_session:
+		if self.exp.practice_session:
 			if (self.exp_condition == PHYS and self.session_number == 1) or (
 					self.session_number == self.session_count and self.exp_condition != PHYS):
 				key_frames_f = "physical_key_frames"
@@ -314,7 +318,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.rc.draw_listener.interrupts = True
 		self.rc.display_callback = self.display_refresh
 		self.rc.display_callback_args = [True]
-		if P.always_show_cursor:
+		if P.dm_always_show_cursor:
 			self.rc.draw_listener.show_active_cursor = True
 			self.rc.draw_listener.show_inactive_cursor = True
 		if P.demo_mode or self.feedback_type in (FB_DRAW, FB_ALL):
@@ -381,7 +385,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		flip()
 		flush()
 		next_trial_button_clicked = False
-		if P.demo_mode or P.always_show_cursor:
+		if P.demo_mode or P.dm_always_show_cursor:
 			show_mouse_cursor()
 
 		while not next_trial_button_clicked:
@@ -390,7 +394,7 @@ class TraceLab(Experiment, BoundaryInspector):
 				if e.type == SDL_MOUSEBUTTONDOWN:
 					next_trial_button_clicked = self.within_boundary("next trial button", [e.button.x, e.button.y])
 				ui_request(e)
-		if P.demo_mode or P.always_show_cursor:
+		if P.demo_mode or P.dm_always_show_cursor:
 			hide_mouse_cursor()
 
 	def trial(self):
@@ -487,14 +491,13 @@ class TraceLab(Experiment, BoundaryInspector):
 		fill()
 		blit(self.origin_inactive, 5, self.origin_pos, flip_x=P.flip_x)
 		flip()
-		start = self.evm.trial_time
 		if not P.practicing and P.labjacking:
 			self.lj.getFeedback(self.lj_codes['origin_red_on_code'])
 			if self.lj_spike_interval:
 				time.sleep(self.lj_spike_interval)
 			self.lj.getFeedback(self.lj_codes['baseline'])
 		start = self.evm.trial_time
-		if P.demo_mode:
+		if P.demo_mode or P.dm_always_show_cursor:
 			show_mouse_cursor()
 		at_origin = False
 		while not at_origin:
@@ -537,6 +540,8 @@ class TraceLab(Experiment, BoundaryInspector):
 				ui_request()
 
 	def control_trial(self):
+		if P.dm_always_show_cursor:
+			show_mouse_cursor()
 		self.button_bar.update_message(P.btn_instrux.format(self.control_question))
 		self.button_bar.render()
 		self.button_bar.collect_response()
