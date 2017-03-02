@@ -98,7 +98,6 @@ class TraceLabSession(EnvAgent):
 			self.exp.figure_key = query(uq.experimental[4])
 			self.db.query(self.queries["assign_figure_set"], QUERY_UPD, q_vars=[self.exp.figure_key, P.p_id])
 
-
 	def init_session(self):
 		# from klibs.KLCommunication import user_queries as uq
 		user_data = self.db.query(self.queries['user_data'], q_vars=[self.user_id])[0]
@@ -170,9 +169,15 @@ class TraceLabSession(EnvAgent):
 
 		# load original ivars file into a named object
 		sys.path.append(P.ind_vars_file_path)
-		for k, v in load_source("*", P.ind_vars_file_path).__dict__.iteritems():
-			if isinstance(v, IndependentVariableSet):
-				new_exp_factors = v
+		if exists(P.ind_vars_file_local_path) and not P.dm_ignore_local_overrides:
+			for k, v in load_source("*", P.ind_vars_file_local_path).__dict__.iteritems():
+				if isinstance(v, IndependentVariableSet):
+					new_exp_factors = v
+		else:
+			for k, v in load_source("*", P.ind_vars_file_path).__dict__.iteritems():
+				if isinstance(v, IndependentVariableSet):
+					new_exp_factors = v
+
 		new_exp_factors.delete('figure_name')
 		new_exp_factors.add_variable('figure_name', str, self.exp.figure_set)
 
