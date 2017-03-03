@@ -22,18 +22,6 @@ default_font_name = 'Frutiger'
 default_timeout_message = "Too slow!"
 
 #########################################
-# EyeLink Sensitivities
-#########################################
-saccadic_velocity_threshold = 20
-saccadic_acceleration_threshold = 5000
-saccadic_motion_threshold = 0.15
-
-fixation_size = 1 # deg of visual angle
-box_size = 1 # deg of visual angle
-cue_size = 1 # deg of visual angle
-cue_back_size = 1 # deg of visual angle
-
-#########################################
 # Experiment Structure
 #########################################
 multi_session_project = True
@@ -57,6 +45,19 @@ experiment_complete_message = "Thanks for participating. You're all finished. Hi
 intertrial_rest_interval = 20  # seconds
 enable_learned_figures_querying = True
 
+
+########################################
+# Practice Controls
+########################################
+enable_practice = True
+truncate_practice_animation = False
+practice_instructions = "The following is a demonstration period. Use this time to learn and then practice the task.\nTap the screen to continue."
+play_narration = True  # toggles the audio component
+practice_figure = "heart"
+practice_animation_time = 3500 # ms
+bubble_location = (1550, 275)
+
+
 #########################################
 # Development Mode Settings
 #########################################
@@ -65,8 +66,8 @@ dm_auto_threshold = True
 dm_override_practice = False  # only for testing on a monitor which is too small to support practice animations
 dm_render_progress = False  # if true, user's attempts to draw the figure will always be rendered
 dm_setup_only = False
-dm_ignore_local_overrides = False
-always_show_cursor = False
+dm_ignore_local_overrides = True
+dm_always_show_cursor = False
 use_log_file = False
 # For everything involving color,  http://www.colorspire.com/rgb-color-wheel/ will let you get the rgb values
 # for any color you prefer
@@ -130,16 +131,7 @@ curve_sheer = (0.1, 0.3)  # this is hard to describe, but 1 is again an impossib
 path_length = -1  # length (px); -1 ignores this parameter; path length will override seg_length params if they conflict
 seg_report_fuzz = (2, 4)
 
-########################################
-# Practice Controls
-########################################
-enable_practice = True
-truncate_practice_animation = False
-practice_instructions = "The following is a demonstration period. Use this time to learn and then practice the task.\nTap the screen to continue."
-play_narration = True  # toggles the audio component
-practice_figure = "heart"
-practice_animation_time = 3500 # ms
-bubble_location = (1550, 275)
+
 
 ########################################
 # Labjack Codes
