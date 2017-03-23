@@ -625,7 +625,10 @@ class TraceLab(Experiment, BoundaryInspector):
 				self.log_f.write(str_pad("intertrial_interval" + ":", 32) + str(ivi_end - ivi_start) + "\n")
 
 	def quit(self):
-		self.log_f.close()
+		try:
+			self.log_f.close()
+		except AttributeError:
+			pass
 		super(TraceLab, self).quit()
 
 	@property
