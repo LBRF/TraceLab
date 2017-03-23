@@ -8,11 +8,13 @@ all included these methods as part of the experiment class
 
 
 from os.path import join, exists
+from shutil import rmtree
 import sys
 from imp import load_source
 
 from klibs.KLConstants import QUERY_UPD, NA
 from klibs import P
+from klibs.KLUtilities import now
 from klibs.KLNamedObject import NamedInventory
 from klibs.KLCommunication import query, message
 from klibs.KLCommunication import user_queries as uq
@@ -38,14 +40,20 @@ class TraceLabSession(EnvAgent):
 	
 	queries = {
 	"user_data": "SELECT `id`,`random_seed`,`exp_condition`,`feedback_type`, `session_count`, `sessions_completed`, `figure_set`, `handedness`,`created` FROM `participants` WHERE `user_id` = ?",
+	"user_row": "SELECT `user_id`,`random_seed`,`exp_condition`,`feedback_type`, `session_count`, `sessions_completed`, `figure_set`, `handedness`,`created` FROM `participants` WHERE `id` = ?",
 	"get_user_id": "SELECT `user_id` FROM `participants` WHERE `id` = ?",
 	"session_update": "UPDATE `participants` SET `sessions_completed` = ? WHERE `id` = ?",
 	"assign_figure_set": "UPDATE `participants` SET `figure_set` = ?  WHERE `id` = ?",
 	"set_initialized": "UPDATE `participants` set `initialized` = 1 WHERE `id` = ?",
 	"delete_anon": "DELETE FROM `trials` WHERE `participant_id` = ? AND `session_num` = ?",
-	"delete_incomplete": "DELETE FROM `participants` WHERE `initialized` = 0",
+	"delete_incomplete_user": "DELETE FROM `participants` WHERE `id` = ?",
+	"delete_incomplete_user_sessions": "DELETE FROM `sessions` WHERE `participant_id` = ?",
+	"delete_incomplete_user_trials": "DELETE FROM `trials` WHERE `participant_id` = ?",
+	"find_incomplete": "SELECT `id`, `user_id`, `created` FROM `participants` WHERE `initialized` = 0",
 	"exp_condition": "UPDATE `participants` SET `exp_condition` = ?, `session_count` = ?, `feedback_type` = ? WHERE `id` = ?",
-	"session_data": "SELECT `exp_condition`,`feedback_type`, `session_count`, `sessions_completed`, `figure_set` FROM `participants` WHERE `id` = ?"
+	"session_data": "SELECT `exp_condition`,`feedback_type`, `session_count`, `sessions_completed`, `figure_set` FROM `participants` WHERE `id` = ?",
+	"completed_sessions": "SELECT * FROM `sessions` WHERE `participant_id` = ?",
+	"completed_trials": "SELECT * FROM `trials` WHERE `participant_id` = ?"
 	}
 
 	error_strings = {
@@ -62,6 +70,13 @@ class TraceLabSession(EnvAgent):
 	def __init__(self):
 		self.__user_id__ = None
 		self.__import_figure_sets__()
+		incomplete_participants = self.db.query(self.queries["find_incomplete"])
+		if len(incomplete_participants):
+			from klibs.KLCommunication import user_queries as uq
+			if query(uq.experimental[7]) == "p":
+				self.__purge_incomplete__(incomplete_participants)
+			else:
+				self.__report_incomplete__(incomplete_participants)
 		if P.development_mode:
 			self.init_session(False)
 		else:
@@ -69,6 +84,31 @@ class TraceLabSession(EnvAgent):
 			if self.user_id is None:
 				self.__generate_user_id__()
 			self.init_session()
+
+	def __report_incomplete__(self, participant_ids):
+		log = open(join(P.local_dir, "uninitialized_users_{0}".format(now(True))), "w+")
+		header = ["user_id","random_seed","exp_condition","feedback_type", "session_count", "sessions_completed", "figure_set", "handedness","created", "session_rows", "trial_rows"]
+		log.write("\t".join(header))
+		for p in participant_ids:
+			log.write("\n")
+			p_data = self.db.query(self.queries['user_row'], q_vars=[p[0]])[0]
+			p_data.append(len(self.db.query(self.queries['completed_sessions'], q_vars=[p[0]])))
+			p_data.append(len(self.db.query(self.queries['completed_trials'], q_vars=[p[0]])))
+			log.write("\t".join([str(i) for i in p_data]))
+		log.close()
+		self.exp.quit()
+
+	def __purge_incomplete__(self, participant_ids):
+		for p in participant_ids:
+			self.db.query(self.queries["delete_incomplete_user"], q_vars=[p[0]])
+			self.db.query(self.queries["delete_incomplete_user_sessions"], q_vars=[p[0]])
+			self.db.query(self.queries["delete_incomplete_user_trials"], q_vars=[p[0]])
+
+			try:
+				rmtree(join(P.data_dir, "{0}_{1}".format(*p[1:])))
+			except OSError:
+				pass
+		self.db.db.commit()
 
 	def __import_figure_sets__(self):
 		# load original complete set of FigureSets for use
@@ -90,7 +130,6 @@ class TraceLabSession(EnvAgent):
 	def __generate_user_id__(self):
 		from klibs.KLCommunication import collect_demographics
 		# delete all incomplete attempts to create a user to free up username space; no associated records to remove
-		self.db.query(self.queries["delete_incomplete"])
 		collect_demographics(P.development_mode)
 		self.user_id = self.db.query(self.queries["get_user_id"], q_vars=[P.p_id])[0][0]
 		self.parse_exp_condition(query(uq.experimental[2]))
@@ -99,9 +138,7 @@ class TraceLabSession(EnvAgent):
 			self.db.query(self.queries["assign_figure_set"], QUERY_UPD, q_vars=[self.exp.figure_key, P.p_id])
 
 	def init_session(self):
-		# from klibs.KLCommunication import user_queries as uq
 
-			# self.exp.session_number = 1
 		try:
 			user_data = self.db.query(self.queries['user_data'], q_vars=[self.user_id])[0]
 			self.restore_session(user_data)
@@ -149,7 +186,6 @@ class TraceLabSession(EnvAgent):
 		P.participant_id, P.random_seed, self.exp.exp_condition, self.exp.feedback_type, self.exp.session_count, self.exp.session_number, self.exp.figure_set_name, self.exp.handedness, self.exp.created = user_data
 		self.exp.session_number += 1
 		self.exp.log_f = open(join(P.local_dir, "logs", "P{0}_log_f.txt".format(P.participant_id)), "w+")
-		print "Practice Conditions: {0}, {1}".format(self.exp.session_number == 1, (self.exp.exp_condition != PHYS and self.exp.session_number == self.exp.session_count))
 		if self.exp.session_number == 1 or (self.exp.exp_condition != PHYS and self.exp.session_number == self.exp.session_count):
 			self.exp.practice_session = True
 
