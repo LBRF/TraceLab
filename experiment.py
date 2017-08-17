@@ -268,7 +268,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.add_boundary("next trial button", (xy_1, xy_2), RECT_BOUNDARY)
 
 		#####
-		# prac BBB                                                                                 QDW                                                                                                                                                                                          BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBVVVVVVVVVVVVVVVVVVVVVVVVVVVV                                                         tice session vars & elements
+		# practice session vars & elements
 		#####
 		if self.exp.practice_session:
 			if (self.exp_condition == PHYS and self.session_number == 1) or (
@@ -316,6 +316,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.rc.draw_listener.show_inactive_cursor = True
 		self.rc.draw_listener.origin = self.origin_pos
 		self.rc.draw_listener.interrupts = True
+		self.rc.draw_listener.min_samples = 5
 		self.rc.display_callback = self.display_refresh
 		self.rc.display_callback_args = [True]
 		if P.dm_always_show_cursor:
