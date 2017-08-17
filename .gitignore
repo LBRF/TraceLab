@@ -7,8 +7,8 @@ ExpAssets/EDF/*
 ExpAssets/.versions/*
 ExpAssets/Local
 ExpAssets/Local/**
-**/.pyc
-**/.idea
+**/*.pyc
+**/*.idea
 .idea
 .idea/**
 .DS_STORE
