@@ -1,0 +1,5 @@
+### Additional dependencies for TraceLab ###
+
+# To install these automatically, run 'pip install -r requirements.txt' in the project folder
+
+pypng

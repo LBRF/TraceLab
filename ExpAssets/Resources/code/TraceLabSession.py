@@ -72,18 +72,15 @@ class TraceLabSession(EnvAgent):
 		self.__import_figure_sets__()
 		incomplete_participants = self.db.query(self.queries["find_incomplete"])
 		if len(incomplete_participants):
-			from klibs.KLCommunication import user_queries as uq
 			if query(uq.experimental[7]) == "p":
 				self.__purge_incomplete__(incomplete_participants)
 			else:
 				self.__report_incomplete__(incomplete_participants)
-		if P.development_mode:
-			self.init_session(False)
-		else:
+		if not P.development_mode:
 			self.user_id = query(uq.experimental[1])
-			if self.user_id is None:
-				self.__generate_user_id__()
-			self.init_session()
+		if self.user_id is None:
+			self.__generate_user_id__()
+		self.init_session()
 
 	def __report_incomplete__(self, participant_ids):
 		log = open(join(P.local_dir, "uninitialized_users_{0}".format(now(True))), "w+")
@@ -149,7 +146,7 @@ class TraceLabSession(EnvAgent):
 					self.__generate_user_id__()
 				return self.init_session()
 			else:
-				message("Thanks for participating!", "default", P.screen_c, 5, blit_txt=True, fill_screen=True, flip_screen=True)
+				message("Thanks for participating!", "default", P.screen_c, 5, blit_txt=True, clear_screen=True, flip_screen=True)
 				any_key()
 				self.quit()
 

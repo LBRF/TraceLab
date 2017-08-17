@@ -42,6 +42,7 @@ class KeyFrameAsset(object):
 			self.media_type = data.file.media_type
 			if self.is_audio:
 				self.duration = data.file
+				print(join(P.resources_dir, "audio", data.file.filename))
 				self.contents = AudioClip(join(P.resources_dir, "audio", data.file.filename))
 			else:
 				self.contents = NpS(join(P.image_dir, data.file.filename))
@@ -83,6 +84,7 @@ class KeyFrame(object):
 			self.__render_frames__()
 
 	def play(self):
+		print " "
 		try:
 			if self.audio_track.started:
 				self.audio_track.started = False
@@ -97,6 +99,7 @@ class KeyFrame(object):
 					try:
 						if time() - start >= self.audio_start_time and not self.audio_track.started:
 							self.audio_track.play()
+							self.audio_track.started = True
 					except AttributeError:
 						pass
 					ui_request()
@@ -200,7 +203,7 @@ class FrameSet(object):
 		for a in j_ob:
 			self.assets[a] = KeyFrameAsset(self.exp, j_ob[a])
 
-	def generate_key_frames(self, ):
+	def generate_key_frames(self):
 		if self.assets_file:
 			self.__load_assets__(self.assets_file)
 		j_ob = JSON_Object(self.key_frames_file)
