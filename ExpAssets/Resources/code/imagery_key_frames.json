@@ -16,8 +16,8 @@
                 {
                     "asset": "imagery instructions 1",
                     "registration": 5,
-                    "start": "EVAL: P.screen_c",
-                    "end": "EVAL: P.screen_c"
+                    "start": [960, 540],
+                    "end": [960, 540]
                 }
             ]
         },
@@ -30,8 +30,8 @@
                 {
                     "asset": "imagery instructions 1",
                     "registration": 5,
-                    "start": "EVAL: P.screen_c",
-                    "end": "EVAL: P.screen_c"
+                    "start": [960, 540],
+                    "end": [960, 540]
                 },
                 {
                     "asset": "dot",
@@ -792,8 +792,8 @@
                 {
                     "asset": "end practice",
                     "registration": 5,
-                    "start": "EVAL: P.screen_c",
-                    "end": "EVAL: P.screen_c"
+                    "start": [960, 540],
+                    "end": [960, 540]
                 }
             ]
         }

@@ -1,4 +1,7 @@
 **/.DS_STORE
+**/.DS_Store
+.DS_STORE
+.DS_Store
 .git_ignore
 ExpAssets/*.db
 ExpAssets/*.db.backup
@@ -11,4 +14,3 @@ ExpAssets/Local/**
 **/*.idea
 .idea
 .idea/**
-.DS_STORE

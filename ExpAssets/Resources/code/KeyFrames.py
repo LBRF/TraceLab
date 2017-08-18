@@ -9,7 +9,7 @@ from klibs.KLGraphics.KLDraw import *
 from klibs.KLCommunication import message
 from klibs.KLUserInterface import ui_request
 from klibs.KLAudio import AudioClip
-from klibs.KLUtilities import line_segment_len, full_trace
+from klibs.KLUtilities import line_segment_len, full_trace, scale
 from klibs.KLUtilities import colored_stdout as cso
 from TraceLabFigure import bezier_interpolation,  linear_interpolation
 from JSON_Object import JSON_Object
@@ -42,7 +42,6 @@ class KeyFrameAsset(object):
 			self.media_type = data.file.media_type
 			if self.is_audio:
 				self.duration = data.file
-				print(join(P.resources_dir, "audio", data.file.filename))
 				self.contents = AudioClip(join(P.resources_dir, "audio", data.file.filename))
 			else:
 				self.contents = NpS(join(P.image_dir, data.file.filename))
@@ -84,7 +83,6 @@ class KeyFrame(object):
 			self.__render_frames__()
 
 	def play(self):
-		print " "
 		try:
 			if self.audio_track.started:
 				self.audio_track.started = False
@@ -105,7 +103,8 @@ class KeyFrame(object):
 					ui_request()
 					fill()
 					for asset in frame:
-						blit(asset[0], asset[2], asset[1])
+						# Scale blit coordinates from 1080p to fit current display res
+						blit(asset[0], asset[2], scale(asset[1], (1920,1080)))
 					flip()
 				frames_played = True
 
