@@ -524,11 +524,10 @@ class TraceLab(Experiment, BoundaryInspector):
 			hide_mouse_cursor()
 
 	def physical_trial(self):
-		start = self.evm.trial_time
 		self.rc.collect()
-		self.rt = self.rc.draw_listener.start_time - start
+		self.rt = self.rc.draw_listener.start_time
 		self.drawing = self.rc.draw_listener.responses[0][0]
-		self.it = self.rc.draw_listener.first_sample_time - (self.rt + start)
+		self.it = self.rc.draw_listener.first_sample_time - self.rt
 
 		self.mt = self.rc.draw_listener.responses[0][1]
 		if self.feedback_type in (FB_ALL, FB_RES) and not self.__practicing__:

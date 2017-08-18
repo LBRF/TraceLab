@@ -474,6 +474,7 @@ class TraceLabFigure(EnvAgent):
 				attr = l.split(" = ")
 				if len(attr):
 					setattr(self, attr[0], eval(attr[1]))
+			self.frames = [scale(frame, (1920,1080)) for frame in self.frames]
 		except KeyError:
 			return self.__import_figure__(path, False)
 

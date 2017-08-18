@@ -15,8 +15,8 @@
                 {
                     "asset":  "physical instructions 1",
 					"registration": 5,
-                    "start": "EVAL: P.screen_c",
-                    "end": "EVAL: P.screen_c"
+                    "start": [960, 540],
+                    "end": [960, 540]
                 }
             ]
         },
@@ -29,8 +29,8 @@
                 {
                     "asset":  "physical instructions 1",
 					"registration": 5,
-                    "start": "EVAL: P.screen_c",
-                    "end": "EVAL: P.screen_c"
+                    "start": [960, 540],
+                    "end": [960, 540]
                 },
                 {
                     "asset":  "dot",
@@ -736,8 +736,8 @@
                                 {
                     "asset":  "not recording",
 					"registration": 5,
-                    "start": "EVAL: (P.screen_c[0], P.screen_c[1] - 200)",
-                    "end": "EVAL: (P.screen_c[0], P.screen_c[1] - 200)"
+                    "start": [960, 340],
+                    "end": [960, 340]
                 }
 
             ]
@@ -795,8 +795,8 @@
                                 {
                     "asset":  "not recording",
 					"registration": 5,
-                    "start": "EVAL: (P.screen_c[0], P.screen_c[1] - 200)",
-                    "end": "EVAL: (P.screen_c[0], P.screen_c[1] - 200)"
+                    "start": [960, 340],
+                    "end": [960, 340]
                 }
 
             ]
@@ -854,8 +854,8 @@
                                 {
                     "asset":  "not recording",
 					"registration": 5,
-                    "start": "EVAL: (P.screen_c[0], P.screen_c[1] - 200)",
-                    "end": "EVAL: (P.screen_c[0], P.screen_c[1] - 200)"
+                    "start": [960, 340],
+                    "end": [960, 340]
                 }
 
             ]
@@ -875,8 +875,8 @@
                 {
                     "asset":  "end practice",
 					"registration": 5,
-                    "start": "EVAL: P.screen_c",
-                    "end": "EVAL: P.screen_c"
+                    "start": [960, 540],
+                    "end": [960, 540]
                 }
             ]
         }

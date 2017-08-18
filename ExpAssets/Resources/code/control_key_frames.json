@@ -15,8 +15,8 @@
                 {
                     "asset": "control instructions 1",
                     "registration": 5,
-                    "start": "EVAL: P.screen_c",
-                    "end": "EVAL: P.screen_c"
+                    "start": [960, 540],
+                    "end": [960, 540]
                 }
             ]
         },
@@ -574,8 +574,8 @@
                 {
                     "asset": "control instructions 7",
                     "registration": 5,
-                    "start": "EVAL: P.screen_c",
-                    "end": "EVAL: P.screen_c"
+                    "start": [960, 540],
+                    "end": [960, 540]
                 }
             ]
         },
@@ -588,74 +588,74 @@
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 3 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box white",
                     "registration": 5,
-                    "start": "EVAL: [P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9)]",
-                    "end": "EVAL: [P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9)]"
+                    "start": "EVAL: [1920 - (P.btn_s_pad + 100), int(1080 * 0.9)]",
+                    "end": "EVAL: [1920 - (P.btn_s_pad + 100), int(1080 * 0.9)]"
                 },
                 {
                     "asset": "finish text white",
                     "registration": 5,
-                    "start": "EVAL: [P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9)]",
-                    "end": "EVAL: [P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9)]"
+                    "start": "EVAL: [1920 - (P.btn_s_pad + 100), int(1080 * 0.9)]",
+                    "end": "EVAL: [1920 - (P.btn_s_pad + 100), int(1080 * 0.9)]"
                 },
                 {
                     "asset": "control instructions 8",
@@ -680,80 +680,80 @@
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 3 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box white",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "finish text white",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "pointer",
                     "registration": 5,
-                    "start": "EVAL: (960, P.screen_y)",
-                    "end": "EVAL: (P.btn_s_pad + 90 + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 100)"
+                    "start": "EVAL: (960, 1080)",
+                    "end": "EVAL: (P.btn_s_pad + 90 + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 100)"
                 },
                 {
                     "asset": "control instructions 8",
@@ -772,80 +772,80 @@
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 3 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box white",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "finish text white",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "pointer",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 90 + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 100)",
-                    "end": "EVAL: (P.btn_s_pad + 90 + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 100)"
+                    "start": "EVAL: (P.btn_s_pad + 90 + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 100)",
+                    "end": "EVAL: (P.btn_s_pad + 90 + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 100)"
                 },
                 {
                     "asset": "control instructions 8",
@@ -864,80 +864,80 @@
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 3 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box white",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "finish text white",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "pointer",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 90 + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 100)",
-                    "end": "EVAL: (P.btn_s_pad + 90 + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)"
+                    "start": "EVAL: (P.btn_s_pad + 90 + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 100)",
+                    "end": "EVAL: (P.btn_s_pad + 90 + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)"
                 },
                 {
                     "asset": "control instructions 8",
@@ -956,80 +956,80 @@
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box green",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 green",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 3 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box green",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "finish text green",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "pointer",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 90 + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)",
-                    "end": "EVAL: (P.btn_s_pad + 90 + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)"
+                    "start": "EVAL: (P.btn_s_pad + 90 + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)",
+                    "end": "EVAL: (P.btn_s_pad + 90 + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)"
                 },
                 {
                     "asset": "control instructions 8",
@@ -1048,80 +1048,80 @@
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box green",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 green",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 3 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box green",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "finish text green",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "pointer",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 90 + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)",
-                    "end": "EVAL: (P.btn_s_pad + 90 + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)"
+                    "start": "EVAL: (P.btn_s_pad + 90 + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)",
+                    "end": "EVAL: (P.btn_s_pad + 90 + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)"
                 },
                 {
                     "asset": "control instructions 9",
@@ -1146,80 +1146,80 @@
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box green",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 green",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 3 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box green",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "finish text green",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "pointer",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 90 + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)",
-                    "end": "EVAL: (P.btn_s_pad + 90 + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 100)"
+                    "start": "EVAL: (P.btn_s_pad + 90 + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)",
+                    "end": "EVAL: (P.btn_s_pad + 90 + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 100)"
                 },
                 {
                     "asset": "control instructions 9",
@@ -1238,80 +1238,80 @@
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box green",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 green",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 3 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box green",
                     "registration": 5,
-                    "start": "EVAL: [P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9)]",
-                    "end": "EVAL: [P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9)]"
+                    "start": "EVAL: [1920 - (P.btn_s_pad + 100), int(1080 * 0.9)]",
+                    "end": "EVAL: [1920 - (P.btn_s_pad + 100), int(1080 * 0.9)]"
                 },
                 {
                     "asset": "finish text green",
                     "registration": 5,
-                    "start": "EVAL: [P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9)]",
-                    "end": "EVAL: [P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9)]"
+                    "start": "EVAL: [1920 - (P.btn_s_pad + 100), int(1080 * 0.9)]",
+                    "end": "EVAL: [1920 - (P.btn_s_pad + 100), int(1080 * 0.9)]"
                 },
                 {
                     "asset": "pointer",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 90 + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 100)",
-                    "end": "EVAL: (P.btn_s_pad + 90 + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)"
+                    "start": "EVAL: (P.btn_s_pad + 90 + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 100)",
+                    "end": "EVAL: (P.btn_s_pad + 90 + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)"
                 },
                 {
                     "asset": "control instructions 9",
@@ -1330,80 +1330,80 @@
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box green",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 green",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box green",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "finish text green",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "pointer",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 90 + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)",
-                    "end": "EVAL: (P.btn_s_pad + 90 + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)"
+                    "start": "EVAL: (P.btn_s_pad + 90 + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)",
+                    "end": "EVAL: (P.btn_s_pad + 90 + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)"
                 },
                 {
                     "asset": "control instructions 9",
@@ -1422,80 +1422,80 @@
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box green",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 green",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box green",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "finish text green",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "pointer",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 90 + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100) + 90, int(P.screen_y * 0.9) + 100)"
+                    "start": "EVAL: (P.btn_s_pad + 90 + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad + 110)",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100) + 90, int(1080 * 0.9) + 100)"
                 },
                 {
                     "asset": "control instructions 9",
@@ -1514,80 +1514,80 @@
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box green",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 green",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box green",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "finish text green",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "pointer",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100) + 90, int(P.screen_y * 0.9) + 100)",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100) + 90, int(P.screen_y * 0.9) + 100)"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100) + 90, int(1080 * 0.9) + 100)",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100) + 90, int(1080 * 0.9) + 100)"
                 },
                 {
                     "asset": "control instructions 9",
@@ -1606,80 +1606,80 @@
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box green",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 green",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box green",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "finish text green",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "pointer",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100) + 90, int(P.screen_y * 0.9) + 100)",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100) + 90, int(P.screen_y * 0.9) + 110)"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100) + 90, int(1080 * 0.9) + 100)",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100) + 90, int(1080 * 0.9) + 110)"
                 },
                 {
                     "asset": "control instructions 9",
@@ -1698,80 +1698,80 @@
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box green",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control box white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 1 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 0 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 0 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 1 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 1 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 2 green",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 2 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 2 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 4 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 3 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 3 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "control text 5 white",
                     "registration": 5,
-                    "start": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
-                    "end": "EVAL: (P.btn_s_pad + 4 * (((P.screen_x - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
+                    "start": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)",
+                    "end": "EVAL: (P.btn_s_pad + 4 * (((1920 - (2 * P.btn_s_pad)) // 5) + P.btn_size), P.y_pad)"
                 },
                 {
                     "asset": "finish box green",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "finish text green",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100), int(P.screen_y * 0.9))"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100), int(1080 * 0.9))"
                 },
                 {
                     "asset": "pointer",
                     "registration": 5,
-                    "start": "EVAL: (P.screen_x - (P.btn_s_pad + 100) + 90, int(P.screen_y * 0.9) + 110)",
-                    "end": "EVAL: (P.screen_x - (P.btn_s_pad + 100) + 90, int(P.screen_y * 0.9) + 110)"
+                    "start": "EVAL: (1920 - (P.btn_s_pad + 100) + 90, int(1080 * 0.9) + 110)",
+                    "end": "EVAL: (1920 - (P.btn_s_pad + 100) + 90, int(1080 * 0.9) + 110)"
                 },
                 {
                     "asset": "control instructions 9",
@@ -1796,8 +1796,8 @@
                 {
                     "asset": "end practice",
                     "registration": 5,
-                    "start": "EVAL: P.screen_c",
-                    "end": "EVAL: P.screen_c"
+                    "start": [960, 540],
+                    "end": [960, 540]
                 }
             ]
         }
