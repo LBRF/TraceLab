@@ -103,8 +103,7 @@ class KeyFrame(object):
 					ui_request()
 					fill()
 					for asset in frame:
-						# Scale blit coordinates from 1080p to fit current display res
-						blit(asset[0], asset[2], scale(asset[1], (1920,1080)))
+						blit(asset[0], asset[2], asset[1])
 					flip()
 				frames_played = True
 
@@ -131,6 +130,13 @@ class KeyFrame(object):
 						self.audio_track = self.assets[d.asset].contents
 						self.audio_start_time = d.start * 0.001
 				else:
+					# Scale pixel values from 1920x1080 to current screen resolution
+					d.start = scale(d.start, (1920,1080))
+					d.end = scale(d.end, (1920,1080))
+					try:
+						d.control = scale(d.control, (1920,1080))
+					except AttributeError:
+						pass
 					img_drctvs.append(d)
 					if d.start == d.end:
 						num_static_directives += 1
