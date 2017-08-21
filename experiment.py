@@ -219,7 +219,11 @@ class TraceLab(Experiment, BoundaryInspector):
 		fill()
 		blit(self.loading_msg, 5, P.screen_c)
 		flip()
+
 		self.origin_size = P.origin_size
+		# Scale UI size variables to current screen resolution
+		P.btn_s_pad = scale((P.btn_s_pad,0), (1920,1080))[0]
+		P.y_pad = scale((0,P.y_pad), (1920,1080))[1]
 		if P.capture_figures_mode:
 			self.fig_dir = os.path.join(P.resources_dir, "figures")
 		else:
