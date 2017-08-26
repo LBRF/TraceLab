@@ -2,6 +2,7 @@ __author__ = 'jono'
 
 from os.path import join
 from time import time
+from sdl2 import SDL_KEYDOWN, SDLK_DELETE
 from klibs import P
 from klibs.KLGraphics import blit, flip, fill
 from klibs.KLGraphics.KLNumpySurface import NumpySurface as NpS
@@ -9,7 +10,7 @@ from klibs.KLGraphics.KLDraw import *
 from klibs.KLCommunication import message
 from klibs.KLUserInterface import ui_request
 from klibs.KLAudio import AudioClip
-from klibs.KLUtilities import line_segment_len, full_trace, scale
+from klibs.KLUtilities import line_segment_len, full_trace, scale, pump
 from klibs.KLUtilities import colored_stdout as cso
 from TraceLabFigure import bezier_interpolation,  linear_interpolation
 from JSON_Object import JSON_Object
@@ -82,6 +83,18 @@ class KeyFrame(object):
 		if self.enabled:
 			self.__render_frames__()
 
+	def key_pressed(self, keysym, queue=None):
+		pressed = False
+		if not queue:
+			queue = pump(True)
+		for e in queue:
+			if e.type == SDL_KEYDOWN:
+				ui_request(e.key.keysym)
+				if e.key.keysym.sym == keysym:
+					pressed = True
+					break
+		return pressed
+		
 	def play(self):
 		try:
 			if self.audio_track.started:
@@ -91,7 +104,8 @@ class KeyFrame(object):
 		start = time()
 		frames_played = False
 		while time() - start < self.duration:
-			ui_request()
+			if self.key_pressed(SDLK_DELETE):
+				return True
 			if not frames_played:
 				for frame in self.asset_frames:
 					try:
@@ -100,12 +114,15 @@ class KeyFrame(object):
 							self.audio_track.started = True
 					except AttributeError:
 						pass
-					ui_request()
+					if self.key_pressed(SDLK_DELETE):
+						return True
 					fill()
 					for asset in frame:
 						blit(asset[0], asset[2], asset[1])
 					flip()
 				frames_played = True
+
+		return False
 
 	def __render_frames__(self):
 		total_frames = 0
@@ -216,6 +233,9 @@ class FrameSet(object):
 			self.key_frames.append(KeyFrame(self.exp, kf, self.assets))
 
 	def play(self):
+		ui_request()
 		for kf in self.key_frames:
 			if kf.enabled:
-				kf.play()
+				skip = kf.play()
+				if skip:
+					break
