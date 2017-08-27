@@ -159,7 +159,7 @@
     },
     "physical instructions 2": {
         "text": {
-            "string": "The red circle indicates that you are now able to respond…\nNote that this is not a reaction time test. You do not need to respond right away; take your time!",
+            "string": "The red circle indicates that you are now able to respond…\nNote that this is not a reaction time test - you do not need to respond right away; take your time!",
             "style": "instructions"
         },
         "file": {
@@ -289,7 +289,7 @@
     },
     "imagery instructions 6": {
         "text": {
-            "string": "When you imagine returning to the starting point — the green circle — lift your finger from the screen.",
+            "string": "When you imagine returning to the starting point - the green circle - lift your finger from the screen.",
             "style": "instructions"
         },
         "file": {

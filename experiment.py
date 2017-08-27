@@ -1,6 +1,6 @@
 # "fixate" at draw start; show image (maintain "fixation"; draw after SOA
 __author__ = "Jonathan Mulle"
-import shutil, sys
+import shutil, sys, time
 
 sys.path.append("ExpAssets/Resources/code/")
 from sdl2 import SDL_MOUSEBUTTONDOWN
@@ -52,6 +52,13 @@ SESSION_TRN = "training"
 SESSION_TST = "testing"
 LEFT_HANDED = "l"
 RIGHT_HANDED = "r"
+
+if __name__ == "__main__":
+	cso("<red>\nError: TraceLab must be run through the KLibs environment " \
+		"and cannot be run directly with Python. Please run " \
+		"'klibs run screensize' in the TraceLab folder to start the " \
+		"experiment, replacing 'screensize' with the diagonal size " \
+		"of your monitor in inches (e.g. 24).\n</red>")
 
 class TraceLab(Experiment, BoundaryInspector):
 	# session vars
@@ -219,6 +226,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		fill()
 		blit(self.loading_msg, 5, P.screen_c)
 		flip()
+		#start_load = time.time()
 
 		self.origin_size = P.origin_size
 		# Scale UI size variables to current screen resolution
@@ -244,6 +252,7 @@ class TraceLab(Experiment, BoundaryInspector):
 
 		if P.capture_figures_mode:
 			self.capture_figures()
+		#loadpoint_1 = time.time()
 
 		btn_vars = ([(str(i), P.btn_size, None) for i in range(1, 6)], P.btn_size, P.btn_s_pad, P.y_pad, P.btn_instrux)
 		self.button_bar = ButtonBar(*btn_vars)
@@ -270,7 +279,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		xy_1 = (self.next_trial_button_loc[0] - 150, self.next_trial_button_loc[1] - 33)
 		xy_2 = (self.next_trial_button_loc[0] + 150, self.next_trial_button_loc[1] + 33)
 		self.add_boundary("next trial button", (xy_1, xy_2), RECT_BOUNDARY)
-
+		#loadpoint_2 = time.time()
 		#####
 		# practice session vars & elements
 		#####
@@ -294,11 +303,14 @@ class TraceLab(Experiment, BoundaryInspector):
 		fill()
 		blit(self.loading_msg, 5, P.screen_c, flip_x=P.flip_x)
 		flip()
+		#loadpoint_3 = time.time()
 		for f in P.figures:
 			ui_request()
 			self.test_figures[f] = TraceLabFigure(os.path.join(P.resources_dir, "figures", f))
-
+		#loadpoint_4 = time.time()
 		clear()
+		#for t in [loadpoint_1, loadpoint_2, loadpoint_3, loadpoint_4]:
+		#	print "loadtime: {0}".format(t-start_load)
 		if P.enable_practice and P.practice_session:
 			message(P.practice_instructions, "instructions", registration=5, location=P.screen_c, blit_txt=True)
 			flip()
