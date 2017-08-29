@@ -132,7 +132,6 @@ path_length = -1  # length (px); -1 ignores this parameter; path length will ove
 seg_report_fuzz = (2, 4)
 
 
-
 ########################################
 # Labjack Codes
 ########################################
@@ -149,3 +148,12 @@ gen_tlfs = True  # segments file
 gen_tlfp = True  # points file
 gen_png = True   # image file
 gen_ext_png = False  # image file from extended interpolation
+
+
+#########################################
+# Data Export Settings
+#########################################
+data_columns = None
+unique_identifier = "user_id"
+default_participant_fields = [[unique_identifier, "participant"], "sex", "age", "handedness"]
+default_participant_fields_sf = [[unique_identifier, "participant"], "random_seed", "sex", "age", "handedness"]

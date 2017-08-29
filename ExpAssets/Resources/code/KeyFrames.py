@@ -105,8 +105,10 @@ class KeyFrame(object):
 		frames_played = False
 		while time() - start < self.duration:
 			if self.key_pressed(SDLK_DELETE):
-				if self.audio_track.started:
+				try:
 					self.audio_track.stop()
+				except AttributeError:
+					pass
 				return True
 			if not frames_played:
 				for frame in self.asset_frames:
@@ -117,8 +119,10 @@ class KeyFrame(object):
 					except AttributeError:
 						pass
 					if self.key_pressed(SDLK_DELETE):
-						if self.audio_track.started:
+						try:
 							self.audio_track.stop()
+						except AttributeError:
+							pass
 						return True
 					fill()
 					for asset in frame:

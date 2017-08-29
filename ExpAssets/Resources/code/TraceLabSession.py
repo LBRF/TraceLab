@@ -77,7 +77,9 @@ class TraceLabSession(EnvAgent):
 			else:
 				self.__report_incomplete__(incomplete_participants)
 		if not P.development_mode:
-			self.user_id = query(uq.experimental[1])
+			user_id_str = query(uq.experimental[1])
+			# Sanitize user_id input to be an integer value (e.g. 'p03' becomes 3)
+			self.user_id = int(filter(lambda x: x.isdigit(), user_id_str))
 		if self.user_id is None:
 			self.__generate_user_id__()
 		self.init_session()
@@ -148,7 +150,7 @@ class TraceLabSession(EnvAgent):
 			else:
 				message("Thanks for participating!", "default", P.screen_c, 5, blit_txt=True, clear_screen=True, flip_screen=True)
 				any_key()
-				self.quit()
+				self.exp.quit()
 
 		self.import_figure_set()
 
@@ -182,7 +184,7 @@ class TraceLabSession(EnvAgent):
 		# `id`,`random_seed`,`exp_condition`,`session_count`,`feedback_type`,`sessions_completed`,`figure_set`
 		P.participant_id, P.random_seed, self.exp.exp_condition, self.exp.feedback_type, self.exp.session_count, self.exp.session_number, self.exp.figure_set_name, self.exp.handedness, self.exp.created = user_data
 		self.exp.session_number += 1
-		self.exp.log_f = open(join(P.local_dir, "logs", "P{0}_log_f.txt".format(P.participant_id)), "w+")
+		self.exp.log_f = open(join(P.local_dir, "logs", "P{0}_log_f.txt".format(self.user_id)), "w+")
 		if self.exp.session_number == 1 or (self.exp.exp_condition != PHYS and self.exp.session_number == self.exp.session_count):
 			self.exp.practice_session = True
 

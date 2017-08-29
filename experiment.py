@@ -1,6 +1,6 @@
 # "fixate" at draw start; show image (maintain "fixation"; draw after SOA
 __author__ = "Jonathan Mulle"
-import shutil, sys, time
+import shutil, sys
 
 sys.path.append("ExpAssets/Resources/code/")
 from sdl2 import SDL_MOUSEBUTTONDOWN
@@ -64,6 +64,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	# session vars
 	p_dir = None
 	fig_dir = None
+	user_id = None
 	session = None
 	session_number = None
 	training_session = None
@@ -210,6 +211,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.txtm.add_style('tiny', 12, [255, 255, 255, 255])
 		self.txtm.add_style('small', 14, [255, 255, 255, 255])
 		self.session = TraceLabSession()
+		self.user_id = self.session.user_id
 		self.trial_factory.dump()
 		if P.labjacking:
 			self.lj = u3.U3()
@@ -226,7 +228,6 @@ class TraceLab(Experiment, BoundaryInspector):
 		fill()
 		blit(self.loading_msg, 5, P.screen_c)
 		flip()
-		#start_load = time.time()
 
 		self.origin_size = P.origin_size
 		# Scale UI size variables to current screen resolution
@@ -235,7 +236,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		if P.capture_figures_mode:
 			self.fig_dir = os.path.join(P.resources_dir, "figures")
 		else:
-			self.p_dir = os.path.join(P.data_dir, "p{0}_{1}".format(P.participant_id, self.created))
+			self.p_dir = os.path.join(P.data_dir, "p{0}_{1}".format(self.user_id, self.created))
 			self.fig_dir = os.path.join(self.p_dir, self.session_type, "session_" + str(self.session_number))
 			if os.path.exists(self.fig_dir):
 				shutil.rmtree(self.fig_dir)
@@ -252,7 +253,6 @@ class TraceLab(Experiment, BoundaryInspector):
 
 		if P.capture_figures_mode:
 			self.capture_figures()
-		#loadpoint_1 = time.time()
 
 		btn_vars = ([(str(i), P.btn_size, None) for i in range(1, 6)], P.btn_size, P.btn_s_pad, P.y_pad, P.btn_instrux)
 		self.button_bar = ButtonBar(*btn_vars)
@@ -279,7 +279,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		xy_1 = (self.next_trial_button_loc[0] - 150, self.next_trial_button_loc[1] - 33)
 		xy_2 = (self.next_trial_button_loc[0] + 150, self.next_trial_button_loc[1] + 33)
 		self.add_boundary("next trial button", (xy_1, xy_2), RECT_BOUNDARY)
-		#loadpoint_2 = time.time()
+		
 		#####
 		# practice session vars & elements
 		#####
@@ -303,14 +303,11 @@ class TraceLab(Experiment, BoundaryInspector):
 		fill()
 		blit(self.loading_msg, 5, P.screen_c, flip_x=P.flip_x)
 		flip()
-		#loadpoint_3 = time.time()
 		for f in P.figures:
 			ui_request()
 			self.test_figures[f] = TraceLabFigure(os.path.join(P.resources_dir, "figures", f))
-		#loadpoint_4 = time.time()
+		
 		clear()
-		#for t in [loadpoint_1, loadpoint_2, loadpoint_3, loadpoint_4]:
-		#	print "loadtime: {0}".format(t-start_load)
 		if P.enable_practice and P.practice_session:
 			message(P.practice_instructions, "instructions", registration=5, location=P.screen_c, blit_txt=True)
 			flip()
@@ -597,7 +594,7 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def capture_learned_figure(self, fig_number):
 		self.evm.start_clock()
-		fig_name = "p{0}_learned_figure_{1}.tlt".format(P.participant_id, fig_number)
+		fig_name = "p{0}_learned_figure_{1}.tlt".format(self.user_id, fig_number)
 		self.rc.draw_listener.reset()
 		self.rc.collect()
 		self.figure.write_out(fig_name, self.rc.draw_listener.responses[0][0])
@@ -649,5 +646,5 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	@property
 	def tracing_name(self):
-		fname_data = [P.participant_id, P.block_number, P.trial_number, now(True, "%Y-%m-%d"), self.session_number]
+		fname_data = [self.user_id, P.block_number, P.trial_number, now(True, "%Y-%m-%d"), self.session_number]
 		return "p{0}_s{4}_b{1}_t{2}_{3}.tlt".format(*fname_data)
