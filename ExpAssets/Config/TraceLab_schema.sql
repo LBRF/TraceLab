@@ -53,7 +53,7 @@ CREATE TABLE trials (
 	participant_id   INTEGER                           NOT NULL,
 	block_num        INTEGER                           NOT NULL,
 	session_num      INTEGER                           NOT NULL,
-	exp_condition    TEXT                              NOT NULL,
+	condition        TEXT                              NOT NULL,
 	trial_num        INTEGER                           NOT NULL,
 	figure_type      TEXT                              NOT NULL,
 	figure_file      TEXT                              NOT NULL,

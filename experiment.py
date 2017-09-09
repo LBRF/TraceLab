@@ -442,7 +442,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			"block_num": P.block_number,
 			"trial_num": P.trial_number,
 			"session_num": self.session_number,
-			"exp_condition": self.exp_condition,
+			"condition":   self.exp_condition,
 			"figure_type": self.figure_name,
 			"figure_file": self.figure.file_name,
 			"stimulus_gt": self.animate_time,

@@ -8,6 +8,7 @@ all included these methods as part of the experiment class
 
 
 from os.path import join, exists
+from os import makedirs
 from shutil import rmtree
 import sys
 from imp import load_source
@@ -76,12 +77,20 @@ class TraceLabSession(EnvAgent):
 				self.__purge_incomplete__(incomplete_participants)
 			else:
 				self.__report_incomplete__(incomplete_participants)
-		if not P.development_mode:
-			user_id_str = query(uq.experimental[1])
-			# Sanitize user_id input to be an integer value (e.g. 'p03' becomes 3)
-			self.user_id = int(filter(lambda x: x.isdigit(), user_id_str))
+		if P.development_mode:
+			# Write data to subfolder when in development mode to avoid cluttering
+			# data directory with non-participant data
+			devmode_data_dir = join(P.data_dir, "devmode")
+			if not exists(devmode_data_dir):
+				makedirs(devmode_data_dir)
+			P.data_dir = devmode_data_dir
+		else:
+			self.user_id = query(uq.experimental[1])
 		if self.user_id is None:
 			self.__generate_user_id__()
+		if not P.development_mode:
+			# Sanitize user_id input to be an integer value (e.g. 'p03' becomes 3)
+			self.user_id = int(filter(lambda x: x.isdigit(), self.user_id))
 		self.init_session()
 
 	def __report_incomplete__(self, participant_ids):
