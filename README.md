@@ -1,4 +1,4 @@
-#TraceLab
+# TraceLab
 
 TraceLab is an experiment program designed to test fine motor control through the tracing of shapes [this should be improved, mostly here for placeholder].
 
