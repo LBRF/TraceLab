@@ -315,9 +315,13 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.practice()
 
 	def block(self):
-		fill()
-		blit(self.instructions, registration=5, location=P.screen_c, flip_x=P.flip_x)
-		flip()
+		for i in range(1,4):
+			# we do this a few times to avoid block messages being skipped due to duplicate input
+			# from the touch screen we use
+			ui_request()
+			fill()
+			blit(self.instructions, registration=5, location=P.screen_c, flip_x=P.flip_x)
+			flip()
 		any_key()
 
 	def setup_response_collector(self):
