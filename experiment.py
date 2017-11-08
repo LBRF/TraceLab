@@ -270,7 +270,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			instructions_file = instructions_file.format("control")
 
 		instructions_file = os.path.join(P.resources_dir, "Text", instructions_file)
-		self.instructions = message(open(instructions_file).read(), "instructions", blit_txt=False)
+		self.instructions = message(open(instructions_file).read(), "instructions", align="center", blit_txt=False)
 		self.control_fail_msg = message("Please keep your finger on the start area for the complete duration.", 'error',
 										blit_txt=False)
 		self.next_trial_msg = message(P.next_trial_message, 'default', blit_txt=False)
@@ -293,7 +293,7 @@ class TraceLab(Experiment, BoundaryInspector):
 				key_frames_f = "control_key_frames"
 
 			self.practice_kf = FrameSet(self, key_frames_f, "assets")
-			self.practice_instructions = message(P.practice_instructions, "instructions", blit_txt=False)
+			self.practice_instructions = message(P.practice_instructions, "instructions", align="center", blit_txt=False)
 			practice_buttons = [('Replay', [200, 100], self.practice), ('Practice', [200, 100], self.__practice__), \
 								('Begin', [200, 100], any_key)]
 			self.practice_button_bar = ButtonBar(practice_buttons, [200, 100], P.btn_s_pad, P.y_pad,
@@ -309,7 +309,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		
 		clear()
 		if P.enable_practice and P.practice_session:
-			message(P.practice_instructions, "instructions", registration=5, location=P.screen_c, blit_txt=True)
+			message(P.practice_instructions, "instructions", registration=5, location=P.screen_c, align="center", blit_txt=True)
 			flip()
 			any_key()
 			self.practice()
@@ -320,7 +320,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			# from the touch screen we use
 			ui_request()
 			fill()
-			blit(self.instructions, registration=5, location=P.screen_c, flip_x=P.flip_x)
+			blit(self.instructions, registration=5, location=P.screen_c, align="center", flip_x=P.flip_x)
 			flip()
 		any_key()
 
@@ -355,6 +355,8 @@ class TraceLab(Experiment, BoundaryInspector):
 		flip()
 		failed_generations = 0
 		self.figure = None
+
+		figure_load_start = time.time()
 		if self.figure_name == "random":
 			while not self.figure:
 				try:
@@ -368,6 +370,15 @@ class TraceLab(Experiment, BoundaryInspector):
 		else:
 			self.figure = self.test_figures[self.figure_name]
 			self.figure.animate_target_time = self.animate_time
+		# To make sure load times for random figures are the same as for pre-generated ones,
+		# we have a fixed load time for figures.
+		if (time.time() - figure_load_start) > P.figure_load_time:
+			cso("<red>Warning: figure generation for this trial exceeded duration."
+				"(load time: {0} seconds)</red>".format(time.time() - figure_load_start))
+		else:
+			while (time.time() - figure_load_start) < P.figure_load_time:
+				ui_request()
+
 		self.origin_pos = list(self.figure.frames[0])
 		if P.flip_x:
 			self.origin_pos[0] = P.screen_x - self.origin_pos[0]
@@ -487,7 +498,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		# if the entire experiment is successfully completed, update the sessions_completed column
 		q_str = "UPDATE `participants` SET `sessions_completed` = ? WHERE `id` = ?"
 		self.db.query(q_str, QUERY_UPD, q_vars=[self.session_number, P.participant_id])
-		self.db.insert([P.participant_id, self.session_number, now(True)], "sessions")
+		self.db.insert([P.participant_id, self.user_id, self.session_number, now(True)], "sessions")
 		fill()
 		message(P.experiment_complete_message, "instructions", registration=5, location=P.screen_c, flip_screen=True)
 		any_key()

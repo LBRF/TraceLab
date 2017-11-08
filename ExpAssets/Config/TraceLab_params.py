@@ -43,6 +43,7 @@ mirror_mode = False
 next_trial_message = "Tap here to continue."
 experiment_complete_message = "Thanks for participating. You're all finished. Hit any key or tap the screen to exit."
 intertrial_rest_interval = 20  # seconds
+figure_load_time = 4 # seconds
 enable_learned_figures_querying = True
 
 
@@ -51,7 +52,7 @@ enable_learned_figures_querying = True
 ########################################
 enable_practice = True
 truncate_practice_animation = False
-practice_instructions = "The following is a demonstration period. Use this time to learn and then practice the task.\nTap the screen to continue."
+practice_instructions = "The following is a demonstration period. Use this time to learn and then practice the task.\n\nTap the screen to continue."
 play_narration = True  # toggles the audio component
 practice_figure = "heart"
 practice_animation_time = 3500 # ms

@@ -33,7 +33,7 @@ This wil export the database in it's current state to text files found in /Users
 
 CREATE TABLE participants (
 	id                 INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	user_id            TEXT                              NOT NULL UNIQUE,
+	user_id            INTEGER                           NOT NULL UNIQUE,
 	random_seed        TEXT                              NOT NULL,
 	sex                TEXT                              NOT NULL,
 	age                INTEGER                           NOT NULL,
@@ -71,6 +71,7 @@ CREATE TABLE trials (
 
 CREATE TABLE sessions (
 	id             INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	user_id        INTEGER                            NOT NULL,
 	participant_id INTEGER                           NOT NULL,
 	session_number INTEGER                           NOT NULL,
 	completed      TEXT

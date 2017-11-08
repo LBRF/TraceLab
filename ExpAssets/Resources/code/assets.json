@@ -146,7 +146,7 @@
     },
     "physical instructions 1": {
         "text": {
-            "string": "You are about to see a white dot trace out a movement on the screen. \nAll movements begin and end at the same point.\nYou will later be asked to repeat this movement yourself on the touchscreen.\nThis tutorial will show you how to respond.\nWhen you tap the touchscreen to continue, the movement will begin.",
+            "string": "You are about to see a white dot trace out a movement on the screen.\nAll movements begin and end at the same point.\n\nYou will later be asked to repeat this movement yourself on the touchscreen.\nThis tutorial will show you how to respond.\n\nWhen you tap the touchscreen to continue, the movement will begin.",
             "style": "instructions"
         },
         "file": {
@@ -224,7 +224,7 @@
     },
     "imagery instructions 1": {
         "text": {
-            "string": "You are about to see a white dot trace out a movement on the screen.\nAll movements begin and end at the same point.\nYou will later be asked to repeat this movement using motor imagery.\nThis means you will practice the movement mentally, without actually performing the movement.\nWe want you to imagine what it would look like for you to perform the movement,\nand also how it would feel. This tutorial will show you how to respond.\nWhen you tap the touchscreen to continue, the movement will begin.",
+            "string": "You are about to see a white dot trace out a movement on the screen.\nAll movements begin and end at the same point.\n\nYou will later be asked to repeat this movement using motor imagery.\nThis means you will practice the movement mentally, without actually performing the movement.\n\nWe want you to imagine what it would look like for you to perform the movement,\nand also how it would feel. This tutorial will show you how to respond.\n\nWhen you tap the touchscreen to continue, the movement will begin.",
             "style": "instructions"
         },
         "file": {
@@ -315,7 +315,7 @@
     },
     "control instructions 1": {
         "text": {
-            "string": "You are about to see a white dot trace out a movement on the screen.\nWhen you tap the touchscreen to continue, the movement will begin.\nAll movements begin and end at the same point.\n\nFor example...",
+            "string": "You are about to see a white dot trace out a movement on the screen.\nWhen you tap the touchscreen to continue, the movement will begin.\n\nAll movements begin and end at the same point.\n\nFor example...",
             "style": "instructions"
         },
         "file": {

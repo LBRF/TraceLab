@@ -30,7 +30,7 @@ class KeyFrameAsset(object):
 
 		if data.text:
 			# todo: make style optional
-			self.contents = message(data.text.string, data.text.style, blit_txt=False)
+			self.contents = message(data.text.string, data.text.style, align="center", blit_txt=False)
 		elif data.drawbject:
 			d = data.drawbject
 			if d.shape == "rectangle":
