@@ -71,8 +71,8 @@ CREATE TABLE trials (
 
 CREATE TABLE sessions (
 	id             INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-	user_id        INTEGER                            NOT NULL,
 	participant_id INTEGER                           NOT NULL,
+	user_id        TEXT                            	 NOT NULL,
 	session_number INTEGER                           NOT NULL,
 	completed      TEXT
 );

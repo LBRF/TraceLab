@@ -320,7 +320,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			# from the touch screen we use
 			ui_request()
 			fill()
-			blit(self.instructions, registration=5, location=P.screen_c, align="center", flip_x=P.flip_x)
+			blit(self.instructions, registration=5, location=P.screen_c, flip_x=P.flip_x)
 			flip()
 		any_key()
 
@@ -408,23 +408,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.intertrial_start = time.time()
 
 		# let participant self-initiate next trial
-		fill()
-		blit(self.next_trial_box, 5, self.next_trial_button_loc, flip_x=P.flip_x)
-		blit(self.next_trial_msg, 5, self.next_trial_button_loc, flip_x=P.flip_x)
-		flip()
-		flush()
-		next_trial_button_clicked = False
-		if P.demo_mode or P.dm_always_show_cursor:
-			show_mouse_cursor()
-
-		while not next_trial_button_clicked:
-			event_queue = pump(True)
-			for e in event_queue:
-				if e.type == SDL_MOUSEBUTTONDOWN:
-					next_trial_button_clicked = self.within_boundary("next trial button", [e.button.x, e.button.y])
-				ui_request(e)
-		if P.demo_mode or P.dm_always_show_cursor:
-			hide_mouse_cursor()
+		self.start_trial_button()
 
 	def trial(self):
 		self.figure.animate()
@@ -488,7 +472,15 @@ class TraceLab(Experiment, BoundaryInspector):
 
 			learned_fig_num = 1
 			if query(user_queries.experimental[5]) == "y":
+				self.origin_pos = (P.screen_c[0], int(P.screen_y * 0.8))
+				self.origin_boundary = [self.origin_pos, self.origin_size // 2]
 				while True:
+					self.setup_response_collector()
+					self.rc.draw_listener.add_boundaries([
+						('start', self.origin_boundary, CIRCLE_BOUNDARY),
+						('stop', self.origin_boundary, CIRCLE_BOUNDARY)
+					])
+					self.start_trial_button()
 					self.capture_learned_figure(learned_fig_num)
 					if query(user_queries.experimental[6]) == "y":
 						learned_fig_num += 1
@@ -498,10 +490,31 @@ class TraceLab(Experiment, BoundaryInspector):
 		# if the entire experiment is successfully completed, update the sessions_completed column
 		q_str = "UPDATE `participants` SET `sessions_completed` = ? WHERE `id` = ?"
 		self.db.query(q_str, QUERY_UPD, q_vars=[self.session_number, P.participant_id])
-		self.db.insert([P.participant_id, self.user_id, self.session_number, now(True)], "sessions")
+		self.db.insert([P.participant_id, str(self.user_id), self.session_number, now(True)], "sessions")
 		fill()
 		message(P.experiment_complete_message, "instructions", registration=5, location=P.screen_c, flip_screen=True)
 		any_key()
+
+	
+	def start_trial_button(self):
+		fill()
+		blit(self.next_trial_box, 5, self.next_trial_button_loc, flip_x=P.flip_x)
+		blit(self.next_trial_msg, 5, self.next_trial_button_loc, flip_x=P.flip_x)
+		flip()
+		flush()
+		next_trial_button_clicked = False
+		if P.demo_mode or P.dm_always_show_cursor:
+			show_mouse_cursor()
+
+		while not next_trial_button_clicked:
+			event_queue = pump(True)
+			for e in event_queue:
+				if e.type == SDL_MOUSEBUTTONDOWN:
+					next_trial_button_clicked = self.within_boundary("next trial button", [e.button.x, e.button.y])
+				ui_request(e)
+		if P.demo_mode or P.dm_always_show_cursor:
+			hide_mouse_cursor()
+	
 
 	def display_refresh(self, flip_screen=True):
 		fill()
