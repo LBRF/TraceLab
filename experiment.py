@@ -1,13 +1,13 @@
-# "fixate" at draw start; show image (maintain "fixation"; draw after SOA
 __author__ = "Jonathan Mulle"
 import shutil, sys
+import cPickle as pickle
 
 sys.path.append("ExpAssets/Resources/code/")
 from sdl2 import SDL_MOUSEBUTTONDOWN
 from random import choice
 from os.path import join, exists
 from os import makedirs
-from operator import  sub
+from operator import sub
 
 from klibs.KLExceptions import TrialException
 from klibs import P
@@ -74,7 +74,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	feedback_type = False
 	handedness = None
 	created = None
-	practice_session = False  # ie. this session should include the practice display
+	show_practice_display = False  # ie. this session should include the practice display
 	lj_codes = None
 	lj_spike_interval = 0.01
 	lj = None
@@ -113,7 +113,6 @@ class TraceLab(Experiment, BoundaryInspector):
 	# dynamic trial vars
 	animate_finish = None
 	boundaries = {}
-	use_random_figures = False
 	drawing = []
 	drawing_name = None
 	rt = None  # time to initiate responding post-stimulus
@@ -256,7 +255,6 @@ class TraceLab(Experiment, BoundaryInspector):
 
 		btn_vars = ([(str(i), P.btn_size, None) for i in range(1, 6)], P.btn_size, P.btn_s_pad, P.y_pad, P.btn_instrux)
 		self.button_bar = ButtonBar(*btn_vars)
-		self.use_random_figures = self.session_number not in (1, 5)
 		self.origin_proto.fill = self.origin_active_color
 		self.origin_active = self.origin_proto.render()
 		self.origin_proto.fill = self.origin_inactive_color
@@ -283,13 +281,12 @@ class TraceLab(Experiment, BoundaryInspector):
 		#####
 		# practice session vars & elements
 		#####
-		if self.exp.practice_session:
-			if (self.exp_condition == PHYS and self.session_number == 1) or (
-					self.session_number == self.session_count and self.exp_condition != PHYS):
+		if self.show_practice_display:
+			if self.exp_condition == PHYS:
 				key_frames_f = "physical_key_frames"
-			elif self.exp_condition == MOTR and self.session_number == 1:
+			elif self.exp_condition == MOTR:
 				key_frames_f = "imagery_key_frames"
-			elif self.session_number == 1:
+			else:
 				key_frames_f = "control_key_frames"
 
 			self.practice_kf = FrameSet(self, key_frames_f, "assets")
@@ -305,16 +302,41 @@ class TraceLab(Experiment, BoundaryInspector):
 		flip()
 		for f in P.figures:
 			ui_request()
-			self.test_figures[f] = TraceLabFigure(os.path.join(P.resources_dir, "figures", f))
+			fig_path = os.path.join(P.resources_dir, "figures", f)
+			pickle_file = fig_path + "_{0}x{1}.pickle".format(P.screen_x, P.screen_y)
+			if os.path.exists(pickle_file):
+				with open(pickle_file, 'rb') as p:
+					self.test_figures[f] = pickle.load(p)
+			else:
+				self.test_figures[f] = TraceLabFigure(fig_path)
+				try:
+					with open(pickle_file, 'wb') as p:
+						pickle.dump(self.test_figures[f], p, -1)
+				except Exception as e:
+					os.remove(pickle_file)
+					raise(e)
 		
 		clear()
-		if P.enable_practice and P.practice_session:
+		if P.enable_practice and self.show_practice_display:
 			message(P.practice_instructions, "instructions", registration=5, location=P.screen_c, align="center", blit_txt=True)
 			flip()
 			any_key()
 			self.practice()
 
 	def block(self):
+
+		# If multi-session and on last session, or single-session and on last
+		# block, set experiment condition to physical.
+		if self.session_count == 1:
+			on_last = P.block_number == P.blocks_per_experiment
+			# If single-session and on last block, do practice animation for physical condition
+			if on_last and self.exp_condition != PHYS:
+				self.practice_kf = FrameSet(self, "physical_key_frames", "assets")
+				self.practice(play_key_frames=True)
+		else:
+			on_last = self.session_number == self.session_count
+		self.exp_condition = PHYS if on_last else self.exp_condition
+
 		for i in range(1,4):
 			# we do this a few times to avoid block messages being skipped due to duplicate input
 			# from the touch screen we use
@@ -414,7 +436,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.figure.animate()
 		self.animate_finish = self.evm.trial_time
 		try:
-			if self.exp_condition == PHYS or self.session_number == self.session_count:
+			if self.exp_condition == PHYS:
 				self.physical_trial()
 			elif self.exp_condition == MOTR:
 				self.imagery_trial()
