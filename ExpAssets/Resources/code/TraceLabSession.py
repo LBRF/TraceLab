@@ -174,14 +174,14 @@ class TraceLabSession(EnvAgent):
 			self.exp.session_type = SESSION_TRN if self.exp.training_session else SESSION_TST
 		self.db.query(self.queries["set_initialized"], QUERY_UPD, q_vars=[P.p_id])
 		# P.demographics_collected = True
-		P.practice_session = self.exp.session_number == 1 or (self.exp.session_number == self.exp.session_count and self.exp.exp_condition != PHYS)
+		#P.practice_session = self.exp.session_number == 1 or (self.exp.session_number == self.exp.session_count and self.exp.exp_condition != PHYS)
 		self.log_session_init()
 
 	def log_session_init(self):
 		header = {"exp_condition": self.exp.exp_condition,
 				  "feedback": self.exp.feedback_type,
 				  "figure_set": self.exp.figure_key,
-				  "practice_session": self.exp.practice_session,
+				  "practice_session": self.exp.show_practice_display,
 		}
 		self.exp.log("*************** HEADER START****************\n")
 		if P.use_log_file:
@@ -195,7 +195,7 @@ class TraceLabSession(EnvAgent):
 		self.exp.session_number += 1
 		self.exp.log_f = open(join(P.local_dir, "logs", "P{0}_log_f.txt".format(self.user_id)), "w+")
 		if self.exp.session_number == 1 or (self.exp.exp_condition != PHYS and self.exp.session_number == self.exp.session_count):
-			self.exp.practice_session = True
+			self.exp.show_practice_display = True
 
 		return True
 
@@ -213,7 +213,17 @@ class TraceLabSession(EnvAgent):
 		for f in figure_set:
 			if f[0] not in P.figures and f[0] != "random":
 				f_path = join(P.resources_dir, "figures", f[0])
-				self.exp.test_figures[f[0]] = TraceLabFigure(f_path)
+				pickle_file = f_path + "_{0}x{1}.pickle".format(P.screen_x, P.screen_y)
+				# Try to load pickled figure if it exists (much faster)
+				if os.path.exists(pickle_file):
+					with open(pickle_file, 'rb') as p:
+						self.exp.test_figures[f[0]] = pickle.load(p)
+				else:
+					# If no picked figure, generate figure from .zip and pickle
+					# for future runs.
+					self.exp.test_figures[f[0]] = TraceLabFigure(f_path)
+					with open(pickle_file, 'wb') as p:
+						pickle.dump(self.exp.test_figures[f[0]], p, -1)
 			self.exp.figure_set.append(f)
 
 		# load original ivars file into a named object
@@ -294,8 +304,6 @@ class TraceLabSession(EnvAgent):
 		q_vars = [self.exp.exp_condition, self.exp.session_count, self.exp.feedback_type, P.participant_id]
 		self.db.query(self.queries["exp_condition"], QUERY_UPD, q_vars=q_vars)
 
-		if self.exp.session_number == 1 or (self.exp.exp_condition in [MOTR, CTRL] and self.exp.session_number == self.exp.session_count):
-			self.exp.practice_session = True
 
 	@property
 	def user_id(self):

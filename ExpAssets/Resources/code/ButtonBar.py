@@ -5,13 +5,114 @@ import sdl2
 import klibs.KLParams as P
 from klibs.KLConstants import RECT_BOUNDARY, CIRCLE_BOUNDARY
 from klibs.KLGraphics import blit, fill, flip
-from klibs.KLGraphics.KLDraw import Circle, Rectangle
+from klibs.KLGraphics.KLDraw import Circle, Rectangle, Ellipse, Annulus
 from klibs.KLCommunication import message
-from klibs.KLBoundary import BoundaryInspector
+from klibs.KLBoundary import BoundaryInspector, RectangleBoundary
 from klibs.KLUtilities import *
+from klibs.KLUtilities import line_segment_len as lsl
 from klibs.KLUserInterface import ui_request
 from klibs.KLEnvironment import EnvAgent
 from random import randrange
+
+from klibs.KLBoundary import RectangleBoundary
+
+
+class LikertType(EnvAgent):
+
+	def __init__(self, first, last, width, location=None, registration=None, gap=2):
+		EnvAgent.__init__(self)
+
+		self.range = range(first, last+1, 1)
+		self.count = len(self.range)
+		self.width = width
+		self.gap = gap
+		self.response = None
+
+		self.circle_size = int((float(width)/self.count) - (float(gap)/(self.count+1)))
+		self.height = self.circle_size + self.gap*2
+
+		self.__init_bounds__(location, registration)
+
+		self.txtm.add_style("likert_num", 20, color=(255,255,255))
+		numlist = []
+		for num in self.range:
+		    num_txt = message("{0}".format(num), "likert_num", blit_txt=False)
+		    numlist.append((num, num_txt))
+		self.numbers = dict(numlist)
+
+		self.selected = Ellipse(self.circle_size, fill=[192,192,192,64])
+		self.mouseover = Annulus(self.circle_size, 6, fill=[128,128,128,255])
+
+	def __render__(self):
+		fill()
+		for num in self.range:
+			pos = self.__num_to_pos__(num)
+			blit(self.numbers[num], location=pos, registration=5)
+		if self.response != None:
+			pos = self.__num_to_pos__(self.response)
+			blit(self.selected, location=pos, registration=5)
+
+	def __init_bounds__(self, location, registration):
+		
+		if not location:
+			location = P.screen_c
+		if not registration:
+			registration = 5
+
+		if registration in [7, 4, 1]:
+			self.x_offset = self.width // 2
+		elif registration in [9, 6, 3]:
+			self.x_offset = -self.width // 2
+		else:
+			self.x_offset = 0	
+		if registration in [7, 8, 9]:
+			self.y_offset = self.height // 2
+		elif registration in [1, 2, 3]:
+			self.y_offset = -self.height // 2
+		else:
+			self.y_offset = 0		
+
+		self.midpoint = (location[0]+self.x_offset, location[1]+self.y_offset)
+		self.x1 = self.midpoint[0] - self.width//2
+		self.y1 = self.midpoint[1] - self.height//2
+		self.x2 = self.midpoint[0] + self.width//2
+		self.y2 = self.midpoint[1] + self.height//2
+		self.bounds = RectangleBoundary("likert", (self.x1, self.y1), (self.x2, self.y2))
+	
+	def __num_to_pos__(self, num):
+		n = self.range.index(num)
+		select_w = self.gap + self.circle_size
+		x_pos = (self.x1 + int(select_w*(n+0.5)))
+		y_pos = (self.y1 + int(select_w*0.5))
+		return (x_pos, y_pos)
+	
+	def collect(self):
+		show_mouse_cursor()
+		while True:
+			q = pump(True)
+			for event in q:
+				ui_request(event)
+
+			self.__render__()
+			mp_abs = mouse_pos()
+			if self.bounds.within(mp_abs):
+				mouse_loc = (mp_abs[0]-self.x1, mp_abs[1]-self.y1)
+				select_w = self.circle_size + self.gap
+				index = int(round(mouse_loc[0] // select_w))
+				nearest_x = index * select_w + (select_w//2)
+				within_circle = lsl(mouse_loc, (nearest_x, (select_w//2))) < (self.circle_size * 0.6)
+				# Display ring around response mouse is currently hovering over and
+				# record clicks as response selections.
+				if within_circle:
+					blit(self.mouseover, 5, (self.x1+nearest_x, self.midpoint[1]))
+					for e in q:
+						if e.type == sdl2.SDL_MOUSEBUTTONDOWN:
+							self.response = self.range[index]
+						elif e.type == sdl2.SDL_KEYDOWN:
+							hide_mouse_cursor()
+							return self.response
+			flip()
+
 
 class Slider(BoundaryInspector, EnvAgent):
 	def __init__(self, y_pos, bar_length, bar_height, handle_radius, bar_fill, handle_fill):

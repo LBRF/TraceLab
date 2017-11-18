@@ -139,8 +139,7 @@ class TraceLabFigure(EnvAgent):
 		if P.outer_margin_v + P.inner_margin_v // 2 > P.screen_c[1]:
 			raise ValueError("Margins too large; no drawable area remains.")
 		self.quad_ranges = None
-		self.dot = Ellipse(5, fill=(255, 45, 45))
-		self.r_dot = self.dot.render()
+		self.r_dot = Ellipse(5, fill=(255, 45, 45)).render()
 		self.total_spf = 0
 		self.points = []
 		self.raw_segments = []
@@ -461,22 +460,17 @@ class TraceLabFigure(EnvAgent):
 
 		return indices_of(True, q, True)
 
-	def __import_figure__(self, path, join_parent=True):
+	def __import_figure__(self, path):
 		fig_archive = zipfile.ZipFile(path + ".zip")
 		figure = path.split("/")[-1]
-		# have no earthly clue why some times the first line works and sometimes it's the other...
-		if join_parent:
-			fig_file = os.path.join(figure, figure + ".tlf")
-		else:
-			fig_file = figure + ".tlf"
-		try:
-			for l in fig_archive.open(fig_file).readlines():
-				attr = l.split(" = ")
-				if len(attr):
-					setattr(self, attr[0], eval(attr[1]))
-			self.frames = [scale(frame, (1920,1080)) for frame in self.frames]
-		except KeyError:
-			return self.__import_figure__(path, False)
+		fig_file = figure + ".tlf"
+		if fig_file not in fig_archive.namelist():
+			fig_file = figure + "/" + fig_file
+		for l in fig_archive.open(fig_file).readlines():
+			attr = l.split(" = ")
+			if len(attr):
+				setattr(self, attr[0], eval(attr[1]))
+		self.frames = [scale(frame, (1920,1080)) for frame in self.frames]
 
 	def render(self, np=True, trace=None, extended=False):
 		surf = aggdraw.Draw("RGBA", P.screen_x_y, (0, 0, 0, 255))
