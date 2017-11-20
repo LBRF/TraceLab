@@ -4,13 +4,13 @@ import sdl2
 
 import klibs.KLParams as P
 from klibs.KLConstants import RECT_BOUNDARY, CIRCLE_BOUNDARY
-from klibs.KLGraphics import blit, fill, flip
+from klibs.KLGraphics import blit, fill, flip, clear
 from klibs.KLGraphics.KLDraw import Circle, Rectangle, Ellipse, Annulus
 from klibs.KLCommunication import message
 from klibs.KLBoundary import BoundaryInspector, RectangleBoundary
 from klibs.KLUtilities import *
 from klibs.KLUtilities import line_segment_len as lsl
-from klibs.KLUserInterface import ui_request
+from klibs.KLUserInterface import ui_request, key_pressed
 from klibs.KLEnvironment import EnvAgent
 from random import randrange
 
@@ -19,7 +19,8 @@ from klibs.KLBoundary import RectangleBoundary
 
 class LikertType(EnvAgent):
 
-	def __init__(self, first, last, width, location=None, registration=None, gap=2):
+	def __init__(self, first, last, width, registration=None, location=None,
+				 gap=2, question=None):
 		EnvAgent.__init__(self)
 
 		self.range = range(first, last+1, 1)
@@ -27,11 +28,13 @@ class LikertType(EnvAgent):
 		self.width = width
 		self.gap = gap
 		self.response = None
+		
+		self.question = question
 
 		self.circle_size = int((float(width)/self.count) - (float(gap)/(self.count+1)))
 		self.height = self.circle_size + self.gap*2
 
-		self.__init_bounds__(location, registration)
+		self.__init_bounds__(registration, location)
 
 		self.txtm.add_style("likert_num", 20, color=(255,255,255))
 		numlist = []
@@ -44,7 +47,8 @@ class LikertType(EnvAgent):
 		self.mouseover = Annulus(self.circle_size, 6, fill=[128,128,128,255])
 
 	def __render__(self):
-		fill()
+		if self.question != None:
+			blit(*self.question)
 		for num in self.range:
 			pos = self.__num_to_pos__(num)
 			blit(self.numbers[num], location=pos, registration=5)
@@ -52,7 +56,7 @@ class LikertType(EnvAgent):
 			pos = self.__num_to_pos__(self.response)
 			blit(self.selected, location=pos, registration=5)
 
-	def __init_bounds__(self, location, registration):
+	def __init_bounds__(self, registration, location):
 		
 		if not location:
 			location = P.screen_c
@@ -85,6 +89,23 @@ class LikertType(EnvAgent):
 		x_pos = (self.x1 + int(select_w*(n+0.5)))
 		y_pos = (self.y1 + int(select_w*0.5))
 		return (x_pos, y_pos)
+
+	def response_listener(self, queue):
+		self.__render__()
+		mp_abs = mouse_pos()
+		if self.bounds.within(mp_abs):
+			mouse_loc = (mp_abs[0]-self.x1, mp_abs[1]-self.y1)
+			select_w = self.circle_size + self.gap
+			index = int(round(mouse_loc[0] // select_w))
+			nearest_x = index * select_w + (select_w//2)
+			within_circle = lsl(mouse_loc, (nearest_x, (select_w//2))) < (self.circle_size * 0.6)
+			# Display ring around response mouse is currently hovering over and
+			# record clicks as response selections.
+			if within_circle:
+				blit(self.mouseover, 5, (self.x1+nearest_x, self.midpoint[1]))
+				for e in queue:
+					if e.type == sdl2.SDL_MOUSEBUTTONDOWN:
+						self.response = self.range[index]
 	
 	def collect(self):
 		show_mouse_cursor()
@@ -92,26 +113,12 @@ class LikertType(EnvAgent):
 			q = pump(True)
 			for event in q:
 				ui_request(event)
-
-			self.__render__()
-			mp_abs = mouse_pos()
-			if self.bounds.within(mp_abs):
-				mouse_loc = (mp_abs[0]-self.x1, mp_abs[1]-self.y1)
-				select_w = self.circle_size + self.gap
-				index = int(round(mouse_loc[0] // select_w))
-				nearest_x = index * select_w + (select_w//2)
-				within_circle = lsl(mouse_loc, (nearest_x, (select_w//2))) < (self.circle_size * 0.6)
-				# Display ring around response mouse is currently hovering over and
-				# record clicks as response selections.
-				if within_circle:
-					blit(self.mouseover, 5, (self.x1+nearest_x, self.midpoint[1]))
-					for e in q:
-						if e.type == sdl2.SDL_MOUSEBUTTONDOWN:
-							self.response = self.range[index]
-						elif e.type == sdl2.SDL_KEYDOWN:
-							hide_mouse_cursor()
-							return self.response
+			fill()
+			self.response_listener(q)
 			flip()
+			if self.response != None and key_pressed(sdl2.SDLK_RETURN, queue=q):
+				clear()
+				return self.response
 
 
 class Slider(BoundaryInspector, EnvAgent):

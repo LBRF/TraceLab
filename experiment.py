@@ -3,7 +3,7 @@ import shutil, sys
 import cPickle as pickle
 
 sys.path.append("ExpAssets/Resources/code/")
-from sdl2 import SDL_MOUSEBUTTONDOWN
+from sdl2 import SDL_MOUSEBUTTONDOWN, SDLK_RETURN
 from random import choice
 from os.path import join, exists
 from os import makedirs
@@ -17,7 +17,7 @@ from klibs.KLUtilities import colored_stdout as cso
 from klibs.KLGraphics import blit, fill, flip, clear
 from klibs.KLGraphics.KLDraw import Ellipse, Rectangle
 from klibs.KLCommunication import message, query
-from klibs.KLUserInterface import any_key, ui_request, konami_code
+from klibs.KLUserInterface import any_key, ui_request, key_pressed
 from klibs.KLTime import CountDown
 from klibs.KLExperiment import Experiment
 from TraceLabFigure import TraceLabFigure
@@ -317,6 +317,29 @@ class TraceLab(Experiment, BoundaryInspector):
 					raise(e)
 		
 		clear()
+
+		# Set up Likert-type scales for collecting imagery accuracy/vividness ratings
+		self.submit_msg = message("Submit", blit_txt=False)
+
+		phys_q1_msg = message("How accurate do you think your tracing was?", "instructions", blit_txt=False)	
+		self.phys_q1 = LikertType(
+			1, 10, int(P.screen_x*0.60), 5, P.screen_c, gap=4,
+			question=[phys_q1_msg, 2, (P.screen_c[0], P.screen_c[1]-70)]
+		)
+
+		imagery_q1_msg = message("How accurate was the movement you imagined?", "instructions", blit_txt=False)
+		imagery_q2_msg = message("How vivid was the imagery?", "instructions", blit_txt=False)
+		q1_scale_loc = (P.screen_c[0], P.screen_y/3)
+		q2_scale_loc = (P.screen_c[0], (2*P.screen_y)/3)
+		self.imagery_q1 = LikertType(
+			1, 10, int(P.screen_x*0.60), 5, q1_scale_loc, gap=4,
+			question=[imagery_q1_msg, 2, (P.screen_c[0], P.screen_y/3-70)]
+		)
+		self.imagery_q2 = LikertType(
+			1, 10, int(P.screen_x*0.60), 5, q2_scale_loc, gap=4,
+			question=[imagery_q2_msg, 2, (P.screen_c[0], (2*P.screen_y)/3-70)]
+		)
+
 		if P.enable_practice and self.show_practice_display:
 			message(P.practice_instructions, "instructions", registration=5, location=P.screen_c, align="center", blit_txt=True)
 			flip()
@@ -329,10 +352,13 @@ class TraceLab(Experiment, BoundaryInspector):
 		# block, set experiment condition to physical.
 		if self.session_count == 1:
 			on_last = P.block_number == P.blocks_per_experiment
-			# If single-session and on last block, do practice animation for physical condition
+			# If single-session and on last block, change instructions accordingly and do practice
+			# animation for physical condition
 			if on_last and self.exp_condition != PHYS:
+				instructions_file = os.path.join(P.resources_dir, "Text", "physical_group_instructions.txt")
+				self.instructions = message(open(instructions_file).read(), "instructions", align="center", blit_txt=False)
 				self.practice_kf = FrameSet(self, "physical_key_frames", "assets")
-				self.practice(play_key_frames=True)
+				self.practice()
 		else:
 			on_last = self.session_number == self.session_count
 		self.exp_condition = PHYS if on_last else self.exp_condition
@@ -451,6 +477,13 @@ class TraceLab(Experiment, BoundaryInspector):
 		fill()
 		flip()
 
+		if self.exp_condition == MOTR:
+			accuracy_rating, vividness_rating = self.collect_ratings([self.imagery_q1, self.imagery_q2])
+		elif self.exp_condition == PHYS and self.feedback_type not in (FB_ALL, FB_DRAW):
+			accuracy_rating, vividness_rating = [self.collect_ratings([self.phys_q1]), 'NA']
+		else:
+			accuracy_rating, vividness_rating = ['NA', 'NA']
+
 		if not P.practicing and P.labjacking:
 			self.lj.getFeedback(self.lj_codes['origin_off_code'])
 			if self.lj_spike_interval: time.sleep(self.lj_spike_interval)
@@ -473,6 +506,8 @@ class TraceLab(Experiment, BoundaryInspector):
 			"trace_file": self.tracing_name if self.exp_condition == PHYS else NA,
 			"rt": self.rt,
 			"it": self.it,
+			"accuracy_rating": str(accuracy_rating),
+			"vividness_rating": str(vividness_rating),
 			"control_question": self.control_question if self.exp_condition == CTRL else NA,
 			"control_response": self.control_response,
 			"mt": self.mt,
@@ -649,6 +684,38 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.rc.collect()
 		self.figure.write_out(fig_name, self.rc.draw_listener.responses[0][0])
 		self.evm.stop_clock()
+
+	
+	def collect_ratings(self, questions):
+		show_mouse_cursor()
+		for question in questions:
+			question.response = None
+
+		done_questions = False
+		while not done_questions:
+			q = pump(True)
+			for event in q:
+				ui_request(event)
+			fill()
+			for question in questions:
+				question.response_listener(q)
+			if not any(question.response == None for question in questions):
+				blit(self.next_trial_box, 5, self.next_trial_button_loc, flip_x=P.flip_x)
+				blit(self.submit_msg, 5, self.next_trial_button_loc, flip_x=P.flip_x)
+				flip()
+				for e in q:
+					if e.type == SDL_MOUSEBUTTONDOWN:
+						if self.within_boundary("next trial button", [e.button.x, e.button.y]):
+							done_questions = True
+							clear()
+							break
+			else:
+				flip()
+
+		if not P.dm_always_show_cursor:
+			hide_mouse_cursor()
+		responses = [question.response for question in questions]
+		return responses if len(responses)>1 else responses[0]
 
 	def practice(self, play_key_frames=True, callback=None):
 		self.__practicing__ = True
