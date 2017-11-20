@@ -28,9 +28,9 @@ multi_session_project = True
 collect_demographics = True
 manual_demographics_collection = True
 run_practice_blocks = False
-trials_per_block = 2
+trials_per_block = 20
 trials_per_practice_block = 0
-blocks_per_experiment = 2
+blocks_per_experiment = 5
 practice_blocks_per_experiment = 0
 trials_per_participant = 0
 pre_render_block_messages = False
@@ -68,7 +68,7 @@ dm_override_practice = False  # only for testing on a monitor which is too small
 dm_render_progress = False  # if true, user's attempts to draw the figure will always be rendered
 dm_setup_only = False
 dm_ignore_local_overrides = True
-dm_always_show_cursor = False
+dm_always_show_cursor = True
 use_log_file = False
 # For everything involving color,  http://www.colorspire.com/rgb-color-wheel/ will let you get the rgb values
 # for any color you prefer
