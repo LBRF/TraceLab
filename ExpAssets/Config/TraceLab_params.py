@@ -42,7 +42,6 @@ demo_mode = False
 mirror_mode = False
 next_trial_message = "Tap here to continue."
 experiment_complete_message = "Thanks for participating. You're all finished. Hit any key or tap the screen to exit."
-intertrial_rest_interval = 20  # seconds
 figure_load_time = 4 # seconds
 enable_learned_figures_querying = True
 

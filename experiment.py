@@ -327,17 +327,16 @@ class TraceLab(Experiment, BoundaryInspector):
 			question=[phys_q1_msg, 2, (P.screen_c[0], P.screen_c[1]-70)]
 		)
 
+		vividness_str = "How vivid was your motor imagery over the last {0} trials?".format(P.trials_per_block)
 		imagery_q1_msg = message("How accurate was the movement you imagined?", "instructions", blit_txt=False)
-		imagery_q2_msg = message("How vivid was the imagery?", "instructions", blit_txt=False)
-		q1_scale_loc = (P.screen_c[0], P.screen_y/3)
-		q2_scale_loc = (P.screen_c[0], (2*P.screen_y)/3)
+		imagery_q2_msg = message(vividness_str, "instructions", blit_txt=False)
 		self.imagery_q1 = LikertType(
-			1, 10, int(P.screen_x*0.60), 5, q1_scale_loc, gap=4,
-			question=[imagery_q1_msg, 2, (P.screen_c[0], P.screen_y/3-70)]
+			1, 10, int(P.screen_x*0.60), 5, P.screen_c, gap=4,
+			question=[imagery_q1_msg, 2, (P.screen_c[0], P.screen_c[1]-70)]
 		)
 		self.imagery_q2 = LikertType(
-			1, 10, int(P.screen_x*0.60), 5, q2_scale_loc, gap=4,
-			question=[imagery_q2_msg, 2, (P.screen_c[0], (2*P.screen_y)/3-70)]
+			1, 10, int(P.screen_x*0.60), 5, P.screen_c, gap=4,
+			question=[imagery_q2_msg, 2, (P.screen_c[0], P.screen_c[1]-70)]
 		)
 
 		if P.enable_practice and self.show_practice_display:
@@ -397,6 +396,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.it = 0.0
 		self.animate_time = int(self.animate_time)
 		self.drawing = NA
+		self.accuracy = NA
 		self.control_response = -1
 		fill()
 		blit(self.loading_msg, 5, P.screen_c, flip_x=P.flip_x)
@@ -443,12 +443,6 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.intertrial_end = time.time()
 			intertrial_interval = self.intertrial_end - self.intertrial_start
 			self.log_f.write(str(intertrial_interval) + "\n")
-			if intertrial_interval > P.intertrial_rest_interval:
-				cso("\t<red>Warning: trial preparation for this trial exceeded intertrial rest interval.</red>")
-			else:
-				inter_trial_rest = CountDown(P.intertrial_rest_interval - intertrial_interval)
-				while inter_trial_rest.counting():
-					ui_request()
 		if P.trial_number > 1:
 			self.log("t{0}_intertrial_interval_end".format(P.trial_number - 1), True)
 			self.log("write_out")
@@ -474,15 +468,15 @@ class TraceLab(Experiment, BoundaryInspector):
 			message(P.trial_error_msg, "error")
 			any_key()
 			raise TrialException(e.message)
+
+		# If last trial of imagery block, get vividness rating
+		if self.exp_condition == MOTR and P.trial_number == P.trials_per_block:
+			vividness_rating = self.collect_ratings([self.imagery_q2])
+		else:
+			vividness_rating = 'NA'
+
 		fill()
 		flip()
-
-		if self.exp_condition == MOTR:
-			accuracy_rating, vividness_rating = self.collect_ratings([self.imagery_q1, self.imagery_q2])
-		elif self.exp_condition == PHYS and self.feedback_type not in (FB_ALL, FB_DRAW):
-			accuracy_rating, vividness_rating = [self.collect_ratings([self.phys_q1]), 'NA']
-		else:
-			accuracy_rating, vividness_rating = ['NA', 'NA']
 
 		if not P.practicing and P.labjacking:
 			self.lj.getFeedback(self.lj_codes['origin_off_code'])
@@ -506,7 +500,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			"trace_file": self.tracing_name if self.exp_condition == PHYS else NA,
 			"rt": self.rt,
 			"it": self.it,
-			"accuracy_rating": str(accuracy_rating),
+			"accuracy_rating": str(self.accuracy_rating),
 			"vividness_rating": str(vividness_rating),
 			"control_question": self.control_question if self.exp_condition == CTRL else NA,
 			"control_response": self.control_response,
@@ -618,6 +612,10 @@ class TraceLab(Experiment, BoundaryInspector):
 			if not self.within_boundary('origin', mouse_pos()):
 				at_origin = False
 		self.mt = self.evm.trial_time - (self.rt + start)
+
+		# Get perceived accuracy rating
+		self.accuracy_rating = self.collect_ratings([self.imagery_q1])
+
 		if P.demo_mode:
 			hide_mouse_cursor()
 
@@ -626,8 +624,11 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.rt = self.rc.draw_listener.start_time
 		self.drawing = self.rc.draw_listener.responses[0][0]
 		self.it = self.rc.draw_listener.first_sample_time - self.rt
-
 		self.mt = self.rc.draw_listener.responses[0][1]
+
+		# Get perceived accuracy rating
+		self.accuracy_rating = self.collect_ratings([self.phys_q1])
+
 		if self.feedback_type in (FB_ALL, FB_RES) and not self.__practicing__:
 			flush()
 			fill()
