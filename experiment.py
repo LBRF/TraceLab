@@ -354,6 +354,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			# If single-session and on last block, change instructions accordingly and do practice
 			# animation for physical condition
 			if on_last and self.exp_condition != PHYS:
+				self.exp_condition = PHYS # set early so practice trials are physical trials
 				instructions_file = os.path.join(P.resources_dir, "Text", "physical_group_instructions.txt")
 				self.instructions = message(open(instructions_file).read(), "instructions", align="center", blit_txt=False)
 				self.practice_kf = FrameSet(self, "physical_key_frames", "assets")

@@ -102,10 +102,7 @@ class LikertType(EnvAgent):
 			# Display ring around response mouse is currently hovering over and
 			# record clicks as response selections.
 			if within_circle:
-				blit(self.mouseover, 5, (self.x1+nearest_x, self.midpoint[1]))
-				for e in queue:
-					if e.type == sdl2.SDL_MOUSEBUTTONDOWN:
-						self.response = self.range[index]
+				self.response = self.range[index]
 	
 	def collect(self):
 		show_mouse_cursor()
