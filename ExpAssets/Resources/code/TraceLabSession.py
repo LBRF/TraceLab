@@ -88,9 +88,6 @@ class TraceLabSession(EnvAgent):
 			self.user_id = query(uq.experimental[1])
 		if self.user_id is None:
 			self.__generate_user_id__()
-		if not P.development_mode:
-			# Sanitize user_id input to be an integer value (e.g. 'p03' becomes 3)
-			self.user_id = int(filter(lambda x: x.isdigit(), self.user_id))
 		self.init_session()
 
 	def __report_incomplete__(self, participant_ids):
