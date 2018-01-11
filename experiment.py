@@ -2,7 +2,6 @@ __author__ = "Jonathan Mulle"
 import shutil, sys
 import cPickle as pickle
 
-sys.path.append("ExpAssets/Resources/code/")
 from sdl2 import SDL_MOUSEBUTTONDOWN, SDLK_RETURN
 from random import choice
 from os.path import join, exists
@@ -272,7 +271,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.control_fail_msg = message("Please keep your finger on the start area for the complete duration.", 'error',
 										blit_txt=False)
 		self.next_trial_msg = message(P.next_trial_message, 'default', blit_txt=False)
-		self.next_trial_box = Rectangle(300, 75, (2, (255, 255, 255)))
+		self.next_trial_box = Rectangle(300, 75, stroke=(2, (255, 255, 255), STROKE_OUTER))
 		self.next_trial_button_loc = (250 if self.handedness == LEFT_HANDED else P.screen_x - 250, P.screen_y - 100)
 		xy_1 = (self.next_trial_button_loc[0] - 150, self.next_trial_button_loc[1] - 33)
 		xy_2 = (self.next_trial_button_loc[0] + 150, self.next_trial_button_loc[1] + 33)
