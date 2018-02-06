@@ -351,9 +351,6 @@ class TraceLab(Experiment, BoundaryInspector):
 				self.instructions = message(open(instructions_file).read(), "instructions", align="center", blit_txt=False)
 				self.practice_kf = FrameSet(self, "physical_key_frames", "assets")
 				self.practice()
-		else:
-			on_last = self.session_number == self.session_count
-		self.exp_condition = PHYS if on_last else self.exp_condition
 
 		for i in range(1,4):
 			# we do this a few times to avoid block messages being skipped due to duplicate input
@@ -366,7 +363,6 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def setup_response_collector(self):
 		self.rc.uses(RC_DRAW)
-		# self.rc.end_collection_event = 'response_period_end'
 		self.rc.draw_listener.start_boundary = 'start'
 		self.rc.draw_listener.stop_boundary = 'stop'
 		self.rc.draw_listener.show_active_cursor = False
@@ -534,8 +530,12 @@ class TraceLab(Experiment, BoundaryInspector):
 		q_str = "UPDATE `participants` SET `sessions_completed` = ? WHERE `id` = ?"
 		self.db.query(q_str, QUERY_UPD, q_vars=[self.session_number, P.participant_id])
 		self.db.insert([P.participant_id, str(self.user_id), self.session_number, now(True)], "sessions")
+		# show 'experiment complete' message before exiting experiment
+		msg = message(P.experiment_complete_message, "instructions", blit_txt=False)
+		flush()
 		fill()
-		message(P.experiment_complete_message, "instructions", registration=5, location=P.screen_c, flip_screen=True)
+		blit(msg, registration=5, location=P.screen_c)
+		flip()
 		any_key()
 
 	

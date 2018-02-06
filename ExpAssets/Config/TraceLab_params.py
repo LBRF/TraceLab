@@ -28,7 +28,7 @@ default_font_size = 16
 default_font_name = 'Frutiger'
 
 next_trial_message = "Tap here to continue."
-experiment_complete_message = "Thanks for participating. You're all finished. Hit any key or tap the screen to exit."
+experiment_complete_message = "Thanks for participating! You're all finished. Hit any key or tap the screen to exit."
 
 #########################################
 # Experiment Structure
@@ -38,7 +38,6 @@ trials_per_block = 20
 blocks_per_experiment = 5
 table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA")]}
 
-figures = ["heart", "template_1477090164.31", "template_1477106073.55", "template_1477081781.44", "template_1477111169.26", "template_1477121315.85"]
 origin_wait_time = 1000  # ms
 figure_load_time = 4 # seconds
 
@@ -97,6 +96,15 @@ btn_instrux = "How many times did the dot change course {0}?"  #  the {0} will c
 ########################################
 # Figure Controls
 ########################################
+figures = [ # pre-generated figures to use
+    "heart",
+    "template_1477090164.31",
+    "template_1477106073.55",
+    "template_1477081781.44",
+    "template_1477111169.26",
+    "template_1477121315.85"
+]
+
 generation_timeout = 10  # seconds
 capture_figures_mode = False
 auto_generate = True
