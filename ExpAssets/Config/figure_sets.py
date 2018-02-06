@@ -78,3 +78,18 @@ fig_set_3.add_figures(("heart",3), "template_1477090164.31")
 fig_set_4 = FigureSet("test3")
 fig_set_4.add_figures(("heart",3), "template_1477090164.31")
 
+# original figure sets:
+fig_set_5 = FigureSet("fig1")
+fig_set_5.add_figures("random", "template_1477090164.31")
+
+fig_set_6 = FigureSet("fig2")
+fig_set_6.add_figures("random", "template_1477106073.55")
+
+fig_set_7 = FigureSet("fig3")
+fig_set_7.add_figures("random", "template_1477081781.44")
+
+fig_set_8 = FigureSet("fig4")
+fig_set_8.add_figures("random", "template_1477111169.26")
+
+fig_set_9 = FigureSet("fig5")
+fig_set_9.add_figures("random", "template_1477121315.85")

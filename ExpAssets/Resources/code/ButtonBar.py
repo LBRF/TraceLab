@@ -99,8 +99,7 @@ class LikertType(EnvAgent):
 			index = int(round(mouse_loc[0] // select_w))
 			nearest_x = index * select_w + (select_w//2)
 			within_circle = lsl(mouse_loc, (nearest_x, (select_w//2))) < (self.circle_size * 0.6)
-			# Display ring around response mouse is currently hovering over and
-			# record clicks as response selections.
+			# If within radius of a circle, record number of circle as current selected response.
 			if within_circle:
 				self.response = self.range[index]
 	

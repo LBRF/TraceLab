@@ -1,50 +1,46 @@
-# TraceLab Param overrides
-#
-# Any param that is commented out by default is either deprecated or else not yet implemented--don't uncomment or use
+# TraceLab parameter overrides
+
+#########################################
+# Runtime Settings
+#########################################
+collect_demographics = True
+manual_demographics_collection = True
+run_practice_blocks = False
+
+demo_mode = False
+mirror_mode = False
+enable_learned_figures_querying = False
 
 #########################################
 # Available Hardware
 #########################################
 eye_tracker_available = False
 eye_tracking = False
-labjack_available = False
-labjacking = False
+labjack_available = True
+labjacking = True
 
 #########################################
 # Environment Aesthetic Defaults
 #########################################
 default_fill_color = (0, 0, 0, 255)
 default_color = (255, 255, 255, 255)
-default_response_color = default_color
-default_input_color = default_color
 default_font_size = 16
 default_font_name = 'Frutiger'
-default_timeout_message = "Too slow!"
+
+next_trial_message = "Tap here to continue."
+experiment_complete_message = "Thanks for participating. You're all finished. Hit any key or tap the screen to exit."
 
 #########################################
 # Experiment Structure
 #########################################
 multi_session_project = True
-collect_demographics = True
-manual_demographics_collection = True
-run_practice_blocks = False
 trials_per_block = 20
-trials_per_practice_block = 0
 blocks_per_experiment = 5
-practice_blocks_per_experiment = 0
-trials_per_participant = 0
-pre_render_block_messages = False
-show_practice_messages = True
 table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA")]}
+
 figures = ["heart", "template_1477090164.31", "template_1477106073.55", "template_1477081781.44", "template_1477111169.26", "template_1477121315.85"]
 origin_wait_time = 1000  # ms
-demo_mode = False
-mirror_mode = False
-next_trial_message = "Tap here to continue."
-experiment_complete_message = "Thanks for participating. You're all finished. Hit any key or tap the screen to exit."
 figure_load_time = 4 # seconds
-enable_learned_figures_querying = True
-
 
 ########################################
 # Practice Controls
@@ -56,7 +52,6 @@ play_narration = True  # toggles the audio component
 practice_figure = "heart"
 practice_animation_time = 3500 # ms
 bubble_location = (1550, 275)
-
 
 #########################################
 # Development Mode Settings
@@ -77,10 +72,8 @@ use_log_file = False
 ########################################
 tracker_dot_size = 5  # diameter in px
 tracker_dot_perimeter = 4  # px; *additional* to tracking dot size, so the diameter gets 2 x this number larger
-
 tracker_dot_color = (0, 0, 0)  # r, g, b, and the last value should always be 255
 tracker_dot_perimeter_color = (255, 255, 255)
-
 origin_size = 50  # px
 
 ########################################
@@ -131,14 +124,19 @@ curve_sheer = (0.1, 0.3)  # this is hard to describe, but 1 is again an impossib
 path_length = -1  # length (px); -1 ignores this parameter; path length will override seg_length params if they conflict
 seg_report_fuzz = (2, 4)
 
-
 ########################################
 # Labjack Codes
 ########################################
-origin_red_on_code = 1.0
-origin_green_on_code = 3.0
-origin_off_code = 5.0
-
+trigger_codes = {
+	"stim_on": 28,
+	"red_on": 30,
+	"green_on": 44,
+	"green_off": 46,
+	"accuracy_submit": 60,
+    "vividness_submit": 62,
+	"feedback_on": 76,
+	"feedback_off": 78
+}
 
 ########################################
 # tlf Controls
@@ -148,7 +146,6 @@ gen_tlfs = True  # segments file
 gen_tlfp = True  # points file
 gen_png = True   # image file
 gen_ext_png = False  # image file from extended interpolation
-
 
 #########################################
 # Data Export Settings

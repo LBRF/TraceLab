@@ -213,14 +213,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.trial_factory.dump()
 		if P.labjacking:
 			self.lj = u3.U3()
-			self.getCalibrationData()
-			self.lj_codes = {
-				"baseline": u3.DAC0_8(self.lj.voltageToDACBits(0.0, dacNumber=0, is16Bits=False)),
-				"origin_red_on_code": u3.DAC0_8(self.lj.voltageToDACBits(1.0, dacNumber=0, is16Bits=False)),
-				"origin_green_on_code": u3.DAC0_8(self.lj.voltageToDACBits(2.0, dacNumber=0, is16Bits=False)),
-				"origin_off_code": u3.DAC0_8(self.lj.voltageToDACBits(3.0, dacNumber=0, is16Bits=False))}
-			# self.configU3(FIOAnalog=1)
-			self.getFeedback(P.eeg_codes['baseline'])
+			self.sendTriggerCode(0)
 
 		self.loading_msg = message("Loading...", "default", blit_txt=False)
 		fill()
@@ -353,7 +346,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			# If single-session and on last block, change instructions accordingly and do practice
 			# animation for physical condition
 			if on_last and self.exp_condition != PHYS:
-				self.exp_condition = PHYS # set early so practice trials are physical trials
+				self.exp_condition = PHYS
 				instructions_file = os.path.join(P.resources_dir, "Text", "physical_group_instructions.txt")
 				self.instructions = message(open(instructions_file).read(), "instructions", align="center", blit_txt=False)
 				self.practice_kf = FrameSet(self, "physical_key_frames", "assets")
@@ -382,7 +375,6 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.rc.draw_listener.interrupts = True
 		self.rc.draw_listener.min_samples = 5
 		self.rc.display_callback = self.display_refresh
-		self.rc.display_callback_args = [True]
 		if P.dm_always_show_cursor:
 			self.rc.draw_listener.show_active_cursor = True
 			self.rc.draw_listener.show_inactive_cursor = True
@@ -398,12 +390,15 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.drawing = NA
 		self.accuracy = NA
 		self.control_response = -1
+		self.first_flip = True # flag for sending "red on" code to EEG when response collection loop starts
+		self.was_inactive = True # flag for sending "green on" code to EEG when origin first becomes active
+
 		fill()
 		blit(self.loading_msg, 5, P.screen_c, flip_x=P.flip_x)
 		flip()
+
 		failed_generations = 0
 		self.figure = None
-
 		figure_load_start = time.time()
 		if self.figure_name == "random":
 			while not self.figure:
@@ -453,6 +448,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.start_trial_button()
 
 	def trial(self):
+		self.sendTriggerCode(P.trigger_codes['stim_on'])
 		self.figure.animate()
 		self.animate_finish = self.evm.trial_time
 		try:
@@ -472,16 +468,12 @@ class TraceLab(Experiment, BoundaryInspector):
 		# If last trial of imagery block, get vividness rating
 		if self.exp_condition == MOTR and P.trial_number == P.trials_per_block:
 			vividness_rating = self.collect_ratings([self.imagery_q2])
+			self.sendTriggerCode(P.trigger_codes['vividness_submit'])
 		else:
 			vividness_rating = 'NA'
 
 		fill()
 		flip()
-
-		if not P.practicing and P.labjacking:
-			self.lj.getFeedback(self.lj_codes['origin_off_code'])
-			if self.lj_spike_interval: time.sleep(self.lj_spike_interval)
-			self.lj.getFeedback(self.lj_codes['baseline'])
 
 		if self.__practicing__:
 			return
@@ -567,7 +559,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			hide_mouse_cursor()
 	
 
-	def display_refresh(self, flip_screen=True):
+	def display_refresh(self):
 		fill()
 		origin = self.origin_active if self.rc.draw_listener.active else self.origin_inactive
 		blit(origin, 5, self.origin_pos, flip_x=P.flip_x)
@@ -577,18 +569,20 @@ class TraceLab(Experiment, BoundaryInspector):
 				blit(drawing, 5, P.screen_c, flip_x=P.flip_x)
 			except TypeError:
 				pass
-		if flip_screen:
-			flip()
+		flip()
+		if self.first_flip:
+			self.sendTriggerCode(P.trigger_codes['red_on'])
+			self.first_flip = False
+		if self.was_inactive and self.rc.draw_listener.active:
+			self.sendTriggerCode(P.trigger_codes['green_on'])
+			self.first_flip = False
 
 	def imagery_trial(self):
 		fill()
 		blit(self.origin_inactive, 5, self.origin_pos, flip_x=P.flip_x)
 		flip()
-		if not P.practicing and P.labjacking:
-			self.lj.getFeedback(self.lj_codes['origin_red_on_code'])
-			if self.lj_spike_interval:
-				time.sleep(self.lj_spike_interval)
-			self.lj.getFeedback(self.lj_codes['baseline'])
+		self.sendTriggerCode(P.trigger_codes['red_on'])
+
 		start = self.evm.trial_time
 		if P.demo_mode or P.dm_always_show_cursor:
 			show_mouse_cursor()
@@ -598,29 +592,27 @@ class TraceLab(Experiment, BoundaryInspector):
 				at_origin = True
 				self.rt = self.evm.trial_time - start
 			ui_request()
-
+		self.sendTriggerCode(P.trigger_codes['green_on'])
 		fill()
 		blit(self.origin_active, 5, self.origin_pos, flip_x=P.flip_x)
 		flip()
-
-		if not P.practicing and P.labjacking:
-			self.lj.getFeedback(self.lj_codes['origin_green_on_code'])
-			if self.lj_spike_interval:
-				time.sleep(self.lj_spike_interval)
-			self.lj.getFeedback(self.lj_codes['baseline'])
+		
 		while at_origin:
 			if not self.within_boundary('origin', mouse_pos()):
 				at_origin = False
 		self.mt = self.evm.trial_time - (self.rt + start)
+		self.sendTriggerCode(P.trigger_codes['green_off'])
 
 		# Get perceived accuracy rating
 		self.accuracy_rating = self.collect_ratings([self.imagery_q1])
+		self.sendTriggerCode(P.trigger_codes['accuracy_submit'])
 
 		if P.demo_mode:
 			hide_mouse_cursor()
 
 	def physical_trial(self):
 		self.rc.collect()
+		self.sendTriggerCode(P.trigger_codes['green_off'])
 		self.rt = self.rc.draw_listener.start_time
 		self.drawing = self.rc.draw_listener.responses[0][0]
 		self.it = self.rc.draw_listener.first_sample_time - self.rt
@@ -628,15 +620,18 @@ class TraceLab(Experiment, BoundaryInspector):
 
 		# Get perceived accuracy rating
 		self.accuracy_rating = self.collect_ratings([self.phys_q1])
+		self.sendTriggerCode(P.trigger_codes['accuracy_submit'])
 
 		if self.feedback_type in (FB_ALL, FB_RES) and not self.__practicing__:
 			flush()
 			fill()
 			blit(self.figure.render(trace=self.drawing), 5, P.screen_c, flip_x=P.flip_x)
 			flip()
+			self.sendTriggerCode(P.trigger_codes['feedback_on'])
 			start = time.time()
 			while time.time() - start < P.max_feedback_time / 1000.0:
 				ui_request()
+			self.sendTriggerCode(P.trigger_codes['feedback_off'])
 
 	def control_trial(self):
 		if P.dm_always_show_cursor:
@@ -742,6 +737,14 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.__practicing__ = False
 
 		return self.practice(callback=cb)
+
+	def sendTriggerCode(self, code):
+		if not P.practicing and P.labjacking:
+			self.lj.getFeedback(u3.PortStateWrite(State=[code,0,0]))
+			self.lj.getFeedback(u3.PortStateWrite(State=[0,0,0]))
+			print("code sent to EEG: {0}".format(code))
+		else:
+			pass
 
 	def log(self, msg, t=None):
 		if P.use_log_file:
