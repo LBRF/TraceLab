@@ -41,7 +41,7 @@ TOP_R = 2
 
 # condition codes; jon hates retyping strings
 PHYS = "physical"
-MOTR = "motor"
+MOTR = "imagery"
 CTRL = "control"
 FB_DRAW = "drawing_feedback"
 FB_RES = "results_feedback"
@@ -575,7 +575,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.first_flip = False
 		if self.was_inactive and self.rc.draw_listener.active:
 			self.sendTriggerCode(P.trigger_codes['green_on'])
-			self.first_flip = False
+			self.was_inactive = False
 
 	def imagery_trial(self):
 		fill()

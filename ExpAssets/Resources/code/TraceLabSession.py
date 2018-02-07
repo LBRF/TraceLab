@@ -28,7 +28,7 @@ from FigureSet import FigureSet
 
 
 PHYS = "physical"
-MOTR = "motor"
+MOTR = "imagery"
 CTRL = "control"
 FB_DRAW = "drawing_feedback"
 FB_RES = "results_feedback"
