@@ -159,7 +159,7 @@ class TraceLabSession(EnvAgent):
 		try:
 			user_data = self.db.query(self.queries['user_data'], q_vars=[self.user_id])[0]
 			self.restore_session(user_data)
-		except KeyError as e:
+		except IndexError as e:
 			if query(uq.experimental[0]) == "y":
 				self.user_id = query(uq.experimental[1])
 				if self.user_id is None:
@@ -262,7 +262,7 @@ class TraceLabSession(EnvAgent):
 					  "blit_txt":True,
 					  "flip_screen":True,
 					  "clear_screen":True,
-					  "wrap_width":200}
+					  "align": "center"}
 		try:
 			exp_cond, feedback, sessions = condition_str.split("-")
 		except ValueError:
