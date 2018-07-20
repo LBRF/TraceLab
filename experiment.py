@@ -66,6 +66,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	user_id = None
 	session = None
 	session_number = None
+	on_last = False
 	training_session = None
 	session_type = None
 	exp_condition = None
@@ -74,8 +75,6 @@ class TraceLab(Experiment, BoundaryInspector):
 	handedness = None
 	created = None
 	show_practice_display = False  # ie. this session should include the practice display
-	lj_codes = None
-	lj_spike_interval = 0.01
 	lj = None
 	auto_generate_count = None
 
@@ -216,6 +215,29 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.user_id = self.session.user_id
 		self.trial_factory.dump()
 
+		if P.labjacking and P.labjack_available:
+			self.lj = u3.U3()
+			self.getCalibrationData()
+			# LabJack can only delay in 16384 microsecond or 128 microsecond intervals. To calculate
+			# accurate delay, we delay in 16384 increments until just under requested time, and then
+			# fill remaining with delay in 128 increments.
+			tms_pulse_delay_us = P.tms_pulse_delay * 1000
+			self.lj_commands = {
+				"pre_trigger_delay_1": u3.WaitLong(Time=tms_pulse_delay_us/16384),
+				"pre_trigger_delay_2": u3.WaitShort(Time=(tms_pulse_delay_us%16384)/128),
+				"baseline": u3.DAC0_8(self.lj.voltageToDACBits(0.0)),
+				"wait_1ms": u3.WaitShort(Time=8),
+				"TMS_trigger": u3.DAC0_8(self.lj.voltageToDACBits(5.0))
+			}
+			self.tms_trigger_command = [
+				self.lj_commands['pre_trigger_delay_1'],
+				self.lj_commands['pre_trigger_delay_2'],
+				self.lj_commands['TMS_trigger'], 
+				self.lj_commands['wait_1ms'],
+				self.lj_commands['baseline'],
+			]
+			self.lj.getFeedback(self.lj_commands['baseline'])
+
 		self.loading_msg = message("Loading...", "default", blit_txt=False)
 		fill()
 		blit(self.loading_msg, 5, P.screen_c)
@@ -319,16 +341,18 @@ class TraceLab(Experiment, BoundaryInspector):
 		# If multi-session and on last session, or single-session and on last
 		# block, set experiment condition to P.final_condition.
 		if self.session_count == 1:
-			on_last = P.block_number == P.blocks_per_experiment
+			self.on_last = P.block_number == P.blocks_per_experiment
 			# If single-session and on last block, change instructions accordingly and do practice
 			# animation for final condition
-			if on_last and self.exp_condition != P.final_condition:
+			if self.on_last and self.exp_condition != P.final_condition:
 				self.exp_condition = P.final_condition
 				new_instructions = self.instruction_files[P.final_condition]
 				instructions_file = os.path.join(P.resources_dir, "Text", new_instructions['text'])
 				self.instructions = message(open(instructions_file).read(), "instructions", align="center", blit_txt=False)
 				self.practice_kf = FrameSet(self, new_instructions['frames'], "assets")
 				self.practice()
+		else:
+			self.on_last = self.session_count == self.session_number
 
 		for i in range(1,4):
 			# we do this a few times to avoid block messages being skipped due to duplicate input
@@ -431,12 +455,15 @@ class TraceLab(Experiment, BoundaryInspector):
 				self.imagery_trial()
 			else:
 				self.control_trial()
+			if not self.on_last and not self.__practicing__:
+				self.sendTriggerToTMS() # P.tms_pulse_delay is handled on LabJack itself
 
 		except TrialException as e:
 			fill()
 			message(P.trial_error_msg, "error")
 			any_key()
 			raise TrialException(e.message)
+
 		fill()
 		flip()
 
@@ -677,6 +704,9 @@ class TraceLab(Experiment, BoundaryInspector):
 				ivi_start = self.intertrial_timing_logs['t{0}_intertrial_interval_start'.format(P.trial_number - 1)]
 				ivi_end = self.intertrial_timing_logs['t{0}_intertrial_interval_end'.format(P.trial_number - 1)]
 				self.log_f.write(str_pad("intertrial_interval" + ":", 32) + str(ivi_end - ivi_start) + "\n")
+
+	def sendTriggerToTMS(self):
+		self.lj.getFeedback(self.tms_trigger_command)
 
 	def quit(self):
 		try:

@@ -41,6 +41,7 @@ table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA"
 final_condition = 'physical' # condition for last block or session (if multi-session)
 origin_wait_time = 1000  # ms
 figure_load_time = 4 # seconds
+tms_pulse_delay = 100 # ms, time between trial end and sending of TMS trigger
 
 ########################################
 # Practice Controls
@@ -132,10 +133,6 @@ peak_shift = (0.25, 0.5)  # 0 == perfect symmetry (ie. bell curve) and 1 == a ri
 curve_sheer = (0.1, 0.3)  # this is hard to describe, but 1 is again an impossible value, and this will grow to lunacy fast
 path_length = -1  # length (px); -1 ignores this parameter; path length will override seg_length params if they conflict
 seg_report_fuzz = (2, 4)
-
-########################################
-# Labjack Codes
-########################################
 
 
 ########################################
