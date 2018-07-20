@@ -1,6 +1,15 @@
-# TraceLab Param overrides
-#
-# Any param that is commented out by default is either deprecated or else not yet implemented--don't uncomment or use
+# TraceLab parameter overrides
+
+#########################################
+# Runtime Settings
+#########################################
+collect_demographics = True
+manual_demographics_collection = True
+run_practice_blocks = False
+
+demo_mode = False
+mirror_mode = False
+enable_learned_figures_querying = True
 
 #########################################
 # Available Hardware
@@ -15,37 +24,22 @@ labjacking = False
 #########################################
 default_fill_color = (0, 0, 0, 255)
 default_color = (255, 255, 255, 255)
-default_response_color = default_color
-default_input_color = default_color
 default_font_size = 16
 default_font_name = 'Frutiger'
-default_timeout_message = "Too slow!"
+
+next_trial_message = "Tap here to continue."
+experiment_complete_message = "Thanks for participating! You're all finished. Hit any key or tap the screen to exit."
 
 #########################################
 # Experiment Structure
 #########################################
 multi_session_project = True
-collect_demographics = True
-manual_demographics_collection = True
-run_practice_blocks = False
 trials_per_block = 20
-trials_per_practice_block = 0
 blocks_per_experiment = 5
-practice_blocks_per_experiment = 0
-trials_per_participant = 0
-pre_render_block_messages = False
-show_practice_messages = True
 table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA")]}
-figures = ["heart", "template_1477090164.31", "template_1477106073.55", "template_1477081781.44", "template_1477111169.26", "template_1477121315.85"]
-origin_wait_time = 1000  # ms
-demo_mode = False
-mirror_mode = False
-next_trial_message = "Tap here to continue."
-experiment_complete_message = "Thanks for participating. You're all finished. Hit any key or tap the screen to exit."
-intertrial_rest_interval = 20  # seconds
-figure_load_time = 4 # seconds
-enable_learned_figures_querying = True
 
+origin_wait_time = 1000  # ms
+figure_load_time = 4 # seconds
 
 ########################################
 # Practice Controls
@@ -58,7 +52,6 @@ practice_figure = "heart"
 practice_animation_time = 3500 # ms
 bubble_location = (1550, 275)
 
-
 #########################################
 # Development Mode Settings
 #########################################
@@ -68,7 +61,7 @@ dm_override_practice = False  # only for testing on a monitor which is too small
 dm_render_progress = False  # if true, user's attempts to draw the figure will always be rendered
 dm_setup_only = False
 dm_ignore_local_overrides = True
-dm_always_show_cursor = False
+dm_always_show_cursor = True
 use_log_file = False
 # For everything involving color,  http://www.colorspire.com/rgb-color-wheel/ will let you get the rgb values
 # for any color you prefer
@@ -78,10 +71,8 @@ use_log_file = False
 ########################################
 tracker_dot_size = 5  # diameter in px
 tracker_dot_perimeter = 4  # px; *additional* to tracking dot size, so the diameter gets 2 x this number larger
-
 tracker_dot_color = (0, 0, 0)  # r, g, b, and the last value should always be 255
 tracker_dot_perimeter_color = (255, 255, 255)
-
 origin_size = 50  # px
 
 ########################################
@@ -105,6 +96,15 @@ btn_instrux = "How many times did the dot change course {0}?"  #  the {0} will c
 ########################################
 # Figure Controls
 ########################################
+figures = [ # pre-generated figures to use
+    "heart",
+    "template_1477090164.31",
+    "template_1477106073.55",
+    "template_1477081781.44",
+    "template_1477111169.26",
+    "template_1477121315.85"
+]
+
 generation_timeout = 10  # seconds
 capture_figures_mode = False
 auto_generate = True
@@ -132,13 +132,9 @@ curve_sheer = (0.1, 0.3)  # this is hard to describe, but 1 is again an impossib
 path_length = -1  # length (px); -1 ignores this parameter; path length will override seg_length params if they conflict
 seg_report_fuzz = (2, 4)
 
-
 ########################################
 # Labjack Codes
 ########################################
-origin_red_on_code = 1.0
-origin_green_on_code = 3.0
-origin_off_code = 5.0
 
 
 ########################################
@@ -149,7 +145,6 @@ gen_tlfs = True  # segments file
 gen_tlfp = True  # points file
 gen_png = True   # image file
 gen_ext_png = False  # image file from extended interpolation
-
 
 #########################################
 # Data Export Settings

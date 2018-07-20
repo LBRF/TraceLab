@@ -6,12 +6,12 @@ relocate all session-init logic to a separate class to tidy things up. previous 
 all included these methods as part of the experiment class
 """
 
-
-from os.path import join, exists
-from os import makedirs
-from shutil import rmtree
 import sys
+from os import makedirs
+from os.path import join, exists
 from imp import load_source
+from shutil import rmtree
+import cPickle as pickle
 
 from klibs.KLConstants import QUERY_UPD, NA
 from klibs import P
@@ -28,7 +28,7 @@ from FigureSet import FigureSet
 
 
 PHYS = "physical"
-MOTR = "motor"
+MOTR = "imagery"
 CTRL = "control"
 FB_DRAW = "drawing_feedback"
 FB_RES = "results_feedback"
@@ -65,8 +65,6 @@ class TraceLabSession(EnvAgent):
 		 between one and two characters long.\nPlease try again.",
 		"invalid_session_count": "Number of sessions must be a valid integer greater than 0.\nPlease try again."
 	}
-
-	user_id = None
 
 	def __init__(self):
 		self.__user_id__ = None
@@ -113,7 +111,10 @@ class TraceLabSession(EnvAgent):
 				rmtree(join(P.data_dir, "{0}_{1}".format(*p[1:])))
 			except OSError:
 				pass
-		self.db.db.commit()
+		try:
+			self.db.commit()
+		except: # if old klibs, use old db accessing convention
+			self.db.db.commit()
 
 	def __import_figure_sets__(self):
 		# load original complete set of FigureSets for use
@@ -139,15 +140,24 @@ class TraceLabSession(EnvAgent):
 		self.user_id = self.db.query(self.queries["get_user_id"], q_vars=[P.p_id])[0][0]
 		self.parse_exp_condition(query(uq.experimental[2]))
 		if query(uq.experimental[3]) == "y":
-			self.exp.figure_key = query(uq.experimental[4])
-			self.db.query(self.queries["assign_figure_set"], QUERY_UPD, q_vars=[self.exp.figure_key, P.p_id])
+			self.__get_figure_set_name__()
+
+	def __get_figure_set_name__(self):
+		name = query(uq.experimental[4])
+		if not name in self.exp.figure_sets:
+			if query(uq.experimental[0]) == "y":
+				return self.__get_figure_set_name__()
+			else:
+				name = None
+		self.exp.figure_key = name
+		self.db.query(self.queries["assign_figure_set"], QUERY_UPD, q_vars=[self.exp.figure_key, P.p_id])
 
 	def init_session(self):
 
 		try:
 			user_data = self.db.query(self.queries['user_data'], q_vars=[self.user_id])[0]
 			self.restore_session(user_data)
-		except KeyError as e:
+		except IndexError as e:
 			if query(uq.experimental[0]) == "y":
 				self.user_id = query(uq.experimental[1])
 				if self.user_id is None:
@@ -160,7 +170,6 @@ class TraceLabSession(EnvAgent):
 
 		self.import_figure_set()
 
-		# P.user_data = user_data  # used in experiment.py for creating file na,es
 		# delete previous trials for this session if any exist (essentially assume a do-over)
 		if P.capture_figures_mode:
 			self.exp.training_session = True
@@ -170,8 +179,6 @@ class TraceLabSession(EnvAgent):
 			self.exp.training_session = self.exp.session_number not in (1, 5)
 			self.exp.session_type = SESSION_TRN if self.exp.training_session else SESSION_TST
 		self.db.query(self.queries["set_initialized"], QUERY_UPD, q_vars=[P.p_id])
-		# P.demographics_collected = True
-		#P.practice_session = self.exp.session_number == 1 or (self.exp.session_number == self.exp.session_count and self.exp.exp_condition != PHYS)
 		self.log_session_init()
 
 	def log_session_init(self):
@@ -191,8 +198,14 @@ class TraceLabSession(EnvAgent):
 		P.participant_id, P.random_seed, self.exp.exp_condition, self.exp.feedback_type, self.exp.session_count, self.exp.session_number, self.exp.figure_set_name, self.exp.handedness, self.exp.created = user_data
 		self.exp.session_number += 1
 		self.exp.log_f = open(join(P.local_dir, "logs", "P{0}_log_f.txt".format(self.user_id)), "w+")
-		if self.exp.session_number == 1 or (self.exp.exp_condition != PHYS and self.exp.session_number == self.exp.session_count):
+		if self.exp.session_number == 1:
 			self.exp.show_practice_display = True
+		elif self.exp.session_count > 1 and self.exp.session_number == self.exp.session_count:
+			# if multi-session and on final session, and participant condition is imagery/control,
+			# set session condition to physical and show physical practice animation.
+			if self.exp.exp_condition != PHYS:
+				self.exp.exp_condition = PHYS
+				self.exp.show_practice_display = True
 
 		return True
 
@@ -247,7 +260,7 @@ class TraceLabSession(EnvAgent):
 					  "blit_txt":True,
 					  "flip_screen":True,
 					  "clear_screen":True,
-					  "wrap_width":200}
+					  "align": "center"}
 		try:
 			exp_cond, feedback, sessions = condition_str.split("-")
 		except ValueError:

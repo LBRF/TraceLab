@@ -5,13 +5,14 @@ import sdl2
 import klibs.KLParams as P
 from klibs.KLConstants import RECT_BOUNDARY, CIRCLE_BOUNDARY
 from klibs.KLGraphics import blit, fill, flip
-from klibs.KLGraphics.KLDraw import Circle, Rectangle
+from klibs.KLGraphics.KLDraw import Rectangle, Ellipse
 from klibs.KLCommunication import message
 from klibs.KLBoundary import BoundaryInspector
 from klibs.KLUtilities import *
 from klibs.KLUserInterface import ui_request
 from klibs.KLEnvironment import EnvAgent
 from random import randrange
+
 
 class Slider(BoundaryInspector, EnvAgent):
 	def __init__(self, y_pos, bar_length, bar_height, handle_radius, bar_fill, handle_fill):
@@ -37,7 +38,7 @@ class Slider(BoundaryInspector, EnvAgent):
 		self.increment_surfs = {}
 		self.lower_bound = None
 		self.upper_bound = None
-		self.handle = Circle(self.handle_radius * 2, fill=self.handle_color, stroke=self.handle_stroke)
+		self.handle = Ellipse(self.handle_radius * 2, fill=self.handle_color, stroke=self.handle_stroke)
 		self.bar = Rectangle(self.bar_size[0], self.bar_size[1], fill=self.bar_color, stroke=self.bar_stroke)
 		self.add_boundary("handle", [(self.pos[0] + self.handle_radius, self.pos[1]), self.handle_radius],
 						  CIRCLE_BOUNDARY)
@@ -45,8 +46,8 @@ class Slider(BoundaryInspector, EnvAgent):
 		self.lb_msg = None
 		self.ub_msg = None
 		self.ok_text = message("OK", blit_txt=False)
-		self.ok_inactive_button = Rectangle(100, 50, (1, (255,255,255)), (125,125,125)).render()
-		self.ok_active_button = Rectangle(100, 50, (1, (255,255,255)), (5,175,45)).render()
+		self.ok_inactive_button = Rectangle(100, 50, stroke=(1, (255,255,255)), fill=(125,125,125)).render()
+		self.ok_active_button = Rectangle(100, 50, stroke=(1, (255,255,255)), fill=(5,175,45)).render()
 		self.button_active = False
 		self.button_pos = (P.screen_c[0], y_pos + bar_height + 50)
 		button_upper_left = (self.button_pos[0] - 50, self.button_pos[1] - 25)

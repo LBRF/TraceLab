@@ -2,7 +2,6 @@ __author__ = "Jonathan Mulle"
 import shutil, sys
 import cPickle as pickle
 
-sys.path.append("ExpAssets/Resources/code/")
 from sdl2 import SDL_MOUSEBUTTONDOWN
 from random import choice
 from os.path import join, exists
@@ -17,7 +16,7 @@ from klibs.KLUtilities import colored_stdout as cso
 from klibs.KLGraphics import blit, fill, flip, clear
 from klibs.KLGraphics.KLDraw import Ellipse, Rectangle
 from klibs.KLCommunication import message, query
-from klibs.KLUserInterface import any_key, ui_request, konami_code
+from klibs.KLUserInterface import any_key, ui_request
 from klibs.KLTime import CountDown
 from klibs.KLExperiment import Experiment
 from TraceLabFigure import TraceLabFigure
@@ -42,7 +41,7 @@ TOP_R = 2
 
 # condition codes; jon hates retyping strings
 PHYS = "physical"
-MOTR = "motor"
+MOTR = "imagery"
 CTRL = "control"
 FB_DRAW = "drawing_feedback"
 FB_RES = "results_feedback"
@@ -212,16 +211,6 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.session = TraceLabSession()
 		self.user_id = self.session.user_id
 		self.trial_factory.dump()
-		if P.labjacking:
-			self.lj = u3.U3()
-			self.getCalibrationData()
-			self.lj_codes = {
-				"baseline": u3.DAC0_8(self.lj.voltageToDACBits(0.0, dacNumber=0, is16Bits=False)),
-				"origin_red_on_code": u3.DAC0_8(self.lj.voltageToDACBits(1.0, dacNumber=0, is16Bits=False)),
-				"origin_green_on_code": u3.DAC0_8(self.lj.voltageToDACBits(2.0, dacNumber=0, is16Bits=False)),
-				"origin_off_code": u3.DAC0_8(self.lj.voltageToDACBits(3.0, dacNumber=0, is16Bits=False))}
-			# self.configU3(FIOAnalog=1)
-			self.getFeedback(P.eeg_codes['baseline'])
 
 		self.loading_msg = message("Loading...", "default", blit_txt=False)
 		fill()
@@ -272,7 +261,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.control_fail_msg = message("Please keep your finger on the start area for the complete duration.", 'error',
 										blit_txt=False)
 		self.next_trial_msg = message(P.next_trial_message, 'default', blit_txt=False)
-		self.next_trial_box = Rectangle(300, 75, (2, (255, 255, 255)))
+		self.next_trial_box = Rectangle(300, 75, stroke=(2, (255, 255, 255), STROKE_OUTER))
 		self.next_trial_button_loc = (250 if self.handedness == LEFT_HANDED else P.screen_x - 250, P.screen_y - 100)
 		xy_1 = (self.next_trial_button_loc[0] - 150, self.next_trial_button_loc[1] - 33)
 		xy_2 = (self.next_trial_button_loc[0] + 150, self.next_trial_button_loc[1] + 33)
@@ -329,13 +318,14 @@ class TraceLab(Experiment, BoundaryInspector):
 		# block, set experiment condition to physical.
 		if self.session_count == 1:
 			on_last = P.block_number == P.blocks_per_experiment
-			# If single-session and on last block, do practice animation for physical condition
+			# If single-session and on last block, change instructions accordingly and do practice
+			# animation for physical condition
 			if on_last and self.exp_condition != PHYS:
+				self.exp_condition = PHYS
+				instructions_file = os.path.join(P.resources_dir, "Text", "physical_group_instructions.txt")
+				self.instructions = message(open(instructions_file).read(), "instructions", align="center", blit_txt=False)
 				self.practice_kf = FrameSet(self, "physical_key_frames", "assets")
-				self.practice(play_key_frames=True)
-		else:
-			on_last = self.session_number == self.session_count
-		self.exp_condition = PHYS if on_last else self.exp_condition
+				self.practice()
 
 		for i in range(1,4):
 			# we do this a few times to avoid block messages being skipped due to duplicate input
@@ -348,7 +338,6 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def setup_response_collector(self):
 		self.rc.uses(RC_DRAW)
-		# self.rc.end_collection_event = 'response_period_end'
 		self.rc.draw_listener.start_boundary = 'start'
 		self.rc.draw_listener.stop_boundary = 'stop'
 		self.rc.draw_listener.show_active_cursor = False
@@ -357,7 +346,6 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.rc.draw_listener.interrupts = True
 		self.rc.draw_listener.min_samples = 5
 		self.rc.display_callback = self.display_refresh
-		self.rc.display_callback_args = [True]
 		if P.dm_always_show_cursor:
 			self.rc.draw_listener.show_active_cursor = True
 			self.rc.draw_listener.show_inactive_cursor = True
@@ -372,12 +360,13 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.animate_time = int(self.animate_time)
 		self.drawing = NA
 		self.control_response = -1
+
 		fill()
 		blit(self.loading_msg, 5, P.screen_c, flip_x=P.flip_x)
 		flip()
+
 		failed_generations = 0
 		self.figure = None
-
 		figure_load_start = time.time()
 		if self.figure_name == "random":
 			while not self.figure:
@@ -386,7 +375,7 @@ class TraceLab(Experiment, BoundaryInspector):
 				except RuntimeError as e:
 					failed_generations += 1
 					if failed_generations > 10:
-						print e.message
+						print(e.message)
 						self.quit()
 					continue
 		else:
@@ -417,12 +406,6 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.intertrial_end = time.time()
 			intertrial_interval = self.intertrial_end - self.intertrial_start
 			self.log_f.write(str(intertrial_interval) + "\n")
-			if intertrial_interval > P.intertrial_rest_interval:
-				cso("\t<red>Warning: trial preparation for this trial exceeded intertrial rest interval.</red>")
-			else:
-				inter_trial_rest = CountDown(P.intertrial_rest_interval - intertrial_interval)
-				while inter_trial_rest.counting():
-					ui_request()
 		if P.trial_number > 1:
 			self.log("t{0}_intertrial_interval_end".format(P.trial_number - 1), True)
 			self.log("write_out")
@@ -450,11 +433,6 @@ class TraceLab(Experiment, BoundaryInspector):
 			raise TrialException(e.message)
 		fill()
 		flip()
-
-		if not P.practicing and P.labjacking:
-			self.lj.getFeedback(self.lj_codes['origin_off_code'])
-			if self.lj_spike_interval: time.sleep(self.lj_spike_interval)
-			self.lj.getFeedback(self.lj_codes['baseline'])
 
 		if self.__practicing__:
 			return
@@ -513,8 +491,12 @@ class TraceLab(Experiment, BoundaryInspector):
 		q_str = "UPDATE `participants` SET `sessions_completed` = ? WHERE `id` = ?"
 		self.db.query(q_str, QUERY_UPD, q_vars=[self.session_number, P.participant_id])
 		self.db.insert([P.participant_id, str(self.user_id), self.session_number, now(True)], "sessions")
+		# show 'experiment complete' message before exiting experiment
+		msg = message(P.experiment_complete_message, "instructions", blit_txt=False)
+		flush()
 		fill()
-		message(P.experiment_complete_message, "instructions", registration=5, location=P.screen_c, flip_screen=True)
+		blit(msg, registration=5, location=P.screen_c)
+		flip()
 		any_key()
 
 	
@@ -538,7 +520,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			hide_mouse_cursor()
 	
 
-	def display_refresh(self, flip_screen=True):
+	def display_refresh(self):
 		fill()
 		origin = self.origin_active if self.rc.draw_listener.active else self.origin_inactive
 		blit(origin, 5, self.origin_pos, flip_x=P.flip_x)
@@ -548,18 +530,13 @@ class TraceLab(Experiment, BoundaryInspector):
 				blit(drawing, 5, P.screen_c, flip_x=P.flip_x)
 			except TypeError:
 				pass
-		if flip_screen:
-			flip()
+		flip()
 
 	def imagery_trial(self):
 		fill()
 		blit(self.origin_inactive, 5, self.origin_pos, flip_x=P.flip_x)
 		flip()
-		if not P.practicing and P.labjacking:
-			self.lj.getFeedback(self.lj_codes['origin_red_on_code'])
-			if self.lj_spike_interval:
-				time.sleep(self.lj_spike_interval)
-			self.lj.getFeedback(self.lj_codes['baseline'])
+
 		start = self.evm.trial_time
 		if P.demo_mode or P.dm_always_show_cursor:
 			show_mouse_cursor()
@@ -569,16 +546,10 @@ class TraceLab(Experiment, BoundaryInspector):
 				at_origin = True
 				self.rt = self.evm.trial_time - start
 			ui_request()
-
 		fill()
 		blit(self.origin_active, 5, self.origin_pos, flip_x=P.flip_x)
 		flip()
-
-		if not P.practicing and P.labjacking:
-			self.lj.getFeedback(self.lj_codes['origin_green_on_code'])
-			if self.lj_spike_interval:
-				time.sleep(self.lj_spike_interval)
-			self.lj.getFeedback(self.lj_codes['baseline'])
+		
 		while at_origin:
 			if not self.within_boundary('origin', mouse_pos()):
 				at_origin = False
@@ -591,8 +562,8 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.rt = self.rc.draw_listener.start_time
 		self.drawing = self.rc.draw_listener.responses[0][0]
 		self.it = self.rc.draw_listener.first_sample_time - self.rt
-
 		self.mt = self.rc.draw_listener.responses[0][1]
+
 		if self.feedback_type in (FB_ALL, FB_RES) and not self.__practicing__:
 			flush()
 			fill()

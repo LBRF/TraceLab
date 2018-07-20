@@ -79,7 +79,7 @@
 			"index": 2,
 			"title": "sex",
 			"database_field": "sex",
-			"query": "What is your sex?\nAnswer with:  (m)ale,(f)emale",
+			"query": "What is your sex?\nAnswer with: (m)ale or (f)emale",
 			"accepted": ["m", "f"],
 			"allow_null": false,
 			"format": {
