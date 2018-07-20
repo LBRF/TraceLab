@@ -38,6 +38,7 @@ trials_per_block = 20
 blocks_per_experiment = 5
 table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA")]}
 
+final_condition = 'physical' # condition for last block or session (if multi-session)
 origin_wait_time = 1000  # ms
 figure_load_time = 4 # seconds
 

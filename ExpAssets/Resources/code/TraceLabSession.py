@@ -203,8 +203,8 @@ class TraceLabSession(EnvAgent):
 		elif self.exp.session_count > 1 and self.exp.session_number == self.exp.session_count:
 			# if multi-session and on final session, and participant condition is imagery/control,
 			# set session condition to physical and show physical practice animation.
-			if self.exp.exp_condition != PHYS:
-				self.exp.exp_condition = PHYS
+			if self.exp.exp_condition != P.final_condition:
+				self.exp.exp_condition = P.final_condition
 				self.exp.show_practice_display = True
 
 		return True

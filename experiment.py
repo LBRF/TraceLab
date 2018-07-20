@@ -144,9 +144,11 @@ class TraceLab(Experiment, BoundaryInspector):
 	intertrial_end = None
 	intertrial_timing_logs = {}
 
+
 	def __init__(self, *args, **kwargs):
 		super(TraceLab, self).__init__(*args, **kwargs)
 		P.flip_x = P.mirror_mode
+
 
 	def __practice__(self):
 		self.figure_name = P.practice_figure
@@ -160,6 +162,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			pass
 		self.evm.stop_clock()
 		self.trial_clean_up()
+
 
 	def __review_figure__(self):
 		fill()
@@ -202,6 +205,7 @@ class TraceLab(Experiment, BoundaryInspector):
 				return True
 
 			# reset stuff before the experiment proper begins
+
 
 	def setup(self):
 		self.txtm.add_style('instructions', 18, [255, 255, 255, 255])
@@ -248,16 +252,16 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.origin_active = self.origin_proto.render()
 		self.origin_proto.fill = self.origin_inactive_color
 		self.origin_inactive = self.origin_proto.render()
-		instructions_file = "{0}_group_instructions.txt"
-		if self.exp_condition == PHYS:
-			instructions_file = instructions_file.format("physical")
-		elif self.exp_condition == MOTR:
-			instructions_file = instructions_file.format("imagery")
-		else:
-			instructions_file = instructions_file.format("control")
 
-		instructions_file = os.path.join(P.resources_dir, "Text", instructions_file)
-		self.instructions = message(open(instructions_file).read(), "instructions", align="center", blit_txt=False)
+		self.instruction_files = {
+			PHYS: {'text': "physical_group_instructions.txt", 'frames': "physical_key_frames"},
+			MOTR: {'text': "imagery_group_instructions.txt", 'frames': "imagery_key_frames"},
+			CTRL: {'text': "control_group_instructions.txt", 'frames': "control_key_frames"}
+		}
+
+		instructions_file = self.instruction_files[self.exp_condition]['text']
+		instructions_path = os.path.join(P.resources_dir, "Text", instructions_file)
+		self.instructions = message(open(instructions_path).read(), "instructions", align="center", blit_txt=False)
 		self.control_fail_msg = message("Please keep your finger on the start area for the complete duration.", 'error',
 										blit_txt=False)
 		self.next_trial_msg = message(P.next_trial_message, 'default', blit_txt=False)
@@ -271,17 +275,14 @@ class TraceLab(Experiment, BoundaryInspector):
 		# practice session vars & elements
 		#####
 		if self.show_practice_display:
-			if self.exp_condition == PHYS:
-				key_frames_f = "physical_key_frames"
-			elif self.exp_condition == MOTR:
-				key_frames_f = "imagery_key_frames"
-			else:
-				key_frames_f = "control_key_frames"
-
+			key_frames_f = self.instruction_files[self.exp_condition]['frames']
 			self.practice_kf = FrameSet(self, key_frames_f, "assets")
 			self.practice_instructions = message(P.practice_instructions, "instructions", align="center", blit_txt=False)
-			practice_buttons = [('Replay', [200, 100], self.practice), ('Practice', [200, 100], self.__practice__), \
-								('Begin', [200, 100], any_key)]
+			practice_buttons = [
+				('Replay', [200, 100], self.practice),
+				('Practice', [200, 100], self.__practice__),
+				('Begin', [200, 100], any_key)
+			]
 			self.practice_button_bar = ButtonBar(practice_buttons, [200, 100], P.btn_s_pad, P.y_pad,
 												 finish_button=False)
 
@@ -312,19 +313,21 @@ class TraceLab(Experiment, BoundaryInspector):
 			any_key()
 			self.practice()
 
+
 	def block(self):
 
 		# If multi-session and on last session, or single-session and on last
-		# block, set experiment condition to physical.
+		# block, set experiment condition to P.final_condition.
 		if self.session_count == 1:
 			on_last = P.block_number == P.blocks_per_experiment
 			# If single-session and on last block, change instructions accordingly and do practice
-			# animation for physical condition
-			if on_last and self.exp_condition != PHYS:
-				self.exp_condition = PHYS
-				instructions_file = os.path.join(P.resources_dir, "Text", "physical_group_instructions.txt")
+			# animation for final condition
+			if on_last and self.exp_condition != P.final_condition:
+				self.exp_condition = P.final_condition
+				new_instructions = self.instruction_files[P.final_condition]
+				instructions_file = os.path.join(P.resources_dir, "Text", new_instructions['text'])
 				self.instructions = message(open(instructions_file).read(), "instructions", align="center", blit_txt=False)
-				self.practice_kf = FrameSet(self, "physical_key_frames", "assets")
+				self.practice_kf = FrameSet(self, new_instructions['frames'], "assets")
 				self.practice()
 
 		for i in range(1,4):
@@ -335,6 +338,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			blit(self.instructions, registration=5, location=P.screen_c, flip_x=P.flip_x)
 			flip()
 		any_key()
+
 
 	def setup_response_collector(self):
 		self.rc.uses(RC_DRAW)
@@ -351,6 +355,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.rc.draw_listener.show_inactive_cursor = True
 		if P.demo_mode or self.feedback_type in (FB_DRAW, FB_ALL):
 			self.rc.draw_listener.render_real_time = True
+
 
 	def trial_prep(self):
 		self.log("\n\n********** TRIAL {0} ***********\n".format(P.trial_number))
@@ -415,6 +420,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		# let participant self-initiate next trial
 		self.start_trial_button()
 
+
 	def trial(self):
 		self.figure.animate()
 		self.animate_finish = self.evm.trial_time
@@ -456,12 +462,14 @@ class TraceLab(Experiment, BoundaryInspector):
 			"mt": self.mt,
 		}
 
+
 	def trial_clean_up(self):
 		if not self.__practicing__:
 			self.figure.write_out()
 			self.figure.write_out(self.tracing_name, self.drawing)
 		self.rc.draw_listener.reset()
 		self.button_bar.reset()
+
 
 	def clean_up(self):
 		if self.session_number == self.session_count and P.enable_learned_figures_querying:
@@ -490,7 +498,16 @@ class TraceLab(Experiment, BoundaryInspector):
 		# if the entire experiment is successfully completed, update the sessions_completed column
 		q_str = "UPDATE `participants` SET `sessions_completed` = ? WHERE `id` = ?"
 		self.db.query(q_str, QUERY_UPD, q_vars=[self.session_number, P.participant_id])
-		self.db.insert([P.participant_id, str(self.user_id), self.session_number, now(True)], "sessions")
+
+		# log session data to database
+		session_data = {
+			'participant_id': P.participant_id,
+			'user_id': str(self.user_id),
+			'session_number': self.session_number,
+			'completed': now(True)
+		}
+		self.db.insert(session_data, "sessions")
+
 		# show 'experiment complete' message before exiting experiment
 		msg = message(P.experiment_complete_message, "instructions", blit_txt=False)
 		flush()
@@ -499,7 +516,10 @@ class TraceLab(Experiment, BoundaryInspector):
 		flip()
 		any_key()
 
+
 	
+	### Assorted helper methods called within the main experiment structure ###
+
 	def start_trial_button(self):
 		fill()
 		blit(self.next_trial_box, 5, self.next_trial_button_loc, flip_x=P.flip_x)
