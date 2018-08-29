@@ -26,10 +26,27 @@ from ButtonBar import Button, ButtonBar
 from KeyFrames import KeyFrame, FrameSet
 from TraceLabSession import TraceLabSession
 
-try:
-	import u3
-except ImportError:
-	pass
+if P.labjack_available:
+	try:
+		import u3
+	except ImportError:
+		cso("<red>Error: The LabJackPython module is not installed.</red>")
+		print("\nYou can either run 'pip install -r reqirements.txt' in the project folder to "
+			"install it, or disable LabJack triggering by setting 'labjack_available' to False in "
+			"the project's params.py file.\n")
+		raise
+
+if P.magstim_available:
+	try:
+		from magpy.magstim import BiStim
+	except ImportError:
+		cso("<red>Error: The MagPy module is not installed.</red>")
+		print("\nYou can either run 'pip install -r reqirements.txt' in the project folder to "
+			"install it, or disable MagStim communication by setting 'magstim_available' to False "
+			"in the project's params.py file.\n")
+		raise
+
+	
 
 WHITE = (255, 255, 255, 255)
 BLACK = (0, 0, 0, 255)
@@ -215,9 +232,9 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.user_id = self.session.user_id
 		self.trial_factory.dump()
 
-		if P.labjacking and P.labjack_available:
+		if P.labjack_available:
 			self.lj = u3.U3()
-			self.getCalibrationData()
+			self.lj.getCalibrationData()
 			# LabJack can only delay in 16384 microsecond or 128 microsecond intervals. To calculate
 			# accurate delay, we delay in 16384 increments until just under requested time, and then
 			# fill remaining with delay in 128 increments.
@@ -225,18 +242,22 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.lj_commands = {
 				"pre_trigger_delay_1": u3.WaitLong(Time=tms_pulse_delay_us/16384),
 				"pre_trigger_delay_2": u3.WaitShort(Time=(tms_pulse_delay_us%16384)/128),
-				"baseline": u3.DAC0_8(self.lj.voltageToDACBits(0.0)),
-				"wait_1ms": u3.WaitShort(Time=8),
-				"TMS_trigger": u3.DAC0_8(self.lj.voltageToDACBits(5.0))
+				"TMS_trigger": u3.PortStateWrite(State=[255, 0, 0]),
+				"wait_4ms": u3.WaitShort(Time=31),
+				"baseline": u3.PortStateWrite(State=[0, 0, 0])
 			}
 			self.tms_trigger_command = [
 				self.lj_commands['pre_trigger_delay_1'],
 				self.lj_commands['pre_trigger_delay_2'],
 				self.lj_commands['TMS_trigger'], 
-				self.lj_commands['wait_1ms'],
+				self.lj_commands['wait_4ms'],
 				self.lj_commands['baseline'],
 			]
 			self.lj.getFeedback(self.lj_commands['baseline'])
+
+		if P.magstim_available:
+			self.magstim = BiStim(P.magstim_serial_port)
+			self.magstim.connect()
 
 		self.loading_msg = message("Loading...", "default", blit_txt=False)
 		fill()
@@ -446,6 +467,10 @@ class TraceLab(Experiment, BoundaryInspector):
 
 
 	def trial(self):
+
+		if P.magstim_available and not self.on_last and not self.__practicing__:
+			self.magstim.arm()
+
 		self.figure.animate()
 		self.animate_finish = self.evm.trial_time
 		try:
@@ -455,7 +480,7 @@ class TraceLab(Experiment, BoundaryInspector):
 				self.imagery_trial()
 			else:
 				self.control_trial()
-			if not self.on_last and not self.__practicing__:
+			if P.magstim_available and not self.on_last and not self.__practicing__:
 				self.sendTriggerToTMS() # P.tms_pulse_delay is handled on LabJack itself
 
 		except TrialException as e:
@@ -499,6 +524,10 @@ class TraceLab(Experiment, BoundaryInspector):
 
 
 	def clean_up(self):
+
+		if P.magstim_available:
+			self.magstim.disconnect()
+
 		if self.session_number == self.session_count and P.enable_learned_figures_querying:
 			from klibs.KLCommunication import user_queries
 			self.fig_dir =  join(self.p_dir, "learned")
@@ -656,7 +685,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			except IOError:
 				io_errors.append((P.auto_generate_count + 1) - self.auto_generate_count)
 				if len(io_errors) > 10:
-					print "\n".join(io_errors)
+					print("\n".join(io_errors))
 					break
 		self.quit()
 
@@ -706,6 +735,8 @@ class TraceLab(Experiment, BoundaryInspector):
 				self.log_f.write(str_pad("intertrial_interval" + ":", 32) + str(ivi_end - ivi_start) + "\n")
 
 	def sendTriggerToTMS(self):
+		# simultaneously sends a trigger to the TMS and a trigger code to the EMG device,
+		# after a brief delay specified by the parameter 'tms_pulse_delay'
 		self.lj.getFeedback(self.tms_trigger_command)
 
 	def quit(self):

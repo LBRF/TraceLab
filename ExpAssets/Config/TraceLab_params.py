@@ -14,10 +14,11 @@ enable_learned_figures_querying = True
 #########################################
 # Available Hardware
 #########################################
-eye_tracker_available = False
 eye_tracking = False
-labjack_available = False
-labjacking = False
+eye_tracker_available = False
+labjack_available = True
+magstim_available = True
+magstim_serial_port = '/dev/cu.UEBOOM2-LWACP-7'
 
 #########################################
 # Environment Aesthetic Defaults
@@ -134,6 +135,12 @@ curve_sheer = (0.1, 0.3)  # this is hard to describe, but 1 is again an impossib
 path_length = -1  # length (px); -1 ignores this parameter; path length will override seg_length params if they conflict
 seg_report_fuzz = (2, 4)
 
+########################################
+# Labjack Codes
+########################################
+trigger_codes = {
+    "tms_trigger": 255
+}
 
 ########################################
 # tlf Controls
@@ -147,7 +154,6 @@ gen_ext_png = False  # image file from extended interpolation
 #########################################
 # Data Export Settings
 #########################################
-data_columns = None
+primary_table = "trials"
 unique_identifier = "user_id"
-default_participant_fields = [[unique_identifier, "participant"], "sex", "age", "handedness"]
-default_participant_fields_sf = [[unique_identifier, "participant"], "random_seed", "sex", "age", "handedness"]
+exclude_data_cols = ['klibs_commit', 'created', 'session_count', 'sessions_completed', 'initialized']
