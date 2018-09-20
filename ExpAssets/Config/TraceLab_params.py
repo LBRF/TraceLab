@@ -1,12 +1,13 @@
 # TraceLab parameter overrides
 
+from klibs import P
+
 #########################################
 # Runtime Settings
 #########################################
 collect_demographics = True
 manual_demographics_collection = True
 run_practice_blocks = False
-condition = 'tms' # default condition, overridden with -c
 
 demo_mode = False
 mirror_mode = False
@@ -39,6 +40,7 @@ multi_session_project = True
 trials_per_block = 20
 blocks_per_experiment = 5
 conditions = ['tms', 'no_tms']
+condition = 'tms' if P.condition == 'tms' else 'no_tms' # default condition, overridden with -c
 table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA")]}
 
 final_condition = 'physical' # condition for last block or session (if multi-session)
