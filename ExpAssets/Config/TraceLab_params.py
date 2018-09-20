@@ -6,6 +6,7 @@
 collect_demographics = True
 manual_demographics_collection = True
 run_practice_blocks = False
+condition = 'tms' # default condition, overridden with -c
 
 demo_mode = False
 mirror_mode = False
@@ -37,6 +38,7 @@ experiment_complete_message = "Thanks for participating! You're all finished. Hi
 multi_session_project = True
 trials_per_block = 20
 blocks_per_experiment = 5
+conditions = ['tms', 'no_tms']
 table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA")]}
 
 final_condition = 'physical' # condition for last block or session (if multi-session)

@@ -255,6 +255,9 @@ class TraceLab(Experiment, BoundaryInspector):
 			]
 			self.lj.getFeedback(self.lj_commands['baseline'])
 
+		if P.condition == 'no_tms':
+			P.magstim_available = False
+
 		if P.magstim_available:
 			self.magstim = BiStim(P.magstim_serial_port)
 			self.magstim.connect()
@@ -471,6 +474,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.figure.animate()
 		self.animate_finish = self.evm.trial_time
 
+		armed_successfully = False
 		if P.magstim_available and not self.on_last and not self.__practicing__:
 			self.magstim.poke()
 			self.magstim.arm()
@@ -486,8 +490,6 @@ class TraceLab(Experiment, BoundaryInspector):
 				if self.magstim.isReadyToFire():
 					self.sendTriggerToTMS() # P.tms_pulse_delay is handled on LabJack itself
 					armed_successfully = True
-				else:
-					armed_successfully = False
 
 		except TrialException as e:
 			fill()
