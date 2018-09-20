@@ -232,6 +232,16 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.user_id = self.session.user_id
 		self.trial_factory.dump()
 
+		if P.condition == 'no_tms':
+			P.magstim_available = False
+			trigger_code = 4 # triggers only FIO2, which is wired to EMG
+		else:
+			trigger_code = 255 # triggers all FIO ports, sending to EMG and magstim
+
+		if P.magstim_available:
+			self.magstim = BiStim(P.magstim_serial_port)
+			self.magstim.connect()
+
 		if P.labjack_available:
 			self.lj = u3.U3()
 			self.lj.getCalibrationData()
@@ -242,7 +252,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.lj_commands = {
 				"pre_trigger_delay_1": u3.WaitLong(Time=tms_pulse_delay_us/16384),
 				"pre_trigger_delay_2": u3.WaitShort(Time=(tms_pulse_delay_us%16384)/128),
-				"TMS_trigger": u3.PortStateWrite(State=[255, 0, 0]),
+				"TMS_trigger": u3.PortStateWrite(State=[trigger_code, 0, 0]),
 				"wait_4ms": u3.WaitShort(Time=31),
 				"baseline": u3.PortStateWrite(State=[0, 0, 0])
 			}
@@ -254,13 +264,6 @@ class TraceLab(Experiment, BoundaryInspector):
 				self.lj_commands['baseline'],
 			]
 			self.lj.getFeedback(self.lj_commands['baseline'])
-
-		if P.condition == 'no_tms':
-			P.magstim_available = False
-
-		if P.magstim_available:
-			self.magstim = BiStim(P.magstim_serial_port)
-			self.magstim.connect()
 
 		self.loading_msg = message("Loading...", "default", blit_txt=False)
 		fill()
@@ -486,10 +489,12 @@ class TraceLab(Experiment, BoundaryInspector):
 				self.imagery_trial()
 			else:
 				self.control_trial()
-			if P.magstim_available and not self.on_last and not self.__practicing__:
-				if self.magstim.isReadyToFire():
-					self.sendTriggerToTMS() # P.tms_pulse_delay is handled on LabJack itself
-					armed_successfully = True
+			if not self.on_last and not self.__practicing__:
+				if P.magstim_available:
+					if self.magstim.isReadyToFire():
+						armed_successfully = True
+				self.sendTriggerToLabJack()
+				
 
 		except TrialException as e:
 			fill()
@@ -743,7 +748,7 @@ class TraceLab(Experiment, BoundaryInspector):
 				ivi_end = self.intertrial_timing_logs['t{0}_intertrial_interval_end'.format(P.trial_number - 1)]
 				self.log_f.write(str_pad("intertrial_interval" + ":", 32) + str(ivi_end - ivi_start) + "\n")
 
-	def sendTriggerToTMS(self):
+	def sendTriggerToLabJack(self):
 		# simultaneously sends a trigger to the TMS and a trigger code to the EMG device,
 		# after a brief delay specified by the parameter 'tms_pulse_delay'
 		self.lj.getFeedback(self.tms_trigger_command)
