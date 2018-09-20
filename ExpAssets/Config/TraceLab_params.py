@@ -18,7 +18,7 @@ eye_tracking = False
 eye_tracker_available = False
 labjack_available = True
 magstim_available = True
-magstim_serial_port = '/dev/cu.UEBOOM2-LWACP-7'
+magstim_serial_port = '/dev/cu.usbserial-FTFNVB9O'
 
 #########################################
 # Environment Aesthetic Defaults

@@ -468,11 +468,13 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def trial(self):
 
-		if P.magstim_available and not self.on_last and not self.__practicing__:
-			self.magstim.arm()
-
 		self.figure.animate()
 		self.animate_finish = self.evm.trial_time
+
+		if P.magstim_available and not self.on_last and not self.__practicing__:
+			self.magstim.poke()
+			self.magstim.arm()
+
 		try:
 			if self.exp_condition == PHYS:
 				self.physical_trial()
@@ -481,7 +483,11 @@ class TraceLab(Experiment, BoundaryInspector):
 			else:
 				self.control_trial()
 			if P.magstim_available and not self.on_last and not self.__practicing__:
-				self.sendTriggerToTMS() # P.tms_pulse_delay is handled on LabJack itself
+				if self.magstim.isReadyToFire():
+					self.sendTriggerToTMS() # P.tms_pulse_delay is handled on LabJack itself
+					armed_successfully = True
+				else:
+					armed_successfully = False
 
 		except TrialException as e:
 			fill()
@@ -512,6 +518,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			"control_question": self.control_question if self.exp_condition == CTRL else NA,
 			"control_response": self.control_response,
 			"mt": self.mt,
+			"armed_properly": armed_successfully
 		}
 
 
