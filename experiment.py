@@ -525,6 +525,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			"control_question": self.control_question if self.exp_condition == CTRL else NA,
 			"control_response": self.control_response,
 			"mt": self.mt,
+			"is_cond_tms": P.condition == 'tms',
 			"armed_properly": armed_successfully
 		}
 

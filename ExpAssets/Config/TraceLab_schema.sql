@@ -77,6 +77,7 @@ CREATE TABLE trials (
 	control_question TEXT                              NOT NULL,
 	control_response INTEGER                           NOT NULL,
 	mt               FLOAT                             NOT NULL,
+	is_cond_tms		 BOOLEAN						   NOT NULL,
 	armed_properly	 BOOLEAN						   NOT NULL
 );
 
