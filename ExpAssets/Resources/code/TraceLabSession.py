@@ -168,6 +168,7 @@ class TraceLabSession(EnvAgent):
 				any_key()
 				self.exp.quit()
 
+		self.exp.trial_factory.generate() # generate blocks/trials here, once block count is known
 		self.import_figure_set()
 
 		# delete previous trials for this session if any exist (essentially assume a do-over)
@@ -187,7 +188,7 @@ class TraceLabSession(EnvAgent):
 				  "figure_set": self.exp.figure_key,
 				  "practice_session": self.exp.show_practice_display,
 		}
-		self.exp.log("*************** HEADER START****************\n")
+		self.exp.log("************** HEADER START ****************\n")
 		if P.use_log_file:
 			for k in header:
 				self.exp.log("{0}: {1}\n".format(k, header[k]))
@@ -203,6 +204,7 @@ class TraceLabSession(EnvAgent):
 		elif self.exp.session_count > 1 and self.exp.session_number == self.exp.session_count:
 			# if multi-session and on final session, and participant condition is imagery/control,
 			# set session condition to physical and show physical practice animation.
+			P.blocks_per_experiment = P.final_session_blocks
 			if self.exp.exp_condition != P.final_condition:
 				self.exp.exp_condition = P.final_condition
 				self.exp.show_practice_display = True
@@ -250,7 +252,6 @@ class TraceLabSession(EnvAgent):
 		new_exp_factors.add_variable('figure_name', str, self.exp.figure_set)
 
 		self.exp.trial_factory.generate(new_exp_factors)
-		self.exp.blocks = self.exp.trial_factory.export_trials()
 
 	def parse_exp_condition(self, condition_str):
 		# from klibs.KLCommunication import user_queries as uq

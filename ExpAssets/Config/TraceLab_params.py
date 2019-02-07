@@ -7,6 +7,7 @@ from klibs import P
 #########################################
 collect_demographics = True
 manual_demographics_collection = True
+manual_trial_generation = True
 run_practice_blocks = False
 
 demo_mode = False
@@ -27,8 +28,8 @@ magstim_serial_port = '/dev/cu.usbserial-FTFNVB9O'
 #########################################
 default_fill_color = (0, 0, 0, 255)
 default_color = (255, 255, 255, 255)
-default_font_size = 16
-default_font_name = 'Frutiger'
+default_font_size = 18
+default_font_name = 'Hind-Medium'
 
 next_trial_message = "Tap here to continue."
 experiment_complete_message = "Thanks for participating! You're all finished. Hit any key or tap the screen to exit."
@@ -39,11 +40,12 @@ experiment_complete_message = "Thanks for participating! You're all finished. Hi
 multi_session_project = True
 trials_per_block = 20
 blocks_per_experiment = 5
-conditions = ['tms', 'no_tms']
-condition = 'tms' if P.condition == 'tms' else 'no_tms' # default condition, overridden with -c
+conditions = ['stim', 'sham']
+default_condition = 'sham' # overridden with -c
 table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA")]}
 
 final_condition = 'physical' # condition for last block or session (if multi-session)
+final_session_blocks = 1
 origin_wait_time = 1000  # ms
 figure_load_time = 4 # seconds
 tms_pulse_delay = 100 # ms, time between trial end and sending of TMS trigger
@@ -67,7 +69,7 @@ dm_auto_threshold = True
 dm_override_practice = False  # only for testing on a monitor which is too small to support practice animations
 dm_render_progress = False  # if true, user's attempts to draw the figure will always be rendered
 dm_setup_only = False
-dm_ignore_local_overrides = True
+dm_ignore_local_overrides = False
 dm_always_show_cursor = True
 use_log_file = False
 # For everything involving color,  http://www.colorspire.com/rgb-color-wheel/ will let you get the rgb values
@@ -88,7 +90,7 @@ origin_size = 50  # px
 response_feedback_color = (0,255,255)
 stimulus_feedback_color = (211, 211, 211)
 max_feedback_time = 2000  # ms
-ignore_points_at = [(1919,1079),(119,1079)]  # list of (x,y) coordinates to be removed
+ignore_points_at = [(1919,1079),(119,1079),(239,1079)]  # list of (x,y) coordinates to be removed
 trial_error_msg = "Oops! Something went wrong. Let's try that again later."
 
 ########################################
@@ -143,7 +145,8 @@ seg_report_fuzz = (2, 4)
 # Labjack Codes
 ########################################
 trigger_codes = {
-    "tms_trigger": 255
+    "tms_emg": 255, # triggers all FIO ports, sending to EMG and magstim
+    "emg_only": 4 # triggers only FIO2, which is wired to EMG
 }
 
 ########################################

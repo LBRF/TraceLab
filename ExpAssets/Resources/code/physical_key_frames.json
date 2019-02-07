@@ -859,26 +859,6 @@
                 }
 
             ]
-        },
-        {
-            "label": "end practice script",
-            "description": "User is told to begin self-initiating practice.",
-            "duration": 3000,
-            "enabled": true,
-            "directives": [
-                {
-                    "asset":  "physical audio 6",
-					"registration": 5,
-                    "start": 0,
-                    "end": null
-                },
-                {
-                    "asset":  "end practice",
-					"registration": 5,
-                    "start": [960, 540],
-                    "end": [960, 540]
-                }
-            ]
         }
 
     ]

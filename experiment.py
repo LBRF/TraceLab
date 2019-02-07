@@ -185,7 +185,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		if P.auto_generate:
 			msg = "Generating figure {0} of {1}".format((P.auto_generate_count + 1) - self.auto_generate_count,
 														P.auto_generate_count)
-			message(msg, "default", registration=5, location=P.screen_c, flip=True)
+			message(msg, "default", registration=5, location=P.screen_c, flip_screen=True)
 
 		while not self.figure:
 			ui_request()
@@ -211,7 +211,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			if resp == "s":
 				f_name = self.query("Enter a filename for this figure (omitting suffixes):") + ".tlf"
 				fill()
-				message("Saving... ", flip=True)
+				message("Saving... ", flip_screen=True)
 				self.figure.write_out(f_name)
 
 		if P.auto_generate:
@@ -232,15 +232,12 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.user_id = self.session.user_id
 		self.trial_factory.dump()
 
-		if P.condition == 'no_tms':
-			P.magstim_available = False
-			trigger_code = 4 # triggers only FIO2, which is wired to EMG
-		else:
-			trigger_code = 255 # triggers all FIO ports, sending to EMG and magstim
-
 		if P.magstim_available:
 			self.magstim = BiStim(P.magstim_serial_port)
 			self.magstim.connect()
+			trigger_code = P.trigger_codes['tms_emg']
+		else:
+			trigger_code = P.trigger_codes['emg_only']
 
 		if P.labjack_available:
 			self.lj = u3.U3()
@@ -332,8 +329,14 @@ class TraceLab(Experiment, BoundaryInspector):
 				('Practice', [200, 100], self.__practice__),
 				('Begin', [200, 100], any_key)
 			]
-			self.practice_button_bar = ButtonBar(practice_buttons, [200, 100], P.btn_s_pad, P.y_pad,
-												 finish_button=False)
+			self.practice_button_bar = ButtonBar(
+				practice_buttons,
+				[200, 100], P.btn_s_pad, P.y_pad, finish_button=False
+			)
+			self.nopractice_button_bar = ButtonBar(
+				[practice_buttons[0], practice_buttons[2]], # no 'practice' button
+				[200, 100], P.btn_s_pad, P.y_pad, finish_button=False
+			)
 
 		# import figures for use during testing sessions
 		fill()
@@ -357,26 +360,36 @@ class TraceLab(Experiment, BoundaryInspector):
 		
 		clear()
 		if P.enable_practice and self.show_practice_display:
-			message(P.practice_instructions, "instructions", registration=5, location=P.screen_c, align="center", blit_txt=True)
+			fill()
+			blit(self.practice_instructions, 5, P.screen_c)
 			flip()
 			any_key()
+			if self.exp_condition == P.final_condition:
+				# Don't allow practicing for physical trials in this study
+				self.practice_button_bar = self.nopractice_button_bar
 			self.practice()
+
+		# If using magstim, set power level based on condition
+		if P.magstim_available:
+			power_level = 15 if P.condition == 'sham' else 60
+			self.magstim.setPowerA(power_level, receipt=False, delay=False)
 
 
 	def block(self):
 
-		# If multi-session and on last session, or single-session and on last
-		# block, set experiment condition to P.final_condition.
-		if self.session_count == 1:
-			self.on_last = P.block_number == P.blocks_per_experiment
-			# If single-session and on last block, change instructions accordingly and do practice
+		# If on last block and/or last session, set experiment condition to P.final_condition.
+		if P.block_number == P.blocks_per_experiment:
+			self.on_last = True
+			# If on last block, change instructions accordingly and do practice
 			# animation for final condition
-			if self.on_last and self.exp_condition != P.final_condition:
+			if self.exp_condition != P.final_condition:
 				self.exp_condition = P.final_condition
 				new_instructions = self.instruction_files[P.final_condition]
 				instructions_file = os.path.join(P.resources_dir, "Text", new_instructions['text'])
 				self.instructions = message(open(instructions_file).read(), "instructions", align="center", blit_txt=False)
 				self.practice_kf = FrameSet(self, new_instructions['frames'], "assets")
+				self.practice_button_bar = self.nopractice_button_bar
+				self.start_trial_button()
 				self.practice()
 		else:
 			self.on_last = self.session_count == self.session_number
@@ -479,7 +492,7 @@ class TraceLab(Experiment, BoundaryInspector):
 
 		armed_successfully = False
 		if P.magstim_available and not self.on_last and not self.__practicing__:
-			self.magstim.poke()
+			self.magstim.poke(silent=True)
 			self.magstim.arm()
 
 		try:
@@ -493,7 +506,10 @@ class TraceLab(Experiment, BoundaryInspector):
 				if P.magstim_available:
 					if self.magstim.isReadyToFire():
 						armed_successfully = True
-				self.sendTriggerToLabJack()
+				if P.labjack_available:
+					if P.magstim_available:
+						self.magstim.poke(silent=False)
+					self.sendTriggerToLabJack()
 				
 
 		except TrialException as e:
@@ -525,7 +541,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			"control_question": self.control_question if self.exp_condition == CTRL else NA,
 			"control_response": self.control_response,
 			"mt": self.mt,
-			"is_cond_tms": P.condition == 'tms',
+			"tms_cond": P.condition,
 			"armed_properly": armed_successfully
 		}
 
@@ -607,7 +623,7 @@ class TraceLab(Experiment, BoundaryInspector):
 				if e.type == SDL_MOUSEBUTTONDOWN:
 					next_trial_button_clicked = self.within_boundary("next trial button", [e.button.x, e.button.y])
 				ui_request(e)
-		if P.demo_mode or P.dm_always_show_cursor:
+		if not (P.demo_mode or P.dm_always_show_cursor):
 			hide_mouse_cursor()
 	
 
@@ -680,7 +696,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		if P.auto_generate:
 			fill()
 			message("Press command+q at any time to exit.\nPress any key to continue.", "default", registration=5,
-					location=P.screen_c, flip=True)
+					location=P.screen_c, flip_screen=True)
 			any_key()
 			finished = False
 		else:
@@ -689,7 +705,7 @@ class TraceLab(Experiment, BoundaryInspector):
 				  "Use the program 'ActivityMonitor' to kill ALL Python processes.\n" \
 				  "TraceLab will automatically exit when figure generation is complete.\n \n" \
 				  "Press any key to begin generating."
-			message(msg, "default", registration=5, location=P.screen_c, flip=True)
+			message(msg, "default", registration=5, location=P.screen_c, flip_screen=True)
 			any_key()
 			finished = self.auto_generate_count == 0
 		io_errors = []
