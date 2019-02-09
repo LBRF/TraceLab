@@ -274,8 +274,8 @@ class TraceLab(Experiment, BoundaryInspector):
 		if P.capture_figures_mode:
 			self.fig_dir = os.path.join(P.resources_dir, "figures")
 		else:
-			self.p_dir = os.path.join(P.data_dir, "p{0}_{1}".format(self.user_id, self.created))
-			self.fig_dir = os.path.join(self.p_dir, self.session_type, "session_" + str(self.session_number))
+			self.p_dir = os.path.join(P.data_dir, "p{0}_{1}".format(P.participant_id, self.created))
+			self.fig_dir = os.path.join(self.p_dir, "session_" + str(self.session_number))
 			if os.path.exists(self.fig_dir):
 				shutil.rmtree(self.fig_dir)
 			os.makedirs(self.fig_dir)
@@ -722,7 +722,7 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def capture_learned_figure(self, fig_number):
 		self.evm.start_clock()
-		fig_name = "p{0}_learned_figure_{1}.tlt".format(self.user_id, fig_number)
+		fig_name = "p{0}_learned_figure_{1}.tlt".format(P.participant_id, fig_number)
 		self.rc.draw_listener.reset()
 		self.rc.collect()
 		self.figure.write_out(fig_name, self.rc.draw_listener.responses[0][0])
@@ -779,5 +779,5 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	@property
 	def tracing_name(self):
-		fname_data = [self.user_id, P.block_number, P.trial_number, now(True, "%Y-%m-%d"), self.session_number]
+		fname_data = [P.participant_id, P.block_number, P.trial_number, now(True, "%Y-%m-%d"), self.session_number]
 		return "p{0}_s{4}_b{1}_t{2}_{3}.tlt".format(*fname_data)
