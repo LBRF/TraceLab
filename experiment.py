@@ -373,6 +373,9 @@ class TraceLab(Experiment, BoundaryInspector):
 		if P.magstim_available:
 			power_level = 15 if P.condition == 'sham' else 60
 			self.magstim.setPowerA(power_level, receipt=False, delay=False)
+			self.magstim.setPowerB(0, receipt=False, delay=False)
+			self.magstim.setPulseInterval(10) # set pulse interval to low-res minimum (10ms)
+			self.magstim.highResolutionMode(True) # divides previous interval by 10 (now 1ms)
 
 
 	def block(self):
