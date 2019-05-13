@@ -248,7 +248,7 @@ class TraceLab(Experiment, BoundaryInspector):
 				self.magstim.setPowerB(0, receipt=True, delay=True)
 				self.magstim.setPulseInterval(10) # set pulse interval to low-res minimum (10ms)
 				self.magstim.highResolutionMode(True) # divides previous interval by 10 (now 1ms)
-				mag_info = self.magstim.getParameters[0]['bistimParam']
+				mag_info = self.magstim.getParameters()[1]['bistimParam']
 				power_initialized = mag_info['powerA'] == power_level and mag_info['powerB'] == 0
 				magstim_initialized = power_initialized and mag_info['ppOffset'] == 1
 				init_attempts += 1
@@ -528,6 +528,8 @@ class TraceLab(Experiment, BoundaryInspector):
 					if P.magstim_available:
 						self.magstim.poke(silent=False)
 					self.sendTriggerToLabJack()
+					if P.magstim_available:
+						self.magstim.disarm()
 				
 
 		except TrialException as e:
