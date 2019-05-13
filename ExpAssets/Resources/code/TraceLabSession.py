@@ -58,11 +58,12 @@ class TraceLabSession(EnvAgent):
 	}
 
 	error_strings = {
-		"invalid_format": "Experimental condition identifiers must be separated by hyphens, and contain three components:\
-						  \nExperimental condition, feedback condition, and the number of sessions.\nPlease try again",
+		"invalid_format": ("Experimental condition identifiers must be separated by hyphens, and contain three components:\n"
+			"Experimental condition, feedback condition, and the number of sessions.\nPlease try again."),
 		"invalid_condition": "The experimental condition must commence with any of 'PP', 'MI' or 'CC'.\nPlease try again.",
-		"invalid_feedback": "The feedback value was invalid.\nIt must contain any combination of 'V', 'R' or 'X' and be\
-		 between one and two characters long.\nPlease try again.",
+		"invalid_feedback": ("The feedback value was invalid.\n"
+			"It must contain any combination of 'V', 'R' or 'X' and be between one and two characters long.\n"
+			"Please try again."),
 		"invalid_session_count": "Number of sessions must be a valid integer greater than 0.\nPlease try again."
 	}
 

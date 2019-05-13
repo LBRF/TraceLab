@@ -2,7 +2,7 @@ __author__ = "Jonathan Mulle"
 import shutil, sys
 import cPickle as pickle
 
-from sdl2 import SDL_MOUSEBUTTONDOWN
+from sdl2 import SDL_MOUSEBUTTONDOWN, SDL_KEYDOWN
 from random import choice
 from os.path import join, exists
 from os import makedirs
@@ -505,13 +505,19 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def trial(self):
 
-		self.figure.animate()
-		self.animate_finish = self.evm.trial_time
-
 		armed_successfully = False
 		if P.magstim_available and not self.on_last and not self.__practicing__:
 			self.magstim.poke(silent=True)
 			self.magstim.arm()
+
+		start_delay = CountDown(3.0)
+		while start_delay.counting():
+			ui_request()
+			fill()
+			flip()
+
+		self.figure.animate()
+		self.animate_finish = self.evm.trial_time
 
 		try:
 			if self.exp_condition == PHYS:
@@ -642,7 +648,8 @@ class TraceLab(Experiment, BoundaryInspector):
 			for e in event_queue:
 				if e.type == SDL_MOUSEBUTTONDOWN:
 					next_trial_button_clicked = self.within_boundary("next trial button", [e.button.x, e.button.y])
-				ui_request(e)
+				elif e.type == SDL_KEYDOWN:
+					ui_request(e.key.keysym)
 		if not (P.demo_mode or P.dm_always_show_cursor):
 			hide_mouse_cursor()
 	

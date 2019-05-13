@@ -89,8 +89,9 @@ class Slider(BoundaryInspector, EnvAgent):
 			if not dragging:
 				m_pos = mouse_pos()
 				for event in pump(True):
-					ui_request(event)
-					if event.type in (sdl2.SDL_MOUSEBUTTONDOWN, sdl2.SDL_MOUSEBUTTONDOWN):
+					if e.type == sdl2.SDL_KEYDOWN:
+						ui_request(e.key.keysym)
+					elif event.type in (sdl2.SDL_MOUSEBUTTONDOWN, sdl2.SDL_MOUSEBUTTONDOWN):
 						within_button = self.within_boundary("button", m_pos)
 						if self.button_active and within_button:
 							return self.response
@@ -101,8 +102,9 @@ class Slider(BoundaryInspector, EnvAgent):
 				button_up = False
 				off_handle = False
 				for event in pump(True):
-					ui_request(event)
-					if event.type == sdl2.SDL_MOUSEBUTTONUP:
+					if e.type == sdl2.SDL_KEYDOWN:
+						ui_request(e.key.keysym)
+					elif event.type == sdl2.SDL_MOUSEBUTTONUP:
 						button_up = True
 
 				off_handle = not self.within_boundary("handle", mouse_pos())
@@ -255,8 +257,9 @@ class ButtonBar(BoundaryInspector, EnvAgent):
 			show_mouse_cursor()
 			events = pump(True)
 			for e in events:
-				ui_request(e)
-				if e.type == sdl2.SDL_MOUSEBUTTONDOWN:
+				if e.type == sdl2.SDL_KEYDOWN:
+					ui_request(e.key.keysym)
+				elif e.type == sdl2.SDL_MOUSEBUTTONDOWN:
 					selection = None
 					for b in self.buttons:
 						if self.within_boundary(b.button_text, [e.button.x, e.button.y]):
