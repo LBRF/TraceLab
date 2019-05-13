@@ -224,21 +224,39 @@ class TraceLab(Experiment, BoundaryInspector):
 
 
 	def setup(self):
+
+		# Set up custom text styles for the experiment
 		self.txtm.add_style('instructions', 18, [255, 255, 255, 255])
 		self.txtm.add_style('error', 18, [255, 0, 0, 255])
 		self.txtm.add_style('tiny', 12, [255, 255, 255, 255])
 		self.txtm.add_style('small', 14, [255, 255, 255, 255])
-		self.session = TraceLabSession()
-		self.user_id = self.session.user_id
-		self.trial_factory.dump()
 
+		# Initialize MagStim, if available
 		if P.magstim_available:
+			trigger_code = P.trigger_codes['tms_emg']
+			power_level = 15 if P.condition == 'sham' else 60
+			# Connect to the MagStim
 			self.magstim = BiStim(P.magstim_serial_port)
 			self.magstim.connect()
-			trigger_code = P.trigger_codes['tms_emg']
+			# Attempt to set up MagStim properly, retrying if errors encountered
+			init_attempts = 0
+			magstim_initialized = False
+			while not magstim_initialized:
+				if init_attempts > 4:
+					raise RuntimeError('Unable to initialized MagStim properly.')
+				self.magstim.setPowerA(power_level, receipt=True, delay=True)
+				self.magstim.setPowerB(0, receipt=True, delay=True)
+				self.magstim.setPulseInterval(10) # set pulse interval to low-res minimum (10ms)
+				self.magstim.highResolutionMode(True) # divides previous interval by 10 (now 1ms)
+				mag_info = self.magstim.getParameters[0]['bistimParam']
+				power_initialized = mag_info['powerA'] == power_level and mag_info['powerB'] == 0
+				magstim_initialized = power_initialized and mag_info['ppOffset'] == 1
+				init_attempts += 1
+			self.magstim.arm()
 		else:
 			trigger_code = P.trigger_codes['emg_only']
 
+		# Initialize LabJack, if available
 		if P.labjack_available:
 			self.lj = u3.U3()
 			self.lj.getCalibrationData()
@@ -261,6 +279,11 @@ class TraceLab(Experiment, BoundaryInspector):
 				self.lj_commands['baseline'],
 			]
 			self.lj.getFeedback(self.lj_commands['baseline'])
+
+		# Initialize participant ID and session options, reloading ID if it already exists
+		self.session = TraceLabSession()
+		self.user_id = self.session.user_id
+		self.trial_factory.dump()
 
 		self.loading_msg = message("Loading...", "default", blit_txt=False)
 		fill()
@@ -368,15 +391,6 @@ class TraceLab(Experiment, BoundaryInspector):
 				# Don't allow practicing for physical trials in this study
 				self.practice_button_bar = self.nopractice_button_bar
 			self.practice()
-
-		# If using magstim, set power level based on condition
-		if P.magstim_available:
-			power_level = 15 if P.condition == 'sham' else 60
-			self.magstim.setPowerA(power_level, receipt=True, delay=True)
-			self.magstim.setPowerB(0, receipt=True, delay=True)
-			self.magstim.setPulseInterval(10) # set pulse interval to low-res minimum (10ms)
-			self.magstim.highResolutionMode(True) # divides previous interval by 10 (now 1ms)
-			self.magstim.arm()
 
 
 	def block(self):
