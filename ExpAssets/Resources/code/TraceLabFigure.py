@@ -569,7 +569,7 @@ class TraceLabFigure(EnvAgent):
 		segments_path = os.path.join(self.exp.fig_dir, segments_file_name)
 		ext_interpolation_path = os.path.join(self.exp.fig_dir, ext_interp_file_name)
 		thumb_path = os.path.join(self.exp.fig_dir, thumb_file_name)
-		thumbx_path = os.path.join(self.exp.fig_dir, thumb_file_name)
+		thumbx_path = os.path.join(self.exp.fig_dir, thumbx_file_name)
 		with zipfile.ZipFile(fig_path[:-3] + "zip", "a", zipfile.ZIP_DEFLATED) as fig_zip:
 			f = open(fig_path, "w+")
 			if P.capture_figures_mode:
@@ -617,5 +617,5 @@ class TraceLabFigure(EnvAgent):
 
 	@property
 	def file_name(self):
-		f_name_data = [self.exp.user_id, P.block_number, P.trial_number, now(True, "%Y-%m-%d"), self.exp.session_number]
+		f_name_data = [P.participant_id, P.block_number, P.trial_number, now(True, "%Y-%m-%d"), self.exp.session_number]
 		return "p{0}_s{4}_b{1}_t{2}_{3}.tlf".format(*f_name_data)

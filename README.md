@@ -6,7 +6,7 @@ TraceLab is an experiment program designed to test fine motor control through th
 
 TraceLab is programmed in Python 2.7 using the [KLibs framework](https://github.com/a-hurst/klibs). It has been developed and tested on macOS (10.9 through 10.13), but should also work with minimal hassle on computers running [Ubuntu](https://www.ubuntu.com/download/desktop) or [Debian](https://www.debian.org/distrib/) Linux. 
 
-TraceLab is not directly compatible with any version of Windows, nor will it run under the [Windows Subsystem for Linux](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide).
+TraceLab has never been tested on Windows, but [it may work](https://github.com/a-hurst/klibs/wiki/Installation-on-Windows) with a recent version of KLibs.
 
 TraceLab was originally designed to run on a 24-inch touchscreen (specificaly, a [Planar PCT2485](https://www.amazon.com/Planar-PCT2485-Widescreen-Multi-Touch-Monitor/dp/B00DFB8KRQ)) at a resolution of 1920x1080. Although preliminary efforts have been made to make TraceLab resolution independent, some stimuli still do not scale properly when run at different resolutions, and data collection on other touch screens at different resolutions have not yet been tested. At present, we only recommend collecting data using a 1080p touchscreen.
 
@@ -29,7 +29,7 @@ Once this has finished, you can then download and install TraceLab with the foll
 cd ~/Downloads
 git clone https://github.com/LBRF/TraceLab.git
 cd TraceLab
-sudo -H pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 ### Using TraceLab

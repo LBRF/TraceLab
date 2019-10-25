@@ -2,7 +2,7 @@ __author__ = "Jonathan Mulle"
 import shutil, sys
 import cPickle as pickle
 
-from sdl2 import SDL_MOUSEBUTTONDOWN
+from sdl2 import SDL_MOUSEBUTTONDOWN, SDL_KEYDOWN
 from random import choice
 from os.path import join, exists
 from os import makedirs
@@ -26,10 +26,15 @@ from ButtonBar import Button, ButtonBar
 from KeyFrames import KeyFrame, FrameSet
 from TraceLabSession import TraceLabSession
 
-try:
-	import u3
-except ImportError:
-	pass
+if P.labjack_available:
+	try:
+		import u3
+	except ImportError:
+		cso("<red>Error: The LabJackPython module is not installed.</red>")
+		print("\nYou can either run 'pip install -r reqirements.txt' in the project folder to "
+			"install it, or disable LabJack triggering by setting 'labjack_available' to False in "
+			"the project's params.py file.\n")
+		raise
 
 WHITE = (255, 255, 255, 255)
 BLACK = (0, 0, 0, 255)
@@ -74,8 +79,6 @@ class TraceLab(Experiment, BoundaryInspector):
 	handedness = None
 	created = None
 	show_practice_display = False  # ie. this session should include the practice display
-	lj_codes = None
-	lj_spike_interval = 0.01
 	lj = None
 	auto_generate_count = None
 
@@ -169,7 +172,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		if P.auto_generate:
 			msg = "Generating figure {0} of {1}".format((P.auto_generate_count + 1) - self.auto_generate_count,
 														P.auto_generate_count)
-			message(msg, "default", registration=5, location=P.screen_c, flip=True)
+			message(msg, "default", registration=5, location=P.screen_c, flip_screen=True)
 
 		while not self.figure:
 			ui_request()
@@ -195,7 +198,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			if resp == "s":
 				f_name = self.query("Enter a filename for this figure (omitting suffixes):") + ".tlf"
 				fill()
-				message("Saving... ", flip=True)
+				message("Saving... ", flip_screen=True)
 				self.figure.write_out(f_name)
 
 		if P.auto_generate:
@@ -208,10 +211,14 @@ class TraceLab(Experiment, BoundaryInspector):
 
 
 	def setup(self):
+
+		# Set up custom text styles for the experiment
 		self.txtm.add_style('instructions', 18, [255, 255, 255, 255])
 		self.txtm.add_style('error', 18, [255, 0, 0, 255])
 		self.txtm.add_style('tiny', 12, [255, 255, 255, 255])
 		self.txtm.add_style('small', 14, [255, 255, 255, 255])
+
+		# Initialize participant ID and session options, reloading ID if it already exists
 		self.session = TraceLabSession()
 		self.user_id = self.session.user_id
 		self.trial_factory.dump()
@@ -228,8 +235,8 @@ class TraceLab(Experiment, BoundaryInspector):
 		if P.capture_figures_mode:
 			self.fig_dir = os.path.join(P.resources_dir, "figures")
 		else:
-			self.p_dir = os.path.join(P.data_dir, "p{0}_{1}".format(self.user_id, self.created))
-			self.fig_dir = os.path.join(self.p_dir, self.session_type, "session_" + str(self.session_number))
+			self.p_dir = os.path.join(P.data_dir, "p{0}_{1}".format(P.participant_id, self.created))
+			self.fig_dir = os.path.join(self.p_dir, "session_" + str(self.session_number))
 			if os.path.exists(self.fig_dir):
 				shutil.rmtree(self.fig_dir)
 			os.makedirs(self.fig_dir)
@@ -283,8 +290,10 @@ class TraceLab(Experiment, BoundaryInspector):
 				('Practice', [200, 100], self.__practice__),
 				('Begin', [200, 100], any_key)
 			]
-			self.practice_button_bar = ButtonBar(practice_buttons, [200, 100], P.btn_s_pad, P.y_pad,
-												 finish_button=False)
+			self.practice_button_bar = ButtonBar(
+				practice_buttons,
+				[200, 100], P.btn_s_pad, P.y_pad, finish_button=False
+			)
 
 		# import figures for use during testing sessions
 		fill()
@@ -308,7 +317,8 @@ class TraceLab(Experiment, BoundaryInspector):
 		
 		clear()
 		if P.enable_practice and self.show_practice_display:
-			message(P.practice_instructions, "instructions", registration=5, location=P.screen_c, align="center", blit_txt=True)
+			fill()
+			blit(self.practice_instructions, 5, P.screen_c)
 			flip()
 			any_key()
 			self.practice()
@@ -328,6 +338,7 @@ class TraceLab(Experiment, BoundaryInspector):
 				instructions_file = os.path.join(P.resources_dir, "Text", new_instructions['text'])
 				self.instructions = message(open(instructions_file).read(), "instructions", align="center", blit_txt=False)
 				self.practice_kf = FrameSet(self, new_instructions['frames'], "assets")
+				self.start_trial_button()
 				self.practice()
 
 		for i in range(1,4):
@@ -422,8 +433,16 @@ class TraceLab(Experiment, BoundaryInspector):
 
 
 	def trial(self):
+
+		start_delay = CountDown(3.0)
+		while start_delay.counting():
+			ui_request()
+			fill()
+			flip()
+
 		self.figure.animate()
 		self.animate_finish = self.evm.trial_time
+
 		try:
 			if self.exp_condition == PHYS:
 				self.physical_trial()
@@ -431,12 +450,12 @@ class TraceLab(Experiment, BoundaryInspector):
 				self.imagery_trial()
 			else:
 				self.control_trial()
-
 		except TrialException as e:
 			fill()
 			message(P.trial_error_msg, "error")
 			any_key()
 			raise TrialException(e.message)
+
 		fill()
 		flip()
 
@@ -459,7 +478,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			"it": self.it,
 			"control_question": self.control_question if self.exp_condition == CTRL else NA,
 			"control_response": self.control_response,
-			"mt": self.mt,
+			"mt": self.mt
 		}
 
 
@@ -472,6 +491,7 @@ class TraceLab(Experiment, BoundaryInspector):
 
 
 	def clean_up(self):
+
 		if self.session_number == self.session_count and P.enable_learned_figures_querying:
 			from klibs.KLCommunication import user_queries
 			self.fig_dir =  join(self.p_dir, "learned")
@@ -535,8 +555,9 @@ class TraceLab(Experiment, BoundaryInspector):
 			for e in event_queue:
 				if e.type == SDL_MOUSEBUTTONDOWN:
 					next_trial_button_clicked = self.within_boundary("next trial button", [e.button.x, e.button.y])
-				ui_request(e)
-		if P.demo_mode or P.dm_always_show_cursor:
+				elif e.type == SDL_KEYDOWN:
+					ui_request(e.key.keysym)
+		if not (P.demo_mode or P.dm_always_show_cursor):
 			hide_mouse_cursor()
 	
 
@@ -609,7 +630,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		if P.auto_generate:
 			fill()
 			message("Press command+q at any time to exit.\nPress any key to continue.", "default", registration=5,
-					location=P.screen_c, flip=True)
+					location=P.screen_c, flip_screen=True)
 			any_key()
 			finished = False
 		else:
@@ -618,7 +639,7 @@ class TraceLab(Experiment, BoundaryInspector):
 				  "Use the program 'ActivityMonitor' to kill ALL Python processes.\n" \
 				  "TraceLab will automatically exit when figure generation is complete.\n \n" \
 				  "Press any key to begin generating."
-			message(msg, "default", registration=5, location=P.screen_c, flip=True)
+			message(msg, "default", registration=5, location=P.screen_c, flip_screen=True)
 			any_key()
 			finished = self.auto_generate_count == 0
 		io_errors = []
@@ -629,13 +650,13 @@ class TraceLab(Experiment, BoundaryInspector):
 			except IOError:
 				io_errors.append((P.auto_generate_count + 1) - self.auto_generate_count)
 				if len(io_errors) > 10:
-					print "\n".join(io_errors)
+					print("\n".join(io_errors))
 					break
 		self.quit()
 
 	def capture_learned_figure(self, fig_number):
 		self.evm.start_clock()
-		fig_name = "p{0}_learned_figure_{1}.tlt".format(self.user_id, fig_number)
+		fig_name = "p{0}_learned_figure_{1}.tlt".format(P.participant_id, fig_number)
 		self.rc.draw_listener.reset()
 		self.rc.collect()
 		self.figure.write_out(fig_name, self.rc.draw_listener.responses[0][0])
@@ -687,5 +708,5 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	@property
 	def tracing_name(self):
-		fname_data = [self.user_id, P.block_number, P.trial_number, now(True, "%Y-%m-%d"), self.session_number]
+		fname_data = [P.participant_id, P.block_number, P.trial_number, now(True, "%Y-%m-%d"), self.session_number]
 		return "p{0}_s{4}_b{1}_t{2}_{3}.tlt".format(*fname_data)
