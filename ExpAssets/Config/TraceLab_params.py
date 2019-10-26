@@ -30,7 +30,10 @@ default_font_size = 18
 default_font_name = 'Hind-Medium'
 
 next_trial_message = "Tap here to continue."
-experiment_complete_message = "Thanks for participating! You're all finished. Hit any key or tap the screen to exit."
+experiment_complete_message = (
+    "Thanks for participating! "
+    "You're all finished. Hit any key or tap the screen to exit."
+)
 
 #########################################
 # Experiment Structure
@@ -51,7 +54,10 @@ figure_load_time = 4 # seconds
 ########################################
 enable_practice = True
 truncate_practice_animation = False
-practice_instructions = "The following is a demonstration period. Use this time to learn and then practice the task.\n\nTap the screen to continue."
+practice_instructions = (
+    "The following is a demonstration period. Use this time to learn and then practice the task."
+    "\n\nTap the screen to continue."
+)
 play_narration = True  # toggles the audio component
 practice_figure = "heart"
 practice_animation_time = 3500 # ms
@@ -60,22 +66,17 @@ bubble_location = (1550, 275)
 #########################################
 # Development Mode Settings
 #########################################
-dm_suppress_debug_pane = False
 dm_auto_threshold = True
-dm_override_practice = False  # only for testing on a monitor which is too small to support practice animations
-dm_render_progress = False  # if true, user's attempts to draw the figure will always be rendered
-dm_setup_only = False
+dm_render_progress = False  # if True, drawing feedback will always be shown in devmode
 dm_ignore_local_overrides = False
 dm_always_show_cursor = True
-use_log_file = False
-# For everything involving color,  http://www.colorspire.com/rgb-color-wheel/ will let you get the rgb values
-# for any color you prefer
+use_log_file = False  # Not fully implemented
 
 ########################################
 #  Dot Controls
 ########################################
 tracker_dot_size = 5  # diameter in px
-tracker_dot_perimeter = 4  # px; *additional* to tracking dot size, so the diameter gets 2 x this number larger
+tracker_dot_perimeter = 4  # width of stroke around tracker dot in px
 tracker_dot_color = (0, 0, 0)  # r, g, b, and the last value should always be 255
 tracker_dot_perimeter_color = (255, 255, 255)
 origin_size = 50  # px
@@ -96,7 +97,7 @@ btn_count = 5
 btn_size = 75  # px square
 btn_s_pad = 450  # margins on either side of screen where buttons cant be placed
 y_pad = 300  # how far down the screen, vertically, the buttons should be placed
-btn_instrux = "How many times did the dot change course {0}?"  #  the {0} will contain the direction text
+btn_instrux = "How many times did the dot change course {0}?"  # the {0} will contain the direction
 
 ########################################
 # Figure Controls
@@ -113,7 +114,7 @@ figures = [ # pre-generated figures to use
 generation_timeout = 10  # seconds
 capture_figures_mode = False
 auto_generate = True
-auto_generate_count = 2  # when auto_generate and capture_figures_mode are true, this many figures will be generated
+auto_generate_count = 2  # number of figures to generate in auto-generate/capture mode
 
 generate_quadrant_intersections = True
 outer_margin_v = 50
@@ -156,4 +157,6 @@ gen_ext_png = False  # image file from extended interpolation
 #########################################
 primary_table = "trials"
 unique_identifier = "user_id"
-exclude_data_cols = ['klibs_commit', 'created', 'session_count', 'sessions_completed', 'initialized']
+exclude_data_cols = [
+    'klibs_commit', 'created', 'session_count', 'sessions_completed', 'initialized'
+]

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 __author__ = 'jono'
+
+import time
 import sdl2
 
 import klibs.KLParams as P
@@ -8,10 +10,9 @@ from klibs.KLGraphics import blit, fill, flip
 from klibs.KLGraphics.KLDraw import Rectangle, Ellipse
 from klibs.KLCommunication import message
 from klibs.KLBoundary import BoundaryInspector
-from klibs.KLUtilities import *
+from klibs.KLUtilities import pump, flush, show_mouse_cursor, hide_mouse_cursor, mouse_pos
 from klibs.KLUserInterface import ui_request
 from klibs.KLEnvironment import EnvAgent
-from random import randrange
 
 
 class Slider(BoundaryInspector, EnvAgent):
@@ -40,8 +41,10 @@ class Slider(BoundaryInspector, EnvAgent):
 		self.upper_bound = None
 		self.handle = Ellipse(self.handle_radius * 2, fill=self.handle_color, stroke=self.handle_stroke)
 		self.bar = Rectangle(self.bar_size[0], self.bar_size[1], fill=self.bar_color, stroke=self.bar_stroke)
-		self.add_boundary("handle", [(self.pos[0] + self.handle_radius, self.pos[1]), self.handle_radius],
-						  CIRCLE_BOUNDARY)
+		self.add_boundary("handle", 
+			[(self.pos[0] + self.handle_radius, self.pos[1]), self.handle_radius],
+			CIRCLE_BOUNDARY
+		)
 		self.msg = message("How many corners did the dot traverse?", "default", blit_txt=False)
 		self.lb_msg = None
 		self.ub_msg = None
@@ -53,7 +56,6 @@ class Slider(BoundaryInspector, EnvAgent):
 		button_upper_left = (self.button_pos[0] - 50, self.button_pos[1] - 25)
 		button_botton_right = (self.button_pos[0] + 50, self.button_pos[1] + 25)
 		self.add_boundary("button", (button_upper_left, button_botton_right), RECT_BOUNDARY)
-		self.start_time = False
 
 		self.response = None
 
@@ -65,7 +67,7 @@ class Slider(BoundaryInspector, EnvAgent):
 			value = self.lower_bound + i * self.increment_by
 			self.increments.append([i_range, value])
 		for i in range(self.lower_bound, self.upper_bound + 1):
-			self.increment_surfs[i] = (message(str(i), "small", blit=False))
+			self.increment_surfs[i] = (message(str(i), "small", blit_txt=False))
 
 	def __update_handle_boundary(self):
 		if not self.handle_pos:
@@ -76,8 +78,8 @@ class Slider(BoundaryInspector, EnvAgent):
 		# this originally did some randomization around a given number and was later changed to hard values
 		self.lower_bound = 1
 		self.upper_bound = 5
-		self.lb_msg = message(str(self.lower_bound), "small", blit=False)
-		self.ub_msg = message(str(self.upper_bound), "small", blit=False)
+		self.lb_msg = message(str(self.lower_bound), "small", blit_txt=False)
+		self.ub_msg = message(str(self.upper_bound), "small", blit_txt=False)
 		self.__build_increments()
 
 	def slide(self):
@@ -89,21 +91,19 @@ class Slider(BoundaryInspector, EnvAgent):
 			if not dragging:
 				m_pos = mouse_pos()
 				for event in pump(True):
-					if e.type == sdl2.SDL_KEYDOWN:
-						ui_request(e.key.keysym)
+					if event.type == sdl2.SDL_KEYDOWN:
+						ui_request(event.key.keysym)
 					elif event.type in (sdl2.SDL_MOUSEBUTTONDOWN, sdl2.SDL_MOUSEBUTTONUP):
 						within_button = self.within_boundary("button", m_pos)
 						if self.button_active and within_button:
 							return self.response
 				dragging = self.within_boundary("handle", m_pos)
-				if not self.start_time and dragging:
-					self.start_time = P.clock.trial_time
 			if dragging:
 				button_up = False
 				off_handle = False
 				for event in pump(True):
-					if e.type == sdl2.SDL_KEYDOWN:
-						ui_request(e.key.keysym)
+					if event.type == sdl2.SDL_KEYDOWN:
+						ui_request(event.key.keysym)
 					elif event.type == sdl2.SDL_MOUSEBUTTONUP:
 						button_up = True
 
@@ -140,7 +140,6 @@ class Slider(BoundaryInspector, EnvAgent):
 		self.response = None
 		self.button_active = False
 		self.handle_pos = self.pos[0]
-		self.start_time = False
 
 	@property
 	def handle_pos(self):
@@ -263,7 +262,7 @@ class ButtonBar(BoundaryInspector, EnvAgent):
 					selection = None
 					for b in self.buttons:
 						if self.within_boundary(b.button_text, [e.button.x, e.button.y]):
-				 			self.toggle(b)
+							self.toggle(b)
 							if not self.rt:
 								self.rt = time.time() - self.start
 								mt_start = time.time()
@@ -310,4 +309,3 @@ class ButtonBar(BoundaryInspector, EnvAgent):
 	def update_message(self, message_text):
 		self.message_txt = message_text
 		self.message_r = message(message_text, "instructions", blit_txt=False)
-

@@ -461,6 +461,76 @@
 			},
 			"anonymous_value": null,
 			"active": true
+		},
+		{
+			"index": 8,
+			"title": "maunal figure generation prompt",
+			"database_field": null,
+			"query": "(s)ave, (d)iscard, (r)eplay or (q)uit?",
+			"accepted": ["s", "d", "r", "q"],
+			"allow_null": false,
+			"format": {
+				"type": "str",
+				"styles": {
+					"query": "default",
+					"input": "default",
+					"error": "alert"
+				},
+				"positions": {
+					"locations": {
+						"query": "auto",
+						"input": "auto",
+						"error": "auto"
+					},
+					"registrations": {
+						"query": "auto",
+						"input": "auto",
+						"error": "auto"
+					}
+				},
+				"password": false,
+				"range": null,
+				"case_sensitive": false,
+				"accept_as_true": null,
+				"action": null
+			},
+			"anonymous_value": null,
+			"active": true
+		},
+		{
+			"index": 9,
+			"title": "manual figure generation filename",
+			"database_field": null,
+			"query": "Enter a filename for this figure (omitting suffixes):",
+			"accepted": null,
+			"allow_null": false,
+			"format": {
+				"type": "str",
+				"styles": {
+					"query": "default",
+					"input": "default",
+					"error": "alert"
+				},
+				"positions": {
+					"locations": {
+						"query": "auto",
+						"input": "auto",
+						"error": "auto"
+					},
+					"registrations": {
+						"query": "auto",
+						"input": "auto",
+						"error": "auto"
+					}
+				},
+				"password": false,
+				"range": null,
+				"case_sensitive": false,
+				"accept_as_true": null,
+				"action": null
+			},
+			"anonymous_value": null,
+			"active": true
 		}
 	]
 }

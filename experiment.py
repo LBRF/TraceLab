@@ -1,29 +1,31 @@
+# -*- coding: utf-8 -*-
 __author__ = "Jonathan Mulle"
-import shutil, sys
+
+import os
+import time
+import shutil
 import cPickle as pickle
 
 from sdl2 import SDL_MOUSEBUTTONDOWN, SDL_KEYDOWN
 from random import choice
-from os.path import join, exists
-from os import makedirs
-from operator import sub
 
 from klibs.KLExceptions import TrialException
 from klibs import P
 from klibs.KLConstants import NA, RC_DRAW, RECT_BOUNDARY, CIRCLE_BOUNDARY, STROKE_OUTER, QUERY_UPD
-from klibs.KLUtilities import *
+from klibs.KLUtilities import (pump, flush, scale, now, str_pad, mouse_pos,
+	show_mouse_cursor, hide_mouse_cursor)
 from klibs.KLUtilities import colored_stdout as cso
 from klibs.KLGraphics import blit, fill, flip, clear
 from klibs.KLGraphics.KLDraw import Ellipse, Rectangle
-from klibs.KLCommunication import message, query
+from klibs.KLCommunication import user_queries, message, query
 from klibs.KLUserInterface import any_key, ui_request
 from klibs.KLTime import CountDown
 from klibs.KLExperiment import Experiment
 from TraceLabFigure import TraceLabFigure
 from klibs.KLBoundary import BoundaryInspector
 
-from ButtonBar import Button, ButtonBar
-from KeyFrames import KeyFrame, FrameSet
+from ButtonBar import ButtonBar
+from KeyFrames import FrameSet
 from TraceLabSession import TraceLabSession
 
 if P.labjack_available:
@@ -170,9 +172,11 @@ class TraceLab(Experiment, BoundaryInspector):
 	def __review_figure__(self):
 		fill()
 		if P.auto_generate:
-			msg = "Generating figure {0} of {1}".format((P.auto_generate_count + 1) - self.auto_generate_count,
-														P.auto_generate_count)
-			message(msg, "default", registration=5, location=P.screen_c, flip_screen=True)
+			current_fig = (P.auto_generate_count + 1) - self.auto_generate_count
+			max_fig = P.auto_generate_count
+			msg = "Generating figure {0} of {1}".format(current_fig, max_fig)
+			message(msg, "default", registration=5, location=P.screen_c)
+			flip()
 
 		while not self.figure:
 			ui_request()
@@ -187,7 +191,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.figure.animate()
 			flip()
 			any_key()
-			resp = self.query("(s)ave, (d)iscard, (r)eplay or (q)uit?", accepted=['s', 'd', 'r', 'q'])
+			resp = query(user_queries.experimental[8])
 			if resp == "q":
 				return True
 			if resp == "r":
@@ -196,9 +200,10 @@ class TraceLab(Experiment, BoundaryInspector):
 				self.figure = None
 				return False
 			if resp == "s":
-				f_name = self.query("Enter a filename for this figure (omitting suffixes):") + ".tlf"
+				f_name = query(user_queries.experimental[9]) + ".tlf"
 				fill()
-				message("Saving... ", flip_screen=True)
+				message("Saving... ")
+				flip()
 				self.figure.write_out(f_name)
 
 		if P.auto_generate:
@@ -269,8 +274,8 @@ class TraceLab(Experiment, BoundaryInspector):
 		instructions_file = self.instruction_files[self.exp_condition]['text']
 		instructions_path = os.path.join(P.resources_dir, "Text", instructions_file)
 		self.instructions = message(open(instructions_path).read(), "instructions", align="center", blit_txt=False)
-		self.control_fail_msg = message("Please keep your finger on the start area for the complete duration.", 'error',
-										blit_txt=False)
+		control_fail_txt = "Please keep your finger on the start area for the complete duration."
+		self.control_fail_msg = message(control_fail_txt, 'error', blit_txt=False)
 		self.next_trial_msg = message(P.next_trial_message, 'default', blit_txt=False)
 		self.next_trial_box = Rectangle(300, 75, stroke=(2, (255, 255, 255), STROKE_OUTER))
 		self.next_trial_button_loc = (250 if self.handedness == LEFT_HANDED else P.screen_x - 250, P.screen_y - 100)
@@ -411,8 +416,10 @@ class TraceLab(Experiment, BoundaryInspector):
 			self.origin_pos[0] = P.screen_x - self.origin_pos[0]
 		self.add_boundary("origin", [self.origin_pos, self.origin_size // 2], CIRCLE_BOUNDARY)
 		self.origin_boundary = [self.origin_pos, self.origin_size // 2]
-		self.rc.draw_listener.add_boundaries([('start', self.origin_boundary, CIRCLE_BOUNDARY),
-											  ('stop', self.origin_boundary, CIRCLE_BOUNDARY)])
+		self.rc.draw_listener.add_boundaries([
+			('start', self.origin_boundary, CIRCLE_BOUNDARY),
+			('stop', self.origin_boundary, CIRCLE_BOUNDARY)
+		])
 		if P.demo_mode:
 			self.figure.render()
 		self.figure.prepare_animation()
@@ -493,10 +500,9 @@ class TraceLab(Experiment, BoundaryInspector):
 	def clean_up(self):
 
 		if self.session_number == self.session_count and P.enable_learned_figures_querying:
-			from klibs.KLCommunication import user_queries
-			self.fig_dir =  join(self.p_dir, "learned")
-			if not exists(self.fig_dir):
-				makedirs(self.fig_dir)
+			self.fig_dir = os.path.join(self.p_dir, "learned")
+			if not os.path.exists(self.fig_dir):
+				os.makedirs(self.fig_dir)
 
 			learned_fig_num = 1
 			if query(user_queries.experimental[5]) == "y":
@@ -537,7 +543,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		any_key()
 
 
-	
+
 	### Assorted helper methods called within the main experiment structure ###
 
 	def start_trial_button(self):
@@ -559,7 +565,7 @@ class TraceLab(Experiment, BoundaryInspector):
 					ui_request(e.key.keysym)
 		if not (P.demo_mode or P.dm_always_show_cursor):
 			hide_mouse_cursor()
-	
+
 
 	def display_refresh(self):
 		fill()
@@ -590,7 +596,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		fill()
 		blit(self.origin_active, 5, self.origin_pos, flip_x=P.flip_x)
 		flip()
-		
+
 		while at_origin:
 			if not self.within_boundary('origin', mouse_pos()):
 				at_origin = False
@@ -629,8 +635,9 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.auto_generate_count = P.auto_generate_count
 		if P.auto_generate:
 			fill()
-			message("Press command+q at any time to exit.\nPress any key to continue.", "default", registration=5,
-					location=P.screen_c, flip_screen=True)
+			txt = "Press Control + Q at any time to exit.\nPress any key to continue."
+			message(txt, "default", registration=5, location=P.screen_c)
+			flip()
 			any_key()
 			finished = False
 		else:
@@ -639,7 +646,8 @@ class TraceLab(Experiment, BoundaryInspector):
 				  "Use the program 'ActivityMonitor' to kill ALL Python processes.\n" \
 				  "TraceLab will automatically exit when figure generation is complete.\n \n" \
 				  "Press any key to begin generating."
-			message(msg, "default", registration=5, location=P.screen_c, flip_screen=True)
+			message(msg, "default", registration=5, location=P.screen_c)
+			flip()
 			any_key()
 			finished = self.auto_generate_count == 0
 		io_errors = []

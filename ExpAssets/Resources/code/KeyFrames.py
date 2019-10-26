@@ -1,17 +1,22 @@
 __author__ = 'jono'
 
+import sys
+import traceback
+
 from os.path import join
 from time import time
 from sdl2 import SDL_KEYDOWN, SDLK_DELETE
+
 from klibs import P
 from klibs.KLGraphics import blit, flip, fill
 from klibs.KLGraphics.KLNumpySurface import NumpySurface as NpS
-from klibs.KLGraphics.KLDraw import *
+from klibs.KLGraphics.KLDraw import Rectangle, Ellipse, Annulus
 from klibs.KLCommunication import message
 from klibs.KLUserInterface import ui_request
 from klibs.KLAudio import AudioClip
-from klibs.KLUtilities import line_segment_len, full_trace, scale, pump
+from klibs.KLUtilities import line_segment_len, scale, pump
 from klibs.KLUtilities import colored_stdout as cso
+
 from TraceLabFigure import bezier_interpolation,  linear_interpolation
 from JSON_Object import JSON_Object
 
@@ -94,7 +99,7 @@ class KeyFrame(object):
 					pressed = True
 					break
 		return pressed
-		
+	
 	def play(self):
 		try:
 			if self.audio_track.started:
@@ -168,7 +173,9 @@ class KeyFrame(object):
 
 
 			if len(img_drctvs) == num_static_directives:
-				self.asset_frames = self.asset_frames = [[(self.assets[d.asset].contents, d.start, d.registration) for d in img_drctvs]]
+				self.asset_frames = [
+					[(self.assets[d.asset].contents, d.start, d.registration) for d in img_drctvs]
+				]
 				return
 
 			for d in img_drctvs:
@@ -181,7 +188,8 @@ class KeyFrame(object):
 					path_len = bezier_interpolation(d.start, d.end, d.control)[0]
 					raw_frames = bezier_interpolation(d.start, d.end, d.control, velocity=path_len / self.duration)
 				except TypeError:
-					print cso("<red>\tWarning: KeyFrame {0} does not fit in drawable area and will not be rendered.</red>".format(self.label))
+					txt = "KeyFrame {0} does not fit in drawable area and will not be rendered."
+					cso("<red>\tWarning: {0}</red>".format(txt.format(self.label)))
 					continue
 				except AttributeError:
 					try:
@@ -205,12 +213,14 @@ class KeyFrame(object):
 				self.asset_frames = asset_frames
 
 		except (IndexError, AttributeError, TypeError) as e:
-			import sys, traceback
-			print "An error occurred when rendering this frame. This is usually do an unexpected return " \
-				  "from an 'EVAL:' entry in the JSON script."
-			print "The error occurred in keyframe {0} and the last attempted directive was:".format(self.label)
+			err = (
+				"An error occurred when rendering this frame."
+				"This is usually do an unexpected return from an 'EVAL:' entry in the JSON script."
+				"The error occurred in keyframe {0} and the last attempted directive was:"
+			)
+			print(err.format(self.label))
 			last_directive.report()
-			print "\nThe original error was:\n"
+			print("\nThe original error was:\n")
 			traceback.print_exception(*sys.exc_info())
 			self.exp.quit()
 

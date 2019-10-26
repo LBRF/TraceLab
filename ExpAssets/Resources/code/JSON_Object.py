@@ -1,44 +1,45 @@
 __author__ = 'jono'
 
+import re
 import json
 import unicodedata
-from re import compile
 from math import floor
-from klibs import P
 from klibs.KLUtilities import line_segment_len, iterable
 from TraceLabFigure import interpolated_path_len
 
 
 def bezier_frames(self):
-		self.path_length = interpolated_path_len(self.frames)
-		draw_in = self.animate_target_time * 0.001
-		rate = 0.016666666666667
-		max_frames = int(draw_in / rate)
-		delta_d = floor(self.path_length / max_frames)
-		self.a_frames = [list(self.frames[0])]
-		seg_len = 0
-		for i in range(0, len(self.frames)):
-			p1 = [float(p) for p in self.frames[i]]
-			try:
-				p2 = [float(p) for p in self.frames[i+1]]
-			except IndexError:
-				p2 = [float(p) for p in self.frames[0]]
-			seg_len += line_segment_len(p1, p2)
-			if seg_len >= delta_d:
-				self.a_frames.append(list(self.frames[i]))
-				seg_len = 0
+	self.path_length = interpolated_path_len(self.frames)
+	draw_in = self.animate_target_time * 0.001
+	rate = 0.016666666666667
+	max_frames = int(draw_in / rate)
+	delta_d = floor(self.path_length / max_frames)
+	self.a_frames = [list(self.frames[0])]
+	seg_len = 0
+	for i in range(0, len(self.frames)):
+		p1 = [float(p) for p in self.frames[i]]
+		try:
+			p2 = [float(p) for p in self.frames[i+1]]
+		except IndexError:
+			p2 = [float(p) for p in self.frames[0]]
+		seg_len += line_segment_len(p1, p2)
+		if seg_len >= delta_d:
+			self.a_frames.append(list(self.frames[i]))
+			seg_len = 0
 
 
 class JSON_Object(object):
-	__eval_regex__ = compile("^EVAL:[ ]{0,}(.*)$")
+	__eval_regex__ = re.compile("^EVAL:[ ]{0,}(.*)$")
 
 	def __init__(self, json_file_path=None, decoded_data=None, child_object=False):
 		self.file_path = json_file_path
 		try:
-			self.__items__ = self.__unicode_to_str__(json.load(open(json_file_path)) if json_file_path else decoded_data)
+			contents = json.load(open(json_file_path)) if json_file_path else decoded_data
+			self.__items__ = self.__unicode_to_str__(contents)
 		except ValueError:
 			raise ValueError("JSON file is poorly formatted. Please check syntax.")
-		self.__objectified__ = self.__objectify__(self.__items__, not (child_object and type(decoded_data) is list))
+		first_pass = not (child_object and type(decoded_data) is list)
+		self.__objectified__ = self.__objectify__(self.__items__, first_pass)
 		self.__current__ = 0
 		try:
 			self.keys = self.__items__.keys()
@@ -64,12 +65,6 @@ class JSON_Object(object):
 				converted = eval(eval_statement.group(1))
 				if type(converted) is tuple:
 					converted = list(converted)
-				# todo: this next bit is broken, it's so unimportant I didn't even try to fix it but maybe one day
-				# on the off chance that the eval returns well-formed JSON
-				# try:
-				# 	converted = JSON_Object(converted)
-				# except ValueError:
-				# 	pass
 
 		elif type(content) in (list, dict):
 			#  manage dicts first
@@ -128,7 +123,7 @@ class JSON_Object(object):
 					setattr(self, i, v)
 		except (TypeError, IndexError) as e:
 			if initial_pass:
-				print e
+				print(e)
 				raise ValueError("Top-level element must be a key-value pair.")
 			converted = []
 			for i in content:
@@ -160,8 +155,7 @@ class JSON_Object(object):
 		vals = self.__items__ if not subtree else subtree.__items__
 		for k in keys:
 			if isinstance(vals[k], JSON_Object):
-				print "{0}".format(depth * "\t" + k)
+				print("{0}".format(depth * "\t" + k))
 				self.report(depth + 1, vals[k])
 			else:
-				print "{0}: {1}".format(depth * "\t" + k, vals[k])
-
+				print("{0}: {1}".format(depth * "\t" + k, vals[k]))

@@ -215,7 +215,8 @@ class TraceLabFigure(EnvAgent):
 			[(o_mh, s_c[1] + i_mv), (s_c[0] - i_mh, s_y - o_mv)],
 			[(o_mh, o_mv), (s_c[0] - i_mh, s_c[1] - i_mv)],
 			[(s_c[0] + i_mh, o_mv), (s_x - o_mh, s_c[1] - i_mv)],
-			[(s_c[0] + i_mh, s_c[1] + i_mv), (s_x - o_mh, s_y - o_mv)]]
+			[(s_c[0] + i_mh, s_c[1] + i_mv), (s_x - o_mh, s_y - o_mv)]
+		]
 		if P.generate_quadrant_intersections:
 			self.points[0][0] = (s_c[0], randrange(s_c[1] + i_mv, s_y - o_mv))
 			self.points[1][0] = (randrange(o_mh, s_c[0] - i_mh), s_c[1])
@@ -246,7 +247,8 @@ class TraceLabFigure(EnvAgent):
 		while len(segment_types):
 			s = segment_types.pop()
 			if P.verbose_mode and self.allow_verbosity:
-				print "Starting segment {0} of {2} ({1})".format(i, "curve" if s else "line", len(self.points))
+				fmt = [i, "curve" if s else "line", len(self.points)]
+				print("Starting segment {0} of {2} ({1})".format(fmt))
 			p1 = self.points[i]
 			try:
 				p2 = self.points[i + 1]
@@ -263,7 +265,8 @@ class TraceLabFigure(EnvAgent):
 					while not seg_ok:
 						if time.time() - start > P.generation_timeout:
 							raise RuntimeError("Figure generation timed out.")
-						if P.verbose_mode and self.allow_verbosity: print "{0} of {1}".format(i + 1, len(self.points))
+						if P.verbose_mode and self.allow_verbosity:
+							print("{0} of {1}".format(i + 1, len(self.points)))
 						ui_request()
 						segment = self.__generate_linear_segment__(p1, p2, prev_seg)
 						if all(type(n) is int for n in segment):
@@ -282,10 +285,10 @@ class TraceLabFigure(EnvAgent):
 				i_curved_fail = False
 				i_linear_fail = False
 				if P.verbose_mode and self.allow_verbosity:
-					print "Segment {0} done ({1})".format(i, "curve" if s else "line")
+					print("Segment {0} done ({1})".format(i, "curve" if s else "line"))
 			except TrialException:
 				e = "Generation failed on {0} segment.".format("curved" if s else "linear")
-				print e
+				print(e)
 				if len(segment_types) > 0 and not all(t == s for t in segment_types):
 					if s:
 						i_curved_fail = True
@@ -325,7 +328,7 @@ class TraceLabFigure(EnvAgent):
 			#  if the angle is too acute, try to shift p2 a way from prev_seg until it's ok
 			seg_angle = acute_angle(p1, p_prev, p2)
 			if seg_angle < self.min_lin_ang_width:
-				print seg_angle, self.min_lin_ang_width, p1, p_prev, p2
+				print(seg_angle, self.min_lin_ang_width, p1, p_prev, p2)
 				p2 = list(p2)
 				# p2[0] += 1 if p_prev[0] - p2[0] > 0 else -1
 				# p2[1] += 1 if p_prev[1] - p2[1] > 0 else -1
@@ -360,18 +363,20 @@ class TraceLabFigure(EnvAgent):
 
 		# decides the radial direction from p1->p2, clockwise or counterclockwise, from which the curve will extend
 		c_spin = choice([True, False])
-		if report: print "p_ref: {0}\nr: {1}\nq: {2}\n c_spin: {3}".format(p_ref, r, q, c_spin)
+		if report:
+			print("p_ref: {0}\nr: {1}\nq: {2}\n c_spin: {3}".format(p_ref, r, q, c_spin))
 
 		#  find linear distance between p1 and p2
 		d_p1p2 = line_segment_len(p1, p2)
-		if report: print "seg_line_len: {0}\nasym_max: {1}\nasym_min: {2}".format(d_p1p2, self.asym_max, self.asym_min)
+		if report:
+			print("seg_line_len: {0}\nasym_max: {1}\nasym_min: {2}".format(d_p1p2, self.asym_max, self.asym_min))
 
 		#  next lines decide location of the perpendicular extension from control point and p1->p2
 		c_base_shift = choice(self.peak_shift_range) * d_p1p2
-		c_base_amp = c_base_shift if choice(
-			[1, 0]) else d_p1p2 - c_base_shift  # ensure shift not always away from p_ref
+		c_base_amp = c_base_shift if choice([1, 0]) else d_p1p2 - c_base_shift  # ensure shift not always away from p_ref
 		p_c_base = point_pos(p_ref, c_base_amp, r)
-		if report: print "c_base_amp: {0}\np_c_base: {1}".format(c_base_amp, p_c_base)
+		if report: 
+			print("c_base_amp: {0}\np_c_base: {1}".format(c_base_amp, p_c_base))
 
 		#  the closer of p1, p2 to p_c_base will be p_c_ref when determining p_c_min
 		if c_base_amp > 0.5 * d_p1p2:
@@ -386,18 +391,19 @@ class TraceLabFigure(EnvAgent):
 			sheer = 0
 		a_c = 90 + sheer if choice([0, 1]) else 90 - sheer
 
-		if report: print "P.curve_sheer: {3}, c_angle_max: {0}\nc_angle_min: {1}\nc_angle: {2}".format(self.a_c_min,
-																									   self.a_c_max,
-																									   a_c,
-																									   P.curve_sheer)
+		if report:
+			txt = "P.curve_sheer: {3}, c_angle_max: {0}\nc_angle_min: {1}\nc_angle: {2}"
+			print(txt.format(self.a_c_min, self.a_c_max, a_c, P.curve_sheer))
+
 		#  get the range of x,y values for p_c
 		v_c_base = [p_c_base, a_c, r, c_spin]  # ie. p_c_base as origin
 		v_c_min = [p_c_ref, self.curve_min_slope, r, not c_spin]  # ie. p_c_ref as origin
 		v_c_max = [p_c_ref, self.curve_max_slope, r, not c_spin]  # ie. p_c_ref as origin
 		p_c_min = linear_intersection(v_c_min, v_c_base)
 		p_c_max = linear_intersection(v_c_max, v_c_base)
-		if report:  print "v_c_min: {0}\nv_c_maz: {1}\np_c_min: {2}\np_c_max: {3}".format(v_c_min, v_c_max, p_c_min,
-																						  p_c_max)
+		if report:
+			txt = "v_c_min: {0}\nv_c_maz: {1}\np_c_min: {2}\np_c_max: {3}"
+			print(txt.format(v_c_min, v_c_max, p_c_min, p_c_max))
 
 		#  choose an initial p_c; depending on quadrant, no guarantee x,y values in p_c_min are less than p_c_max
 		try:
@@ -427,7 +433,7 @@ class TraceLabFigure(EnvAgent):
 				if v_c_b_len == 0:
 					if flipped_spin:
 						e = "Curve failed, p1:{0}, p2: {1}, p_c: {2}, v_c_b_len: {3}".format(p1, p2, p_c, v_c_b_len)
-						print e
+						print(e)
 						raise TrialException(e)
 					else:
 						flipped_spin = True
@@ -500,7 +506,7 @@ class TraceLabFigure(EnvAgent):
 	def draw(self, dots=True, flip=True):
 		fill()
 		blit(self.render(), flip_x=P.flip_x)
-		message("Path Length: {0}".format(interpolated_path_len(self.frames), "default", location=(25, 50)))
+		message("Path Length: {0}".format(interpolated_path_len(self.frames)), "default", location=(25, 50))
 		if dots:
 			for p in self.points:
 				blit(self.r_dot, 5, p, flip_x=P.flip_x)

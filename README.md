@@ -4,7 +4,7 @@ TraceLab is an experiment program designed to test fine motor control through th
 
 ## Requirements
 
-TraceLab is programmed in Python 2.7 using the [KLibs framework](https://github.com/a-hurst/klibs). It has been developed and tested on macOS (10.9 through 10.13), but should also work with minimal hassle on computers running [Ubuntu](https://www.ubuntu.com/download/desktop) or [Debian](https://www.debian.org/distrib/) Linux. 
+TraceLab is programmed in Python 2.7 using the [KLibs framework](https://github.com/a-hurst/klibs). It has been developed and tested on macOS (10.9 through 10.13), but should also work with minimal hassle on computers running [Ubuntu](https://www.ubuntu.com/download/desktop) or [Debian](https://www.debian.org/distrib/) Linux.
 
 TraceLab has never been tested on Windows, but [it may work](https://github.com/a-hurst/klibs/wiki/Installation-on-Windows) with a recent version of KLibs.
 
@@ -16,16 +16,17 @@ TraceLab was originally designed to run on a 24-inch touchscreen (specificaly, a
 
 In order to install TraceLab, we first need to install some prerequisite libraries that it depends on. These can be easily installed on macOS using the [Homebrew](https://brew.sh) package manager. Once Homebrew has been installed, you can install all the required libraries by entering the following line at the command prompt:
 
-```
+```bash
 brew install sdl2 sdl2_ttf sdl2_mixer portaudio
 ```
+
 You will also need the **pip** package manager to install the rest of TraceLab's prerequisites. If it isn't installed already, you can install it by running `sudo easy_install pip`.
 
 ### Installation
 
 Once this has finished, you can then download and install TraceLab with the following commands (replacing `~/Downloads` with the path to the folder where you would like to install TraceLab):
 
-```
+```bash
 cd ~/Downloads
 git clone https://github.com/LBRF/TraceLab.git
 cd TraceLab
