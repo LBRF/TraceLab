@@ -3,29 +3,9 @@ __author__ = 'jono'
 import re
 import json
 import unicodedata
-from math import floor
-from klibs.KLUtilities import line_segment_len, iterable
-from TraceLabFigure import interpolated_path_len
 
-
-def bezier_frames(self):
-	self.path_length = interpolated_path_len(self.frames)
-	draw_in = self.animate_target_time * 0.001
-	rate = 0.016666666666667
-	max_frames = int(draw_in / rate)
-	delta_d = floor(self.path_length / max_frames)
-	self.a_frames = [list(self.frames[0])]
-	seg_len = 0
-	for i in range(0, len(self.frames)):
-		p1 = [float(p) for p in self.frames[i]]
-		try:
-			p2 = [float(p) for p in self.frames[i+1]]
-		except IndexError:
-			p2 = [float(p) for p in self.frames[0]]
-		seg_len += line_segment_len(p1, p2)
-		if seg_len >= delta_d:
-			self.a_frames.append(list(self.frames[i]))
-			seg_len = 0
+from klibs import P
+from klibs.KLUtilities import iterable
 
 
 class JSON_Object(object):

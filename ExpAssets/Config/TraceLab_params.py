@@ -113,8 +113,8 @@ figures = [ # pre-generated figures to use
 
 generation_timeout = 10  # seconds
 capture_figures_mode = False
-auto_generate = True
-auto_generate_count = 2  # number of figures to generate in auto-generate/capture mode
+auto_generate = False
+auto_generate_count = 10  # number of figures to generate in auto-generate/capture mode
 
 generate_quadrant_intersections = True
 outer_margin_v = 50

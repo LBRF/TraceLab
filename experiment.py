@@ -12,21 +12,22 @@ from random import choice
 from klibs.KLExceptions import TrialException
 from klibs import P
 from klibs.KLConstants import NA, RC_DRAW, RECT_BOUNDARY, CIRCLE_BOUNDARY, STROKE_OUTER, QUERY_UPD
+from klibs.KLBoundary import BoundaryInspector
+from klibs.KLTime import CountDown
+from klibs.KLUserInterface import any_key, ui_request
 from klibs.KLUtilities import (pump, flush, scale, now, str_pad, mouse_pos,
 	show_mouse_cursor, hide_mouse_cursor)
 from klibs.KLUtilities import colored_stdout as cso
 from klibs.KLGraphics import blit, fill, flip, clear
 from klibs.KLGraphics.KLDraw import Ellipse, Rectangle
 from klibs.KLCommunication import user_queries, message, query
-from klibs.KLUserInterface import any_key, ui_request
-from klibs.KLTime import CountDown
-from klibs.KLExperiment import Experiment
-from TraceLabFigure import TraceLabFigure
-from klibs.KLBoundary import BoundaryInspector
+from klibs.KLResponseCollectors import DrawResponse
 
+from TraceLabSession import TraceLabSession
+from TraceLabFigure import TraceLabFigure
 from ButtonBar import ButtonBar
 from KeyFrames import FrameSet
-from TraceLabSession import TraceLabSession
+
 
 if P.labjack_available:
 	try:
@@ -59,6 +60,7 @@ SESSION_TST = "testing"
 LEFT_HANDED = "l"
 RIGHT_HANDED = "r"
 
+
 if __name__ == "__main__":
 	cso("<red>\nError: TraceLab must be run through the KLibs environment " \
 		"and cannot be run directly with Python. Please run " \
@@ -66,7 +68,9 @@ if __name__ == "__main__":
 		"experiment, replacing 'screensize' with the diagonal size " \
 		"of your monitor in inches (e.g. 24).\n</red>")
 
+
 class TraceLab(Experiment, BoundaryInspector):
+
 	# session vars
 	p_dir = None
 	fig_dir = None
@@ -82,7 +86,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	created = None
 	show_practice_display = False  # ie. this session should include the practice display
 	lj = None
-	auto_generate_count = None
+	log_f = None
 
 	# graphical elements
 	imgs = {}
@@ -151,11 +155,13 @@ class TraceLab(Experiment, BoundaryInspector):
 
 
 	def __init__(self, *args, **kwargs):
+
 		super(TraceLab, self).__init__(*args, **kwargs)
 		P.flip_x = P.mirror_mode
 
 
 	def __practice__(self):
+
 		self.figure_name = P.practice_figure
 		self.animate_time = P.practice_animation_time
 		self.setup_response_collector()
@@ -169,52 +175,6 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.trial_clean_up()
 
 
-	def __review_figure__(self):
-		fill()
-		if P.auto_generate:
-			current_fig = (P.auto_generate_count + 1) - self.auto_generate_count
-			max_fig = P.auto_generate_count
-			msg = "Generating figure {0} of {1}".format(current_fig, max_fig)
-			message(msg, "default", registration=5, location=P.screen_c)
-			flip()
-
-		while not self.figure:
-			ui_request()
-			try:
-				self.figure = TraceLabFigure(self)
-			except RuntimeError:
-				pass
-		self.animate_time = 5000.0
-		self.figure.render()
-		self.figure.prepare_animation()
-		if not P.auto_generate:
-			self.figure.animate()
-			flip()
-			any_key()
-			resp = query(user_queries.experimental[8])
-			if resp == "q":
-				return True
-			if resp == "r":
-				return False
-			if resp == "d":
-				self.figure = None
-				return False
-			if resp == "s":
-				f_name = query(user_queries.experimental[9]) + ".tlf"
-				fill()
-				message("Saving... ")
-				flip()
-				self.figure.write_out(f_name)
-
-		if P.auto_generate:
-			self.auto_generate_count -= 1
-			self.figure.write_out("template_{0}.tlf".format(time.time()))
-			if self.auto_generate_count == 0:
-				return True
-
-			# reset stuff before the experiment proper begins
-
-
 	def setup(self):
 
 		# Set up custom text styles for the experiment
@@ -222,6 +182,20 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.txtm.add_style('error', 18, [255, 0, 0, 255])
 		self.txtm.add_style('tiny', 12, [255, 255, 255, 255])
 		self.txtm.add_style('small', 14, [255, 255, 255, 255])
+
+		# Initialize dot that traces shape of figures
+		if P.tracker_dot_perimeter > 0:
+			tracker_dot_stroke = [P.tracker_dot_perimeter, P.tracker_dot_perimeter_color, STROKE_OUTER]
+		else:
+			tracker_dot_stroke = None
+		self.tracker_dot_proto = Ellipse(P.tracker_dot_size, stroke=tracker_dot_stroke, fill=P.tracker_dot_color)
+		self.tracker_dot = self.tracker_dot_proto.render()
+
+		# If capture figures mode, generate, view, and optionally save some figures
+		if P.capture_figures_mode:
+			self.fig_dir = os.path.join(P.resources_dir, "figures")
+			self.capture_figures()
+			self.quit()
 
 		# Initialize participant ID and session options, reloading ID if it already exists
 		self.session = TraceLabSession()
@@ -237,26 +211,13 @@ class TraceLab(Experiment, BoundaryInspector):
 		# Scale UI size variables to current screen resolution
 		P.btn_s_pad = scale((P.btn_s_pad,0), (1920,1080))[0]
 		P.y_pad = scale((0,P.y_pad), (1920,1080))[1]
-		if P.capture_figures_mode:
-			self.fig_dir = os.path.join(P.resources_dir, "figures")
-		else:
-			self.p_dir = os.path.join(P.data_dir, "p{0}_{1}".format(P.participant_id, self.created))
-			self.fig_dir = os.path.join(self.p_dir, "session_" + str(self.session_number))
-			if os.path.exists(self.fig_dir):
-				shutil.rmtree(self.fig_dir)
-			os.makedirs(self.fig_dir)
+		self.p_dir = os.path.join(P.data_dir, "p{0}_{1}".format(P.participant_id, self.created))
+		self.fig_dir = os.path.join(self.p_dir, "session_" + str(self.session_number))
+		if os.path.exists(self.fig_dir):
+			shutil.rmtree(self.fig_dir)
+		os.makedirs(self.fig_dir)
 
 		self.origin_proto = Ellipse(self.origin_size)
-
-		if P.tracker_dot_perimeter > 0:
-			tracker_dot_stroke = [P.tracker_dot_perimeter, P.tracker_dot_perimeter_color, STROKE_OUTER]
-		else:
-			tracker_dot_stroke = None
-		self.tracker_dot_proto = Ellipse(P.tracker_dot_size, stroke=tracker_dot_stroke, fill=P.tracker_dot_color)
-		self.tracker_dot = self.tracker_dot_proto.render()
-
-		if P.capture_figures_mode:
-			self.capture_figures()
 
 		btn_vars = ([(str(i), P.btn_size, None) for i in range(1, 6)], P.btn_size, P.btn_s_pad, P.y_pad, P.btn_instrux)
 		self.button_bar = ButtonBar(*btn_vars)
@@ -357,7 +318,8 @@ class TraceLab(Experiment, BoundaryInspector):
 
 
 	def setup_response_collector(self):
-		self.rc.uses(RC_DRAW)
+
+		self.rc.uses(DrawResponse)
 		self.rc.draw_listener.start_boundary = 'start'
 		self.rc.draw_listener.stop_boundary = 'stop'
 		self.rc.draw_listener.show_active_cursor = False
@@ -366,14 +328,17 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.rc.draw_listener.interrupts = True
 		self.rc.draw_listener.min_samples = 5
 		self.rc.display_callback = self.display_refresh
+
 		if P.dm_always_show_cursor:
 			self.rc.draw_listener.show_active_cursor = True
 			self.rc.draw_listener.show_inactive_cursor = True
+
 		if P.demo_mode or self.feedback_type in (FB_DRAW, FB_ALL):
 			self.rc.draw_listener.render_real_time = True
 
 
 	def trial_prep(self):
+
 		self.log("\n\n********** TRIAL {0} ***********\n".format(P.trial_number))
 		self.control_question = choice(["LEFT", "RIGHT", "UP", "DOWN"])
 		self.rt = 0.0
@@ -386,22 +351,16 @@ class TraceLab(Experiment, BoundaryInspector):
 		blit(self.loading_msg, 5, P.screen_c, flip_x=P.flip_x)
 		flip()
 
-		failed_generations = 0
 		self.figure = None
 		figure_load_start = time.time()
 		if self.figure_name == "random":
-			while not self.figure:
-				try:
-					self.figure = TraceLabFigure()
-				except RuntimeError as e:
-					failed_generations += 1
-					if failed_generations > 10:
-						print(e.message)
-						self.quit()
-					continue
+			self.figure = self._generate_figure(duration=self.animate_time)
 		else:
 			self.figure = self.test_figures[self.figure_name]
 			self.figure.animate_target_time = self.animate_time
+			self.figure.render()
+			self.figure.prepare_animation()
+
 		# To make sure load times for random figures are the same as for pre-generated ones,
 		# we have a fixed load time for figures.
 		if (time.time() - figure_load_start) > P.figure_load_time:
@@ -420,15 +379,12 @@ class TraceLab(Experiment, BoundaryInspector):
 			('start', self.origin_boundary, CIRCLE_BOUNDARY),
 			('stop', self.origin_boundary, CIRCLE_BOUNDARY)
 		])
-		if P.demo_mode:
-			self.figure.render()
-		self.figure.prepare_animation()
 
 		#  now that prep is finished, start the intertrial interval calculation
 		if self.intertrial_start:
 			self.intertrial_end = time.time()
 			intertrial_interval = self.intertrial_end - self.intertrial_start
-			self.log_f.write(str(intertrial_interval) + "\n")
+			self.log(str(intertrial_interval) + "\n")
 		if P.trial_number > 1:
 			self.log("t{0}_intertrial_interval_end".format(P.trial_number - 1), True)
 			self.log("write_out")
@@ -490,6 +446,7 @@ class TraceLab(Experiment, BoundaryInspector):
 
 
 	def trial_clean_up(self):
+
 		if not self.__practicing__:
 			self.figure.write_out()
 			self.figure.write_out(self.tracing_name, self.drawing)
@@ -579,7 +536,9 @@ class TraceLab(Experiment, BoundaryInspector):
 				pass
 		flip()
 
+
 	def imagery_trial(self):
+
 		fill()
 		blit(self.origin_inactive, 5, self.origin_pos, flip_x=P.flip_x)
 		flip()
@@ -587,6 +546,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		start = self.evm.trial_time
 		if P.demo_mode or P.dm_always_show_cursor:
 			show_mouse_cursor()
+			
 		at_origin = False
 		while not at_origin:
 			if self.within_boundary('origin', mouse_pos()):
@@ -604,7 +564,9 @@ class TraceLab(Experiment, BoundaryInspector):
 		if P.demo_mode:
 			hide_mouse_cursor()
 
+
 	def physical_trial(self):
+
 		self.rc.collect()
 		self.rt = self.rc.draw_listener.start_time
 		self.drawing = self.rc.draw_listener.responses[0][0]
@@ -620,49 +582,111 @@ class TraceLab(Experiment, BoundaryInspector):
 			while time.time() - start < P.max_feedback_time / 1000.0:
 				ui_request()
 
+
 	def control_trial(self):
+
 		if P.dm_always_show_cursor:
 			show_mouse_cursor()
+
 		self.button_bar.update_message(P.btn_instrux.format(self.control_question))
 		self.button_bar.render()
 		self.button_bar.collect_response()
+
 		self.rt = self.button_bar.rt
 		self.mt = self.button_bar.mt
 		self.control_response = self.button_bar.response
 
-	def capture_figures(self):
-		self.animate_time = 5000.0
-		self.auto_generate_count = P.auto_generate_count
-		if P.auto_generate:
-			fill()
-			txt = "Press Control + Q at any time to exit.\nPress any key to continue."
-			message(txt, "default", registration=5, location=P.screen_c)
-			flip()
-			any_key()
-			finished = False
-		else:
-			fill()
-			msg = "Quitting (command+q) may be unresponsive during autogeneration.\n" \
-				  "Use the program 'ActivityMonitor' to kill ALL Python processes.\n" \
-				  "TraceLab will automatically exit when figure generation is complete.\n \n" \
-				  "Press any key to begin generating."
-			message(msg, "default", registration=5, location=P.screen_c)
-			flip()
-			any_key()
-			finished = self.auto_generate_count == 0
-		io_errors = []
-		while not finished:
+
+	def _generate_figure(self, duration):
+
+		failures = 0
+		figure = None
+		while not figure:
+			ui_request()
 			try:
-				finished = self.__review_figure__()
-				self.figure = None
-			except IOError:
-				io_errors.append((P.auto_generate_count + 1) - self.auto_generate_count)
-				if len(io_errors) > 10:
-					print("\n".join(io_errors))
-					break
-		self.quit()
+				figure = TraceLabFigure(animate_time=duration)
+				figure.render()
+				figure.prepare_animation()
+			except RuntimeError:
+				failures += 1
+				if failures > 10:
+					print("\nUnable to generate a viable figure after 10 tries, quitting...\n")
+					self.quit()
+
+		return figure
+
+
+	def capture_figures(self):
+
+		txt = ("Welcome to the TraceLab figure generator!\n\n"
+			  "Generated figures will be saved to 'ExpAssets/Resources/figures/'. {0}\n\n"
+			  "Press any key to begin.")
+		auto_txt = "TraceLab will automatically exit when figure generation is complete."
+		txt = txt.format(auto_txt if P.auto_generate else "")
+
+		fill()
+		message(txt, "default", registration=5, location=P.screen_c, align='center')
+		flip()
+		any_key()
+
+		if P.auto_generate:
+	
+			num_figs = P.auto_generate_count
+			for i in range(0, num_figs):
+
+				txt = "Generating figure {0} of {1}...".format(i + 1, num_figs)
+				msg = message(txt, "default", blit_txt=False)
+				fill()
+				blit(msg, 5, P.screen_c)
+				flip()
+
+				figure = self._generate_figure(duration=5000.0)
+				figure.write_out("template_{0}.tlf".format(time.time()))
+	
+		else:
+
+			done = False
+			while not done:
+
+				msg = message("Generating...", "default", blit_txt=False)
+				fill()
+				blit(msg, 5, P.screen_c)
+				flip()
+
+				figure = self._generate_figure(duration=5000.0)
+				while True:
+
+					# Animate figure on screen with dot, then show full rendered shape
+					figure.animate()
+					msg = message("Press any key to continue.", blit_txt=False)
+					fill()
+					blit(figure.rendered, 5, P.screen_c)
+					blit(msg, 7, (30, 30))
+					flip()
+					any_key()
+
+					# Prompt participants whether they want to (q)uit, (r)eplay animation,
+					# (d)iscard figure and move to next, or (s)ave figure to file
+					resp = query(user_queries.experimental[8])
+					if resp == "r": # replay
+						continue
+					elif resp == "d": # discard
+						break
+					elif resp == "q": # quit
+						done = True
+						break
+					elif resp == "s": # save
+						f_name = query(user_queries.experimental[9]) + ".tlf"
+						msg = message("Saving... ", blit_txt=False)
+						fill()
+						blit(msg, 5, P.screen_c)
+						flip()
+						figure.write_out(f_name)
+						break
+
 
 	def capture_learned_figure(self, fig_number):
+
 		self.evm.start_clock()
 		fig_name = "p{0}_learned_figure_{1}.tlt".format(P.participant_id, fig_number)
 		self.rc.draw_listener.reset()
@@ -670,7 +694,9 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.figure.write_out(fig_name, self.rc.draw_listener.responses[0][0])
 		self.evm.stop_clock()
 
+
 	def practice(self, play_key_frames=True, callback=None):
+
 		self.__practicing__ = True
 
 		if callback == self.__practice__:
@@ -695,24 +721,32 @@ class TraceLab(Experiment, BoundaryInspector):
 
 		return self.practice(callback=cb)
 
+
 	def log(self, msg, t=None):
-		if P.use_log_file:
+
+		if self.log_f:
 			if msg != "write_out":
 				if t:
 					self.intertrial_timing_logs[msg] = time.time()
 				else:
 					self.log_f.write(msg)
 			else:
-				ivi_start = self.intertrial_timing_logs['t{0}_intertrial_interval_start'.format(P.trial_number - 1)]
-				ivi_end = self.intertrial_timing_logs['t{0}_intertrial_interval_end'.format(P.trial_number - 1)]
-				self.log_f.write(str_pad("intertrial_interval" + ":", 32) + str(ivi_end - ivi_start) + "\n")
+				key = 't{0}_intertrial_interval_{1}'
+				iti_index = P.trial_number - 1
+				iti_start = self.intertrial_timing_logs[key.format(iti_index, "start")]
+				iti_end = self.intertrial_timing_logs[key.format(iti_index, "end")]
+				iti = str(iti_end - iti_start)
+				self.log_f.write(str_pad("intertrial_interval" + ":", 32) + iti + "\n")
+
 
 	def quit(self):
+
 		try:
 			self.log_f.close()
 		except AttributeError:
 			pass
 		super(TraceLab, self).quit()
+
 
 	@property
 	def tracing_name(self):
