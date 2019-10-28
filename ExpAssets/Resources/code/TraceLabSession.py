@@ -202,9 +202,8 @@ class TraceLabSession(EnvAgent):
 			"practice_session": self.exp.show_practice_display,
 		}
 		self.exp.log("*************** HEADER START ***************\n")
-		if P.use_log_file:
-			for k in header:
-				self.exp.log("{0}: {1}\n".format(k, header[k]))
+		for k in header:
+			self.exp.log("{0}: {1}\n".format(k, header[k]))
 		self.exp.log("**************** HEADER END ****************\n")
 
 
@@ -212,7 +211,9 @@ class TraceLabSession(EnvAgent):
 		# `id`,`random_seed`,`exp_condition`,`session_count`,`feedback_type`,`sessions_completed`,`figure_set`
 		P.participant_id, P.random_seed, self.exp.exp_condition, self.exp.feedback_type, self.exp.session_count, self.exp.session_number, self.exp.figure_set_name, self.exp.handedness, self.exp.created = user_data
 		self.exp.session_number += 1
-		self.exp.log_f = open(os.path.join(P.local_dir, "logs", "P{0}_log_f.txt".format(self.user_id)), "w+")
+		if P.use_log_file:
+			log_path = os.path.join(P.local_dir, "logs", "P{0}_log_f.txt".format(self.user_id))
+			self.exp.log_f = open(log_path, "w+")
 		if self.exp.session_number == 1:
 			self.exp.show_practice_display = True
 		elif self.exp.session_count > 1 and self.exp.session_number == self.exp.session_count:
@@ -244,12 +245,23 @@ class TraceLabSession(EnvAgent):
 				if os.path.exists(pickle_file):
 					with open(pickle_file, 'rb') as p:
 						self.exp.test_figures[f[0]] = pickle.load(p)
-				else:
+				elif os.path.exists(f_path + ".zip"):
 					# If no picked figure, generate figure from .zip and pickle
 					# for future runs.
 					self.exp.test_figures[f[0]] = TraceLabFigure(f_path)
 					with open(pickle_file, 'wb') as p:
 						pickle.dump(self.exp.test_figures[f[0]], p, -1)
+				else:
+					fill()
+					e_msg = (
+						"The figure '{0}' listed in the figure set '{1}' wasn't found.\n"
+						"Please check that the file is named correctly and try again. "
+						"TraceLab will now exit.".format(f[0], self.exp.figure_set_name)
+					)
+					blit(message(e_msg, blit_txt=False), 5, P.screen_c)
+					flip()
+					any_key()
+					self.exp.quit()
 			self.exp.figure_set.append(f)
 
 		# load original ivars file into a named object

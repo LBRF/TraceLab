@@ -1,11 +1,12 @@
 from os.path import exists, join
 
 from klibs import P
-from klibs.KLNamedObject import NamedObject, NamedInventory
+from klibs.KLNamedObject import NamedObject
 from klibs.KLUtilities import iterable
 from klibs.KLGraphics import fill, blit, flip
 from klibs.KLCommunication import message
 from klibs.KLUserInterface import any_key
+
 
 class FigureSet(NamedObject):
 
@@ -29,13 +30,3 @@ class FigureSet(NamedObject):
 	def add_figures(self, *figures):
 		for f in figures:
 			self.add_figure(f)
-
-	def confirm_figure(self, figure_name):
-		if not exists(join(P.resources_dir, "figures", figure_name+".zip")):
-			fill()
-			e_msg = "One or more figures listed in the figure set '{0}' weren't found.\n " \
-					"Please check for errors and try again. TraceLab will now exit.".format(self.name)
-			message(e_msg, location=P.screen_c, registration=5, flip_screen=True)
-			any_key()
-			self.quit()
-
