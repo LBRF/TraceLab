@@ -59,7 +59,7 @@
                     "asset": "dot",
                     "registration": 5,
                     "start": [960, 360],
-                    "end": [1420, 360],
+                    "end": [1440, 360],
                     "control": [1200, 120]
                 }
             ]
@@ -73,7 +73,7 @@
                 {
                     "asset": "dot",
                     "registration": 5,
-                    "start": [1420, 360],
+                    "start": [1440, 360],
                     "end": [960, 780]
                 }
             ]
@@ -359,7 +359,7 @@
                     "asset": "dot",
                     "registration": 5,
                     "start": [960, 360],
-                    "end": [1420, 360],
+                    "end": [1440, 360],
                     "control": [1200, 120]
                 }
             ]
@@ -373,8 +373,8 @@
                 {
                     "asset": "dot",
                     "registration": 5,
-                    "start": [1420, 360],
-                    "end": [1420, 360]
+                    "start": [1440, 360],
+                    "end": [1440, 360]
                 },
                 {
                     "asset": "dotted curve",
@@ -405,8 +405,8 @@
                 {
                     "asset": "dot",
                     "registration": 5,
-                    "start": [1420, 360],
-                    "end": [1420, 360]
+                    "start": [1440, 360],
+                    "end": [1440, 360]
                 },
                 {
                     "asset": "dotted curve",
@@ -443,8 +443,8 @@
                 {
                     "asset": "dot",
                     "registration": 5,
-                    "start": [1420, 360],
-                    "end": [1420, 360]
+                    "start": [1440, 360],
+                    "end": [1440, 360]
                 }
             ]
         },
@@ -469,7 +469,7 @@
                 {
                     "asset": "dot",
                     "registration": 5,
-                    "start": [1420, 360],
+                    "start": [1440, 360],
                     "end": [960, 780]
                 }
             ]
@@ -489,14 +489,14 @@
                 {
                     "asset": "dotted line",
                     "registration": 9,
-                    "start": [1420, 360],
-                    "end": [1420, 360]
+                    "start": [1440, 360],
+                    "end": [1440, 360]
                 },
                 {
                     "asset": "arrow down",
                     "registration": 8,
-                    "start": [1420, 370],
-                    "end": [1420, 370]
+                    "start": [1440, 370],
+                    "end": [1440, 370]
                 },
                 {
                     "asset": "dot",
@@ -522,8 +522,8 @@
                 {
                     "asset": "dotted line",
                     "registration": 9,
-                    "start": [1420, 360],
-                    "end": [1420, 360]
+                    "start": [1440, 360],
+                    "end": [1440, 360]
                 },
                 {
                     "asset": "arrow left",

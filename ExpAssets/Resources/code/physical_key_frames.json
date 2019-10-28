@@ -79,7 +79,7 @@
                     "asset":  "dot",
 					"registration": 5,
                     "start": [960, 360],
-                    "end": [1420, 360],
+                    "end": [1440, 360],
                     "control": [1200, 120]
                 }
             ]
@@ -93,7 +93,7 @@
                 {
                     "asset":  "dot",
 					"registration": 5,
-                    "start": [1420, 360],
+                    "start": [1440, 360],
                     "end": [960, 780]
                 }
             ]
@@ -430,7 +430,7 @@
                     "asset":  "pointer",
 					"registration": 5,
                     "start": [1050, 460],
-                    "end": [1510, 460],
+                    "end": [1530, 460],
                     "control": [1290, 220]
                 }
             ]
@@ -450,7 +450,7 @@
                 {
                     "asset":  "pointer",
 					"registration": 5,
-                    "start": [1510, 460],
+                    "start": [1530, 460],
                     "end": [1140, 810]
                 }
             ]
