@@ -1,136 +1,93 @@
 # -*- coding: utf-8 -*-
-__author__ = 'jono'
-# import klibs.KLParams as P
+__author__ = 'Jonathan Mulle & Austin Hurst'
+
 import os
+import math
 from itertools import chain
-from PIL import ImagePath, ImageDraw, Image
-import png
+from random import random, randrange, uniform, choice, shuffle
+
 import zipfile
 import aggdraw
-from klibs.KLGraphics import aggdraw_to_array, blit, flip, fill
-from math import ceil, floor
-from random import randrange, choice, shuffle
-import time
+import numpy as np
+from PIL import Image
+
 from klibs.KLExceptions import TrialException
-import klibs.KLParams as P
-from klibs.KLUtilities import *
-from klibs.KLGraphics.KLDraw import Ellipse
-from klibs.KLUserInterface import ui_request
-from klibs. KLCommunication import message
 from klibs.KLEnvironment import EnvAgent
+import klibs.KLParams as P
+from klibs.KLBoundary import RectangleBoundary
+from klibs.KLTime import precise_time as time
+from klibs.KLUtilities import (angle_between, acute_angle, point_pos, indices_of, scale, now,
+	line_segment_len)
+from klibs.KLUserInterface import ui_request
+from klibs.KLGraphics import blit, flip, fill
+from klibs.KLGraphics.KLDraw import Ellipse
+from klibs.KLCommunication import message
+
+from drawingutils import (bezier_length, bezier_bounds, linear_intersection,
+	bezier_transitions_by_dist, bezier_interpolation,
+	linear_transitions_by_dist, linear_interpolation)
 
 
-def pascal_row(n):
-	# This returns the nth row of Pascal's Triangle
-	result = [1]
-	x, numerator = 1, n
-	for denominator in range(1, n // 2 + 1):
-		# print(numerator,denominator,x)
-		x *= numerator
-		x /= denominator
-		result.append(x)
-		numerator -= 1
-		# n is even							  n is odd
-		result.extend(reversed(result[:-1]) if n & 1 == 0 else reversed(result))
-	return result
+def frames_to_path(frames, unique=False):
+	"""Renders a list of (x, y) tuples representing the frames of a figure into an
+	aggdraw Path object for drawing.
+	"""
+	path = aggdraw.Path()
+	path.moveto(frames[0][0], frames[0][1]) # start at first point
+
+	prev = frames[0]
+	for f in frames:
+		# If current frame not different than previous one, discard it
+		if unique and (f[0] == prev[0] and f[1] == prev[1]):
+			continue
+		path.lineto(f[0], f[1])
+		prev = f
+
+	path.close()
+	return path
 
 
-global drawable_area
+def segments_to_symbol(segments):
+	"""Renders a list of curve and line segments into an aggdraw Path object for drawing.
+	"""
 
-"""
-Velocity is measured in (whatever units your distance function uses)/(draw call)
-dt is time between draw calls
-"""
+	path = "M{0},{1} ".format(segments[0][1][0][0], segments[0][1][0][1]) # start at first point
+	for curve, points in segments:
+		if curve:
+			start, end, ctrl = points
+			path += "Q{0},{1},{2},{3} ".format(ctrl[0], ctrl[1], end[0], end[1])
+		else:
+			start, end = points
+			path += "L{0},{1} ".format(end[0], end[1])
 
+	return aggdraw.Symbol(path)
 
-def linear_interpolation(origin, destination, velocity=None, dt=0.01666667):
-	# Ensure the point travels along straight segments at the expected velocity
-	angle = angle_between(origin, destination)
-	distance = line_segment_len(origin, destination)
-	time_to_complete = distance / velocity
-	###
-	steps = int(time_to_complete / dt)  # abs(d_x) if abs(d_x) < abs(d_y) else abs(d_y)
-	step_size = distance / steps
-	points = [origin]
-	for i in range(steps):
-		points.append(point_pos(origin, i * step_size, angle))
-	points.append(destination)
-	# if segmented:
-	# 	segments = list(chunk(points, 2))
-	# 	return segments if len(segments[-1]) == 2 else segments[:-1]
-	# else:
-	return points
-
-
-"""
-Velocity is measured in (whatever units your distance function uses)/(draw call) dt is time between draw calls
-"""
-
-
-def bezier_interpolation(origin, destination, control_o, control_d=None, velocity=None, dt=0.016666666667):
-	global drawable_area
-	destination = tuple(destination)
-	origin = tuple(origin)
-	control_o = tuple(control_o)
-	if control_d:
-		control_d = tuple(control_d)
-	points = [origin, control_o, control_d, destination] if control_d else [origin, control_o, destination]
-	n = len(points)
-
-	def bezier(transitions):
-		combinations = pascal_row(n - 1)
-		result = []
-		for t in transitions:
-			t_powers = (t ** i for i in range(n))
-			u_powers = reversed([(1 - t) ** i for i in range(n)])
-			coefficients = [c * a * b for c, a, b in zip(combinations, t_powers, u_powers)]
-			result.append(list(sum([coef * p for coef, p in zip(coefficients, ps)]) for ps in zip(*points)))
-		return result
-
-	# Estimate the length of the curve
-	first_guess = bezier([0.01 * t for t in range(101)])
-	for i in first_guess:
-		if i[0] < 0 or i[0] > P.screen_x or i[1] < 0 or i[1] > P.screen_y:
-			return False
-	length_of_first_guess = interpolated_path_len(first_guess)
-	if not velocity:
-		return [length_of_first_guess, [origin, destination, control_o, control_d]]
-	# Calculate the time to traverse the curve at expected velocity
-	time_to_completion = length_of_first_guess / velocity
-	# The ceil call here biases long
-	# If you want to resolve issues of dt not dividing time to complete
-	# another way, feel free. The shorter the lines relative to the
-	# velocity, the more error this introduces.
-	steps = int(math.ceil(time_to_completion / dt))
-	# The +1 ensures we get to the end
-	final_curve = bezier([t / float(steps) for t in range(steps + 1)])
-
-	return [(int(p[0]), int(p[1])) for p in final_curve]
 
 
 class TraceLabFigure(EnvAgent):
+
 	allow_verbosity = False
 
-	def __init__(self, import_path=None, animate_time=None, manufacture=None):
-		self.animate_target_time = animate_time if animate_time else self.exp.animate_time
+	def __init__(self, import_path=None, animate_time=5000.0, manufacture=None):
+
+		self.animate_target_time = animate_time
 		self.seg_count = None
 		self.min_spq = P.avg_seg_per_q[0] - P.avg_seg_per_q[1]
 		self.max_spq = P.avg_seg_per_q[0] + P.avg_seg_per_q[1]
 		self.min_spf = P.avg_seg_per_f[0] - P.avg_seg_per_f[1]
 		self.max_spf = P.avg_seg_per_f[0] + P.avg_seg_per_f[1]
-		self.extended_interpolation = []  # regardless of real draw time, stores interpolation at 5s for data analysis
 
 		# segment generation controls
 		self.min_lin_ang_width = P.min_linear_acuteness * 180
-		min_shift_size = int(P.peak_shift[0] * 1000)
+		min_shift_size = int(P.peak_shift[0] * 1000) # TODO: fix this mess
 		max_shift_size = int(P.peak_shift[1] * 1000)
 		self.peak_shift_range = [i / 1000.0 for i in range(min_shift_size, max_shift_size)]
 
-		min_curve_sheer = int(P.curve_sheer[0] * 9000)
+		min_curve_sheer = int(P.curve_sheer[0] * 9000) # TODO: fix this mess
 		max_curve_sheer = int(P.curve_sheer[1] * 9000)
 		self.c_sheer_range = [i / 100.0 for i in range(min_curve_sheer, max_curve_sheer)]
-		self.curve_min_slope = int(floor(90.0 - P.slope_magnitude[0] * 90.0))
-		self.curve_max_slope = int(ceil(90.0 + P.slope_magnitude[0] * 90.0))
+		self.curve_min_slope = int(math.floor(90.0 - P.slope_magnitude[0] * 90.0))
+		self.curve_max_slope = int(math.ceil(90.0 + P.slope_magnitude[0] * 90.0))
 
 		if self.min_spf > 4 * self.min_spq > self.max_spf:
 			raise ValueError("Impossible min/max values chosen for points per figure/quadrant.")
@@ -138,48 +95,38 @@ class TraceLabFigure(EnvAgent):
 			raise ValueError("Margins too large; no drawable area remains.")
 		if P.outer_margin_v + P.inner_margin_v // 2 > P.screen_c[1]:
 			raise ValueError("Margins too large; no drawable area remains.")
+
 		self.quad_ranges = None
 		self.r_dot = Ellipse(5, fill=(255, 45, 45)).render()
 		self.total_spf = 0
 		self.points = []
 		self.raw_segments = []
-		self.segments = []
-		self.frames = None  # complete interpolated path
-		self.a_frames = None  # interpolation minus dropped frames to ensure constant velocity
-		self.path_length = 0
-		self.p_len = 0
-		self.width = P.screen_x - (2 * P.outer_margin_h)
-		self.height = P.screen_y - (2 * P.outer_margin_h)
+		self.a_frames = []  # interpolated frames tracing figure at given duration / fps
+		self.trial_a_frames = []  # a_frames plus frame onset times for previous animation
+		self.width = P.screen_x - (2 * P.outer_margin_h)  # NOTE: This isn't actually used anywhere
+		self.height = P.screen_y - (2 * P.outer_margin_v)  # NOTE: This isn't actually used anywhere
+		self.screen_res = [P.screen_x, P.screen_y]
 		self.avg_velocity = None  # last call to animate only
 		self.animate_time = None  # last call to animate only
 		self.rendered = False
+
 		if import_path:
-			self.__import_figure__(import_path)
-			return
-		if manufacture:
+			self.__import_figure(import_path)
+		elif manufacture:
 			self.points = manufacture['points']
 			self.seg_count = len(self.points)
-			for s in manufacture['segments']:
-				try:
-					path_len = bezier_interpolation(s[0], s[1], s[2])[0]
-					self.segments.append(bezier_interpolation(s[0], s[1], s[2], velocity=path_len / s[3]))
-				except (IndexError, TypeError):
-					self.segments.append(linear_interpolation(s[0], s[1], line_segment_len(s[0], s[1]) / s[2]))
-			self.frames = list(chain(*self.segments))
+			self.raw_segments = manufacture['segments']
 		else:
-			self.__generate_null_points__()
-			self.__gen_quad_intersects__()
-			self.__gen_real_points__(not P.generate_quadrant_intersections)
-			self.__gen_segments__()
-			self.segments_to_frames()
-		# self.extended_interpolation = self.frames
-		# self.frames = []
-		# self.segments = []
-		# self.animate_target_time =
-		# self.segments_to_frames()
-		# # self.__gen_segments__()
+			self.__generate_null_points()
+			self.__gen_quad_intersects()
+			self.__gen_real_points(not P.generate_quadrant_intersections)
+			self.__gen_segments()
 
-	def __generate_null_points__(self):
+		self.prepare_animation(duration=5000.0) # pre-render animation frames at slowest rate
+
+
+	def __generate_null_points(self):
+
 		# make sure minimums won't exceed randomly generated total
 		while 4 * self.min_spq >= self.total_spf <= self.max_spf:
 			try:
@@ -199,8 +146,9 @@ class TraceLabFigure(EnvAgent):
 			if len(self.points[q]) < self.max_spq:
 				self.points[q].append(None)
 
-	def __gen_quad_intersects__(self):
-		global drawable_area
+
+	def __gen_quad_intersects(self):
+
 		# replaces the first index of each quadrant in self.points with a coordinate tuple
 		i_mv = P.inner_margin_v
 		i_mh = P.inner_margin_h
@@ -209,7 +157,6 @@ class TraceLabFigure(EnvAgent):
 		s_c = P.screen_c
 		s_x = P.screen_x
 		s_y = P.screen_y
-		drawable_area = {"x": range(o_mh, P.screen_x - o_mh), "y": range(o_mv, P.screen_y - o_mv)}
 
 		self.quad_ranges = [
 			[(o_mh, s_c[1] + i_mv), (s_c[0] - i_mh, s_y - o_mv)],
@@ -223,7 +170,9 @@ class TraceLabFigure(EnvAgent):
 			self.points[2][0] = (s_c[0], randrange(o_mv, s_c[1] - i_mv))
 			self.points[3][0] = (randrange(s_c[0] + i_mh, s_x - o_mh), s_c[1])
 
-	def __gen_real_points__(self, overwrite_intersections=False):
+
+	def __gen_real_points(self, overwrite_intersections=False):
+
 		start_index = 0 if overwrite_intersections else 1
 		for i in range(0, 4):
 			for j in range(start_index, len(self.points[i])):
@@ -233,54 +182,58 @@ class TraceLabFigure(EnvAgent):
 		self.points = list(chain(*self.points))
 		self.seg_count = len(self.points)
 
-	def __gen_segments__(self):
+
+	def __gen_segments(self):
+
 		# first generate the segments to establish a path length
 		first_pass_segs = []  # ie. raw interpolation unadjusted for velocity
-		self.p_len = 0
+		#segment_types = [random() > P.angularity for i in range(len(self.points))]
 		seg_type_dist = int((1.0 - P.angularity) * 10) * [True] + int(P.angularity * 10) * [False]
 		segment_types = [choice(seg_type_dist)] * len(self.points)
 
 		i = 0
 		i_linear_fail = False
 		i_curved_fail = False
-		start = time.time()
+		start = time()
 		while len(segment_types):
+
 			s = segment_types.pop()
-			if P.verbose_mode and self.allow_verbosity:
-				fmt = [i, "curve" if s else "line", len(self.points)]
-				print("Starting segment {0} of {2} ({1})".format(fmt))
 			p1 = self.points[i]
-			try:
-				p2 = self.points[i + 1]
-			except IndexError:
-				p2 = self.points[0]
+			p2 = self.points[(i + 1) if (i + 1) < len(self.points) else 0]
+
+			if P.verbose_mode and self.allow_verbosity:
+				fmt = [i, "curve" if s else "line", (p1, p2)]
+				print("Starting segment {0} of {2} ({1})".format(*fmt))
 
 			try:
 				if not s:  # ie. not curve
-					try:
-						prev_seg = first_pass_segs[-1]
-					except IndexError:
-						prev_seg = None
-					seg_ok = False
+					if len(first_pass_segs) == 0:
+						segment = [False, (p1, p2)]
+						seg_ok = True
+					else:
+						seg_ok = False
 					while not seg_ok:
-						if time.time() - start > P.generation_timeout:
-							raise RuntimeError("Figure generation timed out.")
+						prev_seg = first_pass_segs[-1]
+						if time() - start > P.generation_timeout:
+							raise RuntimeError("Figure generation timed out (1).")
 						if P.verbose_mode and self.allow_verbosity:
 							print("{0} of {1}".format(i + 1, len(self.points)))
 						ui_request()
-						segment = self.__generate_linear_segment__(p1, p2, prev_seg)
+						segment = self.__generate_linear_segment(p1, p2, prev_seg)
 						if all(type(n) is int for n in segment):
 							if not len(segment_types):
 								raise TrialException("Can't change origin location.")
 							p2 = segment
 						else:
 							seg_ok = True
-					self.p_len += segment[0]
-					first_pass_segs.append(segment[1])
 				else:
-					segment = self.__generate_curved_segment__(p1, p2, start)
-					self.p_len += segment[0]
-					first_pass_segs.append(segment[1])
+					segment = self.__generate_curved_segment(p1, p2)
+					# If bezier control point same as start or end points, just make segment linear
+					start, end, ctrl = segment[1]
+					if start == ctrl or end == ctrl:
+						segment = [False, (start, end)]
+
+				first_pass_segs.append(segment)
 				i += 1
 				i_curved_fail = False
 				i_linear_fail = False
@@ -302,36 +255,51 @@ class TraceLabFigure(EnvAgent):
 					raise RuntimeError(e)
 		self.raw_segments = first_pass_segs
 
-	def segments_to_frames(self):
-		# use path length and animation duration to establish a velocity and then do a second interpolation
-		for i in range(0, 2):
-			self.segments = []
-			velocity = self.p_len / self.animate_target_time if i else 5
-			for segment in self.raw_segments:
-				circle = segment[0]
-				try:
-					p1, p2, ctrl = segment[1]
-				except ValueError:
-					p1, p2 = segment[1]
-				if circle:
-					self.segments.append(bezier_interpolation(p1, p2, ctrl, None, velocity))
-				else:
-					self.segments.append(linear_interpolation(p1, p2, velocity))
-			if i:
-				self.frames = list(chain(*self.segments))
-			else:
-				self.extended_interpolation = list(chain(*self.segments))
 
-	def __generate_linear_segment__(self, p1, p2, prev_seg=None):
-		if prev_seg and prev_seg[0]:
+	def segments_to_frames(self, segments, duration, fps=60):
+		"""Converts linear/bezier segments comprising a shape into a list of (x, y) pixel
+		coordinates representing the frames of the shape animation at the given velocity.
+
+		Args:
+			segments (list): A list of linear and/or bezier segments generated by the
+				__generate_linear_segment and __generate_curved_segment functions.
+			duration (float): The duration the tracing motion in milliseconds.
+			fps (float, optional): The frame rate at which to render the frames.
+		"""
+
+		total_frames = int(round(duration / (1000.0 / fps)))
+		dist_per_frame = self.path_length / total_frames
+
+		offset = 0
+		fig_frames = []
+		for curve, points in segments:
+
+			if curve:
+				start, end, ctrl = points
+				dist = bezier_length(start, ctrl, end)
+				transitions = bezier_transitions_by_dist(start, ctrl, end, dist_per_frame, offset)
+				fig_frames += bezier_interpolation(start, end, ctrl, transitions)
+			else:
+				start, end = points
+				dist = line_segment_len(start, end)
+				transitions = linear_transitions_by_dist(start, end, dist_per_frame, offset)
+				fig_frames += linear_interpolation(start, end, transitions)
+
+			frames = len(transitions) - 1
+			offset = (frames + 1) * dist_per_frame - (dist - offset)
+
+		return fig_frames
+
+
+	def __generate_linear_segment(self, p1, p2, prev_seg=None):
+
+		if prev_seg and prev_seg[0] == False:
 			p_prev = prev_seg[1][0]
 			#  if the angle is too acute, try to shift p2 a way from prev_seg until it's ok
 			seg_angle = acute_angle(p1, p_prev, p2)
 			if seg_angle < self.min_lin_ang_width:
 				print(seg_angle, self.min_lin_ang_width, p1, p_prev, p2)
 				p2 = list(p2)
-				# p2[0] += 1 if p_prev[0] - p2[0] > 0 else -1
-				# p2[1] += 1 if p_prev[1] - p2[1] > 0 else -1
 
 				a_p1_prev = angle_between(p1, p_prev)
 				a_prev_p2 = angle_between(p_prev, p2, a_p1_prev)
@@ -341,12 +309,13 @@ class TraceLabFigure(EnvAgent):
 					raise TrialException("No appropriate angle can be generated.")
 				else:
 					return p2
-		return [line_segment_len(p1, p2), [False, (p1, p2)]]
 
-	def __generate_curved_segment__(self, p1, p2, start):
+		return [False, (p1, p2)]
+
+
+	def __generate_curved_segment(self, p1, p2):
+
 		# single letters here mean: r = rotation, c = control, p = point, q = quadrant, a = angle, v = vector
-		report = False
-		segment = None
 
 		#  reference p is the closer of p1, p2 to the screen center for the purposes of determining direction and angle
 		p_ref = p1
@@ -357,25 +326,26 @@ class TraceLabFigure(EnvAgent):
 		r = angle_between(p_ref, p2 if p_ref == p1 else p1)
 
 		#  depending on the qudrant, p1->p2
-		q = self.__quadrant_from_point__(p1)
+		q = self.__quadrant_from_point(p1)
 		if len(q) > 1:  # if p1 is directly on an axis line an ambiguous answer is returned; check p2 instead
-			q = self.__quadrant_from_point__([p2])
+			q = self.__quadrant_from_point(p2)
 
 		# decides the radial direction from p1->p2, clockwise or counterclockwise, from which the curve will extend
 		c_spin = choice([True, False])
-		if report:
+		if P.verbose_mode and self.allow_verbosity:
 			print("p_ref: {0}\nr: {1}\nq: {2}\n c_spin: {3}".format(p_ref, r, q, c_spin))
 
 		#  find linear distance between p1 and p2
 		d_p1p2 = line_segment_len(p1, p2)
-		if report:
+		if P.verbose_mode and self.allow_verbosity:
 			print("seg_line_len: {0}\nasym_max: {1}\nasym_min: {2}".format(d_p1p2, self.asym_max, self.asym_min))
 
 		#  next lines decide location of the perpendicular extension from control point and p1->p2
 		c_base_shift = choice(self.peak_shift_range) * d_p1p2
+		#c_base_shift = uniform(P.peak_shift[0], P.peak_shift[1]) * d_p1p2
 		c_base_amp = c_base_shift if choice([1, 0]) else d_p1p2 - c_base_shift  # ensure shift not always away from p_ref
 		p_c_base = point_pos(p_ref, c_base_amp, r)
-		if report: 
+		if P.verbose_mode and self.allow_verbosity: 
 			print("c_base_amp: {0}\np_c_base: {1}".format(c_base_amp, p_c_base))
 
 		#  the closer of p1, p2 to p_c_base will be p_c_ref when determining p_c_min
@@ -386,12 +356,12 @@ class TraceLabFigure(EnvAgent):
 
 		# choose an angle, deviating from 90 (+/-) by some random value, for p_c_ref -> p_c_base -> p_c
 		try:
-			sheer = choice(self.c_sheer_range)
+			sheer = choice(self.c_sheer_range) #uniform(P.curve_sheer[0], P.curve_sheer[1]) * 90
 		except IndexError:
 			sheer = 0
 		a_c = 90 + sheer if choice([0, 1]) else 90 - sheer
 
-		if report:
+		if P.verbose_mode and self.allow_verbosity:
 			txt = "P.curve_sheer: {3}, c_angle_max: {0}\nc_angle_min: {1}\nc_angle: {2}"
 			print(txt.format(self.a_c_min, self.a_c_max, a_c, P.curve_sheer))
 
@@ -401,11 +371,11 @@ class TraceLabFigure(EnvAgent):
 		v_c_max = [p_c_ref, self.curve_max_slope, r, not c_spin]  # ie. p_c_ref as origin
 		p_c_min = linear_intersection(v_c_min, v_c_base)
 		p_c_max = linear_intersection(v_c_max, v_c_base)
-		if report:
-			txt = "v_c_min: {0}\nv_c_maz: {1}\np_c_min: {2}\np_c_max: {3}"
+		if P.verbose_mode and self.allow_verbosity:
+			txt = "v_c_min: {0}\nv_c_max: {1}\np_c_min: {2}\np_c_max: {3}"
 			print(txt.format(v_c_min, v_c_max, p_c_min, p_c_max))
 
-		#  choose an initial p_c; depending on quadrant, no guarantee x,y values in p_c_min are less than p_c_max
+		# choose an initial p_c; depending on quadrant, no guarantee x,y values in p_c_min are less than p_c_max
 		try:
 			p_c_x = randrange(p_c_min[0], p_c_max[0])
 		except ValueError:
@@ -422,32 +392,68 @@ class TraceLabFigure(EnvAgent):
 			except ValueError:
 				p_c = (p_c_x, p_c_max[1])
 
-		v_c_b_len = line_segment_len(p_c_ref, p_c)
-		initial_v_c_b_len = v_c_b_len
-		flipped_spin = False
-		while not segment:
-			if time.time() - start > P.generation_timeout:
-				raise RuntimeError("Figure generation timed out.")
-			if not p_c:
-				v_c_b_len -= 1
-				if v_c_b_len == 0:
-					if flipped_spin:
-						e = "Curve failed, p1:{0}, p2: {1}, p_c: {2}, v_c_b_len: {3}".format(p1, p2, p_c, v_c_b_len)
-						print(e)
-						raise TrialException(e)
-					else:
-						flipped_spin = True
-						v_c_b_len = initial_v_c_b_len
-				p_c = point_pos(p_c_base, v_c_b_len, a_c, r, c_spin)
-			interpolation = bezier_interpolation(p1, p2, p_c)
-			if interpolation is False:
-				p_c = None
-			else:
-				return [interpolation[0], [True, [p1, p2, p_c]]]
+		#min_x, max_x = sorted([p_c_min[0], p_c_max[0]])
+		#min_y, max_y = sorted([p_c_min[1], p_c_max[1]])
+		#p_c_x = min_x if min_x == max_x else randrange(min_x, max_x)
+		#p_c_y = min_y if min_y == max_y else randrange(min_y, max_y)
+		#p_c = (p_c_x, p_c_y)
 
-	def __quadrant_from_point__(self, point):
-		if len(point) == 1: point = point[0]
+		# Make sure the generated bezier curve doesn't go off the screen, adjusting if necessary
+		v_c_b_len = line_segment_len(p_c_ref, p_c)
+		v_c_b_increment = -1
+		screen_bounds = RectangleBoundary('screen', (0, 0), P.screen_x_y)
+		prev_err = 0
+		failures = 0
+		segment = False
+		while not segment:
+
+			bounds = bezier_bounds(p1, p_c, p2)
+			if all([screen_bounds.within(p) for p in bounds]):
+				segment = True
+
+			else:
+				# After initial pass, check if bezier adjustment making bounds closer
+				# or further from being fully on-screen. If getting worse, change direction
+				# of the adjustment.
+				failures += 1
+				err_x1, err_x2 = (-bounds[0][0], bounds[1][0] - P.screen_x)
+				err_y1, err_y2 = (-bounds[0][1], bounds[1][1] - P.screen_y)
+				err = max(err_x1, err_x2, err_y1, err_y2)
+
+				if failures > 2:
+					if err > prev_err:
+						if v_c_b_increment < 0:
+							v_c_b_increment = 1
+							v_c_b_len += 1
+						else:
+							raise RuntimeError("Unable to adjust curve to fit on screen.")
+					elif failures == 3:
+						# If error getting smaller after initial shift and decrement, use rate of
+						# decrease in boundary error per decrease in v_c_b_len to estimate what the
+						# v_c_b_len for for an error of 0 should be and jump to that.
+						v_c_b_len += v_c_b_increment * int(err / (prev_err - err))
+						v_c_b_len -= v_c_b_increment
+
+				# NOTE: this very likely doesn't work as intended; completely changes curve
+				# instead of adjusting to fit within screen
+				v_c_b_len += v_c_b_increment
+				p_c = point_pos(p_c_base, v_c_b_len, a_c, r, c_spin, return_int=False)
+				prev_err = err
+
+			if (P.verbose_mode and self.allow_verbosity):
+				msg = "Curve {0}, ".format("succeeded" if segment else "failed")
+				pts = "p1:{0}, p2: {1}, p_c: {2}, v_c_b_len: {3}".format(p1, p2, p_c, v_c_b_len)
+				print(msg + pts)
+				if not segment:
+					print("Curve bounds: p1 = {0}, p2 = {1}".format(bounds[0], bounds[1]))
+
+		return [True, (p1, p2, p_c)]
+
+
+	def __quadrant_from_point(self, point):
+
 		q = [True, True, True, True]
+
 		if point[0] > P.screen_c[0]:
 			q[0] = False
 			q[1] = False
@@ -466,162 +472,189 @@ class TraceLabFigure(EnvAgent):
 
 		return indices_of(True, q, True)
 
-	def __import_figure__(self, path):
+
+	def __import_figure(self, path):
+
+		# Open the figure archive and find the .tlf file containing the figure data
 		fig_archive = zipfile.ZipFile(path + ".zip")
 		figure = path.split("/")[-1]
 		fig_file = figure + ".tlf"
 		if fig_file not in fig_archive.namelist():
 			fig_file = figure + "/" + fig_file
+
+		# Import figure attributes from .tlf and make attributes of current figure object
+		figure_res = [1920, 1080]
 		for l in fig_archive.open(fig_file).readlines():
 			attr = l.split(" = ")
 			if len(attr):
-				setattr(self, attr[0], eval(attr[1]))
-		self.frames = [scale(frame, (1920,1080)) for frame in self.frames]
+				if attr[0] in ['raw_segments', 'points']:
+					setattr(self, attr[0], eval(attr[1]))
+				elif attr[0] == 'screen_res':
+					figure_res = eval(attr[1])
 
-	def render(self, np=True, trace=None, extended=False):
-		surf = aggdraw.Draw("RGBA", P.screen_x_y, (0, 0, 0, 255))
-		frames = self.frames if not extended else self.extended_interpolation
-		p_str = "M{0} {1}".format(*frames[0])
-		for s in chunk(frames, 2):
-			try:
-				p_str += " L{0} {1} {2} {3}".format(s[0][0], s[0][1], s[1][0], s[1][1])
-			except IndexError:
-				pass
-		sym = aggdraw.Symbol(p_str)
-		surf.symbol((0, 0), sym, aggdraw.Pen(P.stimulus_feedback_color, 1, 255))
-		# if tracing data is passed, do this all again on the same surface
+		# Prepare figure segment data for re-interpolation, scaling pixel coordinates if necessary
+		self.seg_count = len(self.points)
+		self.points = [scale(p, figure_res) for p in self.points]
+		for i in range(len(self.raw_segments)):
+			points = self.raw_segments[i][1]
+			points = points[:-1] if isinstance(points[-1], int) else points  # fix for old .tlfs
+			self.raw_segments[i][0] = len(points) == 3  # fix line/curve id for old .tlfs
+			self.raw_segments[i][1] = tuple([scale(p, figure_res) for p in points])
+
+
+	def render(self, trace=None, smooth=True):
+		"""Renders the figure (and optionally a provided participant tracing) to a numpy array
+		texture that can be drawn to the screen.
+
+		Args:
+			trace (list, optional): A list of (x, y) tuples containing a participant tracing to be
+				drawn on top of the figure.
+			smooth (bool, optional): A flag indicating whether to draw the figure smoothly or by
+				drawing lines between the frames from the last prepare_animation call. Defaults to
+				True.
+		"""
+
+		# Initialize drawing surface
+		canvas = Image.new("RGBA", P.screen_x_y, (0, 0, 0, 255))
+		surf = aggdraw.Draw(canvas)
+
+		# Draw figure to surface
+		if smooth:
+			s = segments_to_symbol(self.raw_segments)
+			surf.symbol((0, 0), s, aggdraw.Pen(P.stimulus_feedback_color, 1, 255))
+		else:
+			path = frames_to_path(self.a_frames, unique=True)
+			surf.path(path, aggdraw.Pen(P.stimulus_feedback_color, 1, 255))
+
+		# If tracing, draw trace to surface too
 		if trace:
-			p_str = "M{0} {1}".format(trace[0][0], trace[0][1])
-			for s in chunk(trace, 2):
-				try:
-					p_str += " L{0} {1} {2} {3}".format(s[0][0], s[0][1], s[1][0], s[1][1])
-				except IndexError:
-					pass
-			sym = aggdraw.Symbol(p_str)
-			surf.symbol((0, 0), sym, aggdraw.Pen(P.response_feedback_color, 1, 255))
+			path = frames_to_path(trace, unique=True)
+			surf.path(path, aggdraw.Pen(P.response_feedback_color, 1, 255))
 
-		self.rendered = aggdraw_to_array(surf) if np else Image.frombytes(surf.mode, surf.size, surf.tostring())
+		# Render to numpy array and return
+		surf.flush()
+		self.rendered = np.asarray(canvas)
 		return self.rendered
 
-	def draw(self, dots=True, flip=True):
-		fill()
-		blit(self.render(), flip_x=P.flip_x)
-		message("Path Length: {0}".format(interpolated_path_len(self.frames)), "default", location=(25, 50))
+
+	def draw(self, dots=True):
+
+		path_len = round(self.path_length, 1)
+		msg = message("Path Length: {0} pixels".format(path_len), blit_txt=False)
+
+		blit(self.render(smooth=True), flip_x=P.flip_x)
+		blit(msg, 1, (30, P.screen_y - 25))
 		if dots:
 			for p in self.points:
 				blit(self.r_dot, 5, p, flip_x=P.flip_x)
-				message(str(p[0]), "tiny", location=p)
-		if flip:
-			flip()
+				message("({0}, {1})".format(*p), "tiny", registration=7, location=p, blit_txt=True)
 
-	def prepare_animation(self):
-		if self.animate_target_time is None:
-			self.animate_target_time = self.exp.animate_time
-		self.path_length = interpolated_path_len(self.frames)
-		draw_in = self.animate_target_time * 0.001
-		rate = 0.016666666666667
-		max_frames = int(draw_in / rate)
-		delta_d = math.floor(self.path_length / max_frames)
-		self.a_frames = [list(self.frames[0])]
-		seg_len = 0
-		for i in range(0, len(self.frames)):
-			p1 = [float(p) for p in self.frames[i]]
-			try:
-				p2 = [float(p) for p in self.frames[i + 1]]
-			except IndexError:
-				p2 = [float(p) for p in self.frames[0]]
-			seg_len += line_segment_len(p1, p2)
-			if seg_len >= delta_d:
-				self.a_frames.append(list(self.frames[i]))
-				seg_len = 0
 
-	def animate(self, practice=False):
+	def prepare_animation(self, duration=None):
+
+		if duration is None:
+			duration = self.animate_target_time
+
+		self.a_frames = self.segments_to_frames(self.raw_segments, duration, fps=P.refresh_rate)
+
+
+	def animate(self):
+
+		start = None
 		updated_a_frames = []
-		if not P.capture_figures_mode and not practice:
-			start = self.evm.trial_time
-
 		for f in self.a_frames:
-			# if P.flip_x:
-			# 	f[0] = P.screen_x - f[0]
+
 			ui_request()
 			fill()
 			if P.demo_mode:
 				blit(self.rendered, 5, P.screen_c, flip_x=P.flip_x)
 			blit(self.exp.tracker_dot, 5, f, flip_x=P.flip_x)
 			flip()
-			f = list(f)
-			if not P.capture_figures_mode and not practice:
-				updated_a_frames.append((f[0], f[1], self.evm.trial_time - start))
-		if not P.capture_figures_mode and not practice:
-			self.a_frames = updated_a_frames
-			self.animate_time = self.evm.trial_time
 
-			self.avg_velocity = self.path_length / self.animate_time
+			if start is None:
+				timestamp = 0.0
+				start = time()
+			else:
+				timestamp = time() - start
+			updated_a_frames.append((f[0], f[1], timestamp))
 
-	def write_out(self, file_name=None, trial_data=None):
-		writing_tracing = file_name is not None
-		if not file_name:
-			file_name = self.file_name
+		self.trial_a_frames = updated_a_frames
+
+
+	def write_out(self, file_name, trial_data=None):
+
+		writing_tracing = trial_data is not None
 		if not trial_data:
-			trial_data = self.a_frames
+			trial_data = self.trial_a_frames
 
+		points_file_name = file_name[:-4] + ".tlfp"
+		segments_file_name = file_name[:-4] + ".tlfs"
+		ext_interp_file_name = file_name[:-4] + ".tlfx"
 		thumb_file_name = file_name[:-4] + "_preview.png"
 		thumbx_file_name = file_name[:-4] + "_ext_preview.png"
-		points_file_name = file_name[:-4] + ".tlfp"
-		ext_interp_file_name = file_name[:-4] + ".tlfx"
-		segments_file_name = file_name[:-4] + ".tlfs"
+
 		fig_path = os.path.join(self.exp.fig_dir, file_name)
 		points_path = os.path.join(self.exp.fig_dir, points_file_name)
 		segments_path = os.path.join(self.exp.fig_dir, segments_file_name)
 		ext_interpolation_path = os.path.join(self.exp.fig_dir, ext_interp_file_name)
 		thumb_path = os.path.join(self.exp.fig_dir, thumb_file_name)
 		thumbx_path = os.path.join(self.exp.fig_dir, thumbx_file_name)
+
 		with zipfile.ZipFile(fig_path[:-3] + "zip", "a", zipfile.ZIP_DEFLATED) as fig_zip:
-			f = open(fig_path, "w+")
-			if P.capture_figures_mode:
-				for k, v in self.__dict__.iteritems():
-					if k in ["dot", "r_dot", "exp", 'rendered']:
-						continue
-					f.write("{0} = {1}\n".format(k, v))
-			else:
-				f.write(str(trial_data))
-			f.close()
+
+			with open(fig_path, "w+") as f:
+				if P.capture_figures_mode:
+					for k, v in self.__dict__.items():
+						if k in ["dot", "r_dot", "exp", "rendered", "a_frames", "trial_a_frames"]:
+							continue
+						f.write("{0} = {1}\n".format(k, v))
+				else:
+					f.write(str(trial_data))
 
 			if P.gen_tlfx and not writing_tracing:
-				f = open(ext_interpolation_path, "w+")
-				f.write(str(self.extended_interpolation))
-				f.close()
+				with open(ext_interpolation_path, "w+") as f:
+					ext = self.segments_to_frames(self.raw_segments, 5000.0, fps=P.refresh_rate)
+					f.write(str(ext))
 				fig_zip.write(ext_interpolation_path, ext_interp_file_name)
 				os.remove(ext_interpolation_path)
 
 			if P.gen_tlfp and not writing_tracing:
-				f = open(points_path, "w+")
-				f.write(str(self.points))
-				f.close()
+				with open(points_path, "w+") as f:
+					f.write(str(self.points))
 				fig_zip.write(points_path, points_file_name)
 				os.remove(points_path)
 
 			if P.gen_tlfs and not writing_tracing:
-				f = open(segments_path, "w+")
-				f.write(",".join(str(s[1]) for s in self.raw_segments))
-				f.close()
+				with open(segments_path, "w+") as f:
+					f.write(",".join(str(s[1]) for s in self.raw_segments))
 				fig_zip.write(segments_path, segments_file_name)
 				os.remove(segments_path)
 
 			if P.gen_png and not writing_tracing:
-				png.from_array(self.render(), 'RGBA').save(thumb_path)
+				Image.fromarray(self.render()).save(thumb_path, 'PNG')
 				fig_zip.write(thumb_path, thumb_file_name)
 				os.remove(thumb_path)
 
-			if P.gen_ext_png:
-				png.from_array(self.render(extended=True), 'RGBA').save(thumb_path)
+			if P.gen_ext_png and not writing_tracing:
+				Image.fromarray(self.render(smooth=True)).save(thumbx_path, 'PNG')
 				fig_zip.write(thumbx_path, thumbx_file_name)
-				os.remove(thumb_path)
+				os.remove(thumbx_path)
 
 			fig_zip.write(fig_path, file_name)
 			os.remove(fig_path)
 
+
 	@property
-	def file_name(self):
-		f_name_data = [P.participant_id, P.block_number, P.trial_number, now(True, "%Y-%m-%d"), self.exp.session_number]
-		return "p{0}_s{4}_b{1}_t{2}_{3}.tlf".format(*f_name_data)
+	def path_length(self):
+		"""float: The full length of the figure in pixels.
+		"""
+		length = 0
+		for curve, points in self.raw_segments:
+			if curve:
+				p1, p2, ctrl = points
+				length += bezier_length(p1, ctrl, p2)
+			else:
+				p1, p2 = points
+				length += line_segment_len(p1, p2)
+
+		return length

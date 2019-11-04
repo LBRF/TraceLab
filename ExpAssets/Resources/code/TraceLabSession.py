@@ -10,7 +10,6 @@ import os
 import sys
 from imp import load_source
 from shutil import rmtree
-import cPickle as pickle
 
 from klibs.KLConstants import QUERY_UPD, NA
 from klibs import P
@@ -127,14 +126,14 @@ class TraceLabSession(EnvAgent):
 		fig_sets_local_f = os.path.join(P.local_dir, "figure_sets.py")
 		try:
 			sys.path.append(fig_sets_local_f)
-			for k, v in load_source("*", fig_sets_local_f).__dict__.iteritems():
+			for k, v in load_source("*", fig_sets_local_f).__dict__.items():
 				if isinstance(v, FigureSet):
 					self.exp.figure_sets[v.name] = v
 			if P.dm_ignore_local_overrides:
 				raise RuntimeError("ignoring local files")
 		except (IOError, RuntimeError):
 			sys.path.append(fig_sets_f)
-			for k, v in load_source("*", fig_sets_f).__dict__.iteritems():
+			for k, v in load_source("*", fig_sets_f).__dict__.items():
 				if isinstance(v, FigureSet):
 					self.exp.figure_sets[v.name] = v
 
@@ -240,17 +239,9 @@ class TraceLabSession(EnvAgent):
 		for f in figure_set:
 			if f[0] not in P.figures and f[0] != "random":
 				f_path = os.path.join(P.resources_dir, "figures", f[0])
-				pickle_file = f_path + "_{0}x{1}.pickle".format(P.screen_x, P.screen_y)
-				# Try to load pickled figure if it exists (much faster)
-				if os.path.exists(pickle_file):
-					with open(pickle_file, 'rb') as p:
-						self.exp.test_figures[f[0]] = pickle.load(p)
-				elif os.path.exists(f_path + ".zip"):
-					# If no picked figure, generate figure from .zip and pickle
-					# for future runs.
+				if os.path.exists(f_path + ".zip"):
+					# Re-generate saved figure from .zip
 					self.exp.test_figures[f[0]] = TraceLabFigure(f_path)
-					with open(pickle_file, 'wb') as p:
-						pickle.dump(self.exp.test_figures[f[0]], p, -1)
 				else:
 					fill()
 					e_msg = (
@@ -267,11 +258,11 @@ class TraceLabSession(EnvAgent):
 		# load original ivars file into a named object
 		sys.path.append(P.ind_vars_file_path)
 		if os.path.exists(P.ind_vars_file_local_path) and not P.dm_ignore_local_overrides:
-			for k, v in load_source("*", P.ind_vars_file_local_path).__dict__.iteritems():
+			for k, v in load_source("*", P.ind_vars_file_local_path).__dict__.items():
 				if isinstance(v, IndependentVariableSet):
 					new_exp_factors = v
 		else:
-			for k, v in load_source("*", P.ind_vars_file_path).__dict__.iteritems():
+			for k, v in load_source("*", P.ind_vars_file_path).__dict__.items():
 				if isinstance(v, IndependentVariableSet):
 					new_exp_factors = v
 		new_exp_factors.delete('figure_name')

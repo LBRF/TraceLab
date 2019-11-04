@@ -8,16 +8,19 @@ from time import time
 from sdl2 import SDL_KEYDOWN, SDLK_DELETE
 
 from klibs import P
+from klibs.KLBoundary import RectangleBoundary
+from klibs.KLUserInterface import ui_request
+from klibs.KLUtilities import line_segment_len, scale, pump
+from klibs.KLUtilities import colored_stdout as cso
 from klibs.KLGraphics import blit, flip, fill
 from klibs.KLGraphics.KLNumpySurface import NumpySurface as NpS
 from klibs.KLGraphics.KLDraw import Rectangle, Ellipse, Annulus
 from klibs.KLCommunication import message
-from klibs.KLUserInterface import ui_request
 from klibs.KLAudio import AudioClip
-from klibs.KLUtilities import line_segment_len, scale, pump
-from klibs.KLUtilities import colored_stdout as cso
 
-from TraceLabFigure import bezier_interpolation,  linear_interpolation
+
+from drawingutils import (bezier_bounds, bezier_length, bezier_transitions, bezier_interpolation,
+	linear_transitions, linear_interpolation)
 from JSON_Object import JSON_Object
 
 # TODO: come up with a way for a FrameSet object to be an asset
@@ -85,6 +88,7 @@ class KeyFrame(object):
 		self.enabled = data.enabled
 		self.audio_track = None
 		self.audio_start_time = 0
+		self.screen_bounds = RectangleBoundary('screen', (0, 0), P.screen_x_y)
 		if self.enabled:
 			self.__render_frames__()
 
@@ -146,6 +150,7 @@ class KeyFrame(object):
 		try:
 			# strip out audio track if there is one, first
 			for d in self.directives:
+
 				last_directive = d
 				try:
 					asset = self.assets[d.asset].contents
@@ -163,14 +168,11 @@ class KeyFrame(object):
 					# Scale pixel values from 1920x1080 to current screen resolution
 					d.start = scale(d.start, (1920,1080))
 					d.end = scale(d.end, (1920,1080))
-					try:
+					if "control" in d.keys:
 						d.control = scale(d.control, (1920,1080))
-					except AttributeError:
-						pass
 					img_drctvs.append(d)
 					if d.start == d.end:
 						num_static_directives += 1
-
 
 			if len(img_drctvs) == num_static_directives:
 				self.asset_frames = [
@@ -179,32 +181,42 @@ class KeyFrame(object):
 				return
 
 			for d in img_drctvs:
+
 				asset = self.assets[d.asset].contents
 				if d.start == d.end:
 					asset_frames.append([(asset, d.start, d.registration)])
 					continue
+
 				frames = []
-				try:
-					path_len = bezier_interpolation(d.start, d.end, d.control)[0]
-					raw_frames = bezier_interpolation(d.start, d.end, d.control, velocity=path_len / self.duration)
-				except TypeError:
-					txt = "KeyFrame {0} does not fit in drawable area and will not be rendered."
-					cso("<red>\tWarning: {0}</red>".format(txt.format(self.label)))
-					continue
-				except AttributeError:
+				if "control" in d.keys: # if bezier curve
+					bounds = bezier_bounds(d.start, d.control, d.end)
+					if not all([self.screen_bounds.within(p) for p in bounds]):
+						txt = "KeyFrame {0} does not fit in drawable area and will not be rendered."
+						cso("<red>\tWarning: {0}</red>".format(txt.format(self.label)))
+						continue
+					fps = P.refresh_rate
+					path_len = bezier_length(d.start, d.control, d.end)
+					vel = path_len / (self.duration * 1000.0)
+					transitions = bezier_transitions(d.start, d.control, d.end, vel, fps)
+					raw_frames = bezier_interpolation(d.start, d.end, d.control, transitions)
+				else: # if not a bezier curve, it's aline
 					try:
-						v = line_segment_len(d.start, d.end) / self.duration
+						vel = line_segment_len(d.start, d.end) / (self.duration * 1000.0)
 					except TypeError:
 						raise ValueError("Image assets require their 'start' and 'end' attributes to be an x,y pair.")
-					raw_frames = linear_interpolation(d.start, d.end, v)
+					transitions = linear_transitions(d.start, d.end, vel, fps=P.refresh_rate)
+					raw_frames = linear_interpolation(d.start, d.end, transitions)
+
 				for p in raw_frames :
 					frames.append([asset, p, d.registration])
 				if len(frames) > total_frames:
 					total_frames = len(frames)
 				asset_frames.append(frames)
+
 			for frame_set in asset_frames:
 				while len(frame_set) < total_frames:
 					frame_set.append(frame_set[-1])
+
 			self.asset_frames = []
 			if total_frames > 1:
 				for i in range(0, total_frames):

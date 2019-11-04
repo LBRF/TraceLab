@@ -4,7 +4,7 @@
             "label": "control instructions",
             "description": "Instructions initially presented. Audio 1 begins.",
             "duration": 10300,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control audio 1",
@@ -24,7 +24,7 @@
             "label": "heart 1",
             "description": "Dot appears and travels to first vertex.",
             "duration": 900,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "dot",
@@ -37,8 +37,8 @@
         {
             "label": "heart 2",
             "description": "Dot travels to second vertex.",
-            "duration": 600,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "duration": 780,
+            "enabled": true,
             "directives": [
                 {
                     "asset": "dot",
@@ -52,8 +52,8 @@
         {
             "label": "heart 3",
             "description": "Dot travels to third vertex...",
-            "duration": 600,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "duration": 780,
+            "enabled": true,
             "directives": [
                 {
                     "asset": "dot",
@@ -68,7 +68,7 @@
             "label": "heart 4",
             "description": "Dot returns to the origin.",
             "duration": 900,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "dot",
@@ -82,7 +82,7 @@
             "label": "heart 5",
             "description": "Pause to let audio 1 finish.",
             "duration": 500,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "dot",
@@ -96,7 +96,7 @@
             "label": "vertices 1",
             "description": "Initial instructions provided. Audio 2 begins.",
             "duration": 1000,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control audio 2",
@@ -122,7 +122,7 @@
             "label": "vertices 2",
             "description": "Dot travels to first vertex.",
             "duration": 2200,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control instructions 2",
@@ -142,7 +142,7 @@
             "label": "vertices 3.1",
             "description": "First vertex is highlighted as a corner..",
             "duration": 1000,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control instructions 2",
@@ -168,7 +168,7 @@
             "label": "vertices 3.2",
             "description": "Pause to sync audio 2.",
             "duration": 300,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control instructions 2",
@@ -194,7 +194,7 @@
             "label": "vertices 4",
             "description": "Origin highlighted as a corner..",
             "duration": 1000,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control instructions 2",
@@ -220,7 +220,7 @@
             "label": "vertices 5",
             "description": "Instructions about corners and movement given. ",
             "duration": 2200,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control instructions 3",
@@ -240,7 +240,7 @@
             "label": "vertices 6.1",
             "description": "Dot progresses to second vertex. ",
             "duration": 1200,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control instructions 3",
@@ -261,7 +261,7 @@
             "label": "vertices 6.1.1",
             "description": "Pause to let audio 2 conclude. ",
             "duration": 1700,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control instructions 3",
@@ -281,7 +281,7 @@
             "label": "vertices 6.2",
             "description": "Dot pauses at second vertex. Pause before audio 3 begins. ",
             "duration": 300,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control instructions 4",
@@ -301,7 +301,7 @@
             "label": "vertices 7",
             "description": "Dot pauses at second vertex. Audio 3 begins ",
             "duration": 1000,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control audio 3",
@@ -327,7 +327,7 @@
             "label": "vertices 8",
             "description": "Description of dot's traversal from V2 to V3 given.",
             "duration": 9800,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control instructions 4",
@@ -347,7 +347,7 @@
             "label": "vertices 9",
             "description": "Dot progresses to vertex 3. Audio 4 begins",
             "duration": 1200,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control audio 4",
@@ -368,7 +368,7 @@
             "label": "vertices 10",
             "description": "Dot pauses and up arrow shown",
             "duration": 700,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "dot",
@@ -400,7 +400,7 @@
             "label": "vertices 12",
             "description": "Dot pauses and right arrow shown",
             "duration": 700,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "dot",
@@ -432,7 +432,7 @@
             "label": "vertices 12",
             "description": "Dot pauses and audio 4 completes",
             "duration": 700,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control instructions 5",
@@ -452,7 +452,7 @@
             "label": "vertices 11",
             "description": "Dot returns to the origin. Audio 5 begins.",
             "duration": 1200,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control audio 5",
@@ -478,7 +478,7 @@
             "label": "vertices 11",
             "description": "Dot pauses and down arrow shown.",
             "duration": 700,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control instructions 6",
@@ -511,7 +511,7 @@
             "label": "vertices 12",
             "description": "Dot pauses and left arrow shown.",
             "duration": 700,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "dot",
@@ -543,7 +543,7 @@
             "label": "vertices 12",
             "description": "Dot pauses at origin.",
             "duration": 500,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control instructions 6",
@@ -563,7 +563,7 @@
             "label": "vertices 13",
             "description": "Final instructions about dot behavior given. Audio 6 begins.",
             "duration": 18600,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control audio 6",
@@ -583,7 +583,7 @@
             "label": "buttons 2",
             "description": "Buttons initially presented WITH instructions. Audio 7 begins",
             "duration": 1000,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control box white",
@@ -675,7 +675,7 @@
             "label": "buttons 3",
             "description": "pointer enters screen and moves to box 2",
             "duration": 1000,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control box white",
@@ -767,7 +767,7 @@
             "label": "buttons 4",
             "description": "pointer pauses on button 2 and audio 7 completes.",
             "duration": 200,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control box white",
@@ -859,7 +859,7 @@
             "label": "buttons 5",
             "description": "pointer simulates click",
             "duration": 300,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control box white",
@@ -951,7 +951,7 @@
             "label": "buttons 6",
             "description": "box 2 turns green",
             "duration": 2400,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control box white",
@@ -1043,7 +1043,7 @@
             "label": "buttons 7",
             "description": "Instructions on changing answer are presented. Audio 8 begins.",
             "duration": 500,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control box white",
@@ -1141,7 +1141,7 @@
             "label": "buttons 8",
             "description": "Pointer moves to box 3",
             "duration": 500,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control box white",
@@ -1233,7 +1233,7 @@
             "label": "buttons 9",
             "description": "Pointer simulates a click",
             "duration": 300,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control box white",
@@ -1325,7 +1325,7 @@
             "label": "buttons 10",
             "description": "Box 2 toggles off and box 3 is activated.",
             "duration": 200,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control box white",
@@ -1417,7 +1417,7 @@
             "label": "buttons 11",
             "description": "Pointer moves to finished button.",
             "duration": 1000,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control box white",
@@ -1509,7 +1509,7 @@
             "label": "buttons 12",
             "description": "Pointer pauses on finish button.",
             "duration": 300,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control box white",
@@ -1601,7 +1601,7 @@
             "label": "buttons 13",
             "description": "Pointer simulates click on finish button.",
             "duration": 300,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control box white",
@@ -1693,7 +1693,7 @@
             "label": "buttons 14",
             "description": "Final pause to establish click.",
             "duration": 1000,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset": "control box white",

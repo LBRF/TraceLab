@@ -4,7 +4,7 @@
             "label": "physical instructions",
             "description": "Initial presentation of instructions. Audio 1 starts.",
             "duration": 15800,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "physical audio 1",
@@ -24,7 +24,7 @@
             "label": "heart 0",
             "description": "Dot appears on screen.",
             "duration": 500,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "physical instructions 1",
@@ -44,7 +44,7 @@
             "label": "heart 1",
             "description": "Dot appears and travels to first vertex,",
             "duration": 900,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "dot",
@@ -57,8 +57,8 @@
         {
             "label": "heart 2",
             "description": "Dot travels to second vertex.",
-            "duration": 600,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "duration": 780,
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "dot",
@@ -72,8 +72,8 @@
         {
             "label": "heart 3",
             "description": "Dot travels to third vertex...",
-            "duration": 600,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "duration": 780,
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "dot",
@@ -88,7 +88,7 @@
             "label": "heart 4",
             "description": "Dot returns to the origin.",
             "duration": 900,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "dot",
@@ -102,7 +102,7 @@
             "label": "origin 1",
             "description": "Origin appears.",
             "duration": 500,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin red",
@@ -116,7 +116,7 @@
             "label": "origin 2",
             "description": "Second instructions appear. Audio 2 starts.",
             "duration": 9200,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "physical audio 2",
@@ -142,7 +142,7 @@
             "label": "origin 3",
             "description": "Pointer appears and instructions leave.",
             "duration": 300,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin red",
@@ -162,7 +162,7 @@
             "label": "origin 4",
             "description": "Pointer moves to origin.",
             "duration": 1000,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin red",
@@ -182,7 +182,7 @@
             "label": "origin 5",
             "description": "Third set of instructions appear. Audio 3 starts.",
             "duration": 500,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "physical audio 3",
@@ -215,7 +215,7 @@
             "label": "origin 7",
             "description": "Pointer simulates click on origin.",
             "duration": 200,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin red",
@@ -241,7 +241,7 @@
             "label": "origin 7",
             "description": "Pause after pointer click.",
             "duration": 1000,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin red",
@@ -267,7 +267,7 @@
             "label": "origin 8",
             "description": "Fourth set of instructions appear and pointer leaves origin. Audio 4 starts.",
             "duration": 500,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "physical audio 4",
@@ -299,7 +299,7 @@
             "label": "origin 9",
             "description": "Pause to let audio 4 advance to instructions 5",
             "duration": 1000,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin red",
@@ -325,7 +325,7 @@
             "label": "origin 9",
             "description": "Pause to let audio 4 advance to instructions 5",
             "duration": 600,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin red",
@@ -351,7 +351,7 @@
             "label": "origin 10",
             "description": "Origin turns green.",
             "duration": 5600,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin green",
@@ -377,7 +377,7 @@
             "label": "pointer 1",
             "description": "Pointer travels to first vertex.",
             "duration": 900,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin green",
@@ -396,8 +396,8 @@
         {
             "label": "pointer 2",
             "description": "Pointer travels to second vertex.",
-            "duration": 600,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "duration": 780,
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin green",
@@ -417,8 +417,8 @@
         {
             "label": "pointer 3",
             "description": "Pointer travels to third vertex.",
-            "duration": 600,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "duration": 780,
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin green",
@@ -439,7 +439,7 @@
             "label": "pointer 4",
             "description": "Pointer travels most of the way to the origin.",
             "duration": 900,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin green",
@@ -459,7 +459,7 @@
             "label": "pointer 5",
             "description": "Sixth instructions given. Audio 5 starts.",
             "duration": 2600,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "physical audio 5",
@@ -491,7 +491,7 @@
             "label": "pointer 6",
             "description": "Sixth instructions given. ",
             "duration": 1800,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin green",
@@ -517,7 +517,7 @@
             "label": "pointer 7",
             "description": "Pointer returns to the origin.",
             "duration": 500,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin green",
@@ -543,7 +543,7 @@
             "label": "pointer 8",
             "description": "Origin is removed.",
             "duration": 1000,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "pointer",
@@ -563,7 +563,7 @@
             "label": "pointer 9",
             "description": "Pointer misses the origin.",
             "duration": 500,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin green",
@@ -589,7 +589,7 @@
             "label": "pointer 9",
             "description": "Pointer persists.",
             "duration": 1000,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin green",
@@ -615,7 +615,7 @@
             "label": "pointer 10",
             "description": "Pointer recovers.",
             "duration": 500,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin green",
@@ -641,7 +641,7 @@
             "label": "pointer 10",
             "description": "Pause after pointer recovery.",
             "duration": 500,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin green",
@@ -667,7 +667,7 @@
             "label": "pointer 11",
             "description": "Origin is removed (second time).",
             "duration": 1400,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "pointer",
@@ -687,7 +687,7 @@
             "label": "pointer 7",
             "description": "Pointer returns to the RED origin.",
             "duration": 500,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin red",
@@ -713,7 +713,7 @@
             "label": "pointer 7",
             "description": "Pointer returns to the RED origin.",
             "duration": 500,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin red",
@@ -746,7 +746,7 @@
             "label": "pointer 7",
             "description": "Pointer returns to the RED origin.",
             "duration": 500,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin red",
@@ -772,7 +772,7 @@
             "label": "pointer 7",
             "description": "Pointer returns to the RED origin.",
             "duration": 500,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin red",
@@ -805,7 +805,7 @@
             "label": "pointer 7",
             "description": "Pointer returns to the RED origin.",
             "duration": 500,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin red",
@@ -831,7 +831,7 @@
             "label": "pointer 7",
             "description": "Pointer returns to the RED origin.",
             "duration": 500,
-            "enabled": "EVAL: not P.truncate_practice_animation",
+            "enabled": true,
             "directives": [
                 {
                     "asset":  "origin red",

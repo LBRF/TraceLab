@@ -4,14 +4,14 @@ __author__ = "Jonathan Mulle"
 import os
 import time
 import shutil
-import cPickle as pickle
 
-from sdl2 import SDL_MOUSEBUTTONDOWN, SDL_KEYDOWN
 from random import choice
+from sdl2 import SDL_MOUSEBUTTONDOWN, SDL_KEYDOWN
 
+import klibs
 from klibs.KLExceptions import TrialException
 from klibs import P
-from klibs.KLConstants import NA, RC_DRAW, RECT_BOUNDARY, CIRCLE_BOUNDARY, STROKE_OUTER, QUERY_UPD
+from klibs.KLConstants import RECT_BOUNDARY, CIRCLE_BOUNDARY, STROKE_OUTER, QUERY_UPD
 from klibs.KLBoundary import BoundaryInspector
 from klibs.KLTime import CountDown
 from klibs.KLUserInterface import any_key, ui_request
@@ -69,7 +69,7 @@ if __name__ == "__main__":
 		"of your monitor in inches (e.g. 24).\n</red>")
 
 
-class TraceLab(Experiment, BoundaryInspector):
+class TraceLab(klibs.Experiment, BoundaryInspector):
 
 	# session vars
 	p_dir = None
@@ -268,19 +268,8 @@ class TraceLab(Experiment, BoundaryInspector):
 		for f in P.figures:
 			ui_request()
 			fig_path = os.path.join(P.resources_dir, "figures", f)
-			pickle_file = fig_path + "_{0}x{1}.pickle".format(P.screen_x, P.screen_y)
-			if os.path.exists(pickle_file):
-				with open(pickle_file, 'rb') as p:
-					self.test_figures[f] = pickle.load(p)
-			else:
-				self.test_figures[f] = TraceLabFigure(fig_path)
-				try:
-					with open(pickle_file, 'wb') as p:
-						pickle.dump(self.test_figures[f], p, -1)
-				except Exception as e:
-					os.remove(pickle_file)
-					raise(e)
-		
+			self.test_figures[f] = TraceLabFigure(fig_path)
+
 		clear()
 		if P.enable_practice and self.show_practice_display:
 			fill()
@@ -344,7 +333,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		self.rt = 0.0
 		self.it = 0.0
 		self.animate_time = int(self.animate_time)
-		self.drawing = NA
+		self.drawing = 'NA'
 		self.control_response = -1
 
 		fill()
@@ -370,7 +359,7 @@ class TraceLab(Experiment, BoundaryInspector):
 			while (time.time() - figure_load_start) < P.figure_load_time:
 				ui_request()
 
-		self.origin_pos = list(self.figure.frames[0])
+		self.origin_pos = list(self.figure.points[0])
 		if P.flip_x:
 			self.origin_pos[0] = P.screen_x - self.origin_pos[0]
 		self.add_boundary("origin", [self.origin_pos, self.origin_size // 2], CIRCLE_BOUNDARY)
@@ -397,14 +386,17 @@ class TraceLab(Experiment, BoundaryInspector):
 
 	def trial(self):
 
-		start_delay = CountDown(3.0)
+		start_delay = CountDown(P.origin_wait_time)
 		while start_delay.counting():
 			ui_request()
 			fill()
+			blit(self.tracker_dot, 5, self.origin_pos)
 			flip()
 
+		animate_start = self.evm.trial_time
 		self.figure.animate()
-		self.animate_finish = self.evm.trial_time
+		animate_time = self.evm.trial_time - animate_start
+		avg_velocity = self.figure.path_length / animate_time
 
 		try:
 			if self.exp_condition == PHYS:
@@ -414,8 +406,10 @@ class TraceLab(Experiment, BoundaryInspector):
 			else:
 				self.control_trial()
 		except TrialException as e:
+			err = message(P.trial_error_msg, "error", blit_txt=False)
 			fill()
-			message(P.trial_error_msg, "error")
+			blit(err, 5, P.screen_c)
+			flip()
 			any_key()
 			raise TrialException(e.message)
 
@@ -431,15 +425,15 @@ class TraceLab(Experiment, BoundaryInspector):
 			"session_num": self.session_number,
 			"condition":   self.exp_condition,
 			"figure_type": self.figure_name,
-			"figure_file": self.figure.file_name,
-			"stimulus_gt": self.animate_time,
-			"stimulus_mt": self.figure.animate_time,
-			"avg_velocity": self.figure.avg_velocity,
+			"figure_file": self.file_name + ".tlf",
+			"stimulus_gt": self.animate_time, # intended animation time
+			"stimulus_mt": animate_time, # actual animation time
+			"avg_velocity": avg_velocity, # in pixels per second
 			"path_length": self.figure.path_length,
-			"trace_file": self.tracing_name if self.exp_condition == PHYS else NA,
+			"trace_file": (self.file_name + ".tlt") if self.exp_condition == PHYS else 'NA',
 			"rt": self.rt,
 			"it": self.it,
-			"control_question": self.control_question if self.exp_condition == CTRL else NA,
+			"control_question": self.control_question if self.exp_condition == CTRL else 'NA',
 			"control_response": self.control_response,
 			"mt": self.mt
 		}
@@ -448,8 +442,8 @@ class TraceLab(Experiment, BoundaryInspector):
 	def trial_clean_up(self):
 
 		if not self.__practicing__:
-			self.figure.write_out()
-			self.figure.write_out(self.tracing_name, self.drawing)
+			self.figure.write_out(self.file_name + ".tlf")
+			self.figure.write_out(self.file_name + ".tlt", self.drawing)
 		self.rc.draw_listener.reset()
 		self.button_bar.reset()
 
@@ -504,6 +498,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	### Assorted helper methods called within the main experiment structure ###
 
 	def start_trial_button(self):
+
 		fill()
 		blit(self.next_trial_box, 5, self.next_trial_button_loc, flip_x=P.flip_x)
 		blit(self.next_trial_msg, 5, self.next_trial_button_loc, flip_x=P.flip_x)
@@ -525,6 +520,7 @@ class TraceLab(Experiment, BoundaryInspector):
 
 
 	def display_refresh(self):
+
 		fill()
 		origin = self.origin_active if self.rc.draw_listener.active else self.origin_inactive
 		blit(origin, 5, self.origin_pos, flip_x=P.flip_x)
@@ -546,7 +542,7 @@ class TraceLab(Experiment, BoundaryInspector):
 		start = self.evm.trial_time
 		if P.demo_mode or P.dm_always_show_cursor:
 			show_mouse_cursor()
-			
+
 		at_origin = False
 		while not at_origin:
 			if self.within_boundary('origin', mouse_pos()):
@@ -607,7 +603,8 @@ class TraceLab(Experiment, BoundaryInspector):
 				figure = TraceLabFigure(animate_time=duration)
 				figure.render()
 				figure.prepare_animation()
-			except RuntimeError:
+			except RuntimeError as e:
+				print(e)
 				failures += 1
 				if failures > 10:
 					print("\nUnable to generate a viable figure after 10 tries, quitting...\n")
@@ -625,12 +622,15 @@ class TraceLab(Experiment, BoundaryInspector):
 		txt = txt.format(auto_txt if P.auto_generate else "")
 
 		fill()
-		message(txt, "default", registration=5, location=P.screen_c, align='center')
+		message(txt, "default", registration=5, location=P.screen_c, align='center', blit_txt=True)
 		flip()
 		any_key()
 
+		if P.development_mode:
+			print("Random seed: {0}".format(P.random_seed))
+
 		if P.auto_generate:
-	
+
 			num_figs = P.auto_generate_count
 			for i in range(0, num_figs):
 
@@ -641,8 +641,8 @@ class TraceLab(Experiment, BoundaryInspector):
 				flip()
 
 				figure = self._generate_figure(duration=5000.0)
-				figure.write_out("template_{0}.tlf".format(time.time()))
-	
+				figure.write_out("newfigure_{0}_{1}.tlf".format(P.random_seed, i + 1))
+
 		else:
 
 			done = False
@@ -658,10 +658,13 @@ class TraceLab(Experiment, BoundaryInspector):
 
 					# Animate figure on screen with dot, then show full rendered shape
 					figure.animate()
+					animation_dur = figure.trial_a_frames[-1][2] * 1000
 					msg = message("Press any key to continue.", blit_txt=False)
+					msg_time = message("Duration: {0} ms".format(round(animation_dur, 2)), blit_txt=False)
 					fill()
-					blit(figure.rendered, 5, P.screen_c)
-					blit(msg, 7, (30, 30))
+					figure.draw()
+					blit(msg, 3, (P.screen_x - 30, P.screen_y - 25))
+					blit(msg_time, 7, (30, 25))
 					flip()
 					any_key()
 
@@ -749,6 +752,9 @@ class TraceLab(Experiment, BoundaryInspector):
 
 
 	@property
-	def tracing_name(self):
-		fname_data = [P.participant_id, P.block_number, P.trial_number, now(True, "%Y-%m-%d"), self.session_number]
-		return "p{0}_s{4}_b{1}_t{2}_{3}.tlt".format(*fname_data)
+	def file_name(self):
+		file_name_data = [
+			P.participant_id, P.block_number, P.trial_number,
+			now(True, "%Y-%m-%d"), self.session_number
+		]
+		return "p{0}_s{4}_b{1}_t{2}_{3}".format(*file_name_data)

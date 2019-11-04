@@ -46,14 +46,13 @@ default_condition = None
 table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA")]}
 
 final_condition = 'physical' # condition for last block or session (if multi-session)
-origin_wait_time = 1000  # ms
-figure_load_time = 4 # seconds
+origin_wait_time = 3  # seconds
+figure_load_time = 4  # seconds
 
 ########################################
 # Practice Controls
 ########################################
 enable_practice = True
-truncate_practice_animation = False
 practice_instructions = (
     "The following is a demonstration period. Use this time to learn and then practice the task."
     "\n\nTap the screen to continue."
@@ -110,8 +109,7 @@ figures = [ # pre-generated figures to use
     "template_1477111169.26",
     "template_1477121315.85"
 ]
-
-generation_timeout = 10  # seconds
+generation_timeout = 5  # seconds
 capture_figures_mode = False
 auto_generate = False
 auto_generate_count = 10  # number of figures to generate in auto-generate/capture mode
