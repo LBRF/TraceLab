@@ -641,7 +641,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 				flip()
 
 				figure = self._generate_figure(duration=5000.0)
-				figure.write_out("newfigure_{0}_{1}.tlf".format(P.random_seed, i + 1))
+				figure.write_out("figure{0}_{1}.tlf".format(i + 1, P.random_seed))
 
 		else:
 

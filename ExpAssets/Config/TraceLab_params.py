@@ -109,21 +109,21 @@ figures = [ # pre-generated figures to use
     "template_1477111169.26",
     "template_1477121315.85"
 ]
-generation_timeout = 5  # seconds
+generation_timeout = 0.5  # seconds
 capture_figures_mode = False
 auto_generate = False
 auto_generate_count = 10  # number of figures to generate in auto-generate/capture mode
 
-generate_quadrant_intersections = True
-outer_margin_v = 50
-outer_margin_h = 50
-inner_margin_v = 10
-inner_margin_h = 10
-# trace_mode = False
+generate_quadrant_intersections = True  # Not quite sure what this does
+outer_margin_v = 50  # minimum vertical distance figure points can be from screen margins (in px)
+outer_margin_h = 50  # minimum horizontal distance figure points can be from screen margins (in px)
+inner_margin_v = 10  # minimum vertical distance figure points can be from screen center (in px)
+inner_margin_h = 10  # minimum horizontal distance figure points can be from screen center (in px)
+curve_margin_v = 10  # minimum distance from vertical screen margins for curve segments (in px)
+curve_margin_h = 10  # minimum distance from horizontal screen margins for curve segments (in px)
 
-# inner_margin = 300 #
-avg_seg_per_f = (4, 2)  # (avg number, variance)
-avg_seg_per_q = (2, 1)  # (avg number, variance)
+avg_seg_per_f = (4, 2)  # (avg, variance) for number of segments per figure
+avg_seg_per_q = (2, 1)  # (avg, variance) for number of segments per quadrant
 angularity = 0  # 0 = all curves, 1 = all lines
 
 # line controls
@@ -133,8 +133,6 @@ min_linear_acuteness = 0.1  # must be between 0 and 1; low vals advised, higher 
 slope_magnitude = (0.25, 0.5)  # 0 = a straight line (ie. no curve), 1 = an infinitely steep curve (hint: don't pick this ;)
 peak_shift = (0.25, 0.5)  # 0 == perfect symmetry (ie. bell curve) and 1 == a right  triangle
 curve_sheer = (0.1, 0.3)  # this is hard to describe, but 1 is again an impossible value, and this will grow to lunacy fast
-path_length = -1  # length (px); -1 ignores this parameter; path length will override seg_length params if they conflict
-seg_report_fuzz = (2, 4)
 
 ########################################
 # Labjack Codes
