@@ -13,14 +13,17 @@ from shutil import rmtree
 
 from klibs.KLConstants import QUERY_UPD, NA
 from klibs import P
-from klibs.KLUtilities import now
-from klibs.KLNamedObject import NamedInventory
-from klibs.KLCommunication import query, message
-from klibs.KLCommunication import user_queries as uq
-from klibs.KLGraphics import blit, flip, fill
-from klibs.KLUserInterface import any_key
-from klibs.KLIndependentVariable import IndependentVariableSet
 from klibs.KLEnvironment import EnvAgent
+from klibs.KLJSON_Object import AttributeDict
+from klibs.KLUtilities import now
+from klibs.KLIndependentVariable import IndependentVariableSet
+from klibs.KLRuntimeInfo import runtime_info_init
+from klibs.KLUserInterface import any_key
+from klibs.KLDatabase import EntryTemplate
+from klibs.KLGraphics import blit, flip, fill
+from klibs.KLCommunication import query, message, collect_demographics
+from klibs.KLCommunication import user_queries as uq
+
 from TraceLabFigure import TraceLabFigure
 from FigureSet import FigureSet
 
@@ -31,51 +34,38 @@ CTRL = "control"
 FB_DRAW = "drawing_feedback"
 FB_RES = "results_feedback"
 FB_ALL = "all_feedback"
-SESSION_FIG = "figure_capture"
-SESSION_TRN = "training"
-SESSION_TST = "testing"
+
 
 
 class TraceLabSession(EnvAgent):
-	
+
 	queries = {
-		"user_data": "SELECT `id`,`random_seed`,`exp_condition`,`feedback_type`, `session_count`, `sessions_completed`, `figure_set`, `handedness`,`created` FROM `participants` WHERE `user_id` = ?",
-		"user_row": "SELECT `user_id`,`random_seed`,`exp_condition`,`feedback_type`, `session_count`, `sessions_completed`, `figure_set`, `handedness`,`created` FROM `participants` WHERE `id` = ?",
+		"user_data": "SELECT `id`,`random_seed`,`session_structure`, `session_count`, `sessions_completed`, `figure_set`, `handedness`,`created` FROM `participants` WHERE `user_id` = ?",
+		"user_row": "SELECT `user_id`,`random_seed`,`session_structure`, `session_count`, `sessions_completed`, `figure_set`, `handedness`,`created` FROM `participants` WHERE `id` = ?",
 		"get_user_id": "SELECT `user_id` FROM `participants` WHERE `id` = ?",
-		"session_update": "UPDATE `participants` SET `sessions_completed` = ? WHERE `id` = ?",
-		"assign_figure_set": "UPDATE `participants` SET `figure_set` = ?  WHERE `id` = ?",
-		"set_initialized": "UPDATE `participants` set `initialized` = 1 WHERE `id` = ?",
 		"delete_anon": "DELETE FROM `trials` WHERE `participant_id` = ? AND `session_num` = ?",
 		"delete_incomplete_user": "DELETE FROM `participants` WHERE `id` = ?",
 		"delete_incomplete_user_sessions": "DELETE FROM `sessions` WHERE `participant_id` = ?",
 		"delete_incomplete_user_trials": "DELETE FROM `trials` WHERE `participant_id` = ?",
 		"find_incomplete": "SELECT `id`, `user_id`, `created` FROM `participants` WHERE `initialized` = 0",
-		"exp_condition": "UPDATE `participants` SET `exp_condition` = ?, `session_count` = ?, `feedback_type` = ? WHERE `id` = ?",
-		"session_data": "SELECT `exp_condition`,`feedback_type`, `session_count`, `sessions_completed`, `figure_set` FROM `participants` WHERE `id` = ?",
 		"completed_sessions": "SELECT * FROM `sessions` WHERE `participant_id` = ?",
 		"completed_trials": "SELECT * FROM `trials` WHERE `participant_id` = ?"
 	}
 
-	error_strings = {
-		"invalid_format": ("Experimental condition identifiers must be separated by hyphens, and contain three components:\n"
-			"Experimental condition, feedback condition, and the number of sessions.\nPlease try again."),
-		"invalid_condition": "The experimental condition must commence with any of 'PP', 'MI' or 'CC'.\nPlease try again.",
-		"invalid_feedback": ("The feedback value was invalid.\n"
-			"It must contain any combination of 'V', 'R' or 'X' and be between one and two characters long.\n"
-			"Please try again."),
-		"invalid_session_count": "Number of sessions must be a valid integer greater than 0.\nPlease try again."
-	}
-
 
 	def __init__(self):
+
 		self.__user_id__ = None
-		self.__import_figure_sets__()
+		self.__verify_session_structures()
+		self.__import_figure_sets()
+
 		incomplete_participants = self.db.query(self.queries["find_incomplete"])
 		if len(incomplete_participants):
 			if query(uq.experimental[7]) == "p":
-				self.__purge_incomplete__(incomplete_participants)
+				self.__purge_incomplete(incomplete_participants)
 			else:
-				self.__report_incomplete__(incomplete_participants)
+				self.__report_incomplete(incomplete_participants)
+
 		if P.development_mode:
 			# Write data to subfolder when in development mode to avoid cluttering
 			# data directory with non-participant data
@@ -86,13 +76,18 @@ class TraceLabSession(EnvAgent):
 		else:
 			self.user_id = query(uq.experimental[1])
 		if self.user_id is None:
-			self.__generate_user_id__()
+			self.__generate_user_id()
+		
 		self.init_session()
 
 
-	def __report_incomplete__(self, participant_ids):
+	def __report_incomplete(self, participant_ids):
+
 		log = open(os.path.join(P.local_dir, "uninitialized_users_{0}".format(now(True))), "w+")
-		header = ["user_id","random_seed","exp_condition","feedback_type", "session_count", "sessions_completed", "figure_set", "handedness","created", "session_rows", "trial_rows"]
+		header = [
+			"user_id", "random_seed", "exp_condition", "feedback_type", "session_count",
+			"sessions_completed", "figure_set", "handedness","created", "session_rows", "trial_rows"
+		]
 		log.write("\t".join(header))
 		for p in participant_ids:
 			log.write("\n")
@@ -104,7 +99,8 @@ class TraceLabSession(EnvAgent):
 		self.exp.quit()
 
 
-	def __purge_incomplete__(self, participant_ids):
+	def __purge_incomplete(self, participant_ids):
+
 		for p in participant_ids:
 			self.db.query(self.queries["delete_incomplete_user"], q_vars=[p[0]])
 			self.db.query(self.queries["delete_incomplete_user_sessions"], q_vars=[p[0]])
@@ -114,13 +110,44 @@ class TraceLabSession(EnvAgent):
 				rmtree(os.path.join(P.data_dir, "{0}_{1}".format(*p[1:])))
 			except OSError:
 				pass
-		try:
-			self.db.commit()
-		except: # if old klibs, use old db accessing convention
-			self.db.db.commit()
+
+		self.db.commit()
 
 
-	def __import_figure_sets__(self):
+	def __verify_session_structures(self):
+
+		error_strings = {
+			"bad_format": "Response type and feedback type must be separated by a single hyphen.",
+			"bad_condition": ("Response type must be either 'PP' (physical), 'MI' (imagery), "
+				"or 'CC' (control)."),
+			"bad_feedback": ("Feedback type must be one or two characters long, and be "
+				"a combination of the letters 'V', 'R' and / or 'X'.")
+		}
+
+		# Validate specified session structure to use, return informative error if formatted wrong
+		session_num, block_num = (0, 0)
+		e = "Error encountered parsing Block {0} of Session {1} in session structure '{2}' ({3}):"
+		for structure_key, session_structure in P.session_structures.items():
+			for session in session_structure:
+				session_num += 1
+				for block in session:
+					block_num += 1
+					err = self.validate_block_condition(block)
+					if err:
+						err_txt1 = e.format(block_num, session_num, structure_key, block)
+						err_txt1 += "\n" + error_strings[err]
+						msg1 = message(err_txt1, "error", align="center", blit_txt=False)
+						msg2 = message("Press any key to exit TraceLab.", blit_txt=False)
+						fill()
+						blit(msg1, 2, (P.screen_c[0], P.screen_c[1] - 30))
+						blit(msg2, 8, P.screen_c)
+						flip()
+						any_key()
+						self.exp.quit()
+
+
+	def __import_figure_sets(self):
+
 		# load original complete set of FigureSets for use
 		fig_sets_f = os.path.join(P.config_dir, "figure_sets.py")
 		fig_sets_local_f = os.path.join(P.local_dir, "figure_sets.py")
@@ -138,25 +165,60 @@ class TraceLabSession(EnvAgent):
 					self.exp.figure_sets[v.name] = v
 
 
-	def __generate_user_id__(self):
-		from klibs.KLCommunication import collect_demographics
-		# delete all incomplete attempts to create a user to free up username space; no associated records to remove
+	def __generate_user_id(self):
+
+		# If multiple possible session structures, query user to choose which one to use
+		structure_names = P.session_structures.keys()
+		if len(structure_names) > 1:
+			# Since this needs to match one of the keys of P.session_structures, we create the
+			# query object directly here instead of in the user_queries file so we can set
+			# 'accepted' to 'structure_names'
+			cond_q = AttributeDict({
+			    "title": "session_structure",
+			    "query": "Please enter the name of the session structure to use:",
+			    "accepted": structure_names,
+			    "allow_null": False,
+			    "format": AttributeDict({
+			        "type": "str",
+			        "styles": "default",
+			        "positions": "default",
+			        "password": False,
+			        "case_sensitive": True,
+			        "action": None
+			    })
+			})
+			structure_key = query(cond_q)
+		else:
+			structure_key = structure_names[0]
+		P.blocks_per_experiment = len(P.session_structures[structure_key][0])
+
+		# Query user whether they want to select a figure set by name for the participant
+		if query(uq.experimental[3]) == "y":
+			self.exp.figure_set_name = self.__get_figure_set_name()
+
+		# Collect user demographics and retrieve user id from database
 		collect_demographics(P.development_mode)
 		self.user_id = self.db.query(self.queries["get_user_id"], q_vars=[P.p_id])[0][0]
-		self.parse_exp_condition(query(uq.experimental[2]))
-		if query(uq.experimental[3]) == "y":
-			self.__get_figure_set_name__()
+
+		# Update participant info table with session and figure set info
+		info = {
+			'session_structure': structure_key,
+			'session_count': len(P.session_structures[structure_key]),
+			'figure_set': self.exp.figure_set_name
+		}
+		self.db.update('participants', info)
 
 
-	def __get_figure_set_name__(self):
+	def __get_figure_set_name(self):
+
 		name = query(uq.experimental[4])
 		if not name in self.exp.figure_sets:
 			if query(uq.experimental[0]) == "y":
-				return self.__get_figure_set_name__()
+				return self.__get_figure_set_name()
 			else:
-				name = None
-		self.exp.figure_key = name
-		self.db.query(self.queries["assign_figure_set"], QUERY_UPD, q_vars=[self.exp.figure_key, P.p_id])
+				name = "NA"
+
+		return name
 
 
 	def init_session(self):
@@ -168,7 +230,7 @@ class TraceLabSession(EnvAgent):
 			if query(uq.experimental[0]) == "y":
 				self.user_id = query(uq.experimental[1])
 				if self.user_id is None:
-					self.__generate_user_id__()
+					self.__generate_user_id()
 				return self.init_session()
 			else:
 				fill()
@@ -178,26 +240,51 @@ class TraceLabSession(EnvAgent):
 				any_key()
 				self.exp.quit()
 
-		self.exp.trial_factory.generate() # generate blocks/trials here, once block count is known
+		# Load session structure. If participant already completed all sessions, show message
+		# and quit.
+		session_structure = P.session_structures[self.exp.session_structure]
+		num_sessions = len(session_structure)
+		if self.exp.session_number > num_sessions:
+			txt1 = "Participant {0} has already completed all {1} sessions of the task."
+			msg1 = message(txt1.format(self.user_id, num_sessions), blit_txt=False)
+			msg2 = message("Press any key to exit TraceLab.", blit_txt=False)
+			blit(msg1, 2, (P.screen_c[0], P.screen_c[1] - 30))
+			blit(msg2, 8, P.screen_c)
+			flip()
+			any_key()
+			self.exp.quit()
+
+		# Parse block strings for current session
+		blocks = session_structure[self.exp.session_number - 1]
+		P.blocks_per_experiment = len(blocks)
+		for block in blocks:
+			resp, fb = self.parse_exp_condition(block)
+			self.exp.block_factors.append({'response_type': resp, 'feedback_type': fb})
+
+		# Generate trials and import figure set specified earlier
+		self.exp.trial_factory.generate()
 		self.import_figure_set()
 
+		# If session number > 1, log runtime info for session in runtime_info table
+		if 'session_info' in self.db.table_schemas.keys() and self.exp.session_number > 1:
+			runtime_info = EntryTemplate('session_info')
+			for col, value in runtime_info_init().items():
+				if col == 'session_number':
+					value = self.exp.session_number
+				runtime_info.log(col, value)
+			self.db.insert(runtime_info)
+
 		# delete previous trials for this session if any exist (essentially assume a do-over)
-		if P.capture_figures_mode:
-			self.exp.training_session = True
-			self.exp.session_type = SESSION_FIG
-		else:
-			self.db.query(self.queries["delete_anon"], q_vars=[P.p_id, self.exp.session_number])
-			self.exp.training_session = self.exp.session_number not in (1, 5)
-			self.exp.session_type = SESSION_TRN if self.exp.training_session else SESSION_TST
-		self.db.query(self.queries["set_initialized"], QUERY_UPD, q_vars=[P.p_id])
+		self.db.query(self.queries["delete_anon"], q_vars=[P.p_id, self.exp.session_number])
+		self.db.update('participants', {'initialized': 1})
 		self.log_session_init()
 
 
 	def log_session_init(self):
+
 		header = {
-			"exp_condition": self.exp.exp_condition,
-			"feedback": self.exp.feedback_type,
-			"figure_set": self.exp.figure_key,
+			"session_structure": self.exp.session_structure,
+			"figure_set": self.exp.figure_set_name,
 			"practice_session": self.exp.show_practice_display,
 		}
 		self.exp.log("*************** HEADER START ***************\n")
@@ -207,25 +294,28 @@ class TraceLabSession(EnvAgent):
 
 
 	def restore_session(self, user_data):
-		# `id`,`random_seed`,`exp_condition`,`session_count`,`feedback_type`,`sessions_completed`,`figure_set`
-		P.participant_id, P.random_seed, self.exp.exp_condition, self.exp.feedback_type, self.exp.session_count, self.exp.session_number, self.exp.figure_set_name, self.exp.handedness, self.exp.created = user_data
-		self.exp.session_number += 1
+
+		# Reload participant data from database into experiment variables
+		P.participant_id = user_data[0]
+		P.random_seed = user_data[1] # NOTE: is this actually wanted?
+		self.exp.session_structure = user_data[2]
+		self.exp.session_count = user_data[3]
+		self.exp.session_number = user_data[4]
+		self.exp.figure_set_name = user_data[5]
+		self.exp.handedness = user_data[6]
+		self.exp.created = user_data[7]
+
+		self.exp.session_number += 1  # check if last session incomplete and prompt if so?
+		P.session_number = self.exp.session_number
 		if P.use_log_file:
 			log_path = os.path.join(P.local_dir, "logs", "P{0}_log_f.txt".format(self.user_id))
 			self.exp.log_f = open(log_path, "w+")
-		if self.exp.session_number == 1:
-			self.exp.show_practice_display = True
-		elif self.exp.session_count > 1 and self.exp.session_number == self.exp.session_count:
-			# if multi-session and on final session, and participant condition is imagery/control,
-			# set session condition to physical and show physical practice animation.
-			if self.exp.exp_condition != P.final_condition:
-				self.exp.exp_condition = P.final_condition
-				self.exp.show_practice_display = True
 
 		return True
 
 
 	def import_figure_set(self):
+
 		if not self.exp.figure_set_name or self.exp.figure_set_name == NA:
 			return
 
@@ -271,59 +361,43 @@ class TraceLabSession(EnvAgent):
 		self.exp.trial_factory.generate(new_exp_factors)
 
 
-	def parse_exp_condition(self, condition_str):
+	def validate_block_condition(self, condition):
 
 		err_type = None
-		args = condition_str.split("-")
-		if len(args) != 3:
-			err_type = "invalid_format"
+		args = condition.split("-")
+		if len(args) != 2:
+			err_type = "bad_format"
 		else:
-			exp_cond, feedback, sessions = args
-			# Validate session number format
-			if sessions.isdigit() == False or int(sessions) < 1:
-				err_type = "invalid_session_count"
+			response, feedback = args
 			# Validate feedback format
 			feedback = list(feedback)
 			for i in feedback:
 				if i not in ["V", "R", "X"] or len(feedback) > 2:
-					err_type = "invalid_feedback"
+					err_type = "bad_feedback"
 			# Validate condition format
-			if exp_cond not in ["PP", "MI", "CC"]:
-				err_type = "invalid_condition"
+			if response not in ["PP", "MI", "CC"]:
+				err_type = "bad_condition"
 
-		if err_type != None:
-			fill()
-			msg = message(self.error_strings[err_type], "error", blit_txt=False, align="center")
-			blit(msg, 5, P.screen_c)
-			flip()
-			any_key()
-			return self.parse_exp_condition(query(uq.experimental[2]))
+		return err_type
 
-		# first parse the experimental condition
-		if exp_cond == "PP":
-			self.exp.exp_condition = PHYS
-		elif exp_cond == "MI":
-			self.exp.exp_condition = MOTR
-		elif exp_cond == "CC":
-			self.exp.exp_condition = CTRL
-		else:
-			e_msg = "{0} is not a valid experimental condition identifier.".format(exp_cond)
-			raise ValueError(e_msg)
-		# then parse the feedback type, if any
-		if all(["V" in feedback, "R" in feedback]):
-			self.exp.feedback_type = FB_ALL
+
+	def parse_exp_condition(self, condition):
+
+		response, feedback = condition.split("-")
+
+		resp_map = {'PP': PHYS, 'MI': MOTR, 'CC': CTRL}
+		resp = resp_map[response]
+
+		if "X" in feedback:
+			fb = "False"
+		elif "V" in feedback and "R" in feedback:
+			fb = FB_ALL
 		elif "R" in feedback:
-			self.exp.feedback_type = FB_RES
+			fb = FB_RES
 		elif "V" in feedback:
-			self.exp.feedback_type = FB_DRAW
-		elif "X" in feedback:
-			pass
-		else:
-			e_msg = "{0} is not a valid feedback state.".format("".join(feedback))
-			raise ValueError(e_msg)
+			fb = FB_DRAW
 
-		q_vars = [self.exp.exp_condition, self.exp.session_count, self.exp.feedback_type, P.participant_id]
-		self.db.query(self.queries["exp_condition"], QUERY_UPD, q_vars=q_vars)
+		return [resp, fb]
 
 
 	@property

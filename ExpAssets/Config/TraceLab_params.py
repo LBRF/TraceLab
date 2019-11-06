@@ -40,7 +40,6 @@ experiment_complete_message = (
 #########################################
 multi_session_project = True
 trials_per_block = 20
-blocks_per_experiment = 5
 conditions = []
 default_condition = None
 table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA")]}
@@ -156,3 +155,38 @@ unique_identifier = "user_id"
 exclude_data_cols = [
     'klibs_commit', 'created', 'session_count', 'sessions_completed', 'initialized'
 ]
+
+#########################################
+# Session & Block Structures
+#########################################
+# NOTE: session structures are specified as a list of lists of strings,
+# with the number of lists defining the number of sessions for that
+# condition, the number of strings within each list defining the number
+# of blocks within that session, and the strings defining the trial type
+# and feedback type for each block, in the format "type-feedback":
+#
+# Trial types:
+#  - "PP" (physical tracing response)
+#  - "MI" (motor imagery response)
+#  - "CC" (control / motion direction judgement response)
+#
+# Feedback types:
+#  - "X" / "XX"  (no feedback)
+#  - "R" / "XR"  (live tracing feedback during tracing response)
+#  - "V" / "VX"  (presentation of target figure with tracing overlay after response made)
+#  - "VR"        (both "R" and "V")
+#
+# Keys for session structures in the 'session_structures' dict must correspond
+# to condiition names defined in 'conditions' in order to actually work. The type
+# of session structure to use for a given participant is specified by defining a
+# condition on launch (e.g. klibs run 23 -c cond1)
+session_structures = {
+    'a': [
+        ['MI-XX', 'MI-XX', 'MI-XX', 'MI-XX', 'PP-VR'], # session 1
+        ['PP-VR'] # session 2
+    ],
+    'b': [
+        ['MI-XX', 'MI-XX', 'MI-XX', 'MI-XX', 'PP-XR'], # session 1
+        ['PP-XR'] # session 2
+    ]
+}

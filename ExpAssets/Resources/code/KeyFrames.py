@@ -27,10 +27,12 @@ from JSON_Object import JSON_Object
 AUDIO_FILE = "audio_f"
 IMAGE_FILE = "image_f"
 
+
+
 class KeyFrameAsset(object):
 
-	def __init__(self, exp, data):
-		self.exp = exp
+	def __init__(self, data):
+
 		self.media_type = IMAGE_FILE
 		self.height = None
 		self.width = None
@@ -75,11 +77,9 @@ class KeyFrameAsset(object):
 
 
 
-
 class KeyFrame(object):
 
-	def __init__(self, exp, data, assets):
-		self.exp = exp
+	def __init__(self, data, assets):
 		self.assets = assets
 		self.label = data.label
 		self.directives = data.directives
@@ -234,13 +234,12 @@ class KeyFrame(object):
 			last_directive.report()
 			print("\nThe original error was:\n")
 			traceback.print_exception(*sys.exc_info())
-			self.exp.quit()
+			raise e
 
 
 class FrameSet(object):
 
-	def __init__(self, exp, key_frames_file, assets_file=None):
-		self.exp = exp
+	def __init__(self, key_frames_file, assets_file=None):
 		self.key_frames = []
 		self.assets = {}
 		if assets_file:
@@ -253,14 +252,14 @@ class FrameSet(object):
 	def __load_assets__(self, assets_file):
 		j_ob = JSON_Object(assets_file)
 		for a in j_ob:
-			self.assets[a] = KeyFrameAsset(self.exp, j_ob[a])
+			self.assets[a] = KeyFrameAsset(j_ob[a])
 
 	def generate_key_frames(self):
 		if self.assets_file:
 			self.__load_assets__(self.assets_file)
 		j_ob = JSON_Object(self.key_frames_file)
 		for kf in j_ob.keyframes:
-			self.key_frames.append(KeyFrame(self.exp, kf, self.assets))
+			self.key_frames.append(KeyFrame(kf, self.assets))
 
 	def play(self):
 		ui_request()

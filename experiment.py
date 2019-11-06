@@ -54,9 +54,6 @@ CTRL = "control"
 FB_DRAW = "drawing_feedback"
 FB_RES = "results_feedback"
 FB_ALL = "all_feedback"
-SESSION_FIG = "figure_capture"
-SESSION_TRN = "training"
-SESSION_TST = "testing"
 LEFT_HANDED = "l"
 RIGHT_HANDED = "r"
 
@@ -76,10 +73,11 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	fig_dir = None
 	user_id = None
 	session = None
+	session_structure = None
 	session_number = None
-	training_session = None
-	session_type = None
-	exp_condition = None
+	block_factors = []
+	response_type = None
+	prev_response_type = None
 	session_count = None
 	feedback_type = False
 	handedness = None
@@ -88,10 +86,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	lj = None
 	log_f = None
 
-	# graphical elements
-	imgs = {}
-
-	# value_slider = None
 	origin_proto = None
 	origin_active = None
 	origin_inactive = None
@@ -105,44 +99,31 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	button_bar = None
 
 	instructions = None
-	handedness = None
 	loading_msg = None
 	control_fail_msg = None
 	next_trial_msg = None
 	next_trial_box = None
 	next_trial_button_loc = None
 	next_trial_button_bounds = None
-	response_window_extension = 1  # second
-	response_window = None  # animate_time + constant
-
-	# debug & configuration
-	sample_exposure_time = 4500
 
 	# dynamic trial vars
-	animate_finish = None
-	boundaries = {}
 	drawing = []
-	drawing_name = None
 	rt = None  # time to initiate responding post-stimulus
 	mt = None  # time to start and complete response
 	it = None  # time between arriving at response origin and intiating response (ie. between RT and MT)
-	mode = None
 	control_response = None
 	test_figures = {}
 	figure = None
-	figure_dots = None
-	figure_segments = None
 	control_question = None  # ie. which question the control will be asked to report an answer for
 
 	# configured trial factors (dynamically loaded per-trial
 	animate_time = None
 	figure_name = None
-	figure_sets = {}   # complete set of available figure sets
+	figure_sets = {}  # complete set of available figure sets
 	figure_set = []  # figure set currently in use for this participant
-	figure_key = None  # key for current figure set
+	figure_set_name = "NA"
 
 	# practice stuff
-	narration = None
 	__practicing__ = False
 	practice_buttons = None
 	practice_instructions = None
@@ -154,9 +135,10 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	intertrial_timing_logs = {}
 
 
-	def __init__(self, *args, **kwargs):
+	def __init__(self):
 
-		super(TraceLab, self).__init__(*args, **kwargs)
+		klibs.Experiment.__init__(self)
+		BoundaryInspector.__init__(self)
 		P.flip_x = P.mirror_mode
 
 
@@ -232,9 +214,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			CTRL: {'text': "control_group_instructions.txt", 'frames': "control_key_frames"}
 		}
 
-		instructions_file = self.instruction_files[self.exp_condition]['text']
-		instructions_path = os.path.join(P.resources_dir, "Text", instructions_file)
-		self.instructions = message(open(instructions_path).read(), "instructions", align="center", blit_txt=False)
 		control_fail_txt = "Please keep your finger on the start area for the complete duration."
 		self.control_fail_msg = message(control_fail_txt, 'error', blit_txt=False)
 		self.next_trial_msg = message(P.next_trial_message, 'default', blit_txt=False)
@@ -247,19 +226,19 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		#####
 		# practice session vars & elements
 		#####
-		if self.show_practice_display:
-			key_frames_f = self.instruction_files[self.exp_condition]['frames']
-			self.practice_kf = FrameSet(self, key_frames_f, "assets")
-			self.practice_instructions = message(P.practice_instructions, "instructions", align="center", blit_txt=False)
-			practice_buttons = [
-				('Replay', [200, 100], self.practice),
-				('Practice', [200, 100], self.__practice__),
-				('Begin', [200, 100], any_key)
-			]
-			self.practice_button_bar = ButtonBar(
-				practice_buttons,
-				[200, 100], P.btn_s_pad, P.y_pad, finish_button=False
-			)
+		self.practice_instructions = message(
+			P.practice_instructions, "instructions",
+			align="center", blit_txt=False
+		)
+		practice_buttons = [
+			('Replay', [200, 100], self.practice),
+			('Practice', [200, 100], self.__practice__),
+			('Begin', [200, 100], any_key)
+		]
+		self.practice_button_bar = ButtonBar(
+			practice_buttons,
+			[200, 100], P.btn_s_pad, P.y_pad, finish_button=False
+		)
 
 		# import figures for use during testing sessions
 		fill()
@@ -271,30 +250,37 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			self.test_figures[f] = TraceLabFigure(fig_path)
 
 		clear()
-		if P.enable_practice and self.show_practice_display:
-			fill()
-			blit(self.practice_instructions, 5, P.screen_c)
-			flip()
-			any_key()
-			self.practice()
 
 
 	def block(self):
 
-		# If multi-session and on last session, or single-session and on last
-		# block, set experiment condition to P.final_condition.
-		if self.session_count == 1:
-			on_last = P.block_number == P.blocks_per_experiment
-			# If single-session and on last block, change instructions accordingly and do practice
-			# animation for final condition
-			if on_last and self.exp_condition != P.final_condition:
-				self.exp_condition = P.final_condition
-				new_instructions = self.instruction_files[P.final_condition]
-				instructions_file = os.path.join(P.resources_dir, "Text", new_instructions['text'])
-				self.instructions = message(open(instructions_file).read(), "instructions", align="center", blit_txt=False)
-				self.practice_kf = FrameSet(self, new_instructions['frames'], "assets")
-				self.start_trial_button()
+		# Get response type and feedback type for block
+		self.response_type = self.block_factors[P.block_number - 1]['response_type']
+		self.feedback_type = self.block_factors[P.block_number - 1]['feedback_type']
+
+		# If on first block of session, or response type is different from response type of
+		# previous block, do tutorial animation and practice
+		if self.response_type != self.prev_response_type:
+
+			# Load instructions for new response type
+			new_instructions = self.instruction_files[self.response_type]
+			instructions_file = os.path.join(P.resources_dir, "Text", new_instructions['text'])
+			inst_txt = open(instructions_file).read()
+			self.instructions = message(inst_txt, "instructions", align="center", blit_txt=False)
+
+			if P.enable_practice:
+				# Load tutorial animation for current condition, play it, and enter practice
+				self.practice_kf = FrameSet(new_instructions['frames'], "assets")
+				if P.block_number == 1:
+					fill()
+					blit(self.practice_instructions, 5, P.screen_c)
+					flip()
+					any_key()
+				else:
+					self.start_trial_button()
 				self.practice()
+
+			self.prev_response_type = self.response_type
 
 		for i in range(1,4):
 			# we do this a few times to avoid block messages being skipped due to duplicate input
@@ -399,9 +385,9 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		avg_velocity = self.figure.path_length / animate_time
 
 		try:
-			if self.exp_condition == PHYS:
+			if self.response_type == PHYS:
 				self.physical_trial()
-			elif self.exp_condition == MOTR:
+			elif self.response_type == MOTR:
 				self.imagery_trial()
 			else:
 				self.control_trial()
@@ -423,17 +409,17 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			"block_num": P.block_number,
 			"trial_num": P.trial_number,
 			"session_num": self.session_number,
-			"condition":   self.exp_condition,
+			"condition":   self.response_type,
 			"figure_type": self.figure_name,
 			"figure_file": self.file_name + ".tlf",
 			"stimulus_gt": self.animate_time, # intended animation time
 			"stimulus_mt": animate_time, # actual animation time
 			"avg_velocity": avg_velocity, # in pixels per second
 			"path_length": self.figure.path_length,
-			"trace_file": (self.file_name + ".tlt") if self.exp_condition == PHYS else 'NA',
+			"trace_file": (self.file_name + ".tlt") if self.response_type == PHYS else 'NA',
 			"rt": self.rt,
 			"it": self.it,
-			"control_question": self.control_question if self.exp_condition == CTRL else 'NA',
+			"control_question": self.control_question if self.response_type == CTRL else 'NA',
 			"control_response": self.control_response,
 			"mt": self.mt
 		}
