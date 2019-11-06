@@ -182,7 +182,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		# Initialize participant ID and session options, reloading ID if it already exists
 		self.session = TraceLabSession()
 		self.user_id = self.session.user_id
-		self.trial_factory.dump()
 
 		self.loading_msg = message("Loading...", "default", blit_txt=False)
 		fill()

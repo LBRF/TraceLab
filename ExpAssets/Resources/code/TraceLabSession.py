@@ -1,17 +1,15 @@
 __author__ = 'jono'
 
 """
-NOTE: this entire document only exists because experiment.previous.py was getting too cluttered and I decided to
-relocate all session-init logic to a separate class to tidy things up. previous versions of the experiment
-all included these methods as part of the experiment class
+NOTE: this entire document only exists because experiment.previous.py was getting too cluttered
+and I decided to relocate all session-init logic to a separate class to tidy things up. previous
+versions of the experiment all included these methods as part of the experiment class
 """
 
 import os
 import sys
 from imp import load_source
-from shutil import rmtree
 
-from klibs.KLConstants import QUERY_UPD, NA
 from klibs import P
 from klibs.KLEnvironment import EnvAgent
 from klibs.KLJSON_Object import AttributeDict
@@ -39,32 +37,18 @@ FB_ALL = "all_feedback"
 
 class TraceLabSession(EnvAgent):
 
-	queries = {
-		"user_data": "SELECT `id`,`random_seed`,`session_structure`, `session_count`, `sessions_completed`, `figure_set`, `handedness`,`created` FROM `participants` WHERE `user_id` = ?",
-		"user_row": "SELECT `user_id`,`random_seed`,`session_structure`, `session_count`, `sessions_completed`, `figure_set`, `handedness`,`created` FROM `participants` WHERE `id` = ?",
-		"get_user_id": "SELECT `user_id` FROM `participants` WHERE `id` = ?",
-		"delete_anon": "DELETE FROM `trials` WHERE `participant_id` = ? AND `session_num` = ?",
-		"delete_incomplete_user": "DELETE FROM `participants` WHERE `id` = ?",
-		"delete_incomplete_user_sessions": "DELETE FROM `sessions` WHERE `participant_id` = ?",
-		"delete_incomplete_user_trials": "DELETE FROM `trials` WHERE `participant_id` = ?",
-		"find_incomplete": "SELECT `id`, `user_id`, `created` FROM `participants` WHERE `initialized` = 0",
-		"completed_sessions": "SELECT * FROM `sessions` WHERE `participant_id` = ?",
-		"completed_trials": "SELECT * FROM `trials` WHERE `participant_id` = ?"
-	}
-
-
 	def __init__(self):
 
 		self.__user_id__ = None
 		self.__verify_session_structures()
 		self.__import_figure_sets()
 
-		incomplete_participants = self.db.query(self.queries["find_incomplete"])
-		if len(incomplete_participants):
+		incomplete = self.db_select('participants', ['id', 'user_id'], where={'initialized': 0})
+		if len(incomplete):
 			if query(uq.experimental[7]) == "p":
-				self.__purge_incomplete(incomplete_participants)
+				self.__purge_incomplete(incomplete)
 			else:
-				self.__report_incomplete(incomplete_participants)
+				self.__report_incomplete(incomplete)
 
 		if P.development_mode:
 			# Write data to subfolder when in development mode to avoid cluttering
@@ -77,24 +61,26 @@ class TraceLabSession(EnvAgent):
 			self.user_id = query(uq.experimental[1])
 		if self.user_id is None:
 			self.__generate_user_id()
-		
+
 		self.init_session()
 
 
 	def __report_incomplete(self, participant_ids):
 
 		log = open(os.path.join(P.local_dir, "uninitialized_users_{0}".format(now(True))), "w+")
-		header = [
-			"user_id", "random_seed", "exp_condition", "feedback_type", "session_count",
-			"sessions_completed", "figure_set", "handedness","created", "session_rows", "trial_rows"
+		p_cols = [
+			"user_id", "random_seed", "session_structure", "session_count",
+			"sessions_completed", "figure_set", "handedness", "created"
 		]
+		header = p_cols + ["session_rows", "trial_rows"]
 		log.write("\t".join(header))
 		for p in participant_ids:
+			data = self.db_select('participants', p_cols, where={'id': p[0]})[0]
+			num_sessions = len(self.db_select('sessions', ['id'], where={'participant_id': p[0]}))
+			num_trials = len(self.db_select('trials', ['id'], where={'participant_id': p[0]}))
+			data += [num_sessions, num_trials]
 			log.write("\n")
-			p_data = self.db.query(self.queries['user_row'], q_vars=[p[0]])[0]
-			p_data.append(len(self.db.query(self.queries['completed_sessions'], q_vars=[p[0]])))
-			p_data.append(len(self.db.query(self.queries['completed_trials'], q_vars=[p[0]])))
-			log.write("\t".join([str(i) for i in p_data]))
+			log.write("\t".join([str(i) for i in data]))
 		log.close()
 		self.exp.quit()
 
@@ -102,14 +88,9 @@ class TraceLabSession(EnvAgent):
 	def __purge_incomplete(self, participant_ids):
 
 		for p in participant_ids:
-			self.db.query(self.queries["delete_incomplete_user"], q_vars=[p[0]])
-			self.db.query(self.queries["delete_incomplete_user_sessions"], q_vars=[p[0]])
-			self.db.query(self.queries["delete_incomplete_user_trials"], q_vars=[p[0]])
-
-			try:
-				rmtree(os.path.join(P.data_dir, "{0}_{1}".format(*p[1:])))
-			except OSError:
-				pass
+			self.db_removerows(table='participants', where={'id': p[0]})
+			self.db_removerows(table='sessions', where={'participant_id': p[0]})
+			self.db_removerows(table='trials', where={'participant_id': p[0]})
 
 		self.db.commit()
 
@@ -198,7 +179,7 @@ class TraceLabSession(EnvAgent):
 
 		# Collect user demographics and retrieve user id from database
 		collect_demographics(P.development_mode)
-		self.user_id = self.db.query(self.queries["get_user_id"], q_vars=[P.p_id])[0][0]
+		self.user_id = self.db_select('participants', ['user_id'], where={'id': P.p_id})[0][0]
 
 		# Update participant info table with session and figure set info
 		info = {
@@ -207,6 +188,50 @@ class TraceLabSession(EnvAgent):
 			'figure_set': self.exp.figure_set_name
 		}
 		self.db.update('participants', info)
+
+
+	def __check_incomplete_session(self):
+
+		start_block = 1
+		existing = {'participant_id': P.participant_id, 'session_num': self.exp.session_number}
+		partial_session = self.db_select('trials', ['block_num'], existing)
+		if len(partial_session):
+			partial_q = AttributeDict({
+			    "title": "partial session prompt",
+			    "query": (
+					"This participant did not complete all trials of the previous session. "
+					"Would you like to:\n"
+					"(r)edo the last session, (c)ontinue from the end of the last completed block, "
+					"or (a)dvance to the next session?"
+				),
+			    "accepted": ['r', 'c', 'a'],
+			    "allow_null": False,
+			    "format": AttributeDict({
+			        "type": "str",
+			        "styles": "default",
+			        "positions": "default",
+			        "password": False,
+			        "case_sensitive": False,
+			        "action": None
+			    })
+			})
+			resp = query(partial_q)
+			if resp == "r":
+				self.db_removerows('trials', existing)
+			elif resp == "c":
+				# If resuming from end of last finished block, first get last block in db for
+				# this participant + session, then figure out if it was completed or not
+				max_block = max([num[0] for num in partial_session])
+				existing['block_num'] = max_block
+				prev_trials = self.db_select('trials', ['trial_num'], existing)
+				max_trial = max([num[0] for num in prev_trials])
+				start_block = max_block + 1 if max_trial == P.trials_per_block else max_block
+				# NOTE: should we delete all trials of block in progress or leave as-is?
+			elif resp == "a":
+				self.db.update('participants', {'sessions_completed': self.exp.session_number})
+				self.exp.session_number += 1
+
+		return start_block
 
 
 	def __get_figure_set_name(self):
@@ -224,7 +249,11 @@ class TraceLabSession(EnvAgent):
 	def init_session(self):
 
 		try:
-			user_data = self.db.query(self.queries['user_data'], q_vars=[self.user_id])[0]
+			cols = [
+				'id', 'random_seed', 'session_structure', 'session_count', 'sessions_completed',
+				'figure_set', 'handedness', 'created'
+			]
+			user_data = self.db_select('participants', cols, where={'user_id': self.user_id})[0]
 			self.restore_session(user_data)
 		except IndexError as e:
 			if query(uq.experimental[0]) == "y":
@@ -239,6 +268,11 @@ class TraceLabSession(EnvAgent):
 				flip()
 				any_key()
 				self.exp.quit()
+
+		# If any existing trial data for this session+participant, prompt experimenter whether to
+		# delete existing data and redo session, continue from start of last completed block,
+		# or continue to next session
+		start_block = self.__check_incomplete_session()
 
 		# Load session structure. If participant already completed all sessions, show message
 		# and quit.
@@ -263,6 +297,9 @@ class TraceLabSession(EnvAgent):
 
 		# Generate trials and import figure set specified earlier
 		self.exp.trial_factory.generate()
+		self.exp.trial_factory.dump()
+		self.exp.blocks = self.exp.trial_factory.export_trials()
+		self.exp.blocks.i = start_block - 1  # skips ahead to start_block if specified
 		self.import_figure_set()
 
 		# If session number > 1, log runtime info for session in runtime_info table
@@ -274,8 +311,6 @@ class TraceLabSession(EnvAgent):
 				runtime_info.log(col, value)
 			self.db.insert(runtime_info)
 
-		# delete previous trials for this session if any exist (essentially assume a do-over)
-		self.db.query(self.queries["delete_anon"], q_vars=[P.p_id, self.exp.session_number])
 		self.db.update('participants', {'initialized': 1})
 		self.log_session_init()
 
@@ -316,7 +351,7 @@ class TraceLabSession(EnvAgent):
 
 	def import_figure_set(self):
 
-		if not self.exp.figure_set_name or self.exp.figure_set_name == NA:
+		if not self.exp.figure_set_name or self.exp.figure_set_name == "NA":
 			return
 
 		if not self.exp.figure_set_name in self.exp.figure_sets:
@@ -398,6 +433,29 @@ class TraceLabSession(EnvAgent):
 			fb = FB_DRAW
 
 		return [resp, fb]
+
+
+	def db_select(self, table, columns, where=None):
+
+		columns_str = ", ".join(columns)
+		q = "SELECT {0} FROM {1}".format(columns_str, table)
+		if where and len(where) > 0:
+			# kind of hacky, but there's no official klibs API for this yet
+			filters = self.db._DatabaseManager__master._to_sql_equals_statements(where, table)
+			filter_str = " AND ".join(filters)
+			q += " WHERE {0}".format(filter_str)
+
+		return self.db.query(q)
+
+
+	def db_removerows(self, table, where):
+
+		# kind of hacky, but there's no official klibs API for this yet
+		filters = self.db._DatabaseManager__master._to_sql_equals_statements(where, table)
+		filter_str = " AND ".join(filters)
+		q = "DELETE FROM {0} WHERE {1}".format(table, filter_str)
+
+		return self.db.query(q)
 
 
 	@property
