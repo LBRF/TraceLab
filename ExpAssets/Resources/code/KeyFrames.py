@@ -1,5 +1,6 @@
 __author__ = 'jono'
 
+import re
 import sys
 import traceback
 
@@ -8,6 +9,7 @@ from time import time
 from sdl2 import SDL_KEYDOWN, SDLK_DELETE
 
 from klibs import P
+from klibs.KLJSON_Object import JSON_Object
 from klibs.KLBoundary import RectangleBoundary
 from klibs.KLUserInterface import ui_request
 from klibs.KLUtilities import line_segment_len, scale, pump
@@ -21,12 +23,15 @@ from klibs.KLAudio import AudioClip
 
 from drawingutils import (bezier_bounds, bezier_length, bezier_transitions, bezier_interpolation,
 	linear_transitions, linear_interpolation)
-from JSON_Object import JSON_Object
 
 # TODO: come up with a way for a FrameSet object to be an asset
 AUDIO_FILE = "audio_f"
 IMAGE_FILE = "image_f"
 
+
+def is_string(s):
+	# Python 2/3 agnostic of determining whether object is a string
+	return isinstance(s, ("".__class__, u"".__class__))
 
 
 class KeyFrameAsset(object):
@@ -146,12 +151,15 @@ class KeyFrame(object):
 		asset_frames = []
 		num_static_directives = 0
 		img_drctvs = []
-		last_directive = None
 		try:
 			# strip out audio track if there is one, first
 			for d in self.directives:
 
-				last_directive = d
+				for key in ['start', 'end']:
+					if key in d.keys() and is_string(d[key]):
+						eval_statement = re.match(re.compile(u"^EVAL:[ ]*(.*)$"), d[key])
+						d[key] = eval(eval_statement.group(1))
+
 				try:
 					asset = self.assets[d.asset].contents
 				except KeyError:
@@ -168,7 +176,7 @@ class KeyFrame(object):
 					# Scale pixel values from 1920x1080 to current screen resolution
 					d.start = scale(d.start, (1920,1080))
 					d.end = scale(d.end, (1920,1080))
-					if "control" in d.keys:
+					if "control" in d.keys():
 						d.control = scale(d.control, (1920,1080))
 					img_drctvs.append(d)
 					if d.start == d.end:
@@ -182,13 +190,18 @@ class KeyFrame(object):
 
 			for d in img_drctvs:
 
+				for key in ['start', 'end']:
+					if is_string(d[key]):
+						eval_statement = re.match(re.compile(u"^EVAL:[ ]*(.*)$"), d[key])
+						d[key] = eval(eval_statement.group(1))
+
 				asset = self.assets[d.asset].contents
 				if d.start == d.end:
 					asset_frames.append([(asset, d.start, d.registration)])
 					continue
 
 				frames = []
-				if "control" in d.keys: # if bezier curve
+				if "control" in d.keys(): # if bezier curve
 					bounds = bezier_bounds(d.start, d.control, d.end)
 					if not all([self.screen_bounds.within(p) for p in bounds]):
 						txt = "KeyFrame {0} does not fit in drawable area and will not be rendered."
@@ -231,7 +244,6 @@ class KeyFrame(object):
 				"The error occurred in keyframe {0} and the last attempted directive was:"
 			)
 			print(err.format(self.label))
-			last_directive.report()
 			print("\nThe original error was:\n")
 			traceback.print_exception(*sys.exc_info())
 			raise e

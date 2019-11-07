@@ -2,6 +2,7 @@
 __author__ = 'Jonathan Mulle & Austin Hurst'
 
 import os
+import io
 import math
 from itertools import chain
 from random import random, randrange, uniform, choice, shuffle
@@ -16,7 +17,7 @@ from klibs.KLEnvironment import EnvAgent
 import klibs.KLParams as P
 from klibs.KLBoundary import RectangleBoundary
 from klibs.KLTime import precise_time as time
-from klibs.KLUtilities import (angle_between, acute_angle, point_pos, indices_of, scale, now,
+from klibs.KLUtilities import (angle_between, acute_angle, point_pos, indices_of, scale, now, utf8,
 	line_segment_len)
 from klibs.KLUserInterface import ui_request
 from klibs.KLGraphics import blit, flip, fill
@@ -136,13 +137,14 @@ class TraceLabFigure(EnvAgent):
 
 		# Import figure attributes from .tlf and make attributes of current figure object
 		figure_res = [1920, 1080]
-		for l in fig_archive.open(fig_file).readlines():
-			attr = l.split(" = ")
-			if len(attr):
-				if attr[0] in ['raw_segments', 'points']:
-					setattr(self, attr[0], eval(attr[1]))
-				elif attr[0] == 'screen_res':
-					figure_res = eval(attr[1])
+		with fig_archive.open(fig_file) as tlf:
+			for l in io.TextIOWrapper(tlf, 'utf8'):
+				attr = l.split(" = ")
+				if len(attr):
+					if attr[0] in ['raw_segments', 'points']:
+						setattr(self, attr[0], eval(attr[1]))
+					elif attr[0] == 'screen_res':
+						figure_res = eval(attr[1])
 
 		# Prepare figure segment data for re-interpolation, scaling pixel coordinates if necessary
 		self.seg_count = len(self.points)
@@ -603,31 +605,31 @@ class TraceLabFigure(EnvAgent):
 
 		with zipfile.ZipFile(fig_path[:-3] + "zip", "a", zipfile.ZIP_DEFLATED) as fig_zip:
 
-			with open(fig_path, "w+") as f:
+			with io.open(fig_path, "w+", encoding='utf-8') as f:
 				if P.capture_figures_mode:
 					for k, v in self.__dict__.items():
 						if k in ["dot", "r_dot", "exp", "rendered", "a_frames", "trial_a_frames"]:
 							continue
-						f.write("{0} = {1}\n".format(k, v))
+						f.write(u"{0} = {1}\n".format(k, v))
 				else:
-					f.write(str(trial_data))
+					f.write(utf8(trial_data))
 
 			if P.gen_tlfx and not writing_tracing:
-				with open(ext_interpolation_path, "w+") as f:
+				with io.open(ext_interpolation_path, "w+", encoding='utf-8') as f:
 					ext = self.segments_to_frames(self.raw_segments, 5000.0, fps=P.refresh_rate)
-					f.write(str(ext))
+					f.write(utf8(ext))
 				fig_zip.write(ext_interpolation_path, ext_interp_file_name)
 				os.remove(ext_interpolation_path)
 
 			if P.gen_tlfp and not writing_tracing:
-				with open(points_path, "w+") as f:
-					f.write(str(self.points))
+				with io.open(points_path, "w+", encoding='utf-8') as f:
+					f.write(utf8(self.points))
 				fig_zip.write(points_path, points_file_name)
 				os.remove(points_path)
 
 			if P.gen_tlfs and not writing_tracing:
-				with open(segments_path, "w+") as f:
-					f.write(",".join(str(s[1]) for s in self.raw_segments))
+				with io.open(segments_path, "w+", encoding='utf-8') as f:
+					f.write(u",".join(utf8(s[1]) for s in self.raw_segments))
 				fig_zip.write(segments_path, segments_file_name)
 				os.remove(segments_path)
 

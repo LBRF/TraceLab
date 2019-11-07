@@ -2,6 +2,7 @@
 __author__ = "Jonathan Mulle"
 
 import os
+import io
 import time
 import shutil
 
@@ -16,7 +17,7 @@ from klibs.KLBoundary import BoundaryInspector
 from klibs.KLTime import CountDown
 from klibs.KLUserInterface import any_key, ui_request
 from klibs.KLUtilities import (pump, flush, scale, now, str_pad, mouse_pos,
-	show_mouse_cursor, hide_mouse_cursor)
+	show_mouse_cursor, hide_mouse_cursor, utf8)
 from klibs.KLUtilities import colored_stdout as cso
 from klibs.KLGraphics import blit, fill, flip, clear
 from klibs.KLGraphics.KLDraw import Ellipse, Rectangle
@@ -264,7 +265,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			# Load instructions for new response type
 			new_instructions = self.instruction_files[self.response_type]
 			instructions_file = os.path.join(P.resources_dir, "Text", new_instructions['text'])
-			inst_txt = open(instructions_file).read()
+			inst_txt = io.open(instructions_file, encoding='utf-8').read()
 			self.instructions = message(inst_txt, "instructions", align="center", blit_txt=False)
 
 			if P.enable_practice:
@@ -464,7 +465,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		# log session data to database
 		session_data = {
 			'participant_id': P.participant_id,
-			'user_id': str(self.user_id),
+			'user_id': self.user_id,
 			'session_number': self.session_number,
 			'completed': now(True)
 		}
@@ -724,7 +725,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 				iti_start = self.intertrial_timing_logs[key.format(iti_index, "start")]
 				iti_end = self.intertrial_timing_logs[key.format(iti_index, "end")]
 				iti = str(iti_end - iti_start)
-				self.log_f.write(str_pad("intertrial_interval" + ":", 32) + iti + "\n")
+				self.log_f.write(utf8(str_pad("intertrial_interval" + ":", 32) + iti + "\n"))
 
 
 	def quit(self):

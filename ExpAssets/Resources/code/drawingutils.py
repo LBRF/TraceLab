@@ -45,7 +45,7 @@ def linear_transitions(start, end, velocity, fps=60):
 	"""Generates transition points along a given line for animating at a constant velocity.
 	"""
 
-	duration = line_segment_len(start, end) / velocity
+	duration = line_segment_len(start, end) / float(velocity)
 	steps = int(duration / (1000.0 / fps))
 	transitions = [t / float(steps - 1) for t in range(steps)]
 
@@ -62,8 +62,8 @@ def linear_transitions_by_dist(start, end, dist_per_frame, offset=0):
 	can be specified defining the distance along the curve that the first transition should be.
 	"""
 
-	dist = line_segment_len(start, end)
-	frames = int(round((dist - offset) / dist_per_frame, 8))
+	dist = float(line_segment_len(start, end))
+	frames = int(round((dist - offset) / float(dist_per_frame), 8))
 	transitions = [(offset + f * dist_per_frame) / dist for f in range(frames + 1)]
 
 	return transitions
@@ -111,13 +111,13 @@ def bezier_length(start, ctrl, end):
 	A2 = math.sqrt(A)
 	A32 = 2 * A * A2
 	C2 = 2 * math.sqrt(C)
-	BA = B / A2
+	BA = B / float(A2)
 
 	n1 = A32 * sqrtABC + A2 * B * (sqrtABC - C2)
 	n2 = ((4 * C * A) - B ** 2) * math.log((2 * A2 + BA + sqrtABC) / (BA + C2))
 	d = 4 * A32
 
-	return (n1 + n2) / d
+	return (n1 + n2) / float(d)
 
 
 def bezier_bounds(start, ctrl, end):
@@ -227,7 +227,7 @@ def bezier_transitions_by_dist(start, ctrl, end, dist_per_frame, offset=0):
 	dist_map = bezier_distmap(start, ctrl, end, res)
 
 	dist = bezier_length(start, ctrl, end)
-	frames = int(round((dist - offset) / dist_per_frame, 8))
+	frames = int(round((dist - offset) / float(dist_per_frame), 8))
 	transitions = []
 	for f in range(frames + 1):
 		seg_len = offset + f * dist_per_frame

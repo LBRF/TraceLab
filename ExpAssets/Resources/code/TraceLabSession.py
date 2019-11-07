@@ -7,13 +7,14 @@ versions of the experiment all included these methods as part of the experiment 
 """
 
 import os
+import io
 import sys
 from imp import load_source
 
 from klibs import P
 from klibs.KLEnvironment import EnvAgent
 from klibs.KLJSON_Object import AttributeDict
-from klibs.KLUtilities import now
+from klibs.KLUtilities import now, utf8
 from klibs.KLIndependentVariable import IndependentVariableSet
 from klibs.KLRuntimeInfo import runtime_info_init
 from klibs.KLUserInterface import any_key
@@ -67,7 +68,8 @@ class TraceLabSession(EnvAgent):
 
 	def __report_incomplete(self, participant_ids):
 
-		log = open(os.path.join(P.local_dir, "uninitialized_users_{0}".format(now(True))), "w+")
+		log_path = os.path.join(P.local_dir, "uninitialized_users_{0}".format(now(True)))
+		log = io.open(log_path, "w+", encoding='utf-8')
 		p_cols = [
 			"user_id", "random_seed", "session_structure", "session_count",
 			"sessions_completed", "figure_set", "handedness", "created"
@@ -80,7 +82,7 @@ class TraceLabSession(EnvAgent):
 			num_trials = len(self.db_select('trials', ['id'], where={'participant_id': p[0]}))
 			data += [num_sessions, num_trials]
 			log.write("\n")
-			log.write("\t".join([str(i) for i in data]))
+			log.write("\t".join([utf8(i) for i in data]))
 		log.close()
 		self.exp.quit()
 
@@ -344,7 +346,7 @@ class TraceLabSession(EnvAgent):
 		P.session_number = self.exp.session_number
 		if P.use_log_file:
 			log_path = os.path.join(P.local_dir, "logs", "P{0}_log_f.txt".format(self.user_id))
-			self.exp.log_f = open(log_path, "w+")
+			self.exp.log_f = io.open(log_path, "w+", encoding='utf-8')
 
 		return True
 
