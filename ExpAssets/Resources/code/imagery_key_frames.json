@@ -3,7 +3,7 @@
         {
             "label": "imagery instructions",
             "description": "Initial instructions given. Audio 1 begins",
-            "duration": 22000,
+            "duration": 25800,
             "enabled": true,
             "directives": [
                 {
@@ -100,23 +100,23 @@
             ]
         },
         {
-            "label": "heart 5",
-            "description": "Dot pauses at the origin.",
+            "label": "origin 1",
+            "description": "Origin appears.",
             "duration": 500,
             "enabled": true,
             "directives": [
                 {
-                    "asset": "dot",
-                    "registration": 5,
+                    "asset":  "origin red",
+					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 }
             ]
         },
         {
-            "label": "origin 1",
-            "description": "Origin appears. Audio 2 begins.",
-            "duration": 8200,
+            "label": "origin 2",
+            "description": "Second instructions appear. Audio 2 begins.",
+            "duration": 9200,
             "enabled": true,
             "directives": [
                 {
@@ -162,7 +162,7 @@
         {
             "label": "origin 4",
             "description": "Pointer moves to origin.",
-            "duration": 500,
+            "duration": 1000,
             "enabled": true,
             "directives": [
                 {
@@ -175,26 +175,6 @@
                     "asset": "pointer",
                     "registration": 5,
                     "start": [1160, 1000],
-                    "end": [1050, 870]
-                }
-            ]
-        },
-        {
-            "label": "origin 5",
-            "description": "Pointer remains at origin while Audio 2 completes.",
-            "duration": 500,
-            "enabled": true,
-            "directives": [
-                {
-                    "asset": "origin red",
-                    "registration": 5,
-                    "start": [960, 780],
-                    "end": [960, 780]
-                },
-                {
-                    "asset": "pointer",
-                    "registration": 5,
-                    "start": [1050, 870],
                     "end": [1050, 870]
                 }
             ]
