@@ -71,8 +71,8 @@ class TraceLabSession(EnvAgent):
 		log_path = os.path.join(P.local_dir, "uninitialized_users_{0}".format(now(True)))
 		log = io.open(log_path, "w+", encoding='utf-8')
 		p_cols = [
-			"user_id", "random_seed", "session_structure", "session_count",
-			"sessions_completed", "figure_set", "handedness", "created"
+			'user_id', 'session_structure', 'session_count', 'sessions_completed',
+			'figure_set', 'handedness', 'created'
 		]
 		header = p_cols + ["session_rows", "trial_rows"]
 		log.write("\t".join(header))
@@ -252,7 +252,7 @@ class TraceLabSession(EnvAgent):
 
 		try:
 			cols = [
-				'id', 'random_seed', 'session_structure', 'session_count', 'sessions_completed',
+				'id', 'session_structure', 'session_count', 'sessions_completed',
 				'figure_set', 'handedness', 'created'
 			]
 			user_data = self.db_select('participants', cols, where={'user_id': self.user_id})[0]
@@ -284,6 +284,7 @@ class TraceLabSession(EnvAgent):
 			txt1 = "Participant {0} has already completed all {1} sessions of the task."
 			msg1 = message(txt1.format(self.user_id, num_sessions), blit_txt=False)
 			msg2 = message("Press any key to exit TraceLab.", blit_txt=False)
+			fill()
 			blit(msg1, 2, (P.screen_c[0], P.screen_c[1] - 30))
 			blit(msg2, 8, P.screen_c)
 			flip()
@@ -334,13 +335,12 @@ class TraceLabSession(EnvAgent):
 
 		# Reload participant data from database into experiment variables
 		P.participant_id = user_data[0]
-		P.random_seed = user_data[1] # NOTE: is this actually wanted?
-		self.exp.session_structure = user_data[2]
-		self.exp.session_count = user_data[3]
-		self.exp.session_number = user_data[4]
-		self.exp.figure_set_name = user_data[5]
-		self.exp.handedness = user_data[6]
-		self.exp.created = user_data[7]
+		self.exp.session_structure = user_data[1]
+		self.exp.session_count = user_data[2]
+		self.exp.session_number = user_data[3]
+		self.exp.figure_set_name = user_data[4]
+		self.exp.handedness = user_data[5]
+		self.exp.created = user_data[6]
 
 		self.exp.session_number += 1  # check if last session incomplete and prompt if so?
 		P.session_number = self.exp.session_number
