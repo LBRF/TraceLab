@@ -406,10 +406,11 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			return
 
 		return {
+			"session_num": self.session_number,
 			"block_num": P.block_number,
 			"trial_num": P.trial_number,
-			"session_num": self.session_number,
-			"condition":   self.response_type,
+			"response_type": self.response_type,
+			"feedback_type": self.feedback_type,
 			"figure_type": self.figure_name,
 			"figure_file": self.file_name + ".tlf",
 			"stimulus_gt": self.animate_time, # intended animation time
