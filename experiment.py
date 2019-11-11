@@ -81,6 +81,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	prev_response_type = None
 	session_count = None
 	feedback_type = False
+	first_trial = False
 	handedness = None
 	created = None
 	show_practice_display = False  # ie. this session should include the practice display
@@ -291,6 +292,9 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			flip()
 		any_key()
 
+		# Indicates if on first trial of block, needed for reloading incomplete sessions
+		self.first_trial = True
+
 
 	def setup_response_collector(self):
 
@@ -314,6 +318,12 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 
 	def trial_prep(self):
+		
+		# If reloading incomplete block, update trial number accordingly
+		if self.first_trial:
+			trials_in_block = len(self.blocks.blocks[P.block_number - 1])
+			P.trial_number = (P.trials_per_block - trials_in_block) + 1
+			self.first_trial = False
 
 		self.log("\n\n********** TRIAL {0} ***********\n".format(P.trial_number))
 		self.control_question = choice(["LEFT", "RIGHT", "UP", "DOWN"])

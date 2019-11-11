@@ -195,6 +195,7 @@ class TraceLabSession(EnvAgent):
 	def __check_incomplete_session(self):
 
 		start_block = 1
+		start_trial = 1
 		existing = {'participant_id': P.participant_id, 'session_num': self.exp.session_number}
 		partial_session = self.db_select('trials', ['block_num'], existing)
 		if len(partial_session):
@@ -203,7 +204,7 @@ class TraceLabSession(EnvAgent):
 			    "query": (
 					"This participant did not complete all trials of the previous session. "
 					"Would you like to:\n"
-					"(r)edo the last session, (c)ontinue from the end of the last completed block, "
+					"(r)edo the last session, (c)ontinue from the end of the last completed trial, "
 					"or (a)dvance to the next session?"
 				),
 			    "accepted": ['r', 'c', 'a'],
@@ -221,19 +222,20 @@ class TraceLabSession(EnvAgent):
 			if resp == "r":
 				self.db_removerows('trials', existing)
 			elif resp == "c":
-				# If resuming from end of last finished block, first get last block in db for
+				# If resuming from end of last finished trial, first get last block in db for
 				# this participant + session, then figure out if it was completed or not
 				max_block = max([num[0] for num in partial_session])
 				existing['block_num'] = max_block
 				prev_trials = self.db_select('trials', ['trial_num'], existing)
 				max_trial = max([num[0] for num in prev_trials])
 				start_block = max_block + 1 if max_trial == P.trials_per_block else max_block
+				start_trial = max_trial + 1 if max_trial < P.trials_per_block else 1
 				# NOTE: should we delete all trials of block in progress or leave as-is?
 			elif resp == "a":
 				self.db.update('participants', {'sessions_completed': self.exp.session_number})
 				self.exp.session_number += 1
 
-		return start_block
+		return (start_block, start_trial)
 
 
 	def __get_figure_set_name(self):
@@ -274,7 +276,7 @@ class TraceLabSession(EnvAgent):
 		# If any existing trial data for this session+participant, prompt experimenter whether to
 		# delete existing data and redo session, continue from start of last completed block,
 		# or continue to next session
-		start_block = self.__check_incomplete_session()
+		start_block, start_trial = self.__check_incomplete_session()
 
 		# Load session structure. If participant already completed all sessions, show message
 		# and quit.
@@ -299,11 +301,16 @@ class TraceLabSession(EnvAgent):
 			self.exp.block_factors.append({'response_type': resp, 'feedback_type': fb})
 
 		# Generate trials and import figure set specified earlier
+		self.import_figure_set()
 		self.exp.trial_factory.generate()
 		self.exp.trial_factory.dump()
 		self.exp.blocks = self.exp.trial_factory.export_trials()
+
+		# If resuming incomplete session, skip ahead to last completed trial
+		trimmed_start_block = self.exp.blocks.blocks[start_block - 1][(start_trial - 1):]
+		self.exp.blocks.blocks[start_block - 1] = trimmed_start_block
 		self.exp.blocks.i = start_block - 1  # skips ahead to start_block if specified
-		self.import_figure_set()
+		
 
 		# If session number > 1, log runtime info for session in runtime_info table
 		if 'session_info' in self.db.table_schemas.keys() and self.exp.session_number > 1:
