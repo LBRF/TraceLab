@@ -295,6 +295,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	def setup_response_collector(self):
 
 		self.rc.uses(DrawResponse)
+		self.rc.terminate_after = [120, klibs.TK_S] # Wait really long before timeout
 		self.rc.draw_listener.start_boundary = 'start'
 		self.rc.draw_listener.stop_boundary = 'stop'
 		self.rc.draw_listener.show_active_cursor = False
@@ -341,9 +342,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		if (time.time() - figure_load_start) > P.figure_load_time:
 			cso("<red>Warning: figure generation for this trial exceeded duration."
 				"(load time: {0} seconds)</red>".format(time.time() - figure_load_start))
-		else:
-			while (time.time() - figure_load_start) < P.figure_load_time:
-				ui_request()
 
 		self.origin_pos = list(self.figure.points[0])
 		if P.flip_x:
