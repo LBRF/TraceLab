@@ -10,7 +10,8 @@ from operator import sub
 
 from klibs.KLExceptions import TrialException
 from klibs import P
-from klibs.KLConstants import NA, RC_DRAW, RECT_BOUNDARY, CIRCLE_BOUNDARY, STROKE_OUTER, QUERY_UPD
+from klibs.KLConstants import (NA, RC_DRAW, RECT_BOUNDARY, CIRCLE_BOUNDARY, STROKE_OUTER,
+	QUERY_UPD, TK_S)
 from klibs.KLUtilities import *
 from klibs.KLUtilities import colored_stdout as cso
 from klibs.KLGraphics import blit, fill, flip, clear
@@ -94,6 +95,7 @@ class TraceLab(Experiment, BoundaryInspector):
 	show_practice_display = False  # ie. this session should include the practice display
 	lj = None
 	auto_generate_count = None
+	first_trial = False
 
 	# graphical elements
 	imgs = {}
@@ -421,9 +423,12 @@ class TraceLab(Experiment, BoundaryInspector):
 			flip()
 		any_key()
 
+		self.first_trial = True
+
 
 	def setup_response_collector(self):
 		self.rc.uses(RC_DRAW)
+		self.rc.terminate_after = [120, TK_S]
 		self.rc.draw_listener.start_boundary = 'start'
 		self.rc.draw_listener.stop_boundary = 'stop'
 		self.rc.draw_listener.show_active_cursor = False
@@ -440,6 +445,12 @@ class TraceLab(Experiment, BoundaryInspector):
 
 
 	def trial_prep(self):
+
+		if self.first_trial:
+			trials_in_block = len(self.blocks.blocks[P.block_number - 1])
+			P.trial_number = (P.trials_per_block - trials_in_block) + 1
+			self.first_trial = False
+
 		self.log("\n\n********** TRIAL {0} ***********\n".format(P.trial_number))
 		self.control_question = choice(["LEFT", "RIGHT", "UP", "DOWN"])
 		self.rt = 0.0

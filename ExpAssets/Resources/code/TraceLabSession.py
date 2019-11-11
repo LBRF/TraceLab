@@ -17,6 +17,7 @@ from klibs.KLConstants import QUERY_UPD, NA
 from klibs import P
 from klibs.KLUtilities import now
 from klibs.KLNamedObject import NamedInventory
+from klibs.KLJSON_Object import AttributeDict
 from klibs.KLCommunication import query, message
 from klibs.KLCommunication import user_queries as uq
 from klibs.KLGraphics import blit, flip, fill
@@ -134,6 +135,7 @@ class TraceLabSession(EnvAgent):
 				if isinstance(v, FigureSet):
 					self.exp.figure_sets[v.name] = v
 
+
 	def __generate_user_id__(self):
 		from klibs.KLCommunication import collect_demographics
 		# delete all incomplete attempts to create a user to free up username space; no associated records to remove
@@ -142,6 +144,53 @@ class TraceLabSession(EnvAgent):
 		self.parse_exp_condition(query(uq.experimental[2]))
 		if query(uq.experimental[3]) == "y":
 			self.__get_figure_set_name__()
+
+
+	def __check_incomplete_session(self):
+
+		start_block = 1
+		start_trial = 1
+		existing = {'participant_id': P.participant_id, 'session_num': self.exp.session_number}
+		partial_session = self.db_select('trials', ['block_num'], existing)
+		if len(partial_session):
+			partial_q = AttributeDict({
+			    "title": "partial session prompt",
+			    "query": (
+					"This participant did not complete all trials of the previous session. "
+					"Would you like to:\n"
+					"(r)edo the last session, (c)ontinue from the end of the last completed trial, "
+					"or (a)dvance to the next session?"
+				),
+			    "accepted": ['r', 'c', 'a'],
+			    "allow_null": False,
+			    "format": AttributeDict({
+			        "type": "str",
+			        "styles": "default",
+			        "positions": "default",
+			        "password": False,
+			        "case_sensitive": False,
+			        "action": None
+			    })
+			})
+			resp = query(partial_q)
+			if resp == "r":
+				self.db_removerows('trials', existing)
+			elif resp == "c":
+				# If resuming from end of last finished trial, first get last block in db for
+				# this participant + session, then figure out if it was completed or not
+				max_block = max([num[0] for num in partial_session])
+				existing['block_num'] = max_block
+				prev_trials = self.db_select('trials', ['trial_num'], existing)
+				max_trial = max([num[0] for num in prev_trials])
+				start_block = max_block + 1 if max_trial == P.trials_per_block else max_block
+				start_trial = max_trial + 1 if max_trial < P.trials_per_block else 1
+				# NOTE: should we delete all trials of block in progress or leave as-is?
+			elif resp == "a":
+				self.db.update('participants', {'sessions_completed': self.exp.session_number})
+				self.exp.session_number += 1
+
+		return (start_block, start_trial)
+
 
 	def __get_figure_set_name__(self):
 		name = query(uq.experimental[4])
@@ -152,6 +201,7 @@ class TraceLabSession(EnvAgent):
 				name = None
 		self.exp.figure_key = name
 		self.db.query(self.queries["assign_figure_set"], QUERY_UPD, q_vars=[self.exp.figure_key, P.p_id])
+
 
 	def init_session(self):
 
@@ -169,19 +219,26 @@ class TraceLabSession(EnvAgent):
 				any_key()
 				self.exp.quit()
 
-		self.exp.trial_factory.generate() # generate blocks/trials here, once block count is known
+		# If any existing trial data for this session+participant, prompt experimenter whether to
+		# delete existing data and redo session, continue from start of last completed block,
+		# or continue to next session
+		start_block, start_trial = self.__check_incomplete_session()
+
+		# Generate trials and import figure set specified earlier
+		self.exp.trial_factory.generate()
+		self.exp.trial_factory.dump()
+		self.exp.blocks = self.exp.trial_factory.export_trials()
+		trimmed_start_block = self.exp.blocks.blocks[start_block - 1][(start_trial - 1):]
+		self.exp.blocks.blocks[start_block - 1] = trimmed_start_block
+		self.exp.blocks.i = start_block - 1  # skips ahead to start_block if specified
 		self.import_figure_set()
 
 		# delete previous trials for this session if any exist (essentially assume a do-over)
-		if P.capture_figures_mode:
-			self.exp.training_session = True
-			self.exp.session_type = SESSION_FIG
-		else:
-			self.db.query(self.queries["delete_anon"], q_vars=[P.p_id, self.exp.session_number])
-			self.exp.training_session = self.exp.session_number not in (1, 5)
-			self.exp.session_type = SESSION_TRN if self.exp.training_session else SESSION_TST
+		self.exp.training_session = self.exp.session_number not in (1, 5)
+		self.exp.session_type = SESSION_TRN if self.exp.training_session else SESSION_TST
 		self.db.query(self.queries["set_initialized"], QUERY_UPD, q_vars=[P.p_id])
 		self.log_session_init()
+
 
 	def log_session_init(self):
 		header = {"exp_condition": self.exp.exp_condition,
@@ -194,6 +251,7 @@ class TraceLabSession(EnvAgent):
 			for k in header:
 				self.exp.log("{0}: {1}\n".format(k, header[k]))
 		self.exp.log("*************** HEADER END *****************\n")
+
 
 	def restore_session(self, user_data):
 		# `id`,`random_seed`,`exp_condition`,`session_count`,`feedback_type`,`sessions_completed`,`figure_set`
@@ -211,6 +269,7 @@ class TraceLabSession(EnvAgent):
 				self.exp.show_practice_display = True
 
 		return True
+
 
 	def import_figure_set(self):
 		if not self.exp.figure_set_name or self.exp.figure_set_name == NA:
@@ -254,6 +313,7 @@ class TraceLabSession(EnvAgent):
 
 		self.exp.trial_factory.generate(new_exp_factors)
 
+
 	def parse_exp_condition(self, condition_str):
 		# from klibs.KLCommunication import user_queries as uq
 		error_args = {"style":"error",
@@ -283,7 +343,6 @@ class TraceLabSession(EnvAgent):
 			message(self.error_strings["invalid_session_count"], **error_args)
 			any_key()
 			return self.parse_exp_condition(query(uq.experimental[2]))
-
 
 		# first parse the experimental condition
 		if exp_cond == "PP":
@@ -315,6 +374,29 @@ class TraceLabSession(EnvAgent):
 			raise ValueError(e_msg)
 		q_vars = [self.exp.exp_condition, self.exp.session_count, self.exp.feedback_type, P.participant_id]
 		self.db.query(self.queries["exp_condition"], QUERY_UPD, q_vars=q_vars)
+
+
+	def db_select(self, table, columns, where=None):
+
+		columns_str = ", ".join(columns)
+		q = "SELECT {0} FROM {1}".format(columns_str, table)
+		if where and len(where) > 0:
+			# kind of hacky, but there's no official klibs API for this yet
+			filters = self.db._DatabaseManager__master._to_sql_equals_statements(where, table)
+			filter_str = " AND ".join(filters)
+			q += " WHERE {0}".format(filter_str)
+
+		return self.db.query(q)
+
+
+	def db_removerows(self, table, where):
+
+		# kind of hacky, but there's no official klibs API for this yet
+		filters = self.db._DatabaseManager__master._to_sql_equals_statements(where, table)
+		filter_str = " AND ".join(filters)
+		q = "DELETE FROM {0} WHERE {1}".format(table, filter_str)
+
+		return self.db.query(q)
 
 
 	@property
