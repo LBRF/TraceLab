@@ -122,7 +122,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	animate_time = None
 	figure_name = None
 	figure_sets = {}  # complete set of available figure sets
-	figure_set = []  # figure set currently in use for this participant
 	figure_set_name = "NA"
 
 	# practice stuff
@@ -223,7 +222,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		xy_1 = (self.next_trial_button_loc[0] - 150, self.next_trial_button_loc[1] - 33)
 		xy_2 = (self.next_trial_button_loc[0] + 150, self.next_trial_button_loc[1] + 33)
 		self.add_boundary("next trial button", (xy_1, xy_2), RECT_BOUNDARY)
-		
+
 		#####
 		# practice session vars & elements
 		#####
@@ -241,16 +240,14 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			[200, 100], P.btn_s_pad, P.y_pad, finish_button=False
 		)
 
-		# import figures for use during testing sessions
-		fill()
-		blit(self.loading_msg, 5, P.screen_c, flip_x=P.flip_x)
-		flip()
-		for f in P.figures:
-			ui_request()
-			fig_path = os.path.join(P.resources_dir, "figures", f)
-			self.test_figures[f] = TraceLabFigure(fig_path)
-
-		clear()
+		# Import all pre-generated figures needed for the current session
+		figures = list(set(self.trial_factory.exp_factors["figure_name"]))
+		figures.append(P.practice_figure)
+		for f in figures:
+			if f != "random":
+				ui_request()
+				fig_path = os.path.join(P.resources_dir, "figures", f)
+				self.test_figures[f] = TraceLabFigure(fig_path)
 
 
 	def block(self):
@@ -318,7 +315,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 
 	def trial_prep(self):
-		
+	
 		# If reloading incomplete block, update trial number accordingly
 		if self.first_trial:
 			trials_in_block = len(self.blocks.blocks[P.block_number - 1])
@@ -451,7 +448,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 				os.makedirs(self.fig_dir)
 
 			learned_fig_num = 1
-			if query(user_queries.experimental[5]) == "y":
+			if query(user_queries.experimental[3]) == "y":
 				self.origin_pos = (P.screen_c[0], int(P.screen_y * 0.8))
 				self.origin_boundary = [self.origin_pos, self.origin_size // 2]
 				while True:
@@ -462,7 +459,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 					])
 					self.start_trial_button()
 					self.capture_learned_figure(learned_fig_num)
-					if query(user_queries.experimental[6]) == "y":
+					if query(user_queries.experimental[4]) == "y":
 						learned_fig_num += 1
 					else:
 						break
@@ -665,7 +662,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 					# Prompt participants whether they want to (q)uit, (r)eplay animation,
 					# (d)iscard figure and move to next, or (s)ave figure to file
-					resp = query(user_queries.experimental[8])
+					resp = query(user_queries.experimental[6])
 					if resp == "r": # replay
 						continue
 					elif resp == "d": # discard
@@ -674,7 +671,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 						done = True
 						break
 					elif resp == "s": # save
-						f_name = query(user_queries.experimental[9]) + ".tlf"
+						f_name = query(user_queries.experimental[7]) + ".tlf"
 						msg = message("Saving... ", blit_txt=False)
 						fill()
 						blit(msg, 5, P.screen_c)

@@ -30,3 +30,19 @@ class FigureSet(NamedObject):
 	def add_figures(self, *figures):
 		for f in figures:
 			self.add_figure(f)
+
+	def to_list(self):
+		"""Exports all figures in set to a flat list of figure names, with the frequencies
+		specified when adding to `add_figure`.
+		"""
+		values = []
+		for f in self.figures:
+			name, distribution = f
+			values += [name] * distribution
+		return values
+
+	@property
+	def names(self):
+		"""Returns the names of all unique figures in the set.
+		"""
+		return list(set([f[0] for f in self.figures]))

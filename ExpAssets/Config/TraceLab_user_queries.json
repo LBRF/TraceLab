@@ -14,23 +14,8 @@
 			"allow_null": false,
 			"format": {
 				"type": "str",
-				"styles": {
-					"query": "default",
-					"input": "default",
-					"error": "alert"
-				},
-				"positions": {
-					"locations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					},
-					"registrations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					}
-				},
+                "styles": "default",
+                "positions": "default",
 				"password": true,
 				"range": null,
 				"case_sensitive": true,
@@ -49,23 +34,8 @@
 			"allow_null": false,
 			"format": {
 				"type": "str",
-				"styles": {
-					"query": "default",
-					"input": "default",
-					"error": "alert"
-				},
-				"positions": {
-					"locations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					},
-					"registrations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					}
-				},
+                "styles": "default",
+                "positions": "default",
 				"password": false,
 				"range": null,
 				"case_sensitive": true,
@@ -84,23 +54,8 @@
 			"allow_null": false,
 			"format": {
 				"type": "str",
-				"styles": {
-					"query": "default",
-					"input": "default",
-					"error": "alert"
-				},
-				"positions": {
-					"locations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					},
-					"registrations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					}
-				},
+                "styles": "default",
+                "positions": "default",
 				"password": false,
 				"range": null,
 				"case_sensitive": false,
@@ -119,23 +74,8 @@
 			"allow_null": false,
 			"format": {
 				"type": "str",
-				"styles": {
-					"query": "default",
-					"input": "default",
-					"error": "alert"
-				},
-				"positions": {
-					"locations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					},
-					"registrations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					}
-				},
+                "styles": "default",
+                "positions": "default",
 				"password": false,
 				"range": null,
 				"case_sensitive": false,
@@ -154,23 +94,8 @@
 			"allow_null": false,
 			"format": {
 				"type": "int",
-				"styles": {
-					"query": "default",
-					"input": "default",
-					"error": "alert"
-				},
-				"positions": {
-					"locations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					},
-					"registrations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					}
-				},
+                "styles": "default",
+                "positions": "default",
 				"password": false,
 				"range": [0, 125],
 				"case_sensitive": null,
@@ -191,23 +116,8 @@
 			"allow_null": false,
 			"format": {
 				"type": "str",
-				"styles": {
-					"query": "default",
-					"input": "default",
-					"error": "alert"
-				},
-				"positions": {
-					"locations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					},
-					"registrations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					}
-				},
+                "styles": "default",
+                "positions": "default",
 				"password": false,
 				"range": null,
 				"case_sensitive": true,
@@ -226,23 +136,8 @@
 			"allow_null": true,
 			"format": {
 				"type": "str",
-				"styles": {
-					"query": "default",
-					"input": "default",
-					"error": "alert"
-				},
-				"positions": {
-					"locations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					},
-					"registrations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					}
-				},
+                "styles": "default",
+                "positions": "default",
 				"password": false,
 				"range": null,
 				"case_sensitive": true,
@@ -254,41 +149,6 @@
 		},
 		{
 			"index": 2,
-			"title": "exp condition",
-			"database_field": null,
-			"query": "Enter an experimental condition identifier:",
-			"accepted": false,
-			"allow_null": false,
-			"format": {
-				"type": "str",
-				"styles": {
-					"query": "default",
-					"input": "default",
-					"error": "alert"
-				},
-				"positions": {
-					"locations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					},
-					"registrations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					}
-				},
-				"password": false,
-				"range": null,
-				"case_sensitive": false,
-				"accept_as_true": null,
-				"action": "uppercase"
-			},
-			"anonymous_value": null,
-			"active": true
-		},
-		{
-			"index": 3,
 			"title": "use figure set",
 			"database_field": null,
 			"query": "Would you like to choose a figure set for this participant?",
@@ -296,23 +156,28 @@
 			"allow_null": false,
 			"format": {
 				"type": "str",
-				"styles": {
-					"query": "default",
-					"input": "default",
-					"error": "alert"
-				},
-				"positions": {
-					"locations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					},
-					"registrations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					}
-				},
+                "styles": "default",
+                "positions": "default",
+				"password": false,
+				"range": null,
+				"case_sensitive": false,
+				"accept_as_true": null,
+				"action": null
+			},
+			"anonymous_value": null,
+			"active": true
+		},
+		{
+			"index": 3,
+			"title": "learned a shape",
+			"database_field": null,
+			"query": "Do you feel that you learned a shape? It is okay if you do not think you learned a shape or if there was a repeating shape.\nAnswer with Y or N.",
+			"accepted": ["y", "n"],
+			"allow_null": false,
+			"format": {
+				"type": "str",
+                "styles": "default",
+                "positions": "default",
 				"password": false,
 				"range": null,
 				"case_sensitive": false,
@@ -324,33 +189,18 @@
 		},
 		{
 			"index": 4,
-			"title": "choose figure set",
+			"title": "learned another shape",
 			"database_field": null,
-			"query": "Please enter the name of the figure set file, excluding the document suffix:",
-			"accepted": null,
+			"query": "Do you feel that you learned another shape?\nAnswer with Y or N.",
+			"accepted": ["y", "n"],
 			"allow_null": false,
 			"format": {
 				"type": "str",
-				"styles": {
-					"query": "default",
-					"input": "default",
-					"error": "alert"
-				},
-				"positions": {
-					"locations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					},
-					"registrations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					}
-				},
+                "styles": "default",
+                "positions": "default",
 				"password": false,
 				"range": null,
-				"case_sensitive": true,
+				"case_sensitive": false,
 				"accept_as_true": null,
 				"action": null
 			},
@@ -359,30 +209,15 @@
 		},
 		{
 			"index": 5,
-			"title": "learned a shape",
+			"title": "purge incomplete",
 			"database_field": null,
-			"query": "Do you feel that you learned a shape? It is okay if you do not think you learned a shape or if there was a repeating shape.\nAnswer with Y or N.",
-			"accepted": ["y", "n"],
+			"query": "One or more participants were found with incomplete initialization.\nYou may (p)urge all associated data, or (q)uit now and a report log will be generated.",
+			"accepted": ["p", "q"],
 			"allow_null": false,
 			"format": {
 				"type": "str",
-				"styles": {
-					"query": "default",
-					"input": "default",
-					"error": "alert"
-				},
-				"positions": {
-					"locations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					},
-					"registrations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					}
-				},
+                "styles": "default",
+                "positions": "default",
 				"password": false,
 				"range": null,
 				"case_sensitive": false,
@@ -394,30 +229,15 @@
 		},
 		{
 			"index": 6,
-			"title": "learned another shape",
+			"title": "maunal figure generation prompt",
 			"database_field": null,
-			"query": "Do you feel that you learned another shape?\nAnswer with Y or N.",
-			"accepted": ["y", "n"],
+			"query": "(s)ave, (d)iscard, (r)eplay or (q)uit?",
+			"accepted": ["s", "d", "r", "q"],
 			"allow_null": false,
 			"format": {
 				"type": "str",
-				"styles": {
-					"query": "default",
-					"input": "default",
-					"error": "alert"
-				},
-				"positions": {
-					"locations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					},
-					"registrations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					}
-				},
+                "styles": "default",
+                "positions": "default",
 				"password": false,
 				"range": null,
 				"case_sensitive": false,
@@ -429,76 +249,6 @@
 		},
 		{
 			"index": 7,
-			"title": "purge incomplete",
-			"database_field": null,
-			"query": "One or more participants were found with incomplete initialization.\nYou may (p)urge all associated data, or (q)uit now and a report log will be generated.",
-			"accepted": ["p", "q"],
-			"allow_null": false,
-			"format": {
-				"type": "str",
-				"styles": {
-					"query": "default",
-					"input": "default",
-					"error": "alert"
-				},
-				"positions": {
-					"locations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					},
-					"registrations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					}
-				},
-				"password": false,
-				"range": null,
-				"case_sensitive": false,
-				"accept_as_true": null,
-				"action": null
-			},
-			"anonymous_value": null,
-			"active": true
-		},
-		{
-			"index": 8,
-			"title": "maunal figure generation prompt",
-			"database_field": null,
-			"query": "(s)ave, (d)iscard, (r)eplay or (q)uit?",
-			"accepted": ["s", "d", "r", "q"],
-			"allow_null": false,
-			"format": {
-				"type": "str",
-				"styles": {
-					"query": "default",
-					"input": "default",
-					"error": "alert"
-				},
-				"positions": {
-					"locations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					},
-					"registrations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					}
-				},
-				"password": false,
-				"range": null,
-				"case_sensitive": false,
-				"accept_as_true": null,
-				"action": null
-			},
-			"anonymous_value": null,
-			"active": true
-		},
-		{
-			"index": 9,
 			"title": "manual figure generation filename",
 			"database_field": null,
 			"query": "Enter a filename for this figure (omitting suffixes):",
@@ -506,23 +256,8 @@
 			"allow_null": false,
 			"format": {
 				"type": "str",
-				"styles": {
-					"query": "default",
-					"input": "default",
-					"error": "alert"
-				},
-				"positions": {
-					"locations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					},
-					"registrations": {
-						"query": "auto",
-						"input": "auto",
-						"error": "auto"
-					}
-				},
+                "styles": "default",
+                "positions": "default",
 				"password": false,
 				"range": null,
 				"case_sensitive": false,

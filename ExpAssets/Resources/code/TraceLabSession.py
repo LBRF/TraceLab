@@ -46,7 +46,7 @@ class TraceLabSession(EnvAgent):
 
 		incomplete = self.db_select('participants', ['id', 'user_id'], where={'initialized': 0})
 		if len(incomplete):
-			if query(uq.experimental[7]) == "p":
+			if query(uq.experimental[5]) == "p":
 				self.__purge_incomplete(incomplete)
 			else:
 				self.__report_incomplete(incomplete)
@@ -176,7 +176,7 @@ class TraceLabSession(EnvAgent):
 		P.blocks_per_experiment = len(P.session_structures[structure_key][0])
 
 		# Query user whether they want to select a figure set by name for the participant
-		if query(uq.experimental[3]) == "y":
+		if query(uq.experimental[2]) == "y":
 			self.exp.figure_set_name = self.__get_figure_set_name()
 
 		# Collect user demographics and retrieve user id from database
@@ -230,7 +230,6 @@ class TraceLabSession(EnvAgent):
 				max_trial = max([num[0] for num in prev_trials])
 				start_block = max_block + 1 if max_trial == P.trials_per_block else max_block
 				start_trial = max_trial + 1 if max_trial < P.trials_per_block else 1
-				# NOTE: should we delete all trials of block in progress or leave as-is?
 			elif resp == "a":
 				self.db.update('participants', {'sessions_completed': self.exp.session_number})
 				self.exp.session_number += 1
@@ -240,14 +239,22 @@ class TraceLabSession(EnvAgent):
 
 	def __get_figure_set_name(self):
 
-		name = query(uq.experimental[4])
-		if not name in self.exp.figure_sets:
-			if query(uq.experimental[0]) == "y":
-				return self.__get_figure_set_name()
-			else:
-				name = "NA"
+		figset_q = AttributeDict({
+		    "title": "figureset name",
+		    "query": "Please enter the name of the figure set to use:",
+		    "accepted": self.exp.figure_sets.keys(),
+		    "allow_null": False,
+		    "format": AttributeDict({
+		        "type": "str",
+		        "styles": "default",
+		        "positions": "default",
+		        "password": False,
+		        "case_sensitive": True,
+		        "action": None
+		    })
+		})
 
-		return name
+		return query(figset_q)
 
 
 	def init_session(self):
@@ -301,7 +308,7 @@ class TraceLabSession(EnvAgent):
 			self.exp.block_factors.append({'response_type': resp, 'feedback_type': fb})
 
 		# Generate trials and import figure set specified earlier
-		self.import_figure_set()
+		self.init_figure_set()
 		self.exp.trial_factory.generate()
 		self.exp.trial_factory.dump()
 		self.exp.blocks = self.exp.trial_factory.export_trials()
@@ -310,7 +317,6 @@ class TraceLabSession(EnvAgent):
 		trimmed_start_block = self.exp.blocks.blocks[start_block - 1][(start_trial - 1):]
 		self.exp.blocks.blocks[start_block - 1] = trimmed_start_block
 		self.exp.blocks.i = start_block - 1  # skips ahead to start_block if specified
-		
 
 		# If session number > 1, log runtime info for session in runtime_info table
 		if 'session_info' in self.db.table_schemas.keys() and self.exp.session_number > 1:
@@ -358,7 +364,7 @@ class TraceLabSession(EnvAgent):
 		return True
 
 
-	def import_figure_set(self):
+	def init_figure_set(self):
 
 		if not self.exp.figure_set_name or self.exp.figure_set_name == "NA":
 			return
@@ -366,43 +372,25 @@ class TraceLabSession(EnvAgent):
 		if not self.exp.figure_set_name in self.exp.figure_sets:
 			e_msg = "No figure set named '{0}' is registered.".format(self.exp.figure_set_name)
 			raise ValueError(e_msg)
-		# get sting values of figure file names (minus suffix)
-		figure_set = list(self.exp.figure_sets[self.exp.figure_set_name].figures)
 
-		# ensure all figures are pre-loaded, even if not on the default figure list
-		for f in figure_set:
-			if f[0] not in P.figures and f[0] != "random":
-				f_path = os.path.join(P.resources_dir, "figures", f[0])
-				if os.path.exists(f_path + ".zip"):
-					# Re-generate saved figure from .zip
-					self.exp.test_figures[f[0]] = TraceLabFigure(f_path)
-				else:
-					fill()
-					e_msg = (
-						"The figure '{0}' listed in the figure set '{1}' wasn't found.\n"
-						"Please check that the file is named correctly and try again. "
-						"TraceLab will now exit.".format(f[0], self.exp.figure_set_name)
-					)
-					blit(message(e_msg, blit_txt=False), 5, P.screen_c)
-					flip()
-					any_key()
-					self.exp.quit()
-			self.exp.figure_set.append(f)
+		# Verify that all figures listed in figure set exist, raising error if it doesn't
+		figure_set = self.exp.figure_sets[self.exp.figure_set_name]
+		for f in figure_set.names:
+			f_path = os.path.join(P.resources_dir, "figures", f)
+			if not os.path.exists(f_path + ".zip") and f != "random":
+				fill()
+				e_msg = (
+					"The figure '{0}' listed in the figure set '{1}' wasn't found.\n"
+					"Please check that the file is named correctly and try again. "
+					"TraceLab will now exit.".format(f, self.exp.figure_set_name)
+				)
+				blit(message(e_msg, blit_txt=False), 5, P.screen_c)
+				flip()
+				any_key()
+				self.exp.quit()
 
-		# load original ivars file into a named object
-		sys.path.append(P.ind_vars_file_path)
-		if os.path.exists(P.ind_vars_file_local_path) and not P.dm_ignore_local_overrides:
-			for k, v in load_source("*", P.ind_vars_file_local_path).__dict__.items():
-				if isinstance(v, IndependentVariableSet):
-					new_exp_factors = v
-		else:
-			for k, v in load_source("*", P.ind_vars_file_path).__dict__.items():
-				if isinstance(v, IndependentVariableSet):
-					new_exp_factors = v
-		new_exp_factors.delete('figure_name')
-		new_exp_factors.add_variable('figure_name', str, self.exp.figure_set)
-
-		self.exp.trial_factory.generate(new_exp_factors)
+		# Overwrite 'figure_name' trial factor with values defined in chosen figure set
+		self.exp.trial_factory.exp_factors['figure_name'] = figure_set.to_list()
 
 
 	def validate_block_condition(self, condition):

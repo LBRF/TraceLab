@@ -44,7 +44,6 @@ conditions = []
 default_condition = None
 table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA")]}
 
-final_condition = 'physical' # condition for last block or session (if multi-session)
 origin_wait_time = 3  # seconds
 figure_load_time = 4  # seconds
 
@@ -68,7 +67,7 @@ dm_auto_threshold = True
 dm_render_progress = False  # if True, drawing feedback will always be shown in devmode
 dm_ignore_local_overrides = False
 dm_always_show_cursor = True
-use_log_file = False  # Not fully implemented
+use_log_file = False  # Not sure this is terribly useful
 
 ########################################
 #  Dot Controls
@@ -82,7 +81,7 @@ origin_size = 50  # px
 ########################################
 # Feedback Controls
 ########################################
-response_feedback_color = (0,255,255)
+response_feedback_color = (0, 255, 255)
 stimulus_feedback_color = (211, 211, 211)
 max_feedback_time = 2000  # ms
 ignore_points_at = [(1919,1079),(119,1079),(239,1079)]  # list of (x,y) coordinates to be removed
@@ -93,21 +92,13 @@ trial_error_msg = "Oops! Something went wrong. Let's try that again later."
 ########################################
 btn_count = 5
 btn_size = 75  # px square
-btn_s_pad = 450  # margins on either side of screen where buttons cant be placed
+btn_s_pad = 450  # margins on either side of screen where buttons can't be placed
 y_pad = 300  # how far down the screen, vertically, the buttons should be placed
 btn_instrux = "How many times did the dot change course {0}?"  # the {0} will contain the direction
 
 ########################################
 # Figure Controls
 ########################################
-figures = [ # pre-generated figures to use
-    "heart",
-    "template_1477090164.31",
-    "template_1477106073.55",
-    "template_1477081781.44",
-    "template_1477111169.26",
-    "template_1477121315.85"
-]
 generation_timeout = 0.5  # seconds
 capture_figures_mode = False
 auto_generate = False
