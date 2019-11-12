@@ -94,7 +94,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	origin_pos = None
 	origin_boundary = None
 	tracker_dot = None
-	button_bar = None
 
 	instructions = None
 	loading_msg = None
@@ -102,7 +101,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	next_trial_msg = None
 	next_trial_box = None
 	next_trial_button_loc = None
-	next_trial_button_bounds = None
 
 	# dynamic trial vars
 	drawing = []
@@ -162,13 +160,11 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.txtm.add_style('tiny', 12, [255, 255, 255, 255])
 		self.txtm.add_style('small', 14, [255, 255, 255, 255])
 
-		# Initialize dot that traces shape of figures
-		if P.tracker_dot_perimeter > 0:
-			dot_stroke = [P.tracker_dot_perimeter, P.tracker_dot_perimeter_color, STROKE_OUTER]
-		else:
-			dot_stroke = None
-		self.tracker_dot = Ellipse(P.tracker_dot_size, stroke=dot_stroke, fill=P.tracker_dot_color)
-		self.tracker_dot.render()
+		# Pre-render shape stimuli
+		dot_stroke = [P.dot_stroke, P.dot_stroke_col, STROKE_OUTER] if P.dot_stroke > 0 else None
+		self.tracker_dot = Ellipse(P.dot_size, stroke=dot_stroke, fill=P.dot_color).render()
+		self.origin_active = Ellipse(P.origin_size, fill=self.origin_active_color).render()
+		self.origin_inactive = Ellipse(P.origin_size, fill=self.origin_inactive_color).render()
 
 		# If capture figures mode, generate, view, and optionally save some figures
 		if P.capture_figures_mode:
@@ -180,6 +176,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.session = TraceLabSession()
 		self.user_id = self.session.user_id
 
+		# Once session initialized, show loading screen and finish setup
 		self.loading_msg = message("Loading...", "default", blit_txt=False)
 		fill()
 		blit(self.loading_msg, 5, P.screen_c)
@@ -189,20 +186,24 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		P.btn_s_pad = scale((P.btn_s_pad, 0), (1920, 1080))[0]
 		P.y_pad = scale((0, P.y_pad), (1920, 1080))[1]
 
-		btn_vars = ([(str(i), P.btn_size, None) for i in range(1, 6)], P.btn_size, P.btn_s_pad, P.y_pad, P.btn_instrux)
-		self.button_bar = ButtonBar(*btn_vars)
-
-		self.origin_active = Ellipse(P.origin_size, fill=self.origin_active_color).render()
-		self.origin_inactive = Ellipse(P.origin_size, fill=self.origin_inactive_color).render()
-
+		# Initialize messages and response buttons for control trials
 		control_fail_txt = "Please keep your finger on the start area for the complete duration."
 		self.control_fail_msg = message(control_fail_txt, 'error', blit_txt=False)
+		ctrl_buttons = ["1", "2", "3", "4", "5"]
+		self.control_bar = ButtonBar(
+			buttons = [(i, P.btn_size, None) for i in ctrl_buttons],
+			button_size = P.btn_size, screen_margins = P.btn_s_pad, y_offset = P.y_pad,
+			message_txt = P.btn_instrux
+		)
+
+		# Initialize 'next trial' button
+		button_x = 250 if self.handedness == LEFT_HANDED else P.screen_x - 250
+		button_y = P.screen_y - 100
 		self.next_trial_msg = message(P.next_trial_message, 'default', blit_txt=False)
 		self.next_trial_box = Rectangle(300, 75, stroke=(2, (255, 255, 255), STROKE_OUTER))
-		self.next_trial_button_loc = (250 if self.handedness == LEFT_HANDED else P.screen_x - 250, P.screen_y - 100)
-		xy_1 = (self.next_trial_button_loc[0] - 150, self.next_trial_button_loc[1] - 33)
-		xy_2 = (self.next_trial_button_loc[0] + 150, self.next_trial_button_loc[1] + 33)
-		self.add_boundary("next trial button", (xy_1, xy_2), RECT_BOUNDARY)
+		self.next_trial_button_loc = (button_x, button_y)
+		bounds = [(button_x - 150, button_y - 38), (button_x + 150, button_y + 38)]
+		self.add_boundary("next trial button", bounds, RECT_BOUNDARY)
 
 		# Initialize instructions and practice button bar for each condition
 		self.instruction_files = {
@@ -299,26 +300,23 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 
 	def trial_prep(self):
-	
+
 		# If reloading incomplete block, update trial number accordingly
 		if self.first_trial:
 			trials_in_block = len(self.blocks.blocks[P.block_number - 1])
 			P.trial_number = (P.trials_per_block - trials_in_block) + 1
 			self.first_trial = False
 
-		self.log("\n\n********** TRIAL {0} ***********\n".format(P.trial_number))
+		# Initialize/reset trial variables before beginning trial
 		self.control_question = choice(["LEFT", "RIGHT", "UP", "DOWN"])
 		self.rt = 0.0
 		self.it = 0.0
 		self.animate_time = int(self.animate_time)
 		self.drawing = 'NA'
 		self.control_response = -1
-
-		fill()
-		flip()
-
 		self.figure = None
-		figure_load_start = time.time()
+
+		# Either load a pre-generated figure or generate a new one, depending on trial
 		if self.figure_name == "random":
 			self.figure = self._generate_figure(duration=self.animate_time)
 		else:
@@ -327,23 +325,19 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			self.figure.render()
 			self.figure.prepare_animation()
 
-		# To make sure load times for random figures are the same as for pre-generated ones,
-		# we have a fixed load time for figures.
-		if (time.time() - figure_load_start) > P.figure_load_time:
-			cso("<red>Warning: figure generation for this trial exceeded duration."
-				"(load time: {0} seconds)</red>".format(time.time() - figure_load_start))
-
+		# Initialize origin position and origin boundaries based on the loaded figure
 		self.origin_pos = list(self.figure.points[0])
 		if P.flip_x:
 			self.origin_pos[0] = P.screen_x - self.origin_pos[0]
-		self.add_boundary("origin", [self.origin_pos, P.origin_size // 2], CIRCLE_BOUNDARY)
 		self.origin_boundary = [self.origin_pos, P.origin_size // 2]
+		self.add_boundary("origin", self.origin_boundary, CIRCLE_BOUNDARY)
 		self.rc.draw_listener.add_boundaries([
 			('start', self.origin_boundary, CIRCLE_BOUNDARY),
 			('stop', self.origin_boundary, CIRCLE_BOUNDARY)
 		])
 
-		#  now that prep is finished, start the intertrial interval calculation
+		# If using log file, write out the intertrial interval info to it (is this still useful?)
+		self.log("\n\n********** TRIAL {0} ***********\n".format(P.trial_number))
 		if self.intertrial_start:
 			self.intertrial_end = time.time()
 			intertrial_interval = self.intertrial_end - self.intertrial_start
@@ -354,7 +348,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.log("t{0}_intertrial_interval_start".format(P.trial_number), True)
 		self.intertrial_start = time.time()
 
-		# let participant self-initiate next trial
+		# Let participant self-initiate next trial
 		self.start_trial_button()
 
 
@@ -420,7 +414,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			self.figure.write_out(self.file_name + ".tlf")
 			self.figure.write_out(self.file_name + ".tlt", self.drawing)
 		self.rc.draw_listener.reset()
-		self.button_bar.reset()
+		self.control_bar.reset()
 
 
 	def clean_up(self):
@@ -478,18 +472,20 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		blit(self.next_trial_box, 5, self.next_trial_button_loc, flip_x=P.flip_x)
 		blit(self.next_trial_msg, 5, self.next_trial_button_loc, flip_x=P.flip_x)
 		flip()
-		flush()
-		next_trial_button_clicked = False
+
 		if P.demo_mode or P.dm_always_show_cursor:
 			show_mouse_cursor()
 
-		while not next_trial_button_clicked:
+		flush()
+		clicked = False
+		while not clicked:
 			event_queue = pump(True)
 			for e in event_queue:
 				if e.type == SDL_MOUSEBUTTONDOWN:
-					next_trial_button_clicked = self.within_boundary("next trial button", [e.button.x, e.button.y])
+					clicked = self.within_boundary("next trial button", [e.button.x, e.button.y])
 				elif e.type == SDL_KEYDOWN:
 					ui_request(e.key.keysym)
+
 		if not (P.demo_mode or P.dm_always_show_cursor):
 			hide_mouse_cursor()
 
@@ -559,19 +555,20 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		if P.dm_always_show_cursor:
 			show_mouse_cursor()
 
-		self.button_bar.update_message(P.btn_instrux.format(self.control_question))
-		self.button_bar.render()
-		self.button_bar.collect_response()
+		self.control_bar.update_message(P.btn_instrux.format(self.control_question))
+		self.control_bar.render()
+		self.control_bar.collect_response()
 
-		self.rt = self.button_bar.rt
-		self.mt = self.button_bar.mt
-		self.control_response = self.button_bar.response
+		self.rt = self.control_bar.rt
+		self.mt = self.control_bar.mt
+		self.control_response = self.control_bar.response
 
 
 	def _generate_figure(self, duration):
 
 		failures = 0
 		figure = None
+		gen_start = time.time()
 		while not figure:
 			ui_request()
 			try:
@@ -584,6 +581,11 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 				if failures > 10:
 					print("\nUnable to generate a viable figure after 10 tries, quitting...\n")
 					self.quit()
+
+		# Print warning if load time was particularly slow for a given figure
+		if (time.time() - gen_start) > P.figure_load_time:
+			cso("<red>Warning: figure generation took unexpectedly long. "
+				"({0} seconds)</red>".format(round(time.time() - gen_start, 2)))
 
 		return figure
 
@@ -633,9 +635,9 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 					# Animate figure on screen with dot, then show full rendered shape
 					figure.animate()
-					animation_dur = figure.trial_a_frames[-1][2] * 1000
+					animation_dur = round(figure.trial_a_frames[-1][2] * 1000, 2)
 					msg = message("Press any key to continue.", blit_txt=False)
-					msg_time = message("Duration: {0} ms".format(round(animation_dur, 2)), blit_txt=False)
+					msg_time = message("Duration: {0} ms".format(animation_dur), blit_txt=False)
 					fill()
 					figure.draw()
 					blit(msg, 3, (P.screen_x - 30, P.screen_y - 25))

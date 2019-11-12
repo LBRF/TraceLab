@@ -42,10 +42,10 @@ multi_session_project = True
 trials_per_block = 20
 conditions = []
 default_condition = None
-table_defaults = {'participants': [('sessions_completed', 0), ('condition', "NA")]}
+table_defaults = {}
 
 origin_wait_time = 3  # seconds
-figure_load_time = 4  # seconds
+figure_load_time = 0.5  # seconds
 
 ########################################
 # Practice Controls
@@ -72,10 +72,10 @@ use_log_file = False  # Not sure this is terribly useful
 ########################################
 #  Dot Controls
 ########################################
-tracker_dot_size = 5  # diameter in px
-tracker_dot_perimeter = 4  # width of stroke around tracker dot in px
-tracker_dot_color = (0, 0, 0)  # r, g, b, and the last value should always be 255
-tracker_dot_perimeter_color = (255, 255, 255)
+dot_size = 5  # diameter in px
+dot_stroke = 4  # width of stroke around tracker dot in px
+dot_color = (0, 0, 0)  # r, g, b
+dot_stroke_col = (255, 255, 255)
 origin_size = 50  # px
 
 ########################################
