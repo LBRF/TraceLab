@@ -9,6 +9,7 @@ versions of the experiment all included these methods as part of the experiment 
 import os
 import io
 import sys
+import shutil
 from imp import load_source
 
 from klibs import P
@@ -220,7 +221,8 @@ class TraceLabSession(EnvAgent):
 			})
 			resp = query(partial_q)
 			if resp == "r":
-				self.db_removerows('trials', existing)
+				self.db_removerows('trials', existing) # remove database data
+				shutil.rmtree(self.exp.fig_dir) # remove figure data
 			elif resp == "c":
 				# If resuming from end of last finished trial, first get last block in db for
 				# this participant + session, then figure out if it was completed or not
@@ -231,6 +233,8 @@ class TraceLabSession(EnvAgent):
 				start_block = max_block + 1 if max_trial == P.trials_per_block else max_block
 				start_trial = max_trial + 1 if max_trial < P.trials_per_block else 1
 			elif resp == "a":
+				new_session_dir = "session_" + str(self.exp.session_number + 1)
+				self.exp.fig_dir = os.path.join(self.exp.p_dir, new_session_dir)
 				self.db.update('participants', {'sessions_completed': self.exp.session_number})
 				self.exp.session_number += 1
 
@@ -280,6 +284,12 @@ class TraceLabSession(EnvAgent):
 				any_key()
 				self.exp.quit()
 
+		# Initialize figure paths for current participant/session
+		p_dir = "p{0}_{1}".format(P.participant_id, self.exp.created)
+		session_dir = "session_" + str(self.exp.session_number)
+		self.exp.p_dir = os.path.join(P.data_dir, p_dir)
+		self.exp.fig_dir = os.path.join(self.exp.p_dir, session_dir)
+
 		# If any existing trial data for this session+participant, prompt experimenter whether to
 		# delete existing data and redo session, continue from start of last completed block,
 		# or continue to next session
@@ -317,6 +327,10 @@ class TraceLabSession(EnvAgent):
 		trimmed_start_block = self.exp.blocks.blocks[start_block - 1][(start_trial - 1):]
 		self.exp.blocks.blocks[start_block - 1] = trimmed_start_block
 		self.exp.blocks.i = start_block - 1  # skips ahead to start_block if specified
+
+		# If needed, create figure folder for session
+		if not os.path.exists(self.exp.fig_dir):
+			os.makedirs(self.exp.fig_dir)
 
 		# If session number > 1, log runtime info for session in runtime_info table
 		if 'session_info' in self.db.table_schemas.keys() and self.exp.session_number > 1:

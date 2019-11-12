@@ -4,7 +4,6 @@ __author__ = "Jonathan Mulle"
 import os
 import io
 import time
-import shutil
 
 from random import choice
 from sdl2 import SDL_MOUSEBUTTONDOWN, SDL_KEYDOWN
@@ -88,15 +87,12 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	lj = None
 	log_f = None
 
-	origin_proto = None
 	origin_active = None
 	origin_inactive = None
 	origin_active_color = GREEN
 	origin_inactive_color = RED
-	origin_size = None
 	origin_pos = None
 	origin_boundary = None
-	tracker_dot_proto = None
 	tracker_dot = None
 	button_bar = None
 
@@ -112,11 +108,11 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	drawing = []
 	rt = None  # time to initiate responding post-stimulus
 	mt = None  # time to start and complete response
-	it = None  # time between arriving at response origin and intiating response (ie. between RT and MT)
+	it = None  # time between arriving at origin and intiating response (ie. between RT and MT)
 	control_response = None
 	test_figures = {}
 	figure = None
-	control_question = None  # ie. which question the control will be asked to report an answer for
+	control_question = None  # which question the control will be asked to report an answer for
 
 	# configured trial factors (dynamically loaded per-trial
 	animate_time = None
@@ -168,11 +164,11 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 		# Initialize dot that traces shape of figures
 		if P.tracker_dot_perimeter > 0:
-			tracker_dot_stroke = [P.tracker_dot_perimeter, P.tracker_dot_perimeter_color, STROKE_OUTER]
+			dot_stroke = [P.tracker_dot_perimeter, P.tracker_dot_perimeter_color, STROKE_OUTER]
 		else:
-			tracker_dot_stroke = None
-		self.tracker_dot_proto = Ellipse(P.tracker_dot_size, stroke=tracker_dot_stroke, fill=P.tracker_dot_color)
-		self.tracker_dot = self.tracker_dot_proto.render()
+			dot_stroke = None
+		self.tracker_dot = Ellipse(P.tracker_dot_size, stroke=dot_stroke, fill=P.tracker_dot_color)
+		self.tracker_dot.render()
 
 		# If capture figures mode, generate, view, and optionally save some figures
 		if P.capture_figures_mode:
@@ -189,30 +185,15 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		blit(self.loading_msg, 5, P.screen_c)
 		flip()
 
-		self.origin_size = P.origin_size
 		# Scale UI size variables to current screen resolution
-		P.btn_s_pad = scale((P.btn_s_pad,0), (1920,1080))[0]
-		P.y_pad = scale((0,P.y_pad), (1920,1080))[1]
-		self.p_dir = os.path.join(P.data_dir, "p{0}_{1}".format(P.participant_id, self.created))
-		self.fig_dir = os.path.join(self.p_dir, "session_" + str(self.session_number))
-		if os.path.exists(self.fig_dir):
-			shutil.rmtree(self.fig_dir)
-		os.makedirs(self.fig_dir)
-
-		self.origin_proto = Ellipse(self.origin_size)
+		P.btn_s_pad = scale((P.btn_s_pad, 0), (1920, 1080))[0]
+		P.y_pad = scale((0, P.y_pad), (1920, 1080))[1]
 
 		btn_vars = ([(str(i), P.btn_size, None) for i in range(1, 6)], P.btn_size, P.btn_s_pad, P.y_pad, P.btn_instrux)
 		self.button_bar = ButtonBar(*btn_vars)
-		self.origin_proto.fill = self.origin_active_color
-		self.origin_active = self.origin_proto.render()
-		self.origin_proto.fill = self.origin_inactive_color
-		self.origin_inactive = self.origin_proto.render()
 
-		self.instruction_files = {
-			PHYS: {'text': "physical_group_instructions.txt", 'frames': "physical_key_frames"},
-			MOTR: {'text': "imagery_group_instructions.txt", 'frames': "imagery_key_frames"},
-			CTRL: {'text': "control_group_instructions.txt", 'frames': "control_key_frames"}
-		}
+		self.origin_active = Ellipse(P.origin_size, fill=self.origin_active_color).render()
+		self.origin_inactive = Ellipse(P.origin_size, fill=self.origin_inactive_color).render()
 
 		control_fail_txt = "Please keep your finger on the start area for the complete duration."
 		self.control_fail_msg = message(control_fail_txt, 'error', blit_txt=False)
@@ -223,9 +204,12 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		xy_2 = (self.next_trial_button_loc[0] + 150, self.next_trial_button_loc[1] + 33)
 		self.add_boundary("next trial button", (xy_1, xy_2), RECT_BOUNDARY)
 
-		#####
-		# practice session vars & elements
-		#####
+		# Initialize instructions and practice button bar for each condition
+		self.instruction_files = {
+			PHYS: {'text': "physical_group_instructions.txt", 'frames': "physical_key_frames"},
+			MOTR: {'text': "imagery_group_instructions.txt", 'frames': "imagery_key_frames"},
+			CTRL: {'text': "control_group_instructions.txt", 'frames': "control_key_frames"}
+		}
 		self.practice_instructions = message(
 			P.practice_instructions, "instructions",
 			align="center", blit_txt=False
@@ -331,7 +315,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.control_response = -1
 
 		fill()
-		blit(self.loading_msg, 5, P.screen_c, flip_x=P.flip_x)
 		flip()
 
 		self.figure = None
@@ -353,8 +336,8 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.origin_pos = list(self.figure.points[0])
 		if P.flip_x:
 			self.origin_pos[0] = P.screen_x - self.origin_pos[0]
-		self.add_boundary("origin", [self.origin_pos, self.origin_size // 2], CIRCLE_BOUNDARY)
-		self.origin_boundary = [self.origin_pos, self.origin_size // 2]
+		self.add_boundary("origin", [self.origin_pos, P.origin_size // 2], CIRCLE_BOUNDARY)
+		self.origin_boundary = [self.origin_pos, P.origin_size // 2]
 		self.rc.draw_listener.add_boundaries([
 			('start', self.origin_boundary, CIRCLE_BOUNDARY),
 			('stop', self.origin_boundary, CIRCLE_BOUNDARY)
@@ -450,7 +433,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			learned_fig_num = 1
 			if query(user_queries.experimental[3]) == "y":
 				self.origin_pos = (P.screen_c[0], int(P.screen_y * 0.8))
-				self.origin_boundary = [self.origin_pos, self.origin_size // 2]
+				self.origin_boundary = [self.origin_pos, P.origin_size // 2]
 				while True:
 					self.setup_response_collector()
 					self.rc.draw_listener.add_boundaries([
