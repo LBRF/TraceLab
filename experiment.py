@@ -282,10 +282,20 @@ class TraceLab(Experiment, BoundaryInspector):
 			]
 			self.lj.getFeedback(self.lj_commands['baseline'])
 
+		if P.tracker_dot_perimeter > 0:
+			tracker_dot_stroke = [P.tracker_dot_perimeter, P.tracker_dot_perimeter_color, STROKE_OUTER]
+		else:
+			tracker_dot_stroke = None
+		self.tracker_dot_proto = Ellipse(P.tracker_dot_size, stroke=tracker_dot_stroke, fill=P.tracker_dot_color)
+		self.tracker_dot = self.tracker_dot_proto.render()
+
+		if P.capture_figures_mode:
+			self.fig_dir = os.path.join(P.resources_dir, "figures")
+			self.capture_figures()
+
 		# Initialize participant ID and session options, reloading ID if it already exists
 		self.session = TraceLabSession()
 		self.user_id = self.session.user_id
-		self.trial_factory.dump()
 
 		self.loading_msg = message("Loading...", "default", blit_txt=False)
 		fill()
@@ -296,29 +306,10 @@ class TraceLab(Experiment, BoundaryInspector):
 		# Scale UI size variables to current screen resolution
 		P.btn_s_pad = scale((P.btn_s_pad,0), (1920,1080))[0]
 		P.y_pad = scale((0,P.y_pad), (1920,1080))[1]
-		if P.capture_figures_mode:
-			self.fig_dir = os.path.join(P.resources_dir, "figures")
-		else:
-			self.p_dir = os.path.join(P.data_dir, "p{0}_{1}".format(P.participant_id, self.created))
-			self.fig_dir = os.path.join(self.p_dir, "session_" + str(self.session_number))
-			if os.path.exists(self.fig_dir):
-				shutil.rmtree(self.fig_dir)
-			os.makedirs(self.fig_dir)
-
-		self.origin_proto = Ellipse(self.origin_size)
-
-		if P.tracker_dot_perimeter > 0:
-			tracker_dot_stroke = [P.tracker_dot_perimeter, P.tracker_dot_perimeter_color, STROKE_OUTER]
-		else:
-			tracker_dot_stroke = None
-		self.tracker_dot_proto = Ellipse(P.tracker_dot_size, stroke=tracker_dot_stroke, fill=P.tracker_dot_color)
-		self.tracker_dot = self.tracker_dot_proto.render()
-
-		if P.capture_figures_mode:
-			self.capture_figures()
 
 		btn_vars = ([(str(i), P.btn_size, None) for i in range(1, 6)], P.btn_size, P.btn_s_pad, P.y_pad, P.btn_instrux)
 		self.button_bar = ButtonBar(*btn_vars)
+		self.origin_proto = Ellipse(self.origin_size)
 		self.origin_proto.fill = self.origin_active_color
 		self.origin_active = self.origin_proto.render()
 		self.origin_proto.fill = self.origin_inactive_color

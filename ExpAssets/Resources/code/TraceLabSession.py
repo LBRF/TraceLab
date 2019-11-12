@@ -6,8 +6,8 @@ relocate all session-init logic to a separate class to tidy things up. previous 
 all included these methods as part of the experiment class
 """
 
+import os
 import sys
-from os import makedirs
 from os.path import join, exists
 from imp import load_source
 from shutil import rmtree
@@ -82,7 +82,7 @@ class TraceLabSession(EnvAgent):
 			# data directory with non-participant data
 			devmode_data_dir = join(P.data_dir, "devmode")
 			if not exists(devmode_data_dir):
-				makedirs(devmode_data_dir)
+				os.makedirs(devmode_data_dir)
 			P.data_dir = devmode_data_dir
 		else:
 			self.user_id = query(uq.experimental[1])
@@ -154,27 +154,28 @@ class TraceLabSession(EnvAgent):
 		partial_session = self.db_select('trials', ['block_num'], existing)
 		if len(partial_session):
 			partial_q = AttributeDict({
-			    "title": "partial session prompt",
-			    "query": (
+				"title": "partial session prompt",
+				"query": (
 					"This participant did not complete all trials of the previous session. "
 					"Would you like to:\n"
 					"(r)edo the last session, (c)ontinue from the end of the last completed trial, "
 					"or (a)dvance to the next session?"
 				),
-			    "accepted": ['r', 'c', 'a'],
-			    "allow_null": False,
-			    "format": AttributeDict({
-			        "type": "str",
-			        "styles": "default",
-			        "positions": "default",
-			        "password": False,
-			        "case_sensitive": False,
-			        "action": None
-			    })
+				"accepted": ['r', 'c', 'a'],
+				"allow_null": False,
+				"format": AttributeDict({
+					"type": "str",
+					"styles": "default",
+					"positions": "default",
+					"password": False,
+					"case_sensitive": False,
+					"action": None
+				})
 			})
 			resp = query(partial_q)
 			if resp == "r":
-				self.db_removerows('trials', existing)
+				self.db_removerows('trials', existing) # remove database data
+				rmtree(self.exp.fig_dir) # remove figure data
 			elif resp == "c":
 				# If resuming from end of last finished trial, first get last block in db for
 				# this participant + session, then figure out if it was completed or not
@@ -186,6 +187,8 @@ class TraceLabSession(EnvAgent):
 				start_trial = max_trial + 1 if max_trial < P.trials_per_block else 1
 				# NOTE: should we delete all trials of block in progress or leave as-is?
 			elif resp == "a":
+				new_session_dir = "session_" + str(self.exp.session_number + 1)
+				self.exp.fig_dir = os.path.join(self.exp.p_dir, new_session_dir)
 				self.db.update('participants', {'sessions_completed': self.exp.session_number})
 				self.exp.session_number += 1
 
@@ -219,6 +222,12 @@ class TraceLabSession(EnvAgent):
 				any_key()
 				self.exp.quit()
 
+		# Initialize figure paths for current participant/session
+		p_dir = "p{0}_{1}".format(P.participant_id, self.exp.created)
+		session_dir = "session_" + str(self.exp.session_number)
+		self.exp.p_dir = os.path.join(P.data_dir, p_dir)
+		self.exp.fig_dir = os.path.join(self.exp.p_dir, session_dir)
+
 		# If any existing trial data for this session+participant, prompt experimenter whether to
 		# delete existing data and redo session, continue from start of last completed block,
 		# or continue to next session
@@ -232,6 +241,10 @@ class TraceLabSession(EnvAgent):
 		self.exp.blocks.blocks[start_block - 1] = trimmed_start_block
 		self.exp.blocks.i = start_block - 1  # skips ahead to start_block if specified
 		self.import_figure_set()
+
+		# If needed, create figure folder for session
+		if not os.path.exists(self.exp.fig_dir):
+			os.makedirs(self.exp.fig_dir)
 
 		# delete previous trials for this session if any exist (essentially assume a do-over)
 		self.exp.training_session = self.exp.session_number not in (1, 5)
