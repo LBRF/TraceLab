@@ -140,7 +140,7 @@ class TraceLabFigure(EnvAgent):
 		with fig_archive.open(fig_file) as tlf:
 			for l in io.TextIOWrapper(tlf, 'utf8'):
 				attr = l.split(" = ")
-				if len(attr):
+				if len(attr) == 2:
 					if attr[0] in ['raw_segments', 'points']:
 						setattr(self, attr[0], eval(attr[1]))
 					elif attr[0] == 'screen_res':
@@ -470,6 +470,33 @@ class TraceLabFigure(EnvAgent):
 		return indices_of(True, q, True)
 
 
+	def __capture_figure_out(self):
+		"""Gathers info about figure to write out in captured .tlf file, making it reusable
+		in future sessions.
+		"""
+
+		fig_attrs = ['seg_count', 'path_length', 'screen_res', 'points', 'raw_segments']
+		settings = [
+			'generate_quadrant_intersections', 'outer_margin_v', 'outer_margin_h',
+			'inner_margin_v', 'inner_margin_h', 'curve_margin_v', 'curve_margin_h',
+			'avg_seg_per_f', 'avg_seg_per_q', 'angularity', 'min_linear_acuteness',
+			'slope_magnitude', 'peak_shift', 'curve_sheer'
+		]
+		attrs = self.__dict__.copy()
+		attrs['path_length'] = round(self.path_length, 2)
+
+		out = []
+		out.append(u"### Generated Figure Attributes ###\n")
+		for k in fig_attrs:
+			out.append(u"{0} = {1}".format(k, attrs[k]))
+
+		out.append(u"\n\n### Figure Generation Settings ###\n")
+		for k in settings:
+			out.append(u"{0} = {1}".format(k, P.__dict__[k]))
+
+		return u"\n".join(out)
+
+
 	def segments_to_frames(self, segments, duration, fps=60):
 		"""Converts linear/bezier segments comprising a shape into a list of (x, y) pixel
 		coordinates representing the frames of the shape animation at the given velocity.
@@ -607,10 +634,8 @@ class TraceLabFigure(EnvAgent):
 
 			with io.open(fig_path, "w+", encoding='utf-8') as f:
 				if P.capture_figures_mode:
-					for k, v in self.__dict__.items():
-						if k in ["dot", "r_dot", "exp", "rendered", "a_frames", "trial_a_frames"]:
-							continue
-						f.write(u"{0} = {1}\n".format(k, v))
+					captured = self.__capture_figure_out()
+					f.write(captured)
 				else:
 					f.write(utf8(trial_data))
 
