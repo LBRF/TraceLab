@@ -250,9 +250,12 @@ class TraceLabFigure(EnvAgent):
 							seg_ok = True
 				else:
 					segment = self.__generate_curved_segment(p1, p2)
-					# If bezier control point same as start or end points, just make segment linear
+					# If bezier control point same as start or end points, or control point on
+					# start/end line, just make segment linear
 					start, end, ctrl = segment[1]
-					if start == ctrl or end == ctrl:
+					ax = start[0] - 2 * ctrl[0] + end[0]
+					ay = start[1] - 2 * ctrl[1] + end[1]
+					if start == ctrl or end == ctrl or (ax == 0 and ay == 0):
 						segment = [False, (start, end)]
 
 				first_pass_segs.append(segment)
@@ -384,8 +387,8 @@ class TraceLabFigure(EnvAgent):
 				# or further from being fully on-screen. If getting worse, change direction
 				# of the adjustment.
 				failures += 1
-				err_x1, err_x2 = (-bounds[0][0], bounds[1][0] - P.screen_x)
-				err_y1, err_y2 = (-bounds[0][1], bounds[1][1] - P.screen_y)
+				err_x1, err_x2 = (cmx - bounds[0][0], bounds[1][0] - (P.screen_x - cmx))
+				err_y1, err_y2 = (cmy - bounds[0][1], bounds[1][1] - (P.screen_y - cmy))
 				err = max(err_x1, err_x2, err_y1, err_y2)
 
 				if failures > 2:
