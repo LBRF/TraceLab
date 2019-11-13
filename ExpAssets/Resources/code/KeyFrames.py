@@ -7,6 +7,8 @@ import traceback
 from os.path import join
 from time import time
 from sdl2 import SDL_KEYDOWN, SDLK_DELETE
+from PIL import Image
+import numpy as np
 
 from klibs import P
 from klibs.KLJSON_Object import JSON_Object
@@ -15,7 +17,6 @@ from klibs.KLUserInterface import ui_request
 from klibs.KLUtilities import line_segment_len, scale, pump
 from klibs.KLUtilities import colored_stdout as cso
 from klibs.KLGraphics import blit, flip, fill
-from klibs.KLGraphics.KLNumpySurface import NumpySurface as NpS
 from klibs.KLGraphics.KLDraw import Rectangle, Ellipse, Annulus
 from klibs.KLCommunication import message
 from klibs.KLAudio import AudioClip
@@ -60,7 +61,12 @@ class KeyFrameAsset(object):
 				self.duration = data.file
 				self.contents = AudioClip(join(P.resources_dir, "audio", data.file.filename))
 			else:
-				self.contents = NpS(join(P.image_dir, data.file.filename))
+				# If asset is image file, import and scale for current screen size (animations
+				# originally hard-coded at 1920x1080 so we scale relative to that)
+				img = Image.open(join(P.image_dir, data.file.filename))
+				target_size = (P.screen_x, (P.screen_x / 16.0) * 9) # corrected for aspect ratio
+				scaled_size = scale(img.size, (1920, 1080), target_size, center=False)
+				self.contents = np.asarray(img.resize(scaled_size, Image.BILINEAR))
 
 		try:
 			self.height = self.contents.height
