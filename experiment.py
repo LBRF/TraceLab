@@ -193,7 +193,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.control_bar = ButtonBar(
 			buttons = [(i, P.btn_size, None) for i in ctrl_buttons],
 			button_size = P.btn_size, screen_margins = P.btn_s_pad, y_offset = P.y_pad,
-			message_txt = P.btn_instrux
+			message_txt = P.control_q
 		)
 
 		# Initialize 'next trial' button
@@ -366,20 +366,12 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		animate_time = self.evm.trial_time - animate_start
 		avg_velocity = self.figure.path_length / animate_time
 
-		try:
-			if self.response_type == PHYS:
-				self.physical_trial()
-			elif self.response_type == MOTR:
-				self.imagery_trial()
-			else:
-				self.control_trial()
-		except TrialException as e:
-			err = message(P.trial_error_msg, "error", blit_txt=False)
-			fill()
-			blit(err, 5, P.screen_c)
-			flip()
-			any_key()
-			raise TrialException(e.message)
+		if self.response_type == PHYS:
+			self.physical_trial()
+		elif self.response_type == MOTR:
+			self.imagery_trial()
+		else:
+			self.control_trial()
 
 		fill()
 		flip()
@@ -546,7 +538,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			blit(self.figure.render(trace=self.drawing), 5, P.screen_c, flip_x=P.flip_x)
 			flip()
 			start = time.time()
-			while time.time() - start < P.max_feedback_time / 1000.0:
+			while time.time() - start < P.feedback_duration / 1000.0:
 				ui_request()
 
 
@@ -555,7 +547,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		if P.dm_always_show_cursor:
 			show_mouse_cursor()
 
-		self.control_bar.update_message(P.btn_instrux.format(self.control_question))
+		self.control_bar.update_message(P.control_q.format(self.control_question))
 		self.control_bar.render()
 		self.control_bar.collect_response()
 
@@ -583,7 +575,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 					self.quit()
 
 		# Print warning if load time was particularly slow for a given figure
-		if (time.time() - gen_start) > P.figure_load_time:
+		if (time.time() - gen_start) > 0.5:
 			cso("<red>Warning: figure generation took unexpectedly long. "
 				"({0} seconds)</red>".format(round(time.time() - gen_start, 2)))
 

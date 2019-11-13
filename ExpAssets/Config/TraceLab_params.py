@@ -14,6 +14,10 @@ demo_mode = False
 mirror_mode = False
 enable_learned_figures_querying = True
 
+capture_figures_mode = False
+auto_generate = False  # whether to generate figures without prompting in caputre mode
+auto_generate_count = 10  # number of figures to generate in auto-generate/capture mode
+
 #########################################
 # Available Hardware
 #########################################
@@ -44,8 +48,7 @@ conditions = []
 default_condition = None
 table_defaults = {}
 
-origin_wait_time = 3  # seconds
-figure_load_time = 0.5  # seconds
+origin_wait_time = 3.0  # seconds
 
 ########################################
 # Practice Controls
@@ -55,7 +58,6 @@ practice_instructions = (
     "The following is a demonstration period. Use this time to learn and then practice the task."
     "\n\nTap the screen to continue."
 )
-play_narration = True  # toggles the audio component
 practice_figure = "heart"
 practice_animation_time = 3500 # ms
 bubble_location = (1550, 275)
@@ -70,7 +72,7 @@ dm_always_show_cursor = True
 use_log_file = False  # Not sure this is terribly useful
 
 ########################################
-#  Dot Controls
+# Dot Controls
 ########################################
 dot_size = 5  # diameter in px
 dot_stroke = 4  # width of stroke around tracker dot in px
@@ -83,9 +85,8 @@ origin_size = 50  # px
 ########################################
 response_feedback_color = (0, 255, 255)
 stimulus_feedback_color = (211, 211, 211)
-max_feedback_time = 2000  # ms
+feedback_duration = 2000  # ms
 ignore_points_at = [(1919,1079),(119,1079),(239,1079)]  # list of (x,y) coordinates to be removed
-trial_error_msg = "Oops! Something went wrong. Let's try that again later."
 
 ########################################
 # Button Bar Controls
@@ -94,15 +95,12 @@ btn_count = 5
 btn_size = 75  # px square
 btn_s_pad = 450  # margins on either side of screen where buttons can't be placed
 y_pad = 300  # how far down the screen, vertically, the buttons should be placed
-btn_instrux = "How many times did the dot change course {0}?"  # the {0} will contain the direction
+control_q = "How many times did the dot change course {0}?"  # the {0} will contain the direction
 
 ########################################
 # Figure Controls
 ########################################
 generation_timeout = 0.5  # seconds
-capture_figures_mode = False
-auto_generate = False
-auto_generate_count = 10  # number of figures to generate in auto-generate/capture mode
 
 generate_quadrant_intersections = True  # Not quite sure what this does
 outer_margin_v = 50  # minimum vertical distance figure points can be from screen margins (in px)
