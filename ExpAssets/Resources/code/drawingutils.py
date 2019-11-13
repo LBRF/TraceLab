@@ -25,7 +25,7 @@ def linear_intersection(line_1, line_2):
 	def determinant(a, b):
 		return a[0] * b[1] - a[1] * b[0]
 
-	div = determinant(d_x, d_y)
+	div = float(determinant(d_x, d_y))
 
 	if not div:
 		raise ValueError('Supplied lines do not intersect.')

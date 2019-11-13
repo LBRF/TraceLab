@@ -80,13 +80,8 @@ class TraceLabFigure(EnvAgent):
 
 		# segment generation controls
 		self.min_lin_ang_width = P.min_linear_acuteness * 180
-		min_shift_size = int(P.peak_shift[0] * 1000) # TODO: fix this mess
-		max_shift_size = int(P.peak_shift[1] * 1000)
-		self.peak_shift_range = [i / 1000.0 for i in range(min_shift_size, max_shift_size)]
-
-		min_curve_sheer = int(P.curve_sheer[0] * 9000) # TODO: fix this mess
-		max_curve_sheer = int(P.curve_sheer[1] * 9000)
-		self.c_sheer_range = [i / 100.0 for i in range(min_curve_sheer, max_curve_sheer)]
+		# NOTE: these next two almost certainly don't work as intended, since we sometimes
+		# get straight lines & near-straight curves despite minimum curve slope being 0.25
 		self.curve_min_slope = int(math.floor(90.0 - P.slope_magnitude[0] * 90.0))
 		self.curve_max_slope = int(math.ceil(90.0 + P.slope_magnitude[0] * 90.0))
 
@@ -104,8 +99,6 @@ class TraceLabFigure(EnvAgent):
 		self.raw_segments = []
 		self.a_frames = []  # interpolated frames tracing figure at given duration / fps
 		self.trial_a_frames = []  # a_frames plus frame onset times for previous animation
-		self.width = P.screen_x - (2 * P.outer_margin_h)  # NOTE: This isn't actually used anywhere
-		self.height = P.screen_y - (2 * P.outer_margin_v)  # NOTE: This isn't actually used anywhere
 		self.screen_res = [P.screen_x, P.screen_y]
 		self.avg_velocity = None  # last call to animate only
 		self.animate_time = None  # last call to animate only
@@ -218,9 +211,7 @@ class TraceLabFigure(EnvAgent):
 
 		# first generate the segments to establish a path length
 		first_pass_segs = []  # ie. raw interpolation unadjusted for velocity
-		#segment_types = [random() > P.angularity for i in range(len(self.points))]
-		seg_type_dist = int((1.0 - P.angularity) * 10) * [True] + int(P.angularity * 10) * [False]
-		segment_types = [choice(seg_type_dist)] * len(self.points)
+		segment_types = [random() > P.angularity for i in range(len(self.points))]
 
 		i = 0
 		i_linear_fail = False
@@ -311,9 +302,14 @@ class TraceLabFigure(EnvAgent):
 
 	def __generate_curved_segment(self, p1, p2):
 
-		# single letters here mean: r = rotation, c = control, p = point, q = quadrant, a = angle, v = vector
+		# Single letters here mean:	r = rotation, c = control, p = point, a = angle, v = vector
+		# NOTE: plenty of weirdness in this code that means figures not generated exactly as
+		# specified by the controls in params.py, but since this is the way TraceLab has worked up
+		# until now I'm not going to fix any of it for fear of inconsistency.
 
-		#  reference p is the closer of p1, p2 to the screen center for the purposes of determining direction and angle
+		# reference p is the closer of p1, p2 to the bottom-right screen corner (???) for the
+		# purposes of determining direction and angle (NOTE: original comment said screen center,
+		# so this is probably unexpected behaviour)
 		p_ref = p1
 		if line_segment_len(p1, P.screen_x_y) > line_segment_len(p2, P.screen_x_y):
 			p_ref = p2
@@ -321,78 +317,53 @@ class TraceLabFigure(EnvAgent):
 		# gets the radial rotation between p1 and p2
 		r = angle_between(p_ref, p2 if p_ref == p1 else p1)
 
-		#  depending on the qudrant, p1->p2
-		q = self.__quadrant_from_point(p1)
-		if len(q) > 1:  # if p1 is directly on an axis line an ambiguous answer is returned; check p2 instead
-			q = self.__quadrant_from_point(p2)
-
-		# decides the radial direction from p1->p2, clockwise or counterclockwise, from which the curve will extend
+		# decides radial direction from p1->p2, clockwise or counter, from which curve will extend
 		c_spin = choice([True, False])
 		if P.verbose_mode and self.allow_verbosity:
-			print("p_ref: {0}\nr: {1}\nq: {2}\n c_spin: {3}".format(p_ref, r, q, c_spin))
+			print("p_ref: {0}, r: {1}, c_spin: {2}".format(p_ref, r, c_spin))
 
-		#  find linear distance between p1 and p2
+		# find linear distance between p1 and p2
 		d_p1p2 = line_segment_len(p1, p2)
 		if P.verbose_mode and self.allow_verbosity:
-			print("seg_line_len: {0}\nasym_max: {1}\nasym_min: {2}".format(d_p1p2, self.asym_max, self.asym_min))
+			print("seg_line_len: {0}, p1: {1}, p2: {2}".format(d_p1p2, str(p1), str(p2)))
 
-		#  next lines decide location of the perpendicular extension from control point and p1->p2
-		c_base_shift = choice(self.peak_shift_range) * d_p1p2
-		#c_base_shift = uniform(P.peak_shift[0], P.peak_shift[1]) * d_p1p2
-		c_base_amp = c_base_shift if choice([1, 0]) else d_p1p2 - c_base_shift  # ensure shift not always away from p_ref
+		# next lines decide location of the perpendicular extension from control point and p1->p2,
+		# ensuring shift not always away from p_ref
+		c_base_shift = uniform(P.peak_shift[0], P.peak_shift[1]) * d_p1p2
+		c_base_amp = c_base_shift if choice([1, 0]) else d_p1p2 - c_base_shift
 		p_c_base = point_pos(p_ref, c_base_amp, r)
-		if P.verbose_mode and self.allow_verbosity: 
-			print("c_base_amp: {0}\np_c_base: {1}".format(c_base_amp, p_c_base))
+		if P.verbose_mode and self.allow_verbosity:
+			print("c_base_amp: {0}, p_c_base: {1}".format(c_base_amp, p_c_base))
 
-		#  the closer of p1, p2 to p_c_base will be p_c_ref when determining p_c_min
+		# the closer of p1, p2 to p_c_base will be p_c_ref when determining p_c_min
 		if c_base_amp > 0.5 * d_p1p2:
 			p_c_ref = p2 if p_ref == p1 else p1
 		else:
 			p_c_ref = p2 if p_ref == p2 else p1
 
-		# choose an angle, deviating from 90 (+/-) by some random value, for p_c_ref -> p_c_base -> p_c
-		try:
-			sheer = choice(self.c_sheer_range) #uniform(P.curve_sheer[0], P.curve_sheer[1]) * 90
-		except IndexError:
-			sheer = 0
+		# choose an angle, deviating from 90° by some random value, for p_c_ref -> p_c_base -> p_c
+		sheer = uniform(P.curve_sheer[0], P.curve_sheer[1]) * 90
 		a_c = 90 + sheer if choice([0, 1]) else 90 - sheer
-
 		if P.verbose_mode and self.allow_verbosity:
-			txt = "P.curve_sheer: {3}, c_angle_max: {0}\nc_angle_min: {1}\nc_angle: {2}"
-			print(txt.format(self.a_c_min, self.a_c_max, a_c, P.curve_sheer))
+			txt = "curve_sheer: {3}, c_angle_max: {0}, c_angle_min: {1}, c_angle: {2}"
+			print(txt.format(P.curve_sheer[0] * 90, P.curve_sheer[1] * 90, a_c, sheer))
 
-		#  get the range of x,y values for p_c
+		# get the range of x,y values for p_c
 		v_c_base = [p_c_base, a_c, r, c_spin]  # ie. p_c_base as origin
 		v_c_min = [p_c_ref, self.curve_min_slope, r, not c_spin]  # ie. p_c_ref as origin
 		v_c_max = [p_c_ref, self.curve_max_slope, r, not c_spin]  # ie. p_c_ref as origin
-		p_c_min = linear_intersection(v_c_min, v_c_base)
-		p_c_max = linear_intersection(v_c_max, v_c_base)
+		p_c_min = [int(i) for i in linear_intersection(v_c_min, v_c_base)]
+		p_c_max = [int(i) for i in linear_intersection(v_c_max, v_c_base)]
 		if P.verbose_mode and self.allow_verbosity:
-			txt = "v_c_min: {0}\nv_c_max: {1}\np_c_min: {2}\np_c_max: {3}"
+			txt = "v_c_min: {0}, v_c_max: {1}, p_c_min: {2}, p_c_max: {3}"
 			print(txt.format(v_c_min, v_c_max, p_c_min, p_c_max))
 
-		# choose an initial p_c; depending on quadrant, no guarantee x,y values in p_c_min are less than p_c_max
-		try:
-			p_c_x = randrange(p_c_min[0], p_c_max[0])
-		except ValueError:
-			try:
-				p_c_x = randrange(p_c_max[0], p_c_min[0])
-			except ValueError:
-				p_c_x = p_c_min[0]
-		try:
-			p_c = (p_c_x, randrange(p_c_min[1], p_c_max[1]))
-		except ValueError:
-			try:
-				p_c = (p_c_x, randrange(p_c_max[1], p_c_min[1]))
-				p_c = (p_c_x, randrange(p_c_max[1], p_c_min[1]))
-			except ValueError:
-				p_c = (p_c_x, p_c_max[1])
-
-		#min_x, max_x = sorted([p_c_min[0], p_c_max[0]])
-		#min_y, max_y = sorted([p_c_min[1], p_c_max[1]])
-		#p_c_x = min_x if min_x == max_x else randrange(min_x, max_x)
-		#p_c_y = min_y if min_y == max_y else randrange(min_y, max_y)
-		#p_c = (p_c_x, p_c_y)
+		# choose an initial p_c; no guarantee x, y values in p_c_min are less than p_c_max
+		min_x, max_x = sorted([p_c_min[0], p_c_max[0]])
+		min_y, max_y = sorted([p_c_min[1], p_c_max[1]])
+		p_c_x = min_x if min_x == max_x else randrange(min_x, max_x)
+		p_c_y = min_y if min_y == max_y else randrange(min_y, max_y)
+		p_c = (p_c_x, p_c_y)
 
 		# Make sure the generated bezier curve doesn't go off the screen, adjusting if necessary
 		v_c_b_len = line_segment_len(p_c_ref, p_c)
