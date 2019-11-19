@@ -4,14 +4,11 @@ TraceLab is an experiment program designed to study fine motor control and motor
 
 ![tracelab_animation](tracelab_heart.gif)
 
-
 ## Requirements
 
-TraceLab is programmed in Python 2.7 (3.4+ compatible) using the [KLibs framework](https://github.com/a-hurst/klibs). It has been developed and tested on macOS (10.9 through 10.13), but should also work with minimal hassle on computers running [Ubuntu](https://www.ubuntu.com/download/desktop) or [Debian](https://www.debian.org/distrib/) Linux.
+TraceLab is programmed in Python 2.7 (3.4+ compatible) using the [KLibs framework](https://github.com/a-hurst/klibs). It has been developed and tested on macOS (10.9 through 10.14) and lightly tested on Windows 10, but should also work with minimal hassle on computers running [Ubuntu](https://www.ubuntu.com/download/desktop) or [Debian](https://www.debian.org/distrib/) Linux.
 
-TraceLab has never been tested on Windows, but [is likely to work](https://github.com/a-hurst/klibs/wiki/Installation-on-Windows) with a recent version of KLibs.
-
-TraceLab was originally designed to run on a 24-inch touchscreen (specificaly, a [Planar PCT2485](https://www.amazon.com/Planar-PCT2485-Widescreen-Multi-Touch-Monitor/dp/B00DFB8KRQ)) at a resolution of 1920x1080. Although preliminary efforts have been made to make TraceLab resolution independent, some stimuli still do not scale properly when run at different resolutions, and data collection on other touch screens at different resolutions have not yet been tested. At present, we only recommend collecting data using a 1080p touchscreen.
+TraceLab was originally designed to run on a 24-inch touchscreen (specificaly, a [Planar PCT2485](https://www.amazon.com/Planar-PCT2485-Widescreen-Multi-Touch-Monitor/dp/B00DFB8KRQ)) at a resolution of 1920x1080. However, TraceLab should work on any touchscreen monitor provided that it has a high enough resolution (larger than 1024x768), and that the TraceLab R analysis scripts have been modified to plot data properly at the screen's resolution. 
 
 ## Getting Started
 
@@ -24,6 +21,8 @@ pip install git+https://github.com/a-hurst/klibs.git
 pip install -U git+https://github.com/a-hurst/py-sdl2.git@sdl2dll
 pip install -U git+https://github.com/a-hurst/pysdl2-dll.git@master
 ```
+
+You will need to have [Git](https://git-scm.com/downloads) installed in order for the above commands to work. If you are using a Mac and already have Xcode or Homebrew installed, you already have Git.
 
 On Linux systems you can ignore the last two pysdl2 lines, but you will need to install the SDL2, SDL2-mixer, and SDL2-ttf libraries using your distro's package manager.
 

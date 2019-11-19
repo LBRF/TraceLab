@@ -123,7 +123,7 @@ class TraceLabFigure(EnvAgent):
 
 		# Open the figure archive and find the .tlf file containing the figure data
 		fig_archive = zipfile.ZipFile(path + ".zip")
-		figure = path.split("/")[-1]
+		figure = os.path.split(path)[-1]
 		fig_file = figure + ".tlf"
 		if fig_file not in fig_archive.namelist():
 			fig_file = figure + "/" + fig_file
