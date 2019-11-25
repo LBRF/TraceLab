@@ -152,7 +152,7 @@ class TraceLabSession(EnvAgent):
 	def __generate_user_id(self):
 
 		# If multiple possible session structures, query user to choose which one to use
-		structure_names = P.session_structures.keys()
+		structure_names = list(P.session_structures.keys())
 		if len(structure_names) > 1:
 			# Since this needs to match one of the keys of P.session_structures, we create the
 			# query object directly here instead of in the user_queries file so we can set
