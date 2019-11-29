@@ -76,7 +76,7 @@ use_log_file = False  # Not sure this is terribly useful
 ########################################
 dot_size = 5  # diameter in px
 dot_stroke = 4  # width of stroke around tracker dot in px
-dot_color = (0, 0, 0)  # r, g, b
+dot_color = (255, 255, 255)  # r, g, b
 dot_stroke_col = (255, 255, 255)
 origin_size = 50  # px
 
@@ -130,7 +130,7 @@ trigger_codes = {}
 ########################################
 # tlf Controls
 ########################################
-gen_tlfx = False  # extended (5s) interpolation
+gen_tlfx = True  # extended (5s) interpolation
 gen_tlfs = True  # segments file
 gen_tlfp = True  # points file
 gen_png = True   # image file
@@ -171,11 +171,6 @@ exclude_data_cols = [
 # condition on launch (e.g. klibs run 23 -c cond1)
 session_structures = {
     'a': [
-        ['MI-XX', 'MI-XX', 'MI-XX', 'MI-XX', 'PP-VR'], # session 1
-        ['PP-VR'] # session 2
-    ],
-    'b': [
-        ['MI-XX', 'MI-XX', 'MI-XX', 'MI-XX', 'PP-XR'], # session 1
-        ['PP-XR'] # session 2
+        ['MI-XX', 'MI-XX', 'MI-XX', 'MI-XX', 'PP-XX'] # session 1
     ]
 }
