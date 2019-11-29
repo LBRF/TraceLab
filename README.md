@@ -50,7 +50,7 @@ To run the experiment, navigate to the TraceLab folder in Terminal and run `klib
 replacing `[screensize]` with the diagonal size of your display in inches (e.g. `klibs run 24` for a 24-inch monitor). If you just want to test the program out for yourself and skip demographics collection, you can add the `-d` flag to the end of the command to launch the experiment in development mode.
 
 
-#### Figure Generation
+### Figure Generation
 
 In TraceLab, some presented figures are randomly generated at the onset of the trial, whereas some figures are loaded from pre-generated **figure templates** and are identical in shape across trials. TraceLab comes with a set of pre-generated templates in the `ExpAssets/Resources/figures` directory, but you can generate your own templates using **capture figures mode**.
 
