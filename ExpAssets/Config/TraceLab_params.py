@@ -165,10 +165,10 @@ exclude_data_cols = [
 #  - "V" / "VX"  (presentation of target figure with tracing overlay after response made)
 #  - "VR"        (both "R" and "V")
 #
-# Keys for session structures in the 'session_structures' dict must correspond
-# to condiition names defined in 'conditions' in order to actually work. The type
-# of session structure to use for a given participant is specified by defining a
-# condition on launch (e.g. klibs run 23 -c cond1)
+# If a project has more than one session structure, a prompt will appear after creating a
+# new study ID asking which structure to use for that participant. This choice will be
+# remembered across sessions for that user. If only one session structure is given,
+# it will automatically be used for each participant without prompting.
 session_structures = {
     'a': [
         ['MI-XX', 'MI-XX', 'MI-XX', 'MI-XX', 'PP-XX'] # session 1

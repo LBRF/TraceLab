@@ -1,8 +1,8 @@
 # TraceLab
 
-[![DOI badge](https://img.shields.io/badge/doi-10.1016/j.bbr.2018.10.030-green.svg)](https://doi.org/10.1016/j.bbr.2018.10.030) 
+[![DOI badge](https://img.shields.io/badge/doi-10.1016/j.bbr.2018.10.030-green.svg)](https://doi.org/10.1016/j.bbr.2018.10.030)
 
-TraceLab is an experiment program designed to study motor control and learning — specifically, learning to execute a motor skill via physical practice or motor imagery based practice.
+TraceLab is an experiment program designed to study motor control and learning — specifically, how complex motor skills are learned via physical practice or motor imagery.
 
 ![tracelab_animation](tracelab_heart.gif)
 
@@ -12,35 +12,49 @@ Instructions on how to install, run, and export data from TraceLab are provided 
 
 ## Requirements
 
-TraceLab is programmed in Python 2.7 (3.4+ compatible) using the [KLibs framework](https://github.com/a-hurst/klibs). It has been developed and tested on macOS (10.9 through 10.14) and lightly tested on Windows 10, but should also work with minimal hassle on computers running [Ubuntu](https://www.ubuntu.com/download/desktop) or [Debian](https://www.debian.org/distrib/) Linux.
+TraceLab is programmed in Python 2.7 (3.4+ compatible) using the [KLibs framework](https://github.com/a-hurst/klibs). It has been developed and tested on macOS (10.9 through 11.0), and has also been tested on recent versions of Linux (Mint 20.1 / Ubuntu 20.04) and Windows 10.
 
-TraceLab was originally designed to run on a 24-inch touchscreen (specificaly, a [Planar PCT2485](https://www.amazon.com/Planar-PCT2485-Widescreen-Multi-Touch-Monitor/dp/B00DFB8KRQ)) at a resolution of 1920x1080. However, TraceLab should work on any touchscreen monitor provided that it has a high enough resolution (larger than 1024x768), and that the TraceLab R analysis scripts have been modified to plot data properly at the screen's resolution. 
+TraceLab was originally designed to run on a 24-inch touchscreen (specificaly, a [Planar PCT2485](https://www.amazon.com/Planar-PCT2485-Widescreen-Multi-Touch-Monitor/dp/B00DFB8KRQ)) at a resolution of 1920x1080. However, TraceLab should work on any touchscreen monitor provided that it has a high enough resolution (larger than 1024x768), and that the TraceLab analysis scripts have been modified to plot data properly at the screen's resolution.
 
 ## Getting Started
 
+In order to install TraceLab and its prerequisites, there are two main options: a **global install** or a **pipenv install**. A global install will install klibs into your global Python environment, which can be simpler but may interfere with other Python scripts or packages installed on your system. A pipenv install will install klibs into a self-contained virtual environment using the [Pipenv](https://pipenv.pypa.io/en/latest/) package, isolating it from all other Python scripts or packages on your target computer.
+
 ### Prerequisites
 
-In order to install TraceLab, we first need to install some prerequisite libraries that it depends on. These can be easily installed on macOS or Windows using the **pip** Python package manager (replace `pip` with `pip3` if using Python 3):
+For either option, you will need to have [Git](https://git-scm.com/downloads) installed in order for the commands to work. If you are using a Mac and already have Xcode or Homebrew installed, you already have Git. Additionally, on Linux you will need to manually install the SDL2, SDL2\_mixer, and SDL2\_ttf libraries for your distro using your distro's package manager.
 
-```bash
-pip install git+https://github.com/a-hurst/klibs.git
-pip install -U git+https://github.com/a-hurst/py-sdl2.git@sdl2dll
-pip install -U git+https://github.com/a-hurst/pysdl2-dll.git@master
-```
-
-You will need to have [Git](https://git-scm.com/downloads) installed in order for the above commands to work. If you are using a Mac and already have Xcode or Homebrew installed, you already have Git.
-
-On Linux systems you can ignore the last two pysdl2 lines, but you will need to install the SDL2, SDL2-mixer, and SDL2-ttf libraries using your distro's package manager.
-
-### Installation
-
-Once this has finished, you can then download and install TraceLab with the following commands (replacing `~/Downloads` with the path to the folder where you would like to install TraceLab):
+Once Git has been installed, you can download TraceLab with the following commands (replacing `~/Downloads` with the path to the folder where you would like to install TraceLab):
 
 ```bash
 cd ~/Downloads
 git clone https://github.com/LBRF/TraceLab.git
 cd TraceLab
 ```
+
+### Installing KLibs
+
+#### Option 1: Global Installation
+
+To install KLibs in your global Python environment, you can use **pip** Python package manager to install it by running the below command in a terminal window (replace `pip` with `pip3` if using Python 3):
+
+```bash
+pip install git+https://github.com/a-hurst/klibs.git
+```
+
+#### Option 2: Pipenv Installation
+
+To install KLibs in a self-contained virtual environment, navigate to the root of the TraceLab folder you downloaded, then install pipenv and use it to set up an environment for the project:
+
+```bash
+pip3 install pipenv
+pipenv install
+```
+
+These commands should create a fresh environment for the TraceLab project with all its dependencies installed inside it. Note that to run commands using this environment, you will need to prefix them with `pipenv run`, e.g. `pipenv run klibs run 24`.
+
+Note that this method currently requires Python 3.7 to be installed on your computer, though other versions may work if you modify the `python_version` field of the project's Pipfile.
+
 
 ### Running TraceLab
 
@@ -61,7 +75,7 @@ To add template figures you have generated to your TraceLab study, just add the 
 
 ## Exporting Data
 
-The data recorded by TraceLab can be split into two groups: **figure & tracing data**, and **participant & trial data**. Various scripts for importing, joining, and analyzing both groups of data can be found in the [TraceLabR](https://github.com/LBRF/TraceLabR/) repository.
+The data recorded by TraceLab can be split into two groups: **figure & tracing data**, and **participant & trial data**. Various scripts for importing, joining, and analyzing both groups of data can be found in the [TraceLabR](https://github.com/LBRF/TraceLabR/) and [TraceLabAnalysis](https://github.com/LBRF/TraceLabAnalysis/) repositories.
 
 ### Figure and Tracing Data
 
@@ -105,9 +119,11 @@ Additionally, the file name for each trial's `.zip` contains the (p)articipant i
 Apart from figures and figure tracings, all data collected in TraceLab is neatly organized in an SQL database. To export this data from TraceLab, simply run
 
 ```
-klibs export -c 
+klibs export
 ```
 
-while in the TraceLab directory. This will export the trial data from all participants into a single tab-delimited `TraceLab_all_trials.txt` file in the project's `ExpAssets/Data` subfolder.
+while in the TraceLab directory. This will export the trial data from all participants into individual tab-delimited text files for each participant in the project's `ExpAssets/Data` subfolder.
 
-Alternatively, if you just run `klibs export` without the `-c`, the trial data will be exported into individual tab-delimited text files for each participant.
+Data from any participants that did not complete all of their sessions will be saved to the `ExpAssets/Data/incomplete` folder.
+
+

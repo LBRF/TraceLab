@@ -9,7 +9,6 @@ from random import choice
 from sdl2 import SDL_MOUSEBUTTONDOWN, SDL_KEYDOWN
 
 import klibs
-from klibs.KLExceptions import TrialException
 from klibs import P
 from klibs.KLConstants import RECT_BOUNDARY, CIRCLE_BOUNDARY, STROKE_OUTER, QUERY_UPD
 from klibs.KLBoundary import BoundaryInspector
@@ -18,7 +17,7 @@ from klibs.KLUserInterface import any_key, ui_request
 from klibs.KLUtilities import (pump, flush, scale, now, str_pad, mouse_pos,
 	show_mouse_cursor, hide_mouse_cursor, utf8)
 from klibs.KLUtilities import colored_stdout as cso
-from klibs.KLGraphics import blit, fill, flip, clear
+from klibs.KLGraphics import blit, fill, flip
 from klibs.KLGraphics.KLDraw import Ellipse, Rectangle
 from klibs.KLCommunication import user_queries, message, query
 from klibs.KLResponseCollectors import DrawResponse
