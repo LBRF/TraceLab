@@ -33,7 +33,7 @@
 			"accepted": null,
 			"allow_null": false,
 			"format": {
-				"type": "str",
+				"type": "int",
                 "styles": "default",
                 "positions": "default",
 				"password": false,
@@ -135,7 +135,7 @@
 			"accepted": null,
 			"allow_null": true,
 			"format": {
-				"type": "str",
+				"type": "int",
                 "styles": "default",
                 "positions": "default",
 				"password": false,
