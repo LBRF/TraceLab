@@ -7,13 +7,13 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "physical audio 1",
+                    "asset":  "physical_audio_1",
 					"registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
-                    "asset":  "physical instructions 1",
+                    "asset":  "physical_instructions_1",
 					"registration": 5,
                     "start": [960, 540],
                     "end": [960, 540]
@@ -27,7 +27,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "physical instructions 1",
+                    "asset":  "physical_instructions_1",
 					"registration": 5,
                     "start": [960, 540],
                     "end": [960, 540]
@@ -105,7 +105,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin red",
+                    "asset":  "origin_red",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -119,19 +119,19 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "physical audio 2",
+                    "asset":  "physical_audio_2",
 					"registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
-                    "asset":  "origin red",
+                    "asset":  "origin_red",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
                 },
                 {
-                    "asset":  "physical instructions 2",
+                    "asset":  "physical_instructions_2",
 					"registration": 5,
                     "start": [960, 680],
                     "end": [960, 680]
@@ -145,7 +145,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin red",
+                    "asset":  "origin_red",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -165,7 +165,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin red",
+                    "asset":  "origin_red",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -185,13 +185,13 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "physical audio 3",
+                    "asset":  "physical_audio_3",
 					"registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
-                    "asset":  "origin red",
+                    "asset":  "origin_red",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -203,7 +203,7 @@
                     "end": [1050, 870]
                 },
                 {
-                    "asset":  "physical instructions 3",
+                    "asset":  "physical_instructions_3",
 					"registration": 5,
                     "start": [960, 680],
                     "end": [960, 680]
@@ -218,7 +218,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin red",
+                    "asset":  "origin_red",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -230,7 +230,7 @@
                     "end": [1050, 880]
                 },
                 {
-                    "asset":  "physical instructions 3",
+                    "asset":  "physical_instructions_3",
 					"registration": 5,
                     "start": [960, 680],
                     "end": [960, 680]
@@ -244,7 +244,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin red",
+                    "asset":  "origin_red",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -256,7 +256,7 @@
                     "end": [1050, 880]
                 },
                 {
-                    "asset":  "physical instructions 3",
+                    "asset":  "physical_instructions_3",
 					"registration": 5,
                     "start": [960, 680],
                     "end": [960, 680]
@@ -270,13 +270,13 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "physical audio 4",
+                    "asset":  "physical_audio_4",
 					"registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
-                    "asset":  "origin red",
+                    "asset":  "origin_red",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -288,7 +288,7 @@
                     "end": [1010, 850]
                 },
                 {
-                    "asset":  "physical instructions 4",
+                    "asset":  "physical_instructions_4",
 					"registration": 5,
                     "start": [960, 680],
                     "end": [960, 680]
@@ -302,7 +302,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin red",
+                    "asset":  "origin_red",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -314,7 +314,7 @@
                     "end": [1010, 850]
                 },
                 {
-                    "asset":  "physical instructions 4",
+                    "asset":  "physical_instructions_4",
 					"registration": 5,
                     "start": [960, 680],
                     "end": [960, 680]
@@ -328,7 +328,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin red",
+                    "asset":  "origin_red",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -340,7 +340,7 @@
                     "end": [1010, 850]
                 },
                 {
-                    "asset":  "physical instructions 5",
+                    "asset":  "physical_instructions_5",
 					"registration": 5,
                     "start": [960, 680],
                     "end": [960, 680]
@@ -354,7 +354,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin green",
+                    "asset":  "origin_green",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -366,7 +366,7 @@
                     "end": [1010, 850]
                 },
                 {
-                    "asset":  "physical instructions 5",
+                    "asset":  "physical_instructions_5",
 					"registration": 5,
                     "start": [960, 680],
                     "end": [960, 680]
@@ -380,7 +380,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin green",
+                    "asset":  "origin_green",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -400,7 +400,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin green",
+                    "asset":  "origin_green",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -421,7 +421,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin green",
+                    "asset":  "origin_green",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -442,7 +442,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin green",
+                    "asset":  "origin_green",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -462,13 +462,13 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "physical audio 5",
+                    "asset":  "physical_audio_5",
 					"registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
-                    "asset":  "origin green",
+                    "asset":  "origin_green",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -480,7 +480,7 @@
                     "end": [1140, 810]
                 },
                                 {
-                    "asset":  "physical instructions 6",
+                    "asset":  "physical_instructions_6",
 					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
@@ -494,7 +494,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin green",
+                    "asset":  "origin_green",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -506,7 +506,7 @@
                     "end": [1140, 810]
                 },
                 {
-                    "asset":  "physical instructions 6",
+                    "asset":  "physical_instructions_6",
 					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
@@ -520,7 +520,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin green",
+                    "asset":  "origin_green",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -532,7 +532,7 @@
                     "end": [1050, 880]
                 },
                 {
-                    "asset":  "physical instructions 6",
+                    "asset":  "physical_instructions_6",
 					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
@@ -552,7 +552,7 @@
                     "end": [1050, 880]
                 },
                 {
-                    "asset":  "physical instructions 6",
+                    "asset":  "physical_instructions_6",
 					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
@@ -566,7 +566,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin green",
+                    "asset":  "origin_green",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -578,7 +578,7 @@
                     "end": [950, 900]
                 },
                 {
-                    "asset":  "physical instructions 6",
+                    "asset":  "physical_instructions_6",
 					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
@@ -592,7 +592,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin green",
+                    "asset":  "origin_green",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -604,7 +604,7 @@
                     "end": [950, 900]
                 },
                 {
-                    "asset":  "physical instructions 6",
+                    "asset":  "physical_instructions_6",
 					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
@@ -618,7 +618,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin green",
+                    "asset":  "origin_green",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -630,7 +630,7 @@
                     "end": [1050, 880]
                 },
                 {
-                    "asset":  "physical instructions 6",
+                    "asset":  "physical_instructions_6",
 					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
@@ -644,7 +644,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin green",
+                    "asset":  "origin_green",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -656,7 +656,7 @@
                     "end": [1050, 880]
                 },
                 {
-                    "asset":  "physical instructions 6",
+                    "asset":  "physical_instructions_6",
 					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
@@ -676,7 +676,7 @@
                     "end": [1050, 880]
                 },
                 {
-                    "asset":  "physical instructions 6",
+                    "asset":  "physical_instructions_6",
 					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
@@ -690,7 +690,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin red",
+                    "asset":  "origin_red",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -702,7 +702,7 @@
                     "end": [1050, 880]
                 },
                 {
-                    "asset":  "physical instructions 6",
+                    "asset":  "physical_instructions_6",
 					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
@@ -716,7 +716,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin red",
+                    "asset":  "origin_red",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -728,13 +728,13 @@
                     "end": [1050, 880]
                 },
                 {
-                    "asset":  "physical instructions 6",
+                    "asset":  "physical_instructions_6",
 					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 },
                                 {
-                    "asset":  "not recording",
+                    "asset":  "not_recording",
 					"registration": 5,
                     "start": [960, 340],
                     "end": [960, 340]
@@ -749,7 +749,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin red",
+                    "asset":  "origin_red",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -761,7 +761,7 @@
                     "end": [1050, 880]
                 },
                 {
-                    "asset":  "physical instructions 6",
+                    "asset":  "physical_instructions_6",
 					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
@@ -775,7 +775,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin red",
+                    "asset":  "origin_red",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -787,13 +787,13 @@
                     "end": [1050, 880]
                 },
                 {
-                    "asset":  "physical instructions 6",
+                    "asset":  "physical_instructions_6",
 					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 },
                                 {
-                    "asset":  "not recording",
+                    "asset":  "not_recording",
 					"registration": 5,
                     "start": [960, 340],
                     "end": [960, 340]
@@ -808,7 +808,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin red",
+                    "asset":  "origin_red",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -820,7 +820,7 @@
                     "end": [1050, 880]
                 },
                 {
-                    "asset":  "physical instructions 6",
+                    "asset":  "physical_instructions_6",
 					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
@@ -834,7 +834,7 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "origin red",
+                    "asset":  "origin_red",
 					"registration": 5,
                     "start": [960, 780],
                     "end": [960, 780]
@@ -846,13 +846,13 @@
                     "end": [1050, 880]
                 },
                 {
-                    "asset":  "physical instructions 6",
+                    "asset":  "physical_instructions_6",
 					"registration": 5,
                     "start": [960, 580],
                     "end": [960, 580]
                 },
                                 {
-                    "asset":  "not recording",
+                    "asset":  "not_recording",
 					"registration": 5,
                     "start": [960, 340],
                     "end": [960, 340]
@@ -867,13 +867,13 @@
             "enabled": true,
             "directives": [
                 {
-                    "asset":  "physical audio 6",
+                    "asset":  "physical_audio_6",
 					"registration": 5,
                     "start": 0,
                     "end": null
                 },
                 {
-                    "asset":  "end practice",
+                    "asset":  "end_practice",
 					"registration": 5,
                     "start": [960, 540],
                     "end": [960, 540]
