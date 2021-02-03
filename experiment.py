@@ -507,7 +507,9 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 		at_origin = False
 		while not at_origin:
-			if self.within_boundary('origin', mouse_pos()):
+			x, y, button = mouse_pos(return_button_state=True)
+			left_button_down = button == 1
+			if self.within_boundary('origin', (x, y)) and left_button_down:
 				at_origin = True
 				self.rt = self.evm.trial_time - start
 			ui_request()
@@ -516,7 +518,9 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		flip()
 
 		while at_origin:
-			if not self.within_boundary('origin', mouse_pos()):
+			x, y, button = mouse_pos(return_button_state=True)
+			left_button_down = button == 1
+			if not (self.within_boundary('origin', (x, y)) and left_button_down):
 				at_origin = False
 		self.mt = self.evm.trial_time - (self.rt + start)
 		if P.demo_mode:
