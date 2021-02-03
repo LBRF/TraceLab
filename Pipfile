@@ -7,7 +7,7 @@ verify_ssl = true
 pylint = "*"
 
 [packages]
-klibs = {git = "https://github.com/a-hurst/klibs.git", ref = "2549cbba296d55d0feb518c1fffb066c890413a8"}
+klibs = {file = "https://github.com/a-hurst/klibs/releases/download/0.7.5a9/klibs.tar.gz"}
 
 [requires]
 python_version = "3.7"
