@@ -17,8 +17,7 @@ from klibs.KLEnvironment import EnvAgent
 import klibs.KLParams as P
 from klibs.KLBoundary import RectangleBoundary
 from klibs.KLTime import precise_time as time
-from klibs.KLUtilities import (angle_between, acute_angle, point_pos, indices_of, scale, now, utf8,
-	line_segment_len)
+from klibs.KLUtilities import angle_between, acute_angle, point_pos, scale, utf8, line_segment_len
 from klibs.KLUserInterface import ui_request
 from klibs.KLGraphics import blit, flip, fill
 from klibs.KLGraphics.KLDraw import Ellipse
@@ -419,29 +418,6 @@ class TraceLabFigure(EnvAgent):
 					print("Curve bounds: p1 = {0}, p2 = {1}".format(bounds[0], bounds[1]))
 
 		return [True, (p1, p2, p_c)]
-
-
-	def __quadrant_from_point(self, point):
-
-		q = [True, True, True, True]
-
-		if point[0] > P.screen_c[0]:
-			q[0] = False
-			q[1] = False
-
-		if point[0] < P.screen_c[0]:
-			q[2] = False
-			q[3] = False
-
-		if point[1] > P.screen_c[1]:
-			q[1] = False
-			q[2] = False
-
-		if point[1] < P.screen_c[1]:
-			q[0] = False
-			q[3] = False
-
-		return indices_of(True, q, True)
 
 
 	def __capture_figure_out(self):

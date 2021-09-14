@@ -14,7 +14,7 @@ from klibs.KLConstants import RECT_BOUNDARY, CIRCLE_BOUNDARY, STROKE_OUTER, QUER
 from klibs.KLBoundary import BoundaryInspector
 from klibs.KLTime import CountDown
 from klibs.KLUserInterface import any_key, ui_request
-from klibs.KLUtilities import (pump, flush, scale, now, str_pad, mouse_pos,
+from klibs.KLUtilities import (pump, flush, scale, now, mouse_pos,
 	show_mouse_cursor, hide_mouse_cursor, utf8)
 from klibs.KLUtilities import colored_stdout as cso
 from klibs.KLGraphics import blit, fill, flip
@@ -711,7 +711,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 				iti_start = self.intertrial_timing_logs[key.format(iti_index, "start")]
 				iti_end = self.intertrial_timing_logs[key.format(iti_index, "end")]
 				iti = str(iti_end - iti_start)
-				self.log_f.write(utf8(str_pad("intertrial_interval" + ":", 32) + iti + "\n"))
+				self.log_f.write(utf8("intertrial_interval:".ljust(32, " ") + iti + "\n"))
 
 
 	def quit(self):

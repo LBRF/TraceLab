@@ -15,7 +15,7 @@ mirror_mode = False
 enable_learned_figures_querying = True
 
 capture_figures_mode = False
-auto_generate = False  # whether to generate figures without prompting in caputre mode
+auto_generate = False  # whether to generate figures without prompting in capture mode
 auto_generate_count = 10  # number of figures to generate in auto-generate/capture mode
 
 #########################################
