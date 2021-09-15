@@ -16,15 +16,14 @@ from klibs import P
 from klibs.KLEnvironment import EnvAgent
 from klibs.KLJSON_Object import AttributeDict
 from klibs.KLUtilities import now, utf8
-from klibs.KLIndependentVariable import IndependentVariableSet
 from klibs.KLRuntimeInfo import runtime_info_init
+from klibs.KLTrialFactory import BlockIterator
 from klibs.KLUserInterface import any_key
 from klibs.KLDatabase import EntryTemplate
 from klibs.KLGraphics import blit, flip, fill
 from klibs.KLCommunication import query, message, collect_demographics
 from klibs.KLCommunication import user_queries as uq
 
-from TraceLabFigure import TraceLabFigure
 from FigureSet import FigureSet
 
 
@@ -105,7 +104,9 @@ class TraceLabSession(EnvAgent):
 			"bad_condition": ("Response type must be either 'PP' (physical), 'MI' (imagery), "
 				"or 'CC' (control)."),
 			"bad_feedback": ("Feedback type must be one or two characters long, and be "
-				"a combination of the letters 'V', 'R' and / or 'X'.")
+				"a combination of the letters 'V', 'R' and / or 'X'."),
+			"bad_trialcount": ("Custom trial counts must be specified in (blocktype, trials) "
+				"format, where 'trials' is a positive integer."),
 		}
 
 		# Validate specified session structure to use, return informative error if formatted wrong
@@ -116,9 +117,17 @@ class TraceLabSession(EnvAgent):
 				session_num += 1
 				for block in session:
 					block_num += 1
-					err = self.validate_block_condition(block)
+					if type(block) in [tuple, list]:
+						if isinstance(block[1], int) and block[1] > 0:
+							err = self.validate_block_condition(block[0])
+						else:
+							err = "bad_trialcount"
+					else:
+						err = self.validate_block_condition(block)
 					if err:
-						err_txt1 = e.format(block_num, session_num, structure_key, block)
+						if isinstance(block, tuple):
+							block = list(block)
+						err_txt1 = e.format(block_num, session_num, structure_key, str(block))
 						err_txt1 += "\n" + error_strings[err]
 						msg1 = message(err_txt1, "error", align="center", blit_txt=False)
 						msg2 = message("Press any key to exit TraceLab.", blit_txt=False)
@@ -261,6 +270,25 @@ class TraceLabSession(EnvAgent):
 		return query(figset_q)
 
 
+	def __generate_blocks(self, current_session):
+		"""Generates the full set of trials for each block in the session.
+		
+		This generates each block separately, ensuring a full set of factors in
+		each block and handling blocks with custom trial counts.
+
+		"""
+		blocks = []
+		exp_factors = self.exp.trial_factory.exp_factors
+		for block in current_session:
+			trials = P.trials_per_block
+			if type(block) in [tuple, list]:
+				trials = block[1]
+				block = block[0]
+			blocks += self.exp.trial_factory.trial_generator(exp_factors, 1, trials)
+
+		return BlockIterator(blocks)
+
+
 	def init_session(self):
 
 		try:
@@ -311,17 +339,18 @@ class TraceLabSession(EnvAgent):
 			self.exp.quit()
 
 		# Parse block strings for current session
-		blocks = session_structure[self.exp.session_number - 1]
-		P.blocks_per_experiment = len(blocks)
-		for block in blocks:
-			resp, fb = self.parse_exp_condition(block)
+		current_session = session_structure[self.exp.session_number - 1]
+		P.blocks_per_experiment = len(current_session)
+		for block in current_session:
+			cond = block if isinstance(block, str) else block[0]
+			resp, fb = self.parse_exp_condition(cond)
 			self.exp.block_factors.append({'response_type': resp, 'feedback_type': fb})
 
-		# Generate trials and import figure set specified earlier
+		# Generate trials and import the figure set specified earlier
 		self.init_figure_set()
-		self.exp.trial_factory.generate()
+		self.exp.blocks = self.__generate_blocks(current_session)
+		self.exp.trial_factory.blocks = self.exp.blocks
 		self.exp.trial_factory.dump()
-		self.exp.blocks = self.exp.trial_factory.export_trials()
 
 		# If resuming incomplete session, skip ahead to last completed trial
 		trimmed_start_block = self.exp.blocks.blocks[start_block - 1][(start_trial - 1):]

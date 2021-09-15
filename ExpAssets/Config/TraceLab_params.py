@@ -165,6 +165,12 @@ exclude_data_cols = [
 #  - "V" / "VX"  (presentation of target figure with tracing overlay after response made)
 #  - "VR"        (both "R" and "V")
 #
+# Custom trial counts:
+#  To override the default trials_per_block for a given block, you can specify the block
+#  as a 2-item tuple, with the block string (defined above) as the first item and the
+#  trial count as the second (e.g. ('PP-VR', 10) for a 10-trial physical block with both
+#  feedback types).
+#
 # If a project has more than one session structure, a prompt will appear after creating a
 # new study ID asking which structure to use for that participant. This choice will be
 # remembered across sessions for that user. If only one session structure is given,
