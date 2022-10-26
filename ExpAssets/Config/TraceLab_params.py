@@ -19,11 +19,13 @@ auto_generate = False  # whether to generate figures without prompting in captur
 auto_generate_count = 10  # number of figures to generate in auto-generate/capture mode
 
 #########################################
-# Available Hardware
+# Digital Trigger Configuration
 #########################################
-eye_tracking = False
-eye_tracker_available = False
-labjack_available = False
+requires_triggers = False
+labjack_port = 'FIO' # Either FIO, EIO, or CIO
+trigger_codes = {
+
+}
 
 #########################################
 # Environment Aesthetic Defaults
@@ -121,11 +123,6 @@ min_linear_acuteness = 0.1  # must be between 0 and 1; low vals advised, higher 
 slope_magnitude = (0.25, 0.5)  # 0 = a straight line (ie. no curve), 1 = an infinitely steep curve (hint: don't pick this ;)
 peak_shift = (0.25, 0.5)  # 0 == perfect symmetry (ie. bell curve) and 1 == a right  triangle
 curve_sheer = (0.1, 0.3)  # this is hard to describe, but 1 is again an impossible value, and this will grow to lunacy fast
-
-########################################
-# Labjack Codes
-########################################
-trigger_codes = {}
 
 ########################################
 # tlf Controls

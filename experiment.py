@@ -233,6 +233,12 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 				fig_path = os.path.join(P.resources_dir, "figures", f)
 				self.test_figures[f] = TraceLabFigure(fig_path)
 
+		# Initialize trigger port
+		if P.requires_triggers:
+			from communication import get_trigger_port
+			self.trigger = get_trigger_port()
+			self.trigger.add_codes(P.trigger_codes)
+
 
 	def block(self):
 
