@@ -24,21 +24,26 @@ def get_trigger_port():
     if package_available('u3'):
         import u3
         if u3.deviceCount(devType=3) > 0:
-            return U3Port()
+            dev = u3.U3()
+            return U3Port(dev)
 
     # If no physical trigger port available, return a virtual one
-    return VirtualPort()
+    return VirtualPort(device=None)
 
 
 
 class TriggerPort(object):
     """A class for sending digital trigger codes to external hardware.
 
+    Args:
+        device: The object representing the hardware device to use for sending
+            digital triggers (e.g. ``u3.U3``). Can be None.
+
     """
-    def __init__(self):
+    def __init__(self, device):
         # NOTE: Codes may be implementation-specific to allow for preprocessing
         self.codes = {}
-        self._device = None
+        self._device = device
         self._hardware_init()
 
     def _hardware_init(self):
@@ -114,8 +119,6 @@ class U3Port(TriggerPort):
 
     """
     def _hardware_init(self):
-        import u3
-        self._device = u3.U3()
         self._device.getCalibrationData()
         self._write_reg = LABJACK_REGISTERS[P.labjack_port]
         # TODO: Ensure requested port configured as digital out
