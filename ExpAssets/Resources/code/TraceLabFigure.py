@@ -483,8 +483,8 @@ class TraceLabFigure(EnvAgent):
 
 		offset = 0
 		fig_frames = []
-
 		for curve, points in segments:
+
 			if curve:
 				start, end, ctrl = points
 				dist = bezier_length(start, ctrl, end)
