@@ -102,7 +102,7 @@ class TriggerPort(object):
         time.sleep(duration / 1000.0)
         self._write_trigger(0)
 
-    def _write_trigger(self, value, duration):
+    def _write_trigger(self, value):
         # Device-specific trigger code implementation. This actually sends a
         # given code to the hardware.
         pass
@@ -120,9 +120,9 @@ class U3Port(TriggerPort):
         self._write_reg = LABJACK_REGISTERS[P.labjack_port]
         # TODO: Ensure requested port configured as digital out
 
-    def _write_trigger(self, value, duration):
+    def _write_trigger(self, value):
         # Fast method from Appelhoff & Stenner (2021), may be erratic on Windows
-        self._device.writeRegister(self.write_reg, 0xFF + value)
+        self._device.writeRegister(self._write_reg, 0xFF + value)
 
 
 
