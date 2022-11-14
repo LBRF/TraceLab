@@ -224,6 +224,9 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			[200, 100], P.btn_s_pad, P.y_pad, finish_button=False
 		)
 
+		#Set animation direction based on handedness - i am not sure if overwriting a parameter is the right way to go here but it works
+		P.ccl_animations=True if self.handedness == LEFT_HANDED else P.ccl_animations 
+
 		# Import all pre-generated figures needed for the current session
 		figures = list(set(self.trial_factory.exp_factors["figure_name"]))
 		figures.append(P.practice_figure)

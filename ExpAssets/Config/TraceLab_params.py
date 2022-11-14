@@ -12,6 +12,7 @@ run_practice_blocks = False
 
 demo_mode = False
 mirror_mode = False
+ccl_animations = False
 enable_learned_figures_querying = True
 
 capture_figures_mode = False
