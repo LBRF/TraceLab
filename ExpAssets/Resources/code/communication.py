@@ -47,8 +47,7 @@ class TriggerPort(object):
         self._hardware_init()
 
     def _hardware_init(self):
-        # Initialize the hardware for the trigger device & assign it to
-        # self._device.
+        # Initialize the hardware for the trigger device
         pass
 
     def add_code(self, name, value):
