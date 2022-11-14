@@ -646,7 +646,7 @@
     "control_audio_1": {
         "text": null,
         "file": {
-            "filename": "CC1.wav",
+            "filename": "CC1.mp3",
             "media_type": "audio_f",
             "resolution": null,
             "duration": 10.4
@@ -656,7 +656,7 @@
     "control_audio_2": {
         "text": null,
         "file": {
-            "filename": "CC2.wav",
+            "filename": "CC2.mp3",
             "media_type": "audio_f",
             "resolution": null,
             "duration": 10.5
@@ -666,7 +666,7 @@
     "control_audio_3": {
         "text": null,
         "file": {
-            "filename": "CC3.wav",
+            "filename": "CC3.mp3",
             "media_type": "audio_f",
             "resolution": null,
             "duration": 9.9
@@ -676,7 +676,7 @@
     "control_audio_4": {
         "text": null,
         "file": {
-            "filename": "CC4.wav",
+            "filename": "CC4.mp3",
             "media_type": "audio_f",
             "resolution": null,
             "duration": 4.0
@@ -686,7 +686,7 @@
     "control_audio_5": {
         "text": null,
         "file": {
-            "filename": "CC5.wav",
+            "filename": "CC5.mp3",
             "media_type": "audio_f",
             "resolution": null,
             "duration": 3.1
@@ -696,7 +696,7 @@
     "control_audio_6": {
         "text": null,
         "file": {
-            "filename": "CC6.wav",
+            "filename": "CC6.mp3",
             "media_type": "audio_f",
             "resolution": null,
             "duration": 18.5
@@ -706,7 +706,7 @@
     "control_audio_7": {
         "text": null,
         "file": {
-            "filename": "CC7.wav",
+            "filename": "CC7.mp3",
             "media_type": "audio_f",
             "resolution": null,
             "duration": 4.9
@@ -716,7 +716,7 @@
     "control_audio_8": {
         "text": null,
         "file": {
-            "filename": "CC8.wav",
+            "filename": "CC8.mp3",
             "media_type": "audio_f",
             "resolution": null,
             "duration": 3.1
@@ -726,7 +726,7 @@
     "control_audio_9": {
         "text": null,
         "file": {
-            "filename": "CC9.wav",
+            "filename": "CC9.mp3",
             "media_type": "audio_f",
             "resolution": null,
             "duration": 2.7
@@ -736,7 +736,7 @@
     "imagery_audio_1": {
         "text": null,
         "file": {
-            "filename": "MI1.wav",
+            "filename": "MI1.mp3",
             "media_type": "audio_f",
             "resolution": null,
             "duration": 24.5
@@ -746,7 +746,7 @@
     "imagery_audio_2": {
         "text": null,
         "file": {
-            "filename": "MI2.wav",
+            "filename": "MI2.mp3",
             "media_type": "audio_f",
             "resolution": null,
             "duration": 9.5
@@ -756,7 +756,7 @@
     "imagery_audio_3": {
         "text": null,
         "file": {
-            "filename": "MI3.wav",
+            "filename": "MI3.mp3",
             "media_type": "audio_f",
             "resolution": null,
             "duration": 1.6
@@ -766,7 +766,7 @@
     "imagery_audio_4": {
         "text": null,
         "file": {
-            "filename": "MI4.wav",
+            "filename": "MI4.mp3",
             "media_type": "audio_f",
             "resolution": null,
             "duration": 22.8
@@ -776,7 +776,7 @@
     "imagery_audio_5": {
         "text": null,
         "file": {
-            "filename": "MI5.wav",
+            "filename": "MI5.mp3",
             "media_type": "audio_f",
             "resolution": null,
             "duration": 7.8
@@ -786,7 +786,7 @@
     "imagery_audio_6": {
         "text": null,
         "file": {
-            "filename": "MI6.wav",
+            "filename": "MI6.mp3",
             "media_type": "audio_f",
             "resolution": null,
             "duration": 2.6
@@ -796,7 +796,7 @@
     "physical_audio_1": {
         "text": null,
         "file": {
-            "filename": "PP1.wav",
+            "filename": "PP1.mp3",
             "media_type": "audio_f",
             "resolution": null,
             "duration": 16.0
@@ -806,7 +806,7 @@
     "physical_audio_2": {
         "text": null,
         "file": {
-            "filename": "PP2.wav",
+            "filename": "PP2.mp3",
             "media_type": "audio_f",
             "resolution": null,
             "duration": 9.2
@@ -816,7 +816,7 @@
     "physical_audio_3": {
         "text": null,
         "file": {
-            "filename": "PP3.wav",
+            "filename": "PP3.mp3",
             "media_type": "audio_f",
             "resolution": null,
             "duration": 1.7
@@ -826,7 +826,7 @@
     "physical_audio_4": {
         "text": null,
         "file": {
-            "filename": "PP4.wav",
+            "filename": "PP4.mp3",
             "media_type": "audio_f",
             "resolution": null,
             "duration": 10.6
@@ -836,7 +836,7 @@
     "physical_audio_5": {
         "text": null,
         "file": {
-            "filename": "PP5.wav",
+            "filename": "PP5.mp3",
             "media_type": "audio_f",
             "resolution": null,
             "duration": 12.0
@@ -846,7 +846,7 @@
     "physical_audio_6": {
         "text": null,
         "file": {
-            "filename": "PP6.wav",
+            "filename": "PP6.mp3",
             "media_type": "audio_f",
             "resolution": null,
             "duration": 3.0
