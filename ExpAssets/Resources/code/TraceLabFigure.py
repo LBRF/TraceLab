@@ -473,7 +473,6 @@ class TraceLabFigure(EnvAgent):
 					end, start, ctrl = points
 				else:
 					start, end, ctrl = points
-				print(str(start)+" "+str(end))
 				dist = bezier_length(start, ctrl, end)
 				transitions = bezier_transitions_by_dist(start, ctrl, end, dist_per_frame, offset)
 				fig_frames += bezier_interpolation(start, end, ctrl, transitions)
@@ -482,7 +481,6 @@ class TraceLabFigure(EnvAgent):
 					end, start = points
 				else:
 					start, end = points
-				print(str(start)+" "+str(end))
 				dist = line_segment_len(start, end)
 				transitions = linear_transitions_by_dist(start, end, dist_per_frame, offset)
 				fig_frames += linear_interpolation(start, end, transitions)
@@ -546,7 +544,7 @@ class TraceLabFigure(EnvAgent):
 		if duration is None:
 			duration = self.animate_target_time
 
-		self.a_frames = self.segments_to_frames(self.raw_segments, duration, ccl_animation=True, fps=P.refresh_rate)
+		self.a_frames = self.segments_to_frames(self.raw_segments, duration, ccl_animation=P.ccl_animations, fps=P.refresh_rate)
 
 
 	def animate(self):
