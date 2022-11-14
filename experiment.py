@@ -231,7 +231,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			if f != "random":
 				ui_request()
 				fig_path = os.path.join(P.resources_dir, "figures", f)
-				self.test_figures[f] = TraceLabFigure(fig_path,handedness= self.handedness)
+				self.test_figures[f] = TraceLabFigure(fig_path, handedness = self.handedness)
 
 
 	def block(self):
@@ -567,7 +567,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		while not figure:
 			ui_request()
 			try:
-				figure = TraceLabFigure(animate_time=duration,handedness= self.handedness)
+				figure = TraceLabFigure(animate_time = duration, handedness = self.handedness)
 				figure.render()
 				figure.prepare_animation()
 			except RuntimeError as e:
