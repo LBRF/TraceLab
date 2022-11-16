@@ -118,9 +118,14 @@ class U3Port(TriggerPort):
 
     """
     def _hardware_init(self):
-        self._device.getCalibrationData()
         self._write_reg = LABJACK_REGISTERS[P.labjack_port]
-        # TODO: Ensure requested port configured as digital out
+        self._device.getCalibrationData()
+        # Configure all IO pins to be digital outputs set to 0
+        self._device.configU3(
+            FIODirection=255, FIOState=0, FIOAnalog=0,
+            EIODirection=255, EIOState=0, EIOAnalog=0,
+            CIODirection=255, CIOState=0,
+        )
 
     def _write_trigger(self, value):
         # Fast method from Appelhoff & Stenner (2021), may be erratic on Windows
