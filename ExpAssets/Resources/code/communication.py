@@ -12,6 +12,13 @@ LABJACK_REGISTERS = {
 }
 
 
+def _raise_err(task, msg=None):
+    e = "Error encountered {0}".format(task)
+    if msg:
+        e += ": {0}".format(msg)
+    raise RuntimeError(e)
+
+
 def get_trigger_port():
     """Retrieves a TriggerPort object for writing digital trigger codes.
 
@@ -30,6 +37,23 @@ def get_trigger_port():
     # If no physical trigger port available, return a virtual one
     return VirtualPort(device=None)
 
+
+def get_tms_controller():
+    """Retrieves a TMSController object for controlling a TMS system.
+
+    If a supported stimulator is available, it will be initialized
+    and configured. If no supported stimulator is connected, a virtual TMS
+    controller will be returned.
+
+    """
+    if package_available('magpy'):
+        # NOTE: Currently no way of autodetecting Magstim model
+        import magpy
+        dev = magpy.BiStim(P.tms_serial_port)
+        return MagstimController(dev)
+    
+    # If no hardware stimulator available, return a virtual one
+    return VirtualTMSController(None)
 
 
 class TriggerPort(object):
@@ -134,7 +158,192 @@ class U3Port(TriggerPort):
 
 
 class VirtualPort(TriggerPort):
-    
+
     def _hardware_init(self):
         print("\nNOTE: No hardware trigger device, using virtual triggers...\n")
 
+
+
+class TMSController(object):
+    """A class for configuring and controlling TMS systems in Python.
+
+    Args:
+        device: The object representing the stimulator for a given backend. Can
+            be None.
+
+    """
+    def __init__(self, device):
+        self._device = device
+        self._hardware_init()
+
+    def _hardware_init(self):
+        # Initialize the connection to the TMS system
+        pass
+
+    def set_power(self, a, b=0):
+        """Sets the power levels for the stimulator.
+
+        For stimulators with two coils (e.g. BiStim), ``a`` sets the power level
+        for coil A and ``b`` sets the power level for coil B. For single coil
+        stimulators, ``a`` sets the power level for the system and setting ``b``
+        to anything other than 0 will raise an error.
+
+        Args:
+            a (int): The power level (from 0 to 100) to set for the stimulator's
+                primary coil.
+            b (int, optional): The power level (from 0 to 100) to set for the
+                stimulator's secondary coil. Defaults to 0.
+
+        """
+        pass
+
+    def set_pulse_interval(self, duration):
+        """Sets the paired pulse interval for the stimulator.
+
+        This method only affects dual-coil stimulators and will raise an error
+        if set to anything other than 0 on a single-coil system.
+
+        Args:
+            duration (int): The interval (in ms) between the firing of coil A
+                and coil B. Must be between 0 and 999.
+
+        """
+        pass
+
+    def arm(self, wait=False):
+        """Arms the stimulator.
+
+        Must be called at least one second before the stimulator can be fired.
+ 
+        Args:
+            wait (bool, optional): If True, this method will wait up to 2 seconds
+                for the stimulator to arm successfully before returning. Defaults
+                to False.
+
+        """
+        pass
+
+    def disarm(self):
+        """Disarms the stimulator.
+        
+        """
+        pass
+
+    def fire(self):
+        """Commands the stimulator to fire.
+
+        NOTE: This commands the TMS to fire via the serial port, which has
+        a delay of 5-10ms and can be delayed by other commands to the device.
+        As such, this function should *only* be used for testing or for 
+        tasks where precise timing is not important. In all other cases,
+        the stimulator should be triggered via TTL using a TriggerPort object.
+
+        """
+        pass
+
+    @property
+    def armed(self):
+        """bool: True if the stimulator is currently armed, otherwise False.
+        """
+        pass
+
+    @property
+    def ready(self):
+        """bool: True if the stimulator is ready to fire, otherwise False.
+        """
+        pass
+
+
+class VirtualTMSController(TMSController):
+    """A dummy TMSController implementation.
+
+    This class allows writing/testing experiments involving TMS control without
+    needing to be connnected to an actual stimulator.
+
+    """
+    def _hardware_init(self):
+        self._info = {
+            'pwr_a': 0, 'pwr_b': 0, 'interval': 0, 'armed': False,
+        }
+
+    def set_power(self, a, b=0):
+        self._info['pwr_a'] = a
+        self._info['pwr_a'] = b
+
+    def set_pulse_interval(self, duration):
+        self._info['interval'] = duration
+
+    def arm(self, wait=False):
+        if wait:
+            # Simulate usual delay between arming and ready to fire
+            time.sleep(1.0)
+        self._info['armed'] = True
+
+    def disarm(self):
+        self._info['armed'] = False
+
+    def fire(self):
+        pass
+
+    @property
+    def armed(self):
+        return self._info['armed']
+
+    @property
+    def ready(self):
+        return self._info['armed']
+
+
+
+class MagstimController(TMSController):
+    """A TMSController implementation for Magstim TMS systems.
+
+    This uses the magpy package as a back end. Currently only BiStim stimulators
+    are supported, but support for Magstim 200 and Rapid stimulators is possible
+    with some extra work.
+
+    """
+    def _hardware_init(self):
+        self._device.connect()
+        self._device.highResolutionMode(False)
+
+    def set_power(self, a, b=0):
+        err, msg = self._device.setPower(a, receipt=True)
+        if err:
+            _raise_err("setting power for coil A", msg)
+        if b > 0:
+            err, msg = self._device.setPowerB(b, reciept=True)
+            if err:
+                _raise_err("setting power for coil B", msg)
+
+    def set_pulse_interval(self, duration):
+        err, msg = self._device.setPulseInterval(duration, receipt=True)
+        if err:
+            _raise_err("setting the paired pulse interval", msg)
+
+    def arm(self, wait=False):
+        err, msg = self._device.arm(receipt=True)
+        if err:
+            _raise_err("arming the stimulator", msg)
+        if wait:
+            timeout = 2.0
+            start = time.time()
+            while not self.armed:
+                time.sleep(0.1)
+                if (time.time() - start) > timeout:
+                    e = "Arming the stimulator timed out (2 seconds)"
+                    raise RuntimeError(e)
+
+    def disarm(self):
+        self._device.disarm()
+
+    def fire(self):
+        self._device.fire()
+
+    @property
+    def armed(self):
+        return self._device.isArmed()
+
+    @property
+    def ready(self):
+        return self._device.isReadyToFire()
