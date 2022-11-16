@@ -124,7 +124,7 @@ class U3Port(TriggerPort):
 
     def _write_trigger(self, value):
         # Fast method from Appelhoff & Stenner (2021), may be erratic on Windows
-        self._device.writeRegister(self._write_reg, 0xFF + value)
+        self._device.writeRegister(self._write_reg, 0xFF00 + (value & 0xFF))
 
 
 
