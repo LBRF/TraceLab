@@ -48,9 +48,12 @@ def get_tms_controller():
     """
     if package_available('magpy'):
         # NOTE: Currently no way of autodetecting Magstim model
-        import magpy
-        dev = magpy.BiStim(P.tms_serial_port)
-        return MagstimController(dev)
+        from serial.tools.list_ports import comports
+        available_ports = [p.device for p in comports()]
+        if P.tms_serial_port in available_ports:
+            import magpy
+            dev = magpy.BiStim(P.tms_serial_port)
+            return MagstimController(dev)
     
     # If no hardware stimulator available, return a virtual one
     return VirtualTMSController(None)
