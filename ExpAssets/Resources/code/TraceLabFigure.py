@@ -452,7 +452,7 @@ class TraceLabFigure(EnvAgent):
 		return u"\n".join(out)
 
 	def __reverse_segments(self, segments, mirror=True):
-		"""Mirrors the shape across the x-ais or reverses the order and direction 
+		"""Mirrors the shape across the x-axis or reverses the order and direction 
 		of linear/bezier segments comprising a shape.
 
 		Args:
