@@ -217,6 +217,11 @@ class TMSController(object):
         """Arms the stimulator.
 
         Must be called at least one second before the stimulator can be fired.
+        Note that the stimulator will stay armed after firing, so you may need
+        to manually disarm between trials depending on the nature of your study.
+
+        Once armed, the Magstim will disarm automatically if the stimulator has
+        not been fired for over 1 minute.
  
         Args:
             wait (bool, optional): If True, this method will wait up to 2 seconds
@@ -266,12 +271,12 @@ class VirtualTMSController(TMSController):
     """
     def _hardware_init(self):
         self._info = {
-            'pwr_a': 0, 'pwr_b': 0, 'interval': 0, 'armed': False,
+            'pwr_a': 30, 'pwr_b': 30, 'interval': 30, 'armed': False,
         }
 
     def set_power(self, a, b=0):
         self._info['pwr_a'] = a
-        self._info['pwr_a'] = b
+        self._info['pwr_b'] = b
 
     def set_pulse_interval(self, duration):
         self._info['interval'] = duration
