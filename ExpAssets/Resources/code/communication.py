@@ -53,7 +53,7 @@ def get_tms_controller():
         if P.tms_serial_port in available_ports:
             import magpy
             dev = magpy.BiStim(P.tms_serial_port)
-            return MagstimController(dev)
+            return MagPyController(dev)
     
     # If no hardware stimulator available, return a virtual one
     return VirtualTMSController(None)
@@ -183,35 +183,41 @@ class TMSController(object):
         # Initialize the connection to the TMS system
         pass
 
-    def set_power(self, a, b=0):
-        """Sets the power levels for the stimulator.
+    def _set_power(self, level):
+        # Actually sets the power level for the stimulator
+        pass
 
-        For stimulators with two coils (e.g. BiStim), ``a`` sets the power level
-        for coil A and ``b`` sets the power level for coil B. For single coil
-        stimulators, ``a`` sets the power level for the system and setting ``b``
-        to anything other than 0 will raise an error.
+    def _arm(self):
+        # Actually arms the stimulator
+        pass
+
+    def set_power(self, level):
+        """Sets the power level for the primary coil of the stimulator.
+
+        Note that the stimulator requires time to charge or discharge to a new
+        power level once one has been set, with the time required depending on the
+        magnitude of and direction of the change (e.g. 20% to 40% would take
+        approximately 200ms, whereas 40% to 20% would take approximately 2000ms).
+
+        To make sure the stimulator is ready to fire after changing the power
+        level, check the `ready` attribute once the stimulator has been armed.
 
         Args:
-            a (int): The power level (from 0 to 100) to set for the stimulator's
+            level (int): The power level (from 0 to 100) to set for the stimulator's
                 primary coil.
-            b (int, optional): The power level (from 0 to 100) to set for the
-                stimulator's secondary coil. Defaults to 0.
 
         """
-        pass
+        non_int = int(level) != level
+        if non_int or not (0 <= int(level) <= 100):
+            e = "Power level must be an integer between 0 and 1 (got {0})"
+            raise ValueError(e.format(level))
+        self._set_power(int(level))
 
-    def set_pulse_interval(self, duration):
-        """Sets the paired pulse interval for the stimulator.
-
-        This method only affects dual-coil stimulators and will raise an error
-        if set to anything other than 0 on a single-coil system.
-
-        Args:
-            duration (int): The interval (in ms) between the firing of coil A
-                and coil B. Must be between 0 and 999.
+    def get_power(self):
+        """Gets the current power level for the primary coil of the stimulator.
 
         """
-        pass
+        return int(info['bistimParam']['powerA'])
 
     def arm(self, wait=False):
         """Arms the stimulator.
@@ -229,7 +235,15 @@ class TMSController(object):
                 to False.
 
         """
-        pass
+        self._arm()
+        if wait:
+            timeout = 2.0
+            start = time.time()
+            while not self.armed:
+                time.sleep(0.1)
+                if (time.time() - start) > timeout:
+                    e = "Arming the stimulator timed out (2 seconds)"
+                    raise RuntimeError(e)
 
     def disarm(self):
         """Disarms the stimulator.
@@ -271,15 +285,14 @@ class VirtualTMSController(TMSController):
     """
     def _hardware_init(self):
         self._info = {
-            'pwr_a': 30, 'pwr_b': 30, 'interval': 30, 'armed': False,
+            'pwr_a': 30, 'pwr_b': 0, 'interval': 0, 'armed': False,
         }
 
-    def set_power(self, a, b=0):
-        self._info['pwr_a'] = a
-        self._info['pwr_b'] = b
+    def _set_power(self, level):
+        self._info['pwr_a'] = level
 
-    def set_pulse_interval(self, duration):
-        self._info['interval'] = duration
+    def get_power(self):
+        return self._info['pwr_a']
 
     def arm(self, wait=False):
         if wait:
@@ -303,44 +316,36 @@ class VirtualTMSController(TMSController):
 
 
 
-class MagstimController(TMSController):
-    """A TMSController implementation for Magstim TMS systems.
+class MagPyController(TMSController):
+    """A TMSController implementation for Magstim TMS systems using MagPy.
 
-    This uses the magpy package as a back end. Currently only BiStim stimulators
-    are supported, but support for Magstim 200 and Rapid stimulators is possible
-    with some extra work.
+    Currently only Magstim 200 and BiStim stimulators are supported, but
+    Magstim Rapid stimulators should be usable with some extra work.
 
     """
     def _hardware_init(self):
         self._device.connect()
-        self._device.highResolutionMode(False)
+        # If BiStim, configure to start in single-pulse mode
+        err, msg = self._device.highResolutionMode(False, reciept=True)
+        if err != 3:
+            self._device.setPowerB(0)
+            self._device.setPulseInterval(0)
 
-    def set_power(self, a, b=0):
+    def _set_power(self, level):
         err, msg = self._device.setPower(a, receipt=True)
         if err:
-            _raise_err("setting power for coil A", msg)
-        if b > 0:
-            err, msg = self._device.setPowerB(b, reciept=True)
-            if err:
-                _raise_err("setting power for coil B", msg)
+            _raise_err("setting power for the primary coil", msg)
 
-    def set_pulse_interval(self, duration):
-        err, msg = self._device.setPulseInterval(duration, receipt=True)
-        if err:
-            _raise_err("setting the paired pulse interval", msg)
-
-    def arm(self, wait=False):
+    def _arm(self):
         err, msg = self._device.arm(receipt=True)
         if err:
             _raise_err("arming the stimulator", msg)
-        if wait:
-            timeout = 2.0
-            start = time.time()
-            while not self.armed:
-                time.sleep(0.1)
-                if (time.time() - start) > timeout:
-                    e = "Arming the stimulator timed out (2 seconds)"
-                    raise RuntimeError(e)
+
+    def get_power(self):
+        err, info = self._device.getParameters()
+        if err:
+            _raise_err("retrieving the current stimulator settings", info)
+        return int(info['bistimParam']['powerA'])
 
     def disarm(self):
         self._device.disarm()
