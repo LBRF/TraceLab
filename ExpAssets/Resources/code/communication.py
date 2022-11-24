@@ -38,6 +38,28 @@ def get_trigger_port():
     return VirtualPort(device=None)
 
 
+def _poke_magstim(port, timeout=1.0):
+    # Workaround for a MagPy bug on Linux until magneto is done: without
+    # this, MagPy hangs indefinitely the first time it tris to connect.
+    import serial
+    com = serial.Serial(
+        port,
+        baudrate=9600,
+        bytesize=serial.EIGHTBITS,
+        stopbits=serial.STOPBITS_ONE,
+        parity=serial.PARITY_NONE,
+    )
+    com.write_timeout = 0.5
+    # Write a 'get parameters' command to the Magstim and wait for a response
+    com.write(b"J@u")
+    wait_start = time.time()
+    while not com.in_waiting:
+        if (time.time() - wait_start) > timeout:
+            raise RuntimeError("Connection with Magstim timed out.")
+        time.sleep(0.1)
+    return com.read(com.in_waiting)
+
+
 def get_tms_controller():
     """Retrieves a TMSController object for controlling a TMS system.
 
@@ -52,6 +74,7 @@ def get_tms_controller():
         available_ports = [p.device for p in comports()]
         if P.tms_serial_port in available_ports:
             import magpy
+            _poke_magstim(P.tms_serial_port)
             dev = magpy.BiStim(P.tms_serial_port)
             return MagPyController(dev)
     
