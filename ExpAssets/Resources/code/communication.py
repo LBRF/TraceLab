@@ -326,13 +326,13 @@ class MagPyController(TMSController):
     def _hardware_init(self):
         self._device.connect()
         # If BiStim, configure to start in single-pulse mode
-        err, msg = self._device.highResolutionMode(False, reciept=True)
+        err, msg = self._device.highResolutionMode(False, receipt=True)
         if err != 3:
             self._device.setPowerB(0)
             self._device.setPulseInterval(0)
 
     def _set_power(self, level):
-        err, msg = self._device.setPower(a, receipt=True)
+        err, msg = self._device.setPower(level, receipt=True)
         if err:
             _raise_err("setting power for the primary coil", msg)
 
