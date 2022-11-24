@@ -262,7 +262,7 @@ class TMSController(object):
         if wait:
             timeout = 2.0
             start = time.time()
-            while not self.armed:
+            while not self.ready:
                 time.sleep(0.1)
                 if (time.time() - start) > timeout:
                     e = "Arming the stimulator timed out (2 seconds)"
@@ -283,12 +283,6 @@ class TMSController(object):
         tasks where precise timing is not important. In all other cases,
         the stimulator should be triggered via TTL using a TriggerPort object.
 
-        """
-        pass
-
-    @property
-    def armed(self):
-        """bool: True if the stimulator is currently armed, otherwise False.
         """
         pass
 
@@ -328,10 +322,6 @@ class VirtualTMSController(TMSController):
 
     def fire(self):
         pass
-
-    @property
-    def armed(self):
-        return self._info['armed']
 
     @property
     def ready(self):
@@ -375,10 +365,6 @@ class MagPyController(TMSController):
 
     def fire(self):
         self._device.fire()
-
-    @property
-    def armed(self):
-        return self._device.isArmed()
 
     @property
     def ready(self):
