@@ -28,6 +28,12 @@ trigger_codes = {
 }
 
 #########################################
+# TMS Configuration
+#########################################
+requires_tms = False
+tms_serial_port = '/dev/ttyUSB0'
+
+#########################################
 # Environment Aesthetic Defaults
 #########################################
 default_fill_color = (0, 0, 0, 255)
