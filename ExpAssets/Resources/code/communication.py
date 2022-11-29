@@ -73,9 +73,9 @@ def get_tms_controller():
         from serial.tools.list_ports import comports
         available_ports = [p.device for p in comports()]
         if P.tms_serial_port in available_ports:
-            import magpy
+            from magpy.magstim import BiStim
             _poke_magstim(P.tms_serial_port)
-            dev = magpy.BiStim(P.tms_serial_port)
+            dev = BiStim(P.tms_serial_port)
             return MagPyController(dev)
     
     # If no hardware stimulator available, return a virtual one
