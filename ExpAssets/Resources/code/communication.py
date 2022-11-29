@@ -304,6 +304,7 @@ class VirtualTMSController(TMSController):
         self._info = {
             'pwr_a': 30, 'pwr_b': 0, 'interval': 0, 'armed': False,
         }
+        print("\nNOTE: No TMS hardware connected, using virtual stimulator...\n")
 
     def _set_power(self, level):
         self._info['pwr_a'] = level
