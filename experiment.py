@@ -234,12 +234,14 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 				self.test_figures[f] = TraceLabFigure(fig_path, handedness = self.handedness)
 
 		# Initialize trigger port (if required)
+		self.trigger = None
 		if P.requires_triggers:
 			from communication import get_trigger_port
 			self.trigger = get_trigger_port()
 			self.trigger.add_codes(P.trigger_codes)
 
 		# Initialize TMS communication (if required)
+		self.magstim = None
 		if P.requires_tms:
 			from communication import get_tms_controller
 			self.magstim = get_tms_controller()
@@ -726,8 +728,8 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 
 	def quit(self):
-		# Properly close trigger port for hardware that needs i
-		if P.requires_triggers:
+		# Properly close trigger port for hardware that needs it
+		if self.trigger is not None:
 			self.trigger.close()
 		try:
 			self.log_f.close()

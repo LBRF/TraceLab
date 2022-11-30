@@ -19,6 +19,19 @@ def _raise_err(task, msg=None):
     raise RuntimeError(e)
 
 
+def _check_labjack_driver():
+    # LabJackPython requires a driver to work and errors out if not installed,
+    # so make sure it exists and print an informative message if it isn't
+    import u3
+    has_driver = False
+    try:
+        u3.deviceCount(devType=3)
+        has_driver = True
+    except AttributeError:
+        pass
+    return has_driver
+
+
 def get_trigger_port():
     """Retrieves a TriggerPort object for writing digital trigger codes.
 
@@ -30,7 +43,8 @@ def get_trigger_port():
     # Try loading the LabLack U3 as a trigger port
     if package_available('u3'):
         import u3
-        if u3.deviceCount(devType=3) > 0:
+        has_driver = _check_labjack_driver()
+        if has_driver and u3.deviceCount(devType=3) > 0:
             dev = u3.U3()
             return U3Port(dev)
 
