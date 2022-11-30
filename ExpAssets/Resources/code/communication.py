@@ -156,6 +156,15 @@ class TriggerPort(object):
         time.sleep(duration / 1000.0)
         self._write_trigger(0)
 
+    def close(self):
+        """Closes the connection with the trigger port hardware.
+
+        Should be called at the end of the experiment, when the trigger port is
+        no longer needed.
+
+        """
+        pass
+
     def _write_trigger(self, value):
         # Device-specific trigger code implementation. This actually sends a
         # given code to the hardware.
@@ -180,6 +189,11 @@ class U3Port(TriggerPort):
     def _write_trigger(self, value):
         # Fast method from Appelhoff & Stenner (2021), may be erratic on Windows
         self._device.writeRegister(self._write_reg, 0xFF00 + (value & 0xFF))
+
+    def close(self):
+        # Needs to be called on Linux and macOS in order for the LabJack to be
+        # able to be opened again reliably without reconnecting the cable.
+        self._device.close()
 
 
 
@@ -240,7 +254,7 @@ class TMSController(object):
         """Gets the current power level for the primary coil of the stimulator.
 
         """
-        return int(info['bistimParam']['powerA'])
+        pass
 
     def arm(self, wait=False):
         """Arms the stimulator.

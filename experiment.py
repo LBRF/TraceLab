@@ -726,7 +726,9 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 
 	def quit(self):
-
+		# Properly close trigger port for hardware that needs i
+		if P.requires_triggers:
+			self.trigger.close()
 		try:
 			self.log_f.close()
 		except AttributeError:
