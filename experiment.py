@@ -73,23 +73,17 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	handedness = None
 	created = None
 	show_practice_display = False  # ie. this session should include the practice display
-	lj = None
+	figure_sets = {}  # complete set of available figure sets
+	figure_set_name = "NA"
 	log_f = None
 
-	origin_active = None
-	origin_inactive = None
 	origin_active_color = GREEN
 	origin_inactive_color = RED
 	origin_pos = None
 	origin_boundary = None
-	tracker_dot = None
-
 	instructions = None
-	loading_msg = None
-	control_fail_msg = None
-	next_trial_msg = None
-	next_trial_box = None
-	next_trial_button_loc = None
+	trigger = None
+	magstim = None
 
 	# dynamic trial vars
 	drawing = []
@@ -104,8 +98,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	# configured trial factors (dynamically loaded per-trial
 	animate_time = None
 	figure_name = None
-	figure_sets = {}  # complete set of available figure sets
-	figure_set_name = "NA"
 
 	# practice stuff
 	__practicing__ = False
