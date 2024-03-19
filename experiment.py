@@ -106,10 +106,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	practice_button_bar = None
 	practice_kf = None
 
-	intertrial_start = None
-	intertrial_end = None
-	intertrial_timing_logs = {}
-
 
 	def __init__(self):
 
@@ -329,18 +325,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			('start', self.origin_boundary, CIRCLE_BOUNDARY),
 			('stop', self.origin_boundary, CIRCLE_BOUNDARY)
 		])
-
-		# If using log file, write out the intertrial interval info to it (is this still useful?)
-		self.log("\n\n********** TRIAL {0} ***********\n".format(P.trial_number))
-		if self.intertrial_start:
-			self.intertrial_end = time.time()
-			intertrial_interval = self.intertrial_end - self.intertrial_start
-			self.log(str(intertrial_interval) + "\n")
-		if P.trial_number > 1:
-			self.log("t{0}_intertrial_interval_end".format(P.trial_number - 1), True)
-			self.log("write_out")
-		self.log("t{0}_intertrial_interval_start".format(P.trial_number), True)
-		self.intertrial_start = time.time()
 
 		# Let participant self-initiate next trial
 		self.start_trial_button()
@@ -692,21 +676,9 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		return self.practice(callback=cb)
 
 
-	def log(self, msg, t=None):
-
+	def log(self, msg):
 		if self.log_f:
-			if msg != "write_out":
-				if t:
-					self.intertrial_timing_logs[msg] = time.time()
-				else:
-					self.log_f.write(msg)
-			else:
-				key = 't{0}_intertrial_interval_{1}'
-				iti_index = P.trial_number - 1
-				iti_start = self.intertrial_timing_logs[key.format(iti_index, "start")]
-				iti_end = self.intertrial_timing_logs[key.format(iti_index, "end")]
-				iti = str(iti_end - iti_start)
-				self.log_f.write(utf8("intertrial_interval:".ljust(32, " ") + iti + "\n"))
+			self.log_f.write(msg)
 
 
 	def quit(self):
