@@ -28,16 +28,6 @@ from ButtonBar import ButtonBar
 from KeyFrames import FrameSet
 
 
-if P.labjack_available:
-	try:
-		import u3
-	except ImportError:
-		cso("<red>Error: The LabJackPython module is not installed.</red>")
-		print("\nYou can either run 'pip install -r reqirements.txt' in the project folder to "
-			"install it, or disable LabJack triggering by setting 'labjack_available' to False in "
-			"the project's params.py file.\n")
-		raise
-
 WHITE = (255, 255, 255, 255)
 BLACK = (0, 0, 0, 255)
 RED = (255, 0, 0, 255)
