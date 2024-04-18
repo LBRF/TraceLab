@@ -621,7 +621,7 @@ class TraceLabFigure(EnvAgent):
 		thumb_path = os.path.join(self.exp.fig_dir, thumb_file_name)
 		thumbx_path = os.path.join(self.exp.fig_dir, thumbx_file_name)
 
-		with zipfile.ZipFile(fig_path[:-3] + "zip", "a", zipfile.ZIP_DEFLATED) as fig_zip:
+		with zipfile.ZipFile(fig_path[:-3] + "zip", "w", zipfile.ZIP_DEFLATED) as fig_zip:
 
 			with io.open(fig_path, "w+", encoding='utf-8') as f:
 				if P.capture_figures_mode:
