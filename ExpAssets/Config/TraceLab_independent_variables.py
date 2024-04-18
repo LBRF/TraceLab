@@ -1,12 +1,9 @@
-from klibs.KLIndependentVariable import IndependentVariableSet
+from klibs.KLStructure import FactorSet
 
 
-# Initialize object containing project's factor set
+# Initialize names and levels of experiment factors
 
-TraceLab_ind_vars = IndependentVariableSet()
-
-
-# Define project variables and variable types
-
-TraceLab_ind_vars.add_variable("animate_time", int, [500, 1000, 1500, 2000, 2500])
-TraceLab_ind_vars.add_variable("figure_name", str, ["random", "template_1477090164.31"])
+exp_factors = FactorSet({
+    "animate_time": [500, 1000, 1500, 2000, 2500],
+    "figure_name": ["random", "template_1477090164.31"],
+})

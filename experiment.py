@@ -19,6 +19,7 @@ from klibs.KLUtilities import (pump, flush, scale, now, mouse_pos,
 from klibs.KLUtilities import colored_stdout as cso
 from klibs.KLGraphics import blit, fill, flip
 from klibs.KLGraphics.KLDraw import Ellipse, Rectangle
+from klibs.KLText import add_text_style
 from klibs.KLCommunication import user_queries, message, query
 from klibs.KLResponseCollectors import DrawResponse
 
@@ -120,22 +121,22 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.animate_time = P.practice_animation_time
 		self.setup_response_collector()
 		self.trial_prep()
-		self.evm.start_clock()
+		self.evm.start()
 		try:
 			self.trial()
 		except:
 			pass
-		self.evm.stop_clock()
+		self.evm.reset()
 		self.trial_clean_up()
 
 
 	def setup(self):
 
 		# Set up custom text styles for the experiment
-		self.txtm.add_style('instructions', 18, [255, 255, 255, 255])
-		self.txtm.add_style('error', 18, [255, 0, 0, 255])
-		self.txtm.add_style('tiny', 12, [255, 255, 255, 255])
-		self.txtm.add_style('small', 14, [255, 255, 255, 255])
+		add_text_style('instructions', 18, color=WHITE)
+		add_text_style('error', 18, color=RED)
+		add_text_style('tiny', 12, color=WHITE)
+		add_text_style('small', 14, color=WHITE)
 
 		# Pre-render shape stimuli
 		dot_stroke = [P.dot_stroke, P.dot_stroke_col, STROKE_OUTER] if P.dot_stroke > 0 else None
@@ -339,9 +340,9 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			blit(self.tracker_dot, 5, self.origin_pos)
 			flip()
 
-		animate_start = self.evm.trial_time
+		animate_start = time.perf_counter()
 		self.figure.animate()
-		animate_time = self.evm.trial_time - animate_start
+		animate_time = time.perf_counter() - animate_start
 		avg_velocity = self.figure.path_length / animate_time
 
 		if self.response_type == PHYS:
@@ -479,7 +480,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		blit(self.origin_inactive, 5, self.origin_pos, flip_x=P.flip_x)
 		flip()
 
-		start = self.evm.trial_time
+		start = time.perf_counter()
 		if P.demo_mode or P.dm_always_show_cursor:
 			show_mouse_cursor()
 
@@ -489,7 +490,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			left_button_down = button == 1
 			if self.within_boundary('origin', (x, y)) and left_button_down:
 				at_origin = True
-				self.rt = self.evm.trial_time - start
+				self.rt = time.perf_counter() - start
 			ui_request()
 		fill()
 		blit(self.origin_active, 5, self.origin_pos, flip_x=P.flip_x)
@@ -500,7 +501,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			left_button_down = button == 1
 			if not (self.within_boundary('origin', (x, y)) and left_button_down):
 				at_origin = False
-		self.mt = self.evm.trial_time - (self.rt + start)
+		self.mt = time.perf_counter() - (self.rt + start)
 		if P.demo_mode:
 			hide_mouse_cursor()
 
@@ -640,12 +641,12 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 	def capture_learned_figure(self, fig_number):
 
-		self.evm.start_clock()
+		self.evm.start()
 		fig_name = "p{0}_learned_figure_{1}.tlt".format(P.participant_id, fig_number)
 		self.rc.draw_listener.reset()
 		self.rc.collect()
 		self.figure.write_out(fig_name, self.rc.draw_listener.responses[0][0])
-		self.evm.stop_clock()
+		self.evm.reset()
 
 
 	def practice(self, play_key_frames=True, callback=None):
@@ -666,9 +667,9 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 		self.practice_button_bar.reset()
 		self.practice_button_bar.render()
-		self.evm.start_clock()
+		self.evm.start()
 		cb = self.practice_button_bar.collect_response()
-		self.evm.stop_clock()
+		self.evm.reset()
 
 		self.__practicing__ = False
 
