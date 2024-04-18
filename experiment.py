@@ -412,8 +412,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 						break
 
 		# if the entire experiment is successfully completed, update the sessions_completed column
-		q_str = "UPDATE `participants` SET `sessions_completed` = ? WHERE `id` = ?"
-		self.db.query(q_str, QUERY_UPD, q_vars=[self.session_number, P.participant_id])
+		self.db.update('participants', {'sessions_completed': self.session_number})
 
 		# log session data to database
 		session_data = {
