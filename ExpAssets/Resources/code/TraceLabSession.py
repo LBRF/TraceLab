@@ -286,7 +286,7 @@ class TraceLabSession(EnvAgent):
 				block = block[0]
 			blocks += self.exp.trial_factory.trial_generator(exp_factors, 1, trials)
 
-		return BlockIterator(blocks)
+		return blocks
 
 
 	def init_session(self):
@@ -348,14 +348,16 @@ class TraceLabSession(EnvAgent):
 
 		# Generate trials and import the figure set specified earlier
 		self.init_figure_set()
-		self.exp.blocks = self.__generate_blocks(current_session)
+		blocks = self.__generate_blocks(current_session)
+		self.exp.blocks = BlockIterator(blocks)
 		self.exp.trial_factory.blocks = self.exp.blocks
 		self.exp.trial_factory.dump()
 
 		# If resuming incomplete session, skip ahead to last completed trial
-		trimmed_start_block = self.exp.blocks.blocks[start_block - 1][(start_trial - 1):]
-		self.exp.blocks.blocks[start_block - 1] = trimmed_start_block
-		self.exp.blocks.i = start_block - 1  # skips ahead to start_block if specified
+		if start_block > 1 or start_trial > 1:
+			blocks = blocks[(start_block - 1): ] # Drop completed blocks
+			blocks[0] = blocks[0][(start_trial - 1): ] # Drop completed trials
+			self.exp.blocks = BlockIterator(blocks)
 
 		# If needed, create figure folder for session
 		if not os.path.exists(self.exp.fig_dir):
