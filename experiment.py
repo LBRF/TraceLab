@@ -19,6 +19,7 @@ from klibs.KLUtilities import (pump, flush, scale, now, mouse_pos,
 from klibs.KLUtilities import colored_stdout as cso
 from klibs.KLGraphics import blit, fill, flip
 from klibs.KLGraphics.KLDraw import Ellipse, Rectangle
+from klibs.KLText import add_text_style
 from klibs.KLCommunication import user_queries, message, query
 from klibs.KLResponseCollectors import DrawResponse
 
@@ -27,16 +28,6 @@ from TraceLabFigure import TraceLabFigure
 from ButtonBar import ButtonBar
 from KeyFrames import FrameSet
 
-
-if P.labjack_available:
-	try:
-		import u3
-	except ImportError:
-		cso("<red>Error: The LabJackPython module is not installed.</red>")
-		print("\nYou can either run 'pip install -r reqirements.txt' in the project folder to "
-			"install it, or disable LabJack triggering by setting 'labjack_available' to False in "
-			"the project's params.py file.\n")
-		raise
 
 WHITE = (255, 255, 255, 255)
 BLACK = (0, 0, 0, 255)
@@ -83,23 +74,17 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	handedness = None
 	created = None
 	show_practice_display = False  # ie. this session should include the practice display
-	lj = None
+	figure_sets = {}  # complete set of available figure sets
+	figure_set_name = "NA"
 	log_f = None
 
-	origin_active = None
-	origin_inactive = None
 	origin_active_color = GREEN
 	origin_inactive_color = RED
 	origin_pos = None
 	origin_boundary = None
-	tracker_dot = None
-
 	instructions = None
-	loading_msg = None
-	control_fail_msg = None
-	next_trial_msg = None
-	next_trial_box = None
-	next_trial_button_loc = None
+	trigger = None
+	magstim = None
 
 	# dynamic trial vars
 	drawing = []
@@ -114,8 +99,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	# configured trial factors (dynamically loaded per-trial
 	animate_time = None
 	figure_name = None
-	figure_sets = {}  # complete set of available figure sets
-	figure_set_name = "NA"
 
 	# practice stuff
 	__practicing__ = False
@@ -123,10 +106,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	practice_instructions = None
 	practice_button_bar = None
 	practice_kf = None
-
-	intertrial_start = None
-	intertrial_end = None
-	intertrial_timing_logs = {}
 
 
 	def __init__(self):
@@ -142,22 +121,22 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.animate_time = P.practice_animation_time
 		self.setup_response_collector()
 		self.trial_prep()
-		self.evm.start_clock()
+		self.evm.start()
 		try:
 			self.trial()
 		except:
 			pass
-		self.evm.stop_clock()
+		self.evm.reset()
 		self.trial_clean_up()
 
 
 	def setup(self):
 
 		# Set up custom text styles for the experiment
-		self.txtm.add_style('instructions', 18, [255, 255, 255, 255])
-		self.txtm.add_style('error', 18, [255, 0, 0, 255])
-		self.txtm.add_style('tiny', 12, [255, 255, 255, 255])
-		self.txtm.add_style('small', 14, [255, 255, 255, 255])
+		add_text_style('instructions', 18, color=WHITE)
+		add_text_style('error', 18, color=RED)
+		add_text_style('tiny', 12, color=WHITE)
+		add_text_style('small', 14, color=WHITE)
 
 		# Pre-render shape stimuli
 		dot_stroke = [P.dot_stroke, P.dot_stroke_col, STROKE_OUTER] if P.dot_stroke > 0 else None
@@ -174,6 +153,10 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		# Initialize participant ID and session options, reloading ID if it already exists
 		self.session = TraceLabSession()
 		self.user_id = self.session.user_id
+
+		# Add flags for first block/trial of run, needed for resuming mid-session
+		self.first_block = True
+		self.first_trial = True
 
 		# Once session initialized, show loading screen and finish setup
 		self.loading_msg = message("Loading...", "default", blit_txt=False)
@@ -249,6 +232,12 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 	def block(self):
 
+		# If reloading incomplete session, update block number accordingly
+		if self.first_block:
+			blocks_in_session = len(self.blocks.blocks)
+			P.block_number = (P.blocks_per_experiment - blocks_in_session) + 1
+			self.first_block = False
+
 		# Get response type and feedback type for block
 		self.response_type = self.block_factors[P.block_number - 1]['response_type']
 		self.feedback_type = self.block_factors[P.block_number - 1]['feedback_type']
@@ -286,9 +275,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			flip()
 		any_key()
 
-		# Indicates if on first trial of block, needed for reloading incomplete sessions
-		self.first_trial = True
-
 
 	def setup_response_collector(self):
 
@@ -315,7 +301,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 		# If reloading incomplete block, update trial number accordingly
 		if self.first_trial:
-			trials_in_block = len(self.blocks.blocks[P.block_number - 1])
+			trials_in_block = len(self.blocks.blocks[0])
 			P.trial_number = (P.trials_per_block - trials_in_block) + 1
 			self.first_trial = False
 
@@ -348,18 +334,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			('stop', self.origin_boundary, CIRCLE_BOUNDARY)
 		])
 
-		# If using log file, write out the intertrial interval info to it (is this still useful?)
-		self.log("\n\n********** TRIAL {0} ***********\n".format(P.trial_number))
-		if self.intertrial_start:
-			self.intertrial_end = time.time()
-			intertrial_interval = self.intertrial_end - self.intertrial_start
-			self.log(str(intertrial_interval) + "\n")
-		if P.trial_number > 1:
-			self.log("t{0}_intertrial_interval_end".format(P.trial_number - 1), True)
-			self.log("write_out")
-		self.log("t{0}_intertrial_interval_start".format(P.trial_number), True)
-		self.intertrial_start = time.time()
-
 		# Let participant self-initiate next trial
 		self.start_trial_button()
 
@@ -373,9 +347,9 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			blit(self.tracker_dot, 5, self.origin_pos)
 			flip()
 
-		animate_start = self.evm.trial_time
+		animate_start = time.perf_counter()
 		self.figure.animate()
-		animate_time = self.evm.trial_time - animate_start
+		animate_time = time.perf_counter() - animate_start
 		avg_velocity = self.figure.path_length / animate_time
 
 		if self.response_type == PHYS:
@@ -446,8 +420,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 						break
 
 		# if the entire experiment is successfully completed, update the sessions_completed column
-		q_str = "UPDATE `participants` SET `sessions_completed` = ? WHERE `id` = ?"
-		self.db.query(q_str, QUERY_UPD, q_vars=[self.session_number, P.participant_id])
+		self.db.update('participants', {'sessions_completed': self.session_number})
 
 		# log session data to database
 		session_data = {
@@ -514,7 +487,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		blit(self.origin_inactive, 5, self.origin_pos, flip_x=P.flip_x)
 		flip()
 
-		start = self.evm.trial_time
+		start = time.perf_counter()
 		if P.demo_mode or P.dm_always_show_cursor:
 			show_mouse_cursor()
 
@@ -524,7 +497,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			left_button_down = button == 1
 			if self.within_boundary('origin', (x, y)) and left_button_down:
 				at_origin = True
-				self.rt = self.evm.trial_time - start
+				self.rt = time.perf_counter() - start
 			ui_request()
 		fill()
 		blit(self.origin_active, 5, self.origin_pos, flip_x=P.flip_x)
@@ -535,7 +508,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			left_button_down = button == 1
 			if not (self.within_boundary('origin', (x, y)) and left_button_down):
 				at_origin = False
-		self.mt = self.evm.trial_time - (self.rt + start)
+		self.mt = time.perf_counter() - (self.rt + start)
 		if P.demo_mode:
 			hide_mouse_cursor()
 
@@ -675,12 +648,12 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 	def capture_learned_figure(self, fig_number):
 
-		self.evm.start_clock()
+		self.evm.start()
 		fig_name = "p{0}_learned_figure_{1}.tlt".format(P.participant_id, fig_number)
 		self.rc.draw_listener.reset()
 		self.rc.collect()
 		self.figure.write_out(fig_name, self.rc.draw_listener.responses[0][0])
-		self.evm.stop_clock()
+		self.evm.reset()
 
 
 	def practice(self, play_key_frames=True, callback=None):
@@ -701,30 +674,18 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 		self.practice_button_bar.reset()
 		self.practice_button_bar.render()
-		self.evm.start_clock()
+		self.evm.start()
 		cb = self.practice_button_bar.collect_response()
-		self.evm.stop_clock()
+		self.evm.reset()
 
 		self.__practicing__ = False
 
 		return self.practice(callback=cb)
 
 
-	def log(self, msg, t=None):
-
+	def log(self, msg):
 		if self.log_f:
-			if msg != "write_out":
-				if t:
-					self.intertrial_timing_logs[msg] = time.time()
-				else:
-					self.log_f.write(msg)
-			else:
-				key = 't{0}_intertrial_interval_{1}'
-				iti_index = P.trial_number - 1
-				iti_start = self.intertrial_timing_logs[key.format(iti_index, "start")]
-				iti_end = self.intertrial_timing_logs[key.format(iti_index, "end")]
-				iti = str(iti_end - iti_start)
-				self.log_f.write(utf8("intertrial_interval:".ljust(32, " ") + iti + "\n"))
+			self.log_f.write(msg)
 
 
 	def quit(self):
