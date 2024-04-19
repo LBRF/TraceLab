@@ -150,6 +150,19 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			self.capture_figures()
 			self.quit()
 
+		# Initialize trigger port (if required)
+		self.trigger = None
+		if P.requires_triggers:
+			from communication import get_trigger_port
+			self.trigger = get_trigger_port()
+			self.trigger.add_codes(P.trigger_codes)
+
+		# Initialize TMS communication (if required)
+		self.magstim = None
+		if P.requires_tms:
+			from communication import get_tms_controller
+			self.magstim = get_tms_controller()
+
 		# Initialize participant ID and session options, reloading ID if it already exists
 		self.session = TraceLabSession()
 		self.user_id = self.session.user_id
@@ -215,19 +228,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 				ui_request()
 				fig_path = os.path.join(P.resources_dir, "figures", f)
 				self.test_figures[f] = TraceLabFigure(fig_path, handedness = self.handedness)
-
-		# Initialize trigger port (if required)
-		self.trigger = None
-		if P.requires_triggers:
-			from communication import get_trigger_port
-			self.trigger = get_trigger_port()
-			self.trigger.add_codes(P.trigger_codes)
-
-		# Initialize TMS communication (if required)
-		self.magstim = None
-		if P.requires_tms:
-			from communication import get_tms_controller
-			self.magstim = get_tms_controller()
 
 
 	def block(self):
