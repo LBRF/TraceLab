@@ -109,8 +109,7 @@ File | Description
 `.tlf` | A text file containing the (x, y) pixel coordinates and timestamps for each frame of the figure animated on the trial.
 `.tlfp` | A text file containing the (x, y) pixel coordinates of the vertices of the figure animated on the trial.
 `.tlfs` | A text file containing the (x, y) pixel coordinates of the start/end/control points for each segment of the figure animated on the trial.
-`.tlfx` | A text file containing the (x, y) pixel coordinates for each frame of the trial figure, as if rendered at a duration of 5 seconds.
-`.tlt` | A text file containing the (x, y) pixel coordinates and timestamps for each sample of a recorded response tracing for a physical trial.
+`.tlt` | A text file containing the (x, y) pixel coordinates and timestamps for each sample of a recorded tracing response (physical trials only).
 
 Additionally, the file name for each trial's `.zip` contains the (p)articipant id number, (s)ession number, (b)lock number, (t)rial number and date for the trial. For example, `p1_s2_b1_t3_2018-11-30.zip` would contain the data for block 1, trial 3 of session 2 (recorded on November 30, 2018) for the participant whose database ID is 1.
 

@@ -24,7 +24,7 @@ from klibs.KLCommunication import user_queries, message, query
 from klibs.KLResponseCollectors import DrawResponse
 
 from TraceLabSession import TraceLabSession
-from TraceLabFigure import TraceLabFigure
+from TraceLabFigure import TraceLabFigure, save_figure
 from ButtonBar import ButtonBar
 from KeyFrames import FrameSet
 
@@ -310,9 +310,9 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.rt = 0.0
 		self.it = 0.0
 		self.animate_time = int(self.animate_time)
-		self.drawing = 'NA'
 		self.control_response = -1
 		self.figure = None
+		self.drawing = None
 
 		# Either load a pre-generated figure or generate a new one, depending on trial
 		if self.figure_name == "random":
@@ -389,8 +389,8 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	def trial_clean_up(self):
 
 		if not self.__practicing__:
-			self.figure.write_out(self.file_name + ".tlf")
-			self.figure.write_out(self.file_name + ".tlt", self.drawing)
+			outpath = os.path.join(self.fig_dir, self.file_name + ".zip")
+			save_figure(outpath, self.figure, self.drawing)
 		self.rc.draw_listener.reset()
 		self.control_bar.reset()
 
@@ -599,7 +599,9 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 				flip()
 
 				figure = self._generate_figure(duration=5000.0)
-				figure.write_out("figure{0}_{1}.tlf".format(i + 1, P.random_seed))
+				outfile = "figure{0}_{1}.zip".format(i + 1, P.random_seed)
+				outpath = os.path.join(self.fig_dir, outfile)
+				save_figure(outpath, figure)
 
 		else:
 
@@ -637,22 +639,24 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 						done = True
 						break
 					elif resp == "s": # save
-						f_name = query(user_queries.experimental[7]) + ".tlf"
+						outfile = query(user_queries.experimental[7]) + ".zip"
+						outpath = os.path.join(self.fig_dir, outfile)
 						msg = message("Saving... ", blit_txt=False)
 						fill()
 						blit(msg, 5, P.screen_c)
 						flip()
-						figure.write_out(f_name)
+						save_figure(outpath, figure)
 						break
 
 
 	def capture_learned_figure(self, fig_number):
 
 		self.evm.start()
-		fig_name = "p{0}_learned_figure_{1}.tlt".format(P.participant_id, fig_number)
+		outfile = "p{0}_learned_figure_{1}.zip".format(P.participant_id, fig_number)
+		outpath = os.path.join(self.fig_dir, outfile)
 		self.rc.draw_listener.reset()
 		self.rc.collect()
-		self.figure.write_out(fig_name, self.rc.draw_listener.responses[0][0])
+		save_figure(outpath, tracing=self.rc.draw_listener.responses[0][0])
 		self.evm.reset()
 
 

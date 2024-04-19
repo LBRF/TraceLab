@@ -130,15 +130,6 @@ slope_magnitude = (0.25, 0.5)  # 0 = a straight line (ie. no curve), 1 = an infi
 peak_shift = (0.25, 0.5)  # 0 == perfect symmetry (ie. bell curve) and 1 == a right  triangle
 curve_sheer = (0.1, 0.3)  # this is hard to describe, but 1 is again an impossible value, and this will grow to lunacy fast
 
-########################################
-# tlf Controls
-########################################
-gen_tlfx = True  # extended (5s) interpolation
-gen_tlfs = True  # segments file
-gen_tlfp = True  # points file
-gen_png = True   # image file
-gen_ext_png = False  # image file from extended interpolation
-
 #########################################
 # Data Export Settings
 #########################################

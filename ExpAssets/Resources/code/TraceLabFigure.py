@@ -8,6 +8,7 @@ from itertools import chain
 from random import random, randrange, uniform, choice, shuffle
 
 import zipfile
+import tempfile
 import aggdraw
 import numpy as np
 from PIL import Image
@@ -61,6 +62,46 @@ def segments_to_symbol(segments):
 			path += "L{0},{1} ".format(end[0], end[1])
 
 	return aggdraw.Symbol(path)
+
+
+def save_figure(outpath, figure=None, tracing=None):
+
+	# Define inline function for safely writing files
+	def write_file(path, filename, data):
+		outpath = os.path.join(path, filename)
+		with io.open(outpath, "w+", encoding='utf-8') as f:
+			f.write(str(data))
+
+	# Create temporary folder for all output files
+	basename = os.path.basename(outpath).replace(".zip", "")
+	tmp = tempfile.TemporaryDirectory(prefix="tracelab_")
+	outdir = tmp.name
+
+	# Write out figure and its components (if present)
+	if figure is not None:
+
+		# Gather data for writing out
+		segments = u",".join(utf8(s[1]) for s in figure.raw_segments)
+		figdat = figure.trial_a_frames
+		if P.capture_figures_mode:
+			figdat = figure._capture_figure_out()
+
+		# Actually write out figure files
+		write_file(outdir, basename + ".tlf", figdat)
+		write_file(outdir, basename + ".tlfp", figure.points)
+		write_file(outdir, basename + ".tlfs", segments)
+		imgpath = os.path.join(outdir, basename + "_preview.png")
+		Image.fromarray(figure.render()).save(imgpath, 'PNG')
+
+	# Write out tracing (if present)
+	if tracing is not None:
+		write_file(outdir, basename + ".tlt", tracing)
+
+	# Save all generated figure files in a zip file at the given outpath
+	with zipfile.ZipFile(outpath, "w", zipfile.ZIP_DEFLATED) as out:
+		for f in os.listdir(outdir):
+			out.write(os.path.join(outdir, f), arcname=f)
+	tmp.cleanup()
 
 
 
@@ -425,7 +466,7 @@ class TraceLabFigure(EnvAgent):
 		return [True, (p1, p2, p_c)]
 
 
-	def __capture_figure_out(self):
+	def _capture_figure_out(self):
 		"""Gathers info about figure to write out in captured .tlf file, making it reusable
 		in future sessions.
 		"""
@@ -600,67 +641,6 @@ class TraceLabFigure(EnvAgent):
 			updated_a_frames.append((f[0], f[1], timestamp))
 
 		self.trial_a_frames = updated_a_frames
-
-
-	def write_out(self, file_name, trial_data=None):
-
-		writing_tracing = trial_data is not None
-		if not trial_data:
-			trial_data = self.trial_a_frames
-
-		points_file_name = file_name[:-4] + ".tlfp"
-		segments_file_name = file_name[:-4] + ".tlfs"
-		ext_interp_file_name = file_name[:-4] + ".tlfx"
-		thumb_file_name = file_name[:-4] + "_preview.png"
-		thumbx_file_name = file_name[:-4] + "_ext_preview.png"
-
-		fig_path = os.path.join(self.exp.fig_dir, file_name)
-		points_path = os.path.join(self.exp.fig_dir, points_file_name)
-		segments_path = os.path.join(self.exp.fig_dir, segments_file_name)
-		ext_interpolation_path = os.path.join(self.exp.fig_dir, ext_interp_file_name)
-		thumb_path = os.path.join(self.exp.fig_dir, thumb_file_name)
-		thumbx_path = os.path.join(self.exp.fig_dir, thumbx_file_name)
-
-		with zipfile.ZipFile(fig_path[:-3] + "zip", "a", zipfile.ZIP_DEFLATED) as fig_zip:
-
-			with io.open(fig_path, "w+", encoding='utf-8') as f:
-				if P.capture_figures_mode:
-					captured = self.__capture_figure_out()
-					f.write(captured)
-				else:
-					f.write(utf8(trial_data))
-
-			if P.gen_tlfx and not writing_tracing:
-				with io.open(ext_interpolation_path, "w+", encoding='utf-8') as f:
-					ext = self.segments_to_frames(self.raw_segments, 5000.0, fps=P.refresh_rate)
-					f.write(utf8(ext))
-				fig_zip.write(ext_interpolation_path, ext_interp_file_name)
-				os.remove(ext_interpolation_path)
-
-			if P.gen_tlfp and not writing_tracing:
-				with io.open(points_path, "w+", encoding='utf-8') as f:
-					f.write(utf8(self.points))
-				fig_zip.write(points_path, points_file_name)
-				os.remove(points_path)
-
-			if P.gen_tlfs and not writing_tracing:
-				with io.open(segments_path, "w+", encoding='utf-8') as f:
-					f.write(u",".join(utf8(s[1]) for s in self.raw_segments))
-				fig_zip.write(segments_path, segments_file_name)
-				os.remove(segments_path)
-
-			if P.gen_png and not writing_tracing:
-				Image.fromarray(self.render()).save(thumb_path, 'PNG')
-				fig_zip.write(thumb_path, thumb_file_name)
-				os.remove(thumb_path)
-
-			if P.gen_ext_png and not writing_tracing:
-				Image.fromarray(self.render(smooth=True)).save(thumbx_path, 'PNG')
-				fig_zip.write(thumbx_path, thumbx_file_name)
-				os.remove(thumbx_path)
-
-			fig_zip.write(fig_path, file_name)
-			os.remove(fig_path)
 
 
 	@property
