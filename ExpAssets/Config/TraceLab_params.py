@@ -155,8 +155,8 @@ exclude_data_cols = [
 #
 # Feedback types:
 #  - "X" / "XX"  (no feedback)
-#  - "R" / "XR"  (live tracing feedback during tracing response)
-#  - "V" / "VX"  (presentation of target figure with tracing overlay after response made)
+#  - "V" / "VX"  (live tracing feedback during tracing response)
+#  - "R" / "XR"  (presentation of target figure with tracing overlay after response made)
 #  - "VR"        (both "R" and "V")
 #
 # Custom trial counts:
