@@ -465,14 +465,14 @@ class TraceLabSession(EnvAgent):
 		resp_map = {'PP': PHYS, 'MI': MOTR, 'CC': CTRL}
 		resp = resp_map[response]
 
-		if "X" in feedback:
-			fb = "False"
-		elif "V" in feedback and "R" in feedback:
+		if "V" in feedback and "R" in feedback:
 			fb = FB_ALL
 		elif "R" in feedback:
 			fb = FB_RES
 		elif "V" in feedback:
 			fb = FB_DRAW
+		else:
+			fb = "False"
 
 		return [resp, fb]
 
