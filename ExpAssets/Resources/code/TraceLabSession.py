@@ -17,7 +17,7 @@ from klibs.KLEnvironment import EnvAgent
 from klibs.KLJSON_Object import AttributeDict
 from klibs.KLUtilities import now, utf8
 from klibs.KLRuntimeInfo import runtime_info_init
-from klibs.KLTrialFactory import BlockIterator
+from klibs.KLTrialFactory import TrialIterator
 from klibs.KLUserInterface import any_key
 from klibs.KLDatabase import EntryTemplate
 from klibs.KLGraphics import blit, flip, fill
@@ -349,7 +349,7 @@ class TraceLabSession(EnvAgent):
 		# Generate trials and import the figure set specified earlier
 		self.init_figure_set()
 		blocks = self.__generate_blocks(current_session)
-		self.exp.blocks = BlockIterator(blocks)
+		self.exp.blocks = [TrialIterator(b) for b in blocks]
 		self.exp.trial_factory.blocks = self.exp.blocks
 		self.exp.trial_factory.dump()
 
@@ -357,7 +357,7 @@ class TraceLabSession(EnvAgent):
 		if start_block > 1 or start_trial > 1:
 			blocks = blocks[(start_block - 1): ] # Drop completed blocks
 			blocks[0] = blocks[0][(start_trial - 1): ] # Drop completed trials
-			self.exp.blocks = BlockIterator(blocks)
+			self.exp.blocks = [TrialIterator(b) for b in blocks]
 
 		# If needed, create figure folder for session
 		if not os.path.exists(self.exp.fig_dir):
