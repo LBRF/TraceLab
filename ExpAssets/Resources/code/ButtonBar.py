@@ -83,14 +83,15 @@ class ButtonBar(EnvAgent):
 				"Done", (100, 50), (P.screen_x - (margins + w), int(P.screen_y * 0.9))
 			)
 
-	def render(self):
-		fill()
+	def blit(self):
 		for b in self.buttons:
 			b.blit()
-		try:
+		if self.finish_b:
 			self.finish_b.blit()
-		except AttributeError:
-			pass
+
+	def render(self):
+		fill()
+		self.blit()
 		if self.message_txt:
 			blit(self.message_r, 5, self.message_loc)
 		flip()
