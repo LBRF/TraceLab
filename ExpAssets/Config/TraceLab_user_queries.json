@@ -47,10 +47,10 @@
 		},
 		{
 			"index": 2,
-			"title": "sex",
-			"database_field": "sex",
-			"query": "What is your sex?\nAnswer with: (m)ale or (f)emale",
-			"accepted": ["m", "f"],
+			"title": "gender",
+			"database_field": "gender",
+			"query": "What is your gender?\nAnswer with: (m)ale, (f)emale, or (n)on-binary",
+			"accepted": ["m", "f", "n"],
 			"allow_null": false,
 			"format": {
 				"type": "str",
@@ -62,7 +62,7 @@
 				"accept_as_true": null,
 				"action": null
 			},
-			"anonymous_value": "EVAL: 'm' if now() % 2 > 0  else 'f'",
+			"anonymous_value": "n",
 			"active": true
 		},
 		{
