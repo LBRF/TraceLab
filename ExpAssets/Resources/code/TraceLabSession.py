@@ -10,9 +10,9 @@ import os
 import io
 import sys
 import shutil
-from imp import load_source
 
 from klibs import P
+from klibs.KLInternal import load_source
 from klibs.KLEnvironment import EnvAgent
 from klibs.KLJSON_Object import AttributeDict
 from klibs.KLUtilities import now, utf8
@@ -25,6 +25,7 @@ from klibs.KLCommunication import query, message, collect_demographics
 from klibs.KLCommunication import user_queries as uq
 
 from FigureSet import FigureSet
+from utils import get_hostname
 
 
 PHYS = "physical"
@@ -141,21 +142,19 @@ class TraceLabSession(EnvAgent):
 
 	def __import_figure_sets(self):
 
-		# load original complete set of FigureSets for use
-		fig_sets_f = os.path.join(P.config_dir, "figure_sets.py")
-		fig_sets_local_f = os.path.join(P.local_dir, "figure_sets.py")
-		try:
-			sys.path.append(fig_sets_local_f)
-			for k, v in load_source("*", fig_sets_local_f).__dict__.items():
-				if isinstance(v, FigureSet):
-					self.exp.figure_sets[v.name] = v
-			if P.dm_ignore_local_overrides:
-				raise RuntimeError("ignoring local files")
-		except (IOError, RuntimeError):
-			sys.path.append(fig_sets_f)
-			for k, v in load_source("*", fig_sets_f).__dict__.items():
-				if isinstance(v, FigureSet):
-					self.exp.figure_sets[v.name] = v
+		# Load figure sets for project
+		set_path = os.path.join(P.config_dir, "figure_sets.py")
+		tst = load_source(set_path)
+		for var, value in load_source(set_path).items():
+			if isinstance(value, FigureSet):
+				self.exp.figure_sets[value.name] = value
+
+		# Load any local overrides for the figure sets
+		set_path_local = os.path.join(P.local_dir, "figure_sets.py")
+		if os.path.exists(set_path_local) and not P.dm_ignore_local_overrides:
+			for var, value in load_source(set_path_local).items():
+				if isinstance(value, FigureSet):
+					self.exp.figure_sets[value.name] = value
 
 
 	def __generate_user_id(self):
@@ -186,7 +185,7 @@ class TraceLabSession(EnvAgent):
 		P.blocks_per_experiment = len(P.session_structures[structure_key][0])
 
 		# Query user whether they want to select a figure set by name for the participant
-		if query(uq.experimental[2]) == "y":
+		if P.use_figure_sets and query(uq.experimental[2]) == "y":
 			self.exp.figure_set_name = self.__get_figure_set_name()
 
 		# Collect user demographics and retrieve user id from database
@@ -313,7 +312,11 @@ class TraceLabSession(EnvAgent):
 				self.exp.quit()
 
 		# Initialize figure paths for current participant/session
-		p_dir = "p{0}_{1}".format(P.participant_id, self.exp.created)
+		date = self.exp.created.split("_")[0]
+		p_dir = "p{0}_{1}".format(P.participant_id, date)
+		if P.append_hostname:
+			hostname = get_hostname()
+			p_dir += "-{0}".format(hostname)
 		session_dir = "session_" + str(self.exp.session_number)
 		self.exp.p_dir = os.path.join(P.data_dir, p_dir)
 		self.exp.fig_dir = os.path.join(self.exp.p_dir, session_dir)

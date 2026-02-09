@@ -44,7 +44,7 @@ to be an integer.
 CREATE TABLE participants (
 	id                 INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 	user_id            INTEGER                           NOT NULL UNIQUE,
-	sex                TEXT                              NOT NULL,
+	gender             TEXT                              NOT NULL,
 	age                INTEGER                           NOT NULL,
 	handedness         TEXT                              NOT NULL,
 	session_structure  TEXT,

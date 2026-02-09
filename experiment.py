@@ -4,18 +4,17 @@ __author__ = "Jonathan Mulle"
 import os
 import io
 import time
+import sdl2
 
 from random import choice
-from sdl2 import SDL_MOUSEBUTTONDOWN, SDL_KEYDOWN
 
 import klibs
 from klibs import P
 from klibs.KLConstants import RECT_BOUNDARY, CIRCLE_BOUNDARY, STROKE_OUTER, QUERY_UPD
-from klibs.KLBoundary import BoundaryInspector
+from klibs.KLBoundary import BoundaryInspector, RectangleBoundary
 from klibs.KLTime import CountDown
-from klibs.KLUserInterface import any_key, ui_request
-from klibs.KLUtilities import (pump, flush, scale, now, mouse_pos,
-	show_mouse_cursor, hide_mouse_cursor, utf8)
+from klibs.KLUserInterface import any_key, ui_request, show_cursor, hide_cursor, mouse_clicked
+from klibs.KLUtilities import pump, flush, scale, now, mouse_pos, utf8
 from klibs.KLUtilities import colored_stdout as cso
 from klibs.KLGraphics import blit, fill, flip
 from klibs.KLGraphics.KLDraw import Ellipse, Rectangle
@@ -25,6 +24,7 @@ from klibs.KLResponseCollectors import DrawResponse
 
 from TraceLabSession import TraceLabSession
 from TraceLabFigure import TraceLabFigure, save_figure
+from utils import touchscreen_detected, get_hostname
 from ButtonBar import ButtonBar
 from KeyFrames import FrameSet
 
@@ -168,6 +168,10 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		# Initialize participant ID and session options, reloading ID if it already exists
 		self.session = TraceLabSession()
 		self.user_id = self.session.user_id
+		self.filename_id = str(P.participant_id)
+		if P.append_hostname:
+			self.filename_id += "-{0}".format(get_hostname())
+
 
 		# Add flags for first block/trial of run, needed for resuming mid-session
 		self.first_block = True
@@ -195,17 +199,26 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		# Initialize 'next trial' button
 		button_x = 250 if self.handedness == LEFT_HANDED else P.screen_x - 250
 		button_y = P.screen_y - 100
-		self.next_trial_msg = message(P.next_trial_message, 'default', blit_txt=False)
-		self.next_trial_box = Rectangle(300, 75, stroke=(2, (255, 255, 255), STROKE_OUTER))
+		button_w, button_h = (300, 75)
+		xy1 = (button_x - button_w // 2, button_y - button_h // 2)
+		xy2 = (button_x + button_w // 2, button_y + button_h // 2)
+		self.next_trial_msg = message(P.next_trial_message, 'default')
+		self.next_trial_box = Rectangle(button_w, button_h, stroke=(2, WHITE, STROKE_OUTER))
 		self.next_trial_button_loc = (button_x, button_y)
-		bounds = [(button_x - 150, button_y - 38), (button_x + 150, button_y + 38)]
-		self.add_boundary("next trial button", bounds, RECT_BOUNDARY)
+		self.next_trial_bounds = RectangleBoundary("next trial", xy1, xy2)
+
 
 		# Initialize instructions and practice button bar for each condition
+		block_msg_tmp = "Remember to {0}!\n\nTap the screen to begin."
+		self.block_messages = {
+			PHYS: block_msg_tmp.format("match the speed"),
+			MOTR: block_msg_tmp.format("match the speed"),
+			CTRL: block_msg_tmp.format("take your time"),
+		}
 		self.instruction_files = {
-			PHYS: {'text': "physical_group_instructions.txt", 'frames': "physical_key_frames"},
-			MOTR: {'text': "imagery_group_instructions.txt", 'frames': "imagery_key_frames"},
-			CTRL: {'text': "control_group_instructions.txt", 'frames': "control_key_frames"}
+			PHYS: {'frames': "physical_key_frames"},
+			MOTR: {'frames': "imagery_key_frames"},
+			CTRL: {'frames': "control_key_frames"}
 		}
 		self.practice_instructions = message(
 			P.practice_instructions, "instructions",
@@ -215,6 +228,15 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			["Replay", "Practice", "Begin"],
 			[200, 100], P.btn_s_pad, P.y_pad, finish_button=False
 		)
+
+		# Determine whether cursor should be shown or hidden
+		touchscreen = touchscreen_detected()
+		if P.force_show_cursor or (P.development_mode and not touchscreen):
+			self.show_cursor = True
+			show_cursor()
+		else:
+			self.show_cursor = False
+			hide_cursor()
 
 		# Import all pre-generated figures needed for the current session
 		figures = list(set(self.trial_factory.exp_factors["figure_name"]))
@@ -244,9 +266,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 			# Load instructions for new response type
 			new_instructions = self.instruction_files[self.response_type]
-			instructions_file = os.path.join(P.resources_dir, "Text", new_instructions['text'])
-			inst_txt = io.open(instructions_file, encoding='utf-8').read()
-			self.instructions = message(inst_txt, "instructions", align="center", blit_txt=False)
 
 			if P.enable_practice:
 				# Load tutorial animation for current condition, play it, and enter practice
@@ -263,12 +282,14 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 			self.prev_response_type = self.response_type
 
+		block_msg_txt = self.block_messages[self.response_type]
+		block_msg = message(block_msg_txt, "instructions", align="center")
 		for i in range(1,4):
 			# we do this a few times to avoid block messages being skipped due to duplicate input
 			# from the touch screen we use
 			ui_request()
 			fill()
-			blit(self.instructions, registration=5, location=P.screen_c, flip_x=P.flip_x)
+			blit(block_msg, 5, P.screen_c, flip_x=P.flip_x)
 			flip()
 		any_key()
 
@@ -279,16 +300,12 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.rc.terminate_after = [120, klibs.TK_S] # Wait really long before timeout
 		self.rc.draw_listener.start_boundary = 'start'
 		self.rc.draw_listener.stop_boundary = 'stop'
-		self.rc.draw_listener.show_active_cursor = False
-		self.rc.draw_listener.show_inactive_cursor = True
+		self.rc.draw_listener.show_active_cursor = self.show_cursor
+		self.rc.draw_listener.show_inactive_cursor = self.show_cursor
 		self.rc.draw_listener.origin = self.origin_pos
 		self.rc.draw_listener.interrupts = True
 		self.rc.draw_listener.min_samples = 5
 		self.rc.display_callback = self.display_refresh
-
-		if P.dm_always_show_cursor:
-			self.rc.draw_listener.show_active_cursor = True
-			self.rc.draw_listener.show_inactive_cursor = True
 
 		if P.demo_mode or self.feedback_type in (FB_DRAW, FB_ALL):
 			self.rc.draw_listener.render_real_time = True
@@ -317,8 +334,8 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		else:
 			self.figure = self.test_figures[self.figure_name]
 			self.figure.animate_target_time = self.animate_time
-			self.figure.render()
 			self.figure.prepare_animation()
+		self.figure.render()
 
 		# Initialize origin position and origin boundaries based on the loaded figure
 		self.origin_pos = list(self.figure.points[0])
@@ -341,6 +358,8 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		while start_delay.counting():
 			ui_request()
 			fill()
+			if P.show_figure_at_onset:
+				blit(self.figure.rendered, 5, P.screen_c)
 			blit(self.tracker_dot, 5, self.origin_pos)
 			flip()
 
@@ -355,6 +374,15 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			self.imagery_trial()
 		else:
 			self.control_trial()
+
+		if self.feedback_type in (FB_ALL, FB_RES) and not self.__practicing__:
+			flush()
+			fill()
+			blit(self.figure.render(trace=self.drawing), 5, P.screen_c)
+			flip()
+			start = time.time()
+			while time.time() - start < P.feedback_duration / 1000.0:
+				ui_request()
 
 		fill()
 		flip()
@@ -446,21 +474,10 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		blit(self.next_trial_msg, 5, self.next_trial_button_loc, flip_x=P.flip_x)
 		flip()
 
-		if P.demo_mode or P.dm_always_show_cursor:
-			show_mouse_cursor()
-
 		flush()
 		clicked = False
 		while not clicked:
-			event_queue = pump(True)
-			for e in event_queue:
-				if e.type == SDL_MOUSEBUTTONDOWN:
-					clicked = self.within_boundary("next trial button", [e.button.x, e.button.y])
-				elif e.type == SDL_KEYDOWN:
-					ui_request(e.key.keysym)
-
-		if not (P.demo_mode or P.dm_always_show_cursor):
-			hide_mouse_cursor()
+			clicked = mouse_clicked(within=self.next_trial_bounds)
 
 
 	def display_refresh(self):
@@ -484,9 +501,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		flip()
 
 		start = time.perf_counter()
-		if P.demo_mode or P.dm_always_show_cursor:
-			show_mouse_cursor()
-
 		at_origin = False
 		while not at_origin:
 			x, y, button = mouse_pos(return_button_state=True)
@@ -505,8 +519,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			if not (self.within_boundary('origin', (x, y)) and left_button_down):
 				at_origin = False
 		self.mt = time.perf_counter() - (self.rt + start)
-		if P.demo_mode:
-			hide_mouse_cursor()
 
 
 	def physical_trial(self):
@@ -516,15 +528,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.drawing = self.rc.draw_listener.responses[0][0]
 		self.it = self.rc.draw_listener.first_sample_time - self.rt
 		self.mt = self.rc.draw_listener.responses[0][1]
-
-		if self.feedback_type in (FB_ALL, FB_RES) and not self.__practicing__:
-			flush()
-			fill()
-			blit(self.figure.render(trace=self.drawing), 5, P.screen_c, flip_x=P.flip_x)
-			flip()
-			start = time.time()
-			while time.time() - start < P.feedback_duration / 1000.0:
-				ui_request()
 
 
 	def control_trial(self):
@@ -646,7 +649,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	def capture_learned_figure(self, fig_number):
 
 		self.evm.start()
-		outfile = "p{0}_learned_figure_{1}.zip".format(P.participant_id, fig_number)
+		outfile = "p{0}_learned_figure_{1}.zip".format(self.filename_id, fig_number)
 		outpath = os.path.join(self.fig_dir, outfile)
 		self.rc.draw_listener.reset()
 		self.rc.collect()
@@ -684,7 +687,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	@property
 	def file_name(self):
 		file_name_data = [
-			P.participant_id, P.block_number, P.trial_number,
+			self.filename_id, P.block_number, P.trial_number,
 			now(True, "%Y-%m-%d"), self.session_number
 		]
 		return "p{0}_s{4}_b{1}_t{2}_{3}".format(*file_name_data)
