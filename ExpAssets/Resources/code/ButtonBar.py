@@ -13,21 +13,18 @@ from klibs.KLUserInterface import ui_request, mouse_clicked, show_cursor, hide_c
 from klibs.KLEnvironment import EnvAgent
 
 
-class Button(EnvAgent):
+class Button(object):
 
-	def __init__(self, bar, button_text, button_size, location):
-		super(Button, self).__init__()
-		super(EnvAgent, self).__init__()
-		self.bar = bar
-		self.size = button_size
-		self.button_text = button_text
-		self.button_rtext_a = message(button_text, "button_active", blit_txt=False)
-		self.button_rtext_i = message(button_text, "button_inactive", blit_txt=False)
-		self.frame_i = Rectangle(button_size[0], button_size[1], fill=None, stroke=(5, (255,255,255)))
-		self.frame_a = Rectangle(button_size[0], button_size[1], fill=None, stroke=(5, (150,255,150)))
-		self.active = False
+	def __init__(self, label, size, location):
+		self.label = str(label)
+		self.size = size
 		self.location = location
-		self.bounds = self._create_boundary(button_size, location)
+		self.button_rtext_a = message(self.label, "button_active", blit_txt=False)
+		self.button_rtext_i = message(self.label, "button_inactive", blit_txt=False)
+		self.frame_i = Rectangle(size[0], size[1], fill=None, stroke=(5, (255,255,255)))
+		self.frame_a = Rectangle(size[0], size[1], fill=None, stroke=(5, (150,255,150)))
+		self.bounds = self._create_boundary(size, location)
+		self.active = False
 
 	def blit(self):
 		if self.active:
@@ -40,7 +37,7 @@ class Button(EnvAgent):
 	def _create_boundary(self, size, loc):
 		xy1 = (loc[0] - size[0] // 2, loc[1] - size[1] // 2)
 		xy2 = (loc[0] + size[0] // 2, loc[1] + size[1] // 2)
-		return RectangleBoundary(self.button_text, xy1, xy2)
+		return RectangleBoundary(self.label, xy1, xy2)
 
 
 class ButtonBar(EnvAgent):
@@ -60,7 +57,6 @@ class ButtonBar(EnvAgent):
 			self.b_height = button_size
 		self.screen_margins = screen_margins
 		self.y_offset = y_offset
-		self.b_pad = (P.screen_x - (self.b_width * self.b_count + 2 * self.screen_margins)) // (self.b_count - 1)
 		self.gen_finish_button = finish_button
 		self.finish_b = None
 		self.message_txt = message_txt
@@ -75,14 +71,17 @@ class ButtonBar(EnvAgent):
 		return round(time.perf_counter(), 4)
 
 	def gen_buttons(self):
+		w, h = (self.b_width, self.b_height)
+		margins = self.screen_margins
+		pad = (P.screen_x - (w * self.b_count + 2 * margins)) // (self.b_count - 1)
 		for b in self.button_data:
 			i = self.button_data.index(b)
-			loc = (self.screen_margins + (i * self.b_width) + (i * self.b_pad) + self.b_width // 2, \
-				   self.y_offset + self.b_height // 2)
-			self.buttons.append(Button(self, str(b[0]), (self.b_width,self.b_height), loc))
+			loc = (margins + (i * w) + (i * pad) + w // 2, self.y_offset + h // 2)
+			self.buttons.append(Button(b[0], (w, h), loc))
 		if self.gen_finish_button:
-			self.finish_b = Button(self, "Done", (100,50), \
-								   (P.screen_x - (self.screen_margins + self.b_width), int(P.screen_y * 0.9)))
+			self.finish_b = Button(
+				"Done", (100, 50), (P.screen_x - (margins + w), int(P.screen_y * 0.9))
+			)
 
 	def render(self):
 		fill()
@@ -123,7 +122,7 @@ class ButtonBar(EnvAgent):
 			if self.finish_b is None:
 				for b in self.buttons:
 					if mouse_clicked(within=b.bounds, queue=events):
-						choice = b.button_text
+						choice = b.label
 						elapsed = self._timestamp() - self._loop_start
 						resp = (choice, elapsed)
 						break
@@ -132,7 +131,7 @@ class ButtonBar(EnvAgent):
 				for b in self.buttons:
 					if mouse_clicked(within=b.bounds, queue=events):
 						self.toggle(b)
-						choice = b.button_text if b.active else None
+						choice = b.label if b.active else None
 						self.finish_b.active = True if b.active else False
 						if not rt_first:
 							rt_first = (self._timestamp() - self._loop_start)
