@@ -186,9 +186,8 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		# Initialize messages and response buttons for control trials
 		control_fail_txt = "Please keep your finger on the start area for the complete duration."
 		self.control_fail_msg = message(control_fail_txt, 'error', blit_txt=False)
-		ctrl_buttons = ["1", "2", "3", "4", "5"]
 		self.control_bar = ButtonBar(
-			buttons = [(i, P.btn_size, None) for i in ctrl_buttons],
+			buttons = ["1", "2", "3", "4", "5"],
 			button_size = P.btn_size, screen_margins = P.btn_s_pad, y_offset = P.y_pad,
 			message_txt = P.control_q
 		)
@@ -212,13 +211,8 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			P.practice_instructions, "instructions",
 			align="center", blit_txt=False
 		)
-		practice_buttons = [
-			('Replay', [200, 100]),
-			('Practice', [200, 100]),
-			('Begin', [200, 100])
-		]
 		self.practice_button_bar = ButtonBar(
-			practice_buttons,
+			["Replay", "Practice", "Begin"],
 			[200, 100], P.btn_s_pad, P.y_pad, finish_button=False
 		)
 

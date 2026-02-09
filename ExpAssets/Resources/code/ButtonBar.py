@@ -77,7 +77,7 @@ class ButtonBar(EnvAgent):
 		for b in self.button_data:
 			i = self.button_data.index(b)
 			loc = (margins + (i * w) + (i * pad) + w // 2, self.y_offset + h // 2)
-			self.buttons.append(Button(b[0], (w, h), loc))
+			self.buttons.append(Button(b, (w, h), loc))
 		if self.gen_finish_button:
 			self.finish_b = Button(
 				"Done", (100, 50), (P.screen_x - (margins + w), int(P.screen_y * 0.9))
