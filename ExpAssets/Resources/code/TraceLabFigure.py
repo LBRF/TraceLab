@@ -5,6 +5,7 @@ import os
 import io
 import math
 from itertools import chain
+from ast import literal_eval
 from random import random, randrange, uniform, choice, shuffle
 
 import zipfile
@@ -44,7 +45,6 @@ def frames_to_path(frames, unique=False):
 		path.lineto(f[0], f[1])
 		prev = f
 
-	path.close()
 	return path
 
 
@@ -64,7 +64,7 @@ def segments_to_symbol(segments):
 	return aggdraw.Symbol(path)
 
 
-def save_figure(outpath, figure=None, tracing=None):
+def save_figure(outpath, figure=None, frames=None, tracing=None):
 
 	# Define inline function for safely writing files
 	def write_file(path, filename, data):
@@ -82,9 +82,7 @@ def save_figure(outpath, figure=None, tracing=None):
 
 		# Gather data for writing out
 		segments = u",".join(utf8(s[1]) for s in figure.raw_segments)
-		figdat = figure.trial_a_frames
-		if P.capture_figures_mode:
-			figdat = figure._capture_figure_out()
+		figdat = frames if frames else []
 
 		# Actually write out figure files
 		write_file(outdir, basename + ".tlf", figdat)
@@ -97,11 +95,36 @@ def save_figure(outpath, figure=None, tracing=None):
 	if tracing is not None:
 		write_file(outdir, basename + ".tlt", tracing)
 
-	# Save all generated figure files in a zip file at the given outpath
+	# Save all figure data in a zip file at the given outpath
 	with zipfile.ZipFile(outpath, "w", zipfile.ZIP_DEFLATED) as out:
 		for f in os.listdir(outdir):
 			out.write(os.path.join(outdir, f), arcname=f)
 	tmp.cleanup()
+
+
+def save_template(outpath, figure):
+
+	# Define inline function for safely writing files
+	def write_file(path, filename, data):
+		outpath = os.path.join(path, filename)
+		with io.open(outpath, "w+", encoding='utf-8') as f:
+			f.write(str(data))
+
+	# Create folder for new template
+	if os.path.exists(outpath):
+		raise RuntimeError("Figure already exists at path '{0}'".format(outpath))
+	os.mkdir(outpath)
+	basename = os.path.basename(outpath)
+
+	# Gather data for writing out
+	segments = u",".join(utf8(s[1]) for s in figure.raw_segments)
+	figdat = figure._capture_figure_out()
+
+	# Actually write out figure files
+	write_file(outpath, basename + ".tlf", figdat)
+	write_file(outpath, basename + ".tlfs", segments)
+	imgpath = os.path.join(outpath, basename + "_preview.png")
+	Image.fromarray(figure.render()).save(imgpath, 'PNG')
 
 
 
@@ -109,9 +132,8 @@ class TraceLabFigure(EnvAgent):
 
 	allow_verbosity = False
 
-	def __init__(self, import_path=None, animate_time=5000.0, manufacture=None, handedness=None):
+	def __init__(self, import_path=None, manufacture=None, handedness=None):
 
-		self.animate_target_time = animate_time
 		self.seg_count = None
 		self.min_spq = P.avg_seg_per_q[0] - P.avg_seg_per_q[1]
 		self.max_spq = P.avg_seg_per_q[0] + P.avg_seg_per_q[1]
@@ -138,7 +160,6 @@ class TraceLabFigure(EnvAgent):
 		self.points = []
 		self.raw_segments = []
 		self.a_frames = []  # interpolated frames tracing figure at given duration / fps
-		self.trial_a_frames = []  # a_frames plus frame onset times for previous animation
 		self.screen_res = [P.screen_x, P.screen_y]
 		self.avg_velocity = None  # last call to animate only
 		self.animate_time = None  # last call to animate only
@@ -161,37 +182,33 @@ class TraceLabFigure(EnvAgent):
 			self.points.reverse()
 			self.points.insert(0, self.points.pop())
 
-		self.prepare_animation(duration = 5000.0)
+		self.prepare_animation(duration = 1000.0)
 
 
 	def __import_figure(self, path):
 
 		# Open the figure archive and find the .tlf file containing the figure data
-		fig_archive = zipfile.ZipFile(path + ".zip")
-		figure = os.path.split(path)[-1]
-		fig_file = figure + ".tlf"
-		if fig_file not in fig_archive.namelist():
-			fig_file = figure + "/" + fig_file
+		figname = os.path.basename(path) + ".tlf"
+		figpath = os.path.join(path, figname)
 
-		# Import figure attributes from .tlf and make attributes of current figure object
-		figure_res = [1920, 1080]
-		with fig_archive.open(fig_file) as tlf:
-			for l in io.TextIOWrapper(tlf, 'utf8'):
-				attr = l.split(" = ")
+		# Load figure metadata from .tlf file
+		tlf_info = {}
+		with io.open(figpath, "r", encoding='utf-8') as tlf:
+			for line in tlf:
+				attr = line.split(" = ")
 				if len(attr) == 2:
-					if attr[0] in ['raw_segments', 'points']:
-						setattr(self, attr[0], eval(attr[1]))
-					elif attr[0] == 'screen_res':
-						figure_res = eval(attr[1])
+					tlf_info[attr[0]] = attr[1]
+
+		# Retrieve required point/segment/resolution data
+		segments = literal_eval(tlf_info['raw_segments'])
+		figure_res = literal_eval(tlf_info['screen_res'])
+		self.seg_count = len(segments)
 
 		# Prepare figure segment data for re-interpolation, scaling pixel coordinates if necessary
-		self.seg_count = len(self.points)
-		self.points = [scale(p, figure_res) for p in self.points]
-		for i in range(len(self.raw_segments)):
-			points = self.raw_segments[i][1]
-			points = points[:-1] if isinstance(points[-1], int) else points  # fix for old .tlfs
-			self.raw_segments[i][0] = len(points) == 3  # fix line/curve id for old .tlfs
-			self.raw_segments[i][1] = tuple([scale(p, figure_res) for p in points])
+		for stype, points in segments:
+			scaled = tuple([scale(p, figure_res) for p in points])
+			self.raw_segments.append([stype, scaled])
+			self.points.append(scaled[0])
 
 
 	def __generate_null_points(self):
@@ -612,35 +629,9 @@ class TraceLabFigure(EnvAgent):
 				message("({0}, {1})".format(*p), "tiny", registration=7, location=p, blit_txt=True)
 
 
-	def prepare_animation(self, duration=None):
-
-		if duration is None:
-			duration = self.animate_target_time
+	def prepare_animation(self, duration):
 
 		self.a_frames = self.segments_to_frames(self.raw_segments, duration, fps=P.refresh_rate)
-
-
-	def animate(self):
-
-		start = None
-		updated_a_frames = []
-		for f in self.a_frames:
-
-			ui_request()
-			fill()
-			if P.demo_mode:
-				blit(self.rendered, 5, P.screen_c, flip_x=P.flip_x)
-			blit(self.exp.tracker_dot, 5, f, flip_x=P.flip_x)
-			flip()
-
-			if start is None:
-				timestamp = 0.0
-				start = time()
-			else:
-				timestamp = time() - start
-			updated_a_frames.append((f[0], f[1], timestamp))
-
-		self.trial_a_frames = updated_a_frames
 
 
 	@property

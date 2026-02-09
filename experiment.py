@@ -12,7 +12,7 @@ import klibs
 from klibs import P
 from klibs.KLConstants import RECT_BOUNDARY, CIRCLE_BOUNDARY, STROKE_OUTER, QUERY_UPD
 from klibs.KLBoundary import BoundaryInspector, RectangleBoundary
-from klibs.KLTime import CountDown
+from klibs.KLTime import CountDown, precise_time
 from klibs.KLUserInterface import any_key, ui_request, show_cursor, hide_cursor, mouse_clicked
 from klibs.KLUtilities import pump, flush, scale, now, mouse_pos, utf8
 from klibs.KLUtilities import colored_stdout as cso
@@ -23,7 +23,7 @@ from klibs.KLCommunication import user_queries, message, query
 from klibs.KLResponseCollectors import DrawResponse
 
 from TraceLabSession import TraceLabSession
-from TraceLabFigure import TraceLabFigure, save_figure
+from TraceLabFigure import TraceLabFigure, save_figure, save_template
 from utils import touchscreen_detected, get_hostname
 from ButtonBar import ButtonBar
 from KeyFrames import FrameSet
@@ -148,7 +148,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 		# If capture figures mode, generate, view, and optionally save some figures
 		if P.capture_figures_mode:
-			self.fig_dir = os.path.join(P.resources_dir, "figures")
 			self.capture_figures()
 			self.quit()
 
@@ -307,7 +306,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.rc.draw_listener.min_samples = 5
 		self.rc.display_callback = self.display_refresh
 
-		if P.demo_mode or self.feedback_type in (FB_DRAW, FB_ALL):
+		if self.feedback_type in (FB_DRAW, FB_ALL):
 			self.rc.draw_listener.render_real_time = True
 
 
@@ -327,14 +326,14 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.control_response = -1
 		self.figure = None
 		self.drawing = None
+		self.a_frames = [] # figure animation frames
 
 		# Either load a pre-generated figure or generate a new one, depending on trial
 		if self.figure_name == "random":
 			self.figure = self._generate_figure(duration=self.animate_time)
 		else:
 			self.figure = self.test_figures[self.figure_name]
-			self.figure.animate_target_time = self.animate_time
-			self.figure.prepare_animation()
+			self.figure.prepare_animation(self.animate_time)
 		self.figure.render()
 
 		# Initialize origin position and origin boundaries based on the loaded figure
@@ -364,7 +363,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			flip()
 
 		animate_start = time.perf_counter()
-		self.figure.animate()
+		self.a_frames = self.animate_figure(self.figure)
 		animate_time = time.perf_counter() - animate_start
 		avg_velocity = self.figure.path_length / animate_time
 
@@ -415,7 +414,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 		if not self.__practicing__:
 			outpath = os.path.join(self.fig_dir, self.file_name + ".zip")
-			save_figure(outpath, self.figure, self.drawing)
+			save_figure(outpath, self.figure, self.a_frames, self.drawing)
 		self.rc.draw_listener.reset()
 
 
@@ -478,6 +477,29 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		clicked = False
 		while not clicked:
 			clicked = mouse_clicked(within=self.next_trial_bounds)
+
+
+	def animate_figure(self, figure, show_figure=False):
+
+		start = None
+		frames = []
+		for f in figure.a_frames:
+
+			ui_request()
+			fill()
+			if show_figure:
+				blit(figure.rendered, 5, P.screen_c)
+			blit(self.tracker_dot, 5, f)
+			flip()
+
+			if start is None:
+				timestamp = 0.0
+				start = precise_time()
+			else:
+				timestamp = round(precise_time() - start, 7)
+			frames.append((f[0], f[1], timestamp))
+
+		return frames
 
 
 	def display_refresh(self):
@@ -550,9 +572,9 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		while not figure:
 			ui_request()
 			try:
-				figure = TraceLabFigure(animate_time = duration, handedness = self.handedness)
+				figure = TraceLabFigure(handedness = self.handedness)
 				figure.render()
-				figure.prepare_animation()
+				figure.prepare_animation(duration)
 			except RuntimeError as e:
 				print(e)
 				failures += 1
@@ -581,6 +603,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		flip()
 		any_key()
 
+		template_dir = os.path.join(P.resources_dir, "figures")
 		if P.development_mode:
 			print("Random seed: {0}".format(P.random_seed))
 
@@ -596,9 +619,9 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 				flip()
 
 				figure = self._generate_figure(duration=5000.0)
-				outfile = "figure{0}_{1}.zip".format(i + 1, P.random_seed)
-				outpath = os.path.join(self.fig_dir, outfile)
-				save_figure(outpath, figure)
+				figname = "figure{0}_{1}".format(i + 1, P.random_seed)
+				outpath = os.path.join(template_dir, figname)
+				save_template(outpath, figure)
 
 		else:
 
@@ -614,8 +637,8 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 				while True:
 
 					# Animate figure on screen with dot, then show full rendered shape
-					figure.animate()
-					animation_dur = round(figure.trial_a_frames[-1][2] * 1000, 2)
+					frames = self.animate_figure(figure)
+					animation_dur = round(frames[-1][2] * 1000, 2)
 					msg = message("Press any key to continue.", blit_txt=False)
 					msg_time = message("Duration: {0} ms".format(animation_dur), blit_txt=False)
 					fill()
@@ -636,13 +659,13 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 						done = True
 						break
 					elif resp == "s": # save
-						outfile = query(user_queries.experimental[7]) + ".zip"
-						outpath = os.path.join(self.fig_dir, outfile)
+						figname = query(user_queries.experimental[7])
+						outpath = os.path.join(template_dir, figname)
 						msg = message("Saving... ", blit_txt=False)
 						fill()
 						blit(msg, 5, P.screen_c)
 						flip()
-						save_figure(outpath, figure)
+						save_template(outpath, figure)
 						break
 
 
