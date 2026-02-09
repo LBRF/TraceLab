@@ -202,10 +202,16 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.add_boundary("next trial button", bounds, RECT_BOUNDARY)
 
 		# Initialize instructions and practice button bar for each condition
+		block_msg_tmp = "Remember to {0}!\n\nTap the screen to begin."
+		self.block_messages = {
+			PHYS: block_msg_tmp.format("match the speed"),
+			MOTR: block_msg_tmp.format("match the speed"),
+			CTRL: block_msg_tmp.format("take your time"),
+		}
 		self.instruction_files = {
-			PHYS: {'text': "physical_group_instructions.txt", 'frames': "physical_key_frames"},
-			MOTR: {'text': "imagery_group_instructions.txt", 'frames': "imagery_key_frames"},
-			CTRL: {'text': "control_group_instructions.txt", 'frames': "control_key_frames"}
+			PHYS: {'frames': "physical_key_frames"},
+			MOTR: {'frames': "imagery_key_frames"},
+			CTRL: {'frames': "control_key_frames"}
 		}
 		self.practice_instructions = message(
 			P.practice_instructions, "instructions",
@@ -244,9 +250,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 			# Load instructions for new response type
 			new_instructions = self.instruction_files[self.response_type]
-			instructions_file = os.path.join(P.resources_dir, "Text", new_instructions['text'])
-			inst_txt = io.open(instructions_file, encoding='utf-8').read()
-			self.instructions = message(inst_txt, "instructions", align="center", blit_txt=False)
 
 			if P.enable_practice:
 				# Load tutorial animation for current condition, play it, and enter practice
@@ -263,12 +266,14 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 			self.prev_response_type = self.response_type
 
+		block_msg_txt = self.block_messages[self.response_type]
+		block_msg = message(block_msg_txt, "instructions", align="center")
 		for i in range(1,4):
 			# we do this a few times to avoid block messages being skipped due to duplicate input
 			# from the touch screen we use
 			ui_request()
 			fill()
-			blit(self.instructions, registration=5, location=P.screen_c, flip_x=P.flip_x)
+			blit(block_msg, 5, P.screen_c, flip_x=P.flip_x)
 			flip()
 		any_key()
 
