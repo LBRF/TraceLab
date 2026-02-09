@@ -10,9 +10,9 @@ import os
 import io
 import sys
 import shutil
-from imp import load_source
 
 from klibs import P
+from klibs.KLInternal import load_source
 from klibs.KLEnvironment import EnvAgent
 from klibs.KLJSON_Object import AttributeDict
 from klibs.KLUtilities import now, utf8
@@ -141,21 +141,19 @@ class TraceLabSession(EnvAgent):
 
 	def __import_figure_sets(self):
 
-		# load original complete set of FigureSets for use
-		fig_sets_f = os.path.join(P.config_dir, "figure_sets.py")
-		fig_sets_local_f = os.path.join(P.local_dir, "figure_sets.py")
-		try:
-			sys.path.append(fig_sets_local_f)
-			for k, v in load_source("*", fig_sets_local_f).__dict__.items():
-				if isinstance(v, FigureSet):
-					self.exp.figure_sets[v.name] = v
-			if P.dm_ignore_local_overrides:
-				raise RuntimeError("ignoring local files")
-		except (IOError, RuntimeError):
-			sys.path.append(fig_sets_f)
-			for k, v in load_source("*", fig_sets_f).__dict__.items():
-				if isinstance(v, FigureSet):
-					self.exp.figure_sets[v.name] = v
+		# Load figure sets for project
+		set_path = os.path.join(P.config_dir, "figure_sets.py")
+		tst = load_source(set_path)
+		for var, value in load_source(set_path).items():
+			if isinstance(value, FigureSet):
+				self.exp.figure_sets[value.name] = value
+
+		# Load any local overrides for the figure sets
+		set_path_local = os.path.join(P.local_dir, "figure_sets.py")
+		if os.path.exists(set_path_local) and not P.dm_ignore_local_overrides:
+			for var, value in load_source(set_path_local).items():
+				if isinstance(value, FigureSet):
+					self.exp.figure_sets[value.name] = value
 
 
 	def __generate_user_id(self):
