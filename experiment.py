@@ -7,14 +7,13 @@ import time
 import sdl2
 
 from random import choice
-from sdl2 import SDL_MOUSEBUTTONDOWN, SDL_KEYDOWN
 
 import klibs
 from klibs import P
 from klibs.KLConstants import RECT_BOUNDARY, CIRCLE_BOUNDARY, STROKE_OUTER, QUERY_UPD
-from klibs.KLBoundary import BoundaryInspector
+from klibs.KLBoundary import BoundaryInspector, RectangleBoundary
 from klibs.KLTime import CountDown
-from klibs.KLUserInterface import any_key, ui_request, show_cursor, hide_cursor
+from klibs.KLUserInterface import any_key, ui_request, show_cursor, hide_cursor, mouse_clicked
 from klibs.KLUtilities import pump, flush, scale, now, mouse_pos, utf8
 from klibs.KLUtilities import colored_stdout as cso
 from klibs.KLGraphics import blit, fill, flip
@@ -196,11 +195,14 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		# Initialize 'next trial' button
 		button_x = 250 if self.handedness == LEFT_HANDED else P.screen_x - 250
 		button_y = P.screen_y - 100
-		self.next_trial_msg = message(P.next_trial_message, 'default', blit_txt=False)
-		self.next_trial_box = Rectangle(300, 75, stroke=(2, (255, 255, 255), STROKE_OUTER))
+		button_w, button_h = (300, 75)
+		xy1 = (button_x - button_w // 2, button_y - button_h // 2)
+		xy2 = (button_x + button_w // 2, button_y + button_h // 2)
+		self.next_trial_msg = message(P.next_trial_message, 'default')
+		self.next_trial_box = Rectangle(button_w, button_h, stroke=(2, WHITE, STROKE_OUTER))
 		self.next_trial_button_loc = (button_x, button_y)
-		bounds = [(button_x - 150, button_y - 38), (button_x + 150, button_y + 38)]
-		self.add_boundary("next trial button", bounds, RECT_BOUNDARY)
+		self.next_trial_bounds = RectangleBoundary("next trial", xy1, xy2)
+
 
 		# Initialize instructions and practice button bar for each condition
 		block_msg_tmp = "Remember to {0}!\n\nTap the screen to begin."
@@ -469,12 +471,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		flush()
 		clicked = False
 		while not clicked:
-			event_queue = pump(True)
-			for e in event_queue:
-				if e.type == SDL_MOUSEBUTTONDOWN:
-					clicked = self.within_boundary("next trial button", [e.button.x, e.button.y])
-				elif e.type == SDL_KEYDOWN:
-					ui_request(e.key.keysym)
+			clicked = mouse_clicked(within=self.next_trial_bounds)
 
 
 	def display_refresh(self):
