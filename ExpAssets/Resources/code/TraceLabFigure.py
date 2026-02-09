@@ -44,7 +44,6 @@ def frames_to_path(frames, unique=False):
 		path.lineto(f[0], f[1])
 		prev = f
 
-	path.close()
 	return path
 
 
