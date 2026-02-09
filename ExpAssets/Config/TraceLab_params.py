@@ -13,6 +13,7 @@ run_practice_blocks = False
 demo_mode = False
 mirror_mode = False
 enable_learned_figures_querying = True
+use_figure_sets = False
 
 capture_figures_mode = False
 auto_generate = False  # whether to generate figures without prompting in capture mode

@@ -186,7 +186,7 @@ class TraceLabSession(EnvAgent):
 		P.blocks_per_experiment = len(P.session_structures[structure_key][0])
 
 		# Query user whether they want to select a figure set by name for the participant
-		if query(uq.experimental[2]) == "y":
+		if P.use_figure_sets and query(uq.experimental[2]) == "y":
 			self.exp.figure_set_name = self.__get_figure_set_name()
 
 		# Collect user demographics and retrieve user id from database
