@@ -356,6 +356,15 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		else:
 			self.control_trial()
 
+		if self.feedback_type in (FB_ALL, FB_RES) and not self.__practicing__:
+			flush()
+			fill()
+			blit(self.figure.render(trace=self.drawing), 5, P.screen_c)
+			flip()
+			start = time.time()
+			while time.time() - start < P.feedback_duration / 1000.0:
+				ui_request()
+
 		fill()
 		flip()
 
@@ -516,15 +525,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.drawing = self.rc.draw_listener.responses[0][0]
 		self.it = self.rc.draw_listener.first_sample_time - self.rt
 		self.mt = self.rc.draw_listener.responses[0][1]
-
-		if self.feedback_type in (FB_ALL, FB_RES) and not self.__practicing__:
-			flush()
-			fill()
-			blit(self.figure.render(trace=self.drawing), 5, P.screen_c, flip_x=P.flip_x)
-			flip()
-			start = time.time()
-			while time.time() - start < P.feedback_duration / 1000.0:
-				ui_request()
 
 
 	def control_trial(self):
