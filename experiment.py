@@ -105,7 +105,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	practice_buttons = None
 	practice_instructions = None
 	practice_button_bar = None
-	practice_kf = None
 
 
 	def __init__(self):
@@ -119,6 +118,8 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 		self.figure_name = P.practice_figure
 		self.animate_time = P.practice_animation_time
+
+		self.__practicing__ = True
 		self.setup_response_collector()
 		self.trial_prep()
 		self.evm.start()
@@ -128,6 +129,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			pass
 		self.evm.reset()
 		self.trial_clean_up()
+		self.__practicing__ = False
 
 
 	def setup(self):
@@ -184,9 +186,8 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		# Initialize messages and response buttons for control trials
 		control_fail_txt = "Please keep your finger on the start area for the complete duration."
 		self.control_fail_msg = message(control_fail_txt, 'error', blit_txt=False)
-		ctrl_buttons = ["1", "2", "3", "4", "5"]
 		self.control_bar = ButtonBar(
-			buttons = [(i, P.btn_size, None) for i in ctrl_buttons],
+			buttons = ["1", "2", "3", "4", "5"],
 			button_size = P.btn_size, screen_margins = P.btn_s_pad, y_offset = P.y_pad,
 			message_txt = P.control_q
 		)
@@ -210,13 +211,8 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			P.practice_instructions, "instructions",
 			align="center", blit_txt=False
 		)
-		practice_buttons = [
-			('Replay', [200, 100], self.practice),
-			('Practice', [200, 100], self.__practice__),
-			('Begin', [200, 100], any_key)
-		]
 		self.practice_button_bar = ButtonBar(
-			practice_buttons,
+			["Replay", "Practice", "Begin"],
 			[200, 100], P.btn_s_pad, P.y_pad, finish_button=False
 		)
 
@@ -254,7 +250,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 			if P.enable_practice:
 				# Load tutorial animation for current condition, play it, and enter practice
-				self.practice_kf = FrameSet(new_instructions['frames'], "assets")
+				self.tutorial = FrameSet(new_instructions['frames'], "assets")
 				if P.block_number == 1:
 					fill()
 					blit(self.practice_instructions, 5, P.screen_c)
@@ -262,7 +258,8 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 					any_key()
 				else:
 					self.start_trial_button()
-				self.practice()
+				self.tutorial.play()
+				self.practice_menu()
 
 			self.prev_response_type = self.response_type
 
@@ -392,7 +389,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			outpath = os.path.join(self.fig_dir, self.file_name + ".zip")
 			save_figure(outpath, self.figure, self.drawing)
 		self.rc.draw_listener.reset()
-		self.control_bar.reset()
 
 
 	def clean_up(self):
@@ -533,16 +529,14 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 	def control_trial(self):
 
-		if P.dm_always_show_cursor:
-			show_mouse_cursor()
+		control_q_txt = P.control_q.format(self.control_question)
+		self.control_bar.update_message(control_q_txt)
 
-		self.control_bar.update_message(P.control_q.format(self.control_question))
-		self.control_bar.render()
-		self.control_bar.collect_response()
+		resp, rt_first, rt_final, mt = self.control_bar.collect()
 
-		self.rt = self.control_bar.rt
-		self.mt = self.control_bar.mt
-		self.control_response = self.control_bar.response
+		self.rt = rt_final
+		self.mt = mt
+		self.control_response = resp
 
 
 	def _generate_figure(self, duration):
@@ -660,31 +654,15 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.evm.reset()
 
 
-	def practice(self, play_key_frames=True, callback=None):
+	def practice_menu(self):
 
-		self.__practicing__ = True
-
-		if callback == self.__practice__:
-			play_key_frames = False
-			self.__practice__()
-		elif callback == self.practice:
-			play_key_frames = True
-		elif callback == any_key:
-			self.__practicing__ = False
-			return any_key()
-
-		if play_key_frames:
-			self.practice_kf.play()
-
-		self.practice_button_bar.reset()
-		self.practice_button_bar.render()
-		self.evm.start()
-		cb = self.practice_button_bar.collect_response()
-		self.evm.reset()
-
-		self.__practicing__ = False
-
-		return self.practice(callback=cb)
+		choice = None
+		while choice != "Begin":
+			choice, rt = self.practice_button_bar.collect()
+			if choice == "Replay":
+				self.tutorial.play()
+			elif choice == "Practice":
+				self.__practice__()
 
 
 	def log(self, msg):
