@@ -498,7 +498,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 				timestamp = 0.0
 				start = precise_time()
 			else:
-				timestamp = precise_time() - start
+				timestamp = round(precise_time() - start, 7)
 			frames.append((f[0], f[1], timestamp))
 
 		return frames
