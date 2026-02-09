@@ -334,8 +334,8 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		else:
 			self.figure = self.test_figures[self.figure_name]
 			self.figure.animate_target_time = self.animate_time
-			self.figure.render()
 			self.figure.prepare_animation()
+		self.figure.render()
 
 		# Initialize origin position and origin boundaries based on the loaded figure
 		self.origin_pos = list(self.figure.points[0])
@@ -358,6 +358,8 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		while start_delay.counting():
 			ui_request()
 			fill()
+			if P.show_figure_at_onset:
+				blit(self.figure.rendered, 5, P.screen_c)
 			blit(self.tracker_dot, 5, self.origin_pos)
 			flip()
 
