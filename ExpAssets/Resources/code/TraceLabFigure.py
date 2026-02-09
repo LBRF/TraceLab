@@ -64,7 +64,7 @@ def segments_to_symbol(segments):
 	return aggdraw.Symbol(path)
 
 
-def save_figure(outpath, figure=None, tracing=None):
+def save_figure(outpath, figure=None, frames=None, tracing=None):
 
 	# Define inline function for safely writing files
 	def write_file(path, filename, data):
@@ -82,7 +82,7 @@ def save_figure(outpath, figure=None, tracing=None):
 
 		# Gather data for writing out
 		segments = u",".join(utf8(s[1]) for s in figure.raw_segments)
-		figdat = figure.trial_a_frames
+		figdat = frames if frames else []
 		if P.capture_figures_mode:
 			figdat = figure._capture_figure_out()
 
@@ -138,7 +138,6 @@ class TraceLabFigure(EnvAgent):
 		self.points = []
 		self.raw_segments = []
 		self.a_frames = []  # interpolated frames tracing figure at given duration / fps
-		self.trial_a_frames = []  # a_frames plus frame onset times for previous animation
 		self.screen_res = [P.screen_x, P.screen_y]
 		self.avg_velocity = None  # last call to animate only
 		self.animate_time = None  # last call to animate only
@@ -618,29 +617,6 @@ class TraceLabFigure(EnvAgent):
 			duration = self.animate_target_time
 
 		self.a_frames = self.segments_to_frames(self.raw_segments, duration, fps=P.refresh_rate)
-
-
-	def animate(self):
-
-		start = None
-		updated_a_frames = []
-		for f in self.a_frames:
-
-			ui_request()
-			fill()
-			if P.demo_mode:
-				blit(self.rendered, 5, P.screen_c, flip_x=P.flip_x)
-			blit(self.exp.tracker_dot, 5, f, flip_x=P.flip_x)
-			flip()
-
-			if start is None:
-				timestamp = 0.0
-				start = time()
-			else:
-				timestamp = time() - start
-			updated_a_frames.append((f[0], f[1], timestamp))
-
-		self.trial_a_frames = updated_a_frames
 
 
 	@property
