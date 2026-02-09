@@ -9,7 +9,7 @@ from klibs.KLGraphics.KLDraw import Rectangle, Ellipse
 from klibs.KLCommunication import message
 from klibs.KLBoundary import BoundaryInspector, RectangleBoundary
 from klibs.KLEventQueue import pump, flush
-from klibs.KLUserInterface import ui_request, mouse_clicked, show_cursor, hide_cursor
+from klibs.KLUserInterface import ui_request, mouse_clicked
 from klibs.KLEnvironment import EnvAgent
 
 
@@ -149,11 +149,9 @@ class ButtonBar(EnvAgent):
 
 	def init(self):
 		flush()
-		show_cursor()
 		self._loop_start = self._timestamp()
 
 	def cleanup(self):
-		hide_cursor()
 		for b in self.buttons:
 			b.active = False
 		if self.finish_b:

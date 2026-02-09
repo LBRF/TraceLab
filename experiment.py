@@ -4,6 +4,7 @@ __author__ = "Jonathan Mulle"
 import os
 import io
 import time
+import sdl2
 
 from random import choice
 from sdl2 import SDL_MOUSEBUTTONDOWN, SDL_KEYDOWN
@@ -13,9 +14,8 @@ from klibs import P
 from klibs.KLConstants import RECT_BOUNDARY, CIRCLE_BOUNDARY, STROKE_OUTER, QUERY_UPD
 from klibs.KLBoundary import BoundaryInspector
 from klibs.KLTime import CountDown
-from klibs.KLUserInterface import any_key, ui_request
-from klibs.KLUtilities import (pump, flush, scale, now, mouse_pos,
-	show_mouse_cursor, hide_mouse_cursor, utf8)
+from klibs.KLUserInterface import any_key, ui_request, show_cursor, hide_cursor
+from klibs.KLUtilities import pump, flush, scale, now, mouse_pos, utf8
 from klibs.KLUtilities import colored_stdout as cso
 from klibs.KLGraphics import blit, fill, flip
 from klibs.KLGraphics.KLDraw import Ellipse, Rectangle
@@ -25,6 +25,7 @@ from klibs.KLResponseCollectors import DrawResponse
 
 from TraceLabSession import TraceLabSession
 from TraceLabFigure import TraceLabFigure, save_figure
+from utils import touchscreen_detected
 from ButtonBar import ButtonBar
 from KeyFrames import FrameSet
 
@@ -222,6 +223,15 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			[200, 100], P.btn_s_pad, P.y_pad, finish_button=False
 		)
 
+		# Determine whether cursor should be shown or hidden
+		touchscreen = touchscreen_detected()
+		if P.force_show_cursor or (P.development_mode and not touchscreen):
+			self.show_cursor = True
+			show_cursor()
+		else:
+			self.show_cursor = False
+			hide_cursor()
+
 		# Import all pre-generated figures needed for the current session
 		figures = list(set(self.trial_factory.exp_factors["figure_name"]))
 		figures.append(P.practice_figure)
@@ -284,16 +294,12 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.rc.terminate_after = [120, klibs.TK_S] # Wait really long before timeout
 		self.rc.draw_listener.start_boundary = 'start'
 		self.rc.draw_listener.stop_boundary = 'stop'
-		self.rc.draw_listener.show_active_cursor = False
-		self.rc.draw_listener.show_inactive_cursor = True
+		self.rc.draw_listener.show_active_cursor = self.show_cursor
+		self.rc.draw_listener.show_inactive_cursor = self.show_cursor
 		self.rc.draw_listener.origin = self.origin_pos
 		self.rc.draw_listener.interrupts = True
 		self.rc.draw_listener.min_samples = 5
 		self.rc.display_callback = self.display_refresh
-
-		if P.dm_always_show_cursor:
-			self.rc.draw_listener.show_active_cursor = True
-			self.rc.draw_listener.show_inactive_cursor = True
 
 		if P.demo_mode or self.feedback_type in (FB_DRAW, FB_ALL):
 			self.rc.draw_listener.render_real_time = True
@@ -460,9 +466,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		blit(self.next_trial_msg, 5, self.next_trial_button_loc, flip_x=P.flip_x)
 		flip()
 
-		if P.demo_mode or P.dm_always_show_cursor:
-			show_mouse_cursor()
-
 		flush()
 		clicked = False
 		while not clicked:
@@ -472,9 +475,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 					clicked = self.within_boundary("next trial button", [e.button.x, e.button.y])
 				elif e.type == SDL_KEYDOWN:
 					ui_request(e.key.keysym)
-
-		if not (P.demo_mode or P.dm_always_show_cursor):
-			hide_mouse_cursor()
 
 
 	def display_refresh(self):
@@ -498,9 +498,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		flip()
 
 		start = time.perf_counter()
-		if P.demo_mode or P.dm_always_show_cursor:
-			show_mouse_cursor()
-
 		at_origin = False
 		while not at_origin:
 			x, y, button = mouse_pos(return_button_state=True)
@@ -519,8 +516,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			if not (self.within_boundary('origin', (x, y)) and left_button_down):
 				at_origin = False
 		self.mt = time.perf_counter() - (self.rt + start)
-		if P.demo_mode:
-			hide_mouse_cursor()
 
 
 	def physical_trial(self):

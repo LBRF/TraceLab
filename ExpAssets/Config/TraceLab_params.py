@@ -9,6 +9,7 @@ collect_demographics = True
 manual_demographics_collection = True
 manual_trial_generation = True
 run_practice_blocks = False
+force_show_cursor = False # If False, cursor hidden unless in devmode & no touchscreen
 
 demo_mode = False
 mirror_mode = False
@@ -77,7 +78,7 @@ bubble_location = (1550, 275)
 dm_auto_threshold = True
 dm_render_progress = False  # if True, drawing feedback will always be shown in devmode
 dm_ignore_local_overrides = False
-dm_always_show_cursor = True
+dm_trial_show_mouse = False
 use_log_file = False  # Not sure this is terribly useful
 
 ########################################
