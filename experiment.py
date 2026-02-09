@@ -333,8 +333,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			self.figure = self._generate_figure(duration=self.animate_time)
 		else:
 			self.figure = self.test_figures[self.figure_name]
-			self.figure.animate_target_time = self.animate_time
-			self.figure.prepare_animation()
+			self.figure.prepare_animation(self.animate_time)
 		self.figure.render()
 
 		# Initialize origin position and origin boundaries based on the loaded figure
@@ -573,9 +572,9 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		while not figure:
 			ui_request()
 			try:
-				figure = TraceLabFigure(animate_time = duration, handedness = self.handedness)
+				figure = TraceLabFigure(handedness = self.handedness)
 				figure.render()
-				figure.prepare_animation()
+				figure.prepare_animation(duration)
 			except RuntimeError as e:
 				print(e)
 				failures += 1

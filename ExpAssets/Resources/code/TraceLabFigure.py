@@ -132,9 +132,8 @@ class TraceLabFigure(EnvAgent):
 
 	allow_verbosity = False
 
-	def __init__(self, import_path=None, animate_time=5000.0, manufacture=None, handedness=None):
+	def __init__(self, import_path=None, manufacture=None, handedness=None):
 
-		self.animate_target_time = animate_time
 		self.seg_count = None
 		self.min_spq = P.avg_seg_per_q[0] - P.avg_seg_per_q[1]
 		self.max_spq = P.avg_seg_per_q[0] + P.avg_seg_per_q[1]
@@ -183,7 +182,7 @@ class TraceLabFigure(EnvAgent):
 			self.points.reverse()
 			self.points.insert(0, self.points.pop())
 
-		self.prepare_animation(duration = 5000.0)
+		self.prepare_animation(duration = 1000.0)
 
 
 	def __import_figure(self, path):
@@ -630,10 +629,7 @@ class TraceLabFigure(EnvAgent):
 				message("({0}, {1})".format(*p), "tiny", registration=7, location=p, blit_txt=True)
 
 
-	def prepare_animation(self, duration=None):
-
-		if duration is None:
-			duration = self.animate_target_time
+	def prepare_animation(self, duration):
 
 		self.a_frames = self.segments_to_frames(self.raw_segments, duration, fps=P.refresh_rate)
 
