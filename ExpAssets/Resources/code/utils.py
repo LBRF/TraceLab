@@ -1,3 +1,4 @@
+import socket
 import sdl2
 
 
@@ -12,3 +13,11 @@ def touchscreen_detected():
 		if devtype == sdl2.SDL_TOUCH_DEVICE_DIRECT:
 			return True
 	return False
+
+
+def get_hostname():
+    # Gets and sanitizes the hostname of the current computer
+	hostname = socket.gethostname()
+	for a, b in [(".local", ""), ("DESKTOP-", ""), (" ", "-")]:
+		hostname = hostname.replace(a, b)
+	return hostname

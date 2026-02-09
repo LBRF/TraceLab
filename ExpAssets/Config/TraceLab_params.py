@@ -140,6 +140,7 @@ unique_identifier = "user_id"
 exclude_data_cols = [
     'klibs_commit', 'created', 'session_count', 'sessions_completed', 'initialized'
 ]
+append_hostname = False
 
 #########################################
 # Session & Block Structures

@@ -25,6 +25,7 @@ from klibs.KLCommunication import query, message, collect_demographics
 from klibs.KLCommunication import user_queries as uq
 
 from FigureSet import FigureSet
+from utils import get_hostname
 
 
 PHYS = "physical"
@@ -311,7 +312,11 @@ class TraceLabSession(EnvAgent):
 				self.exp.quit()
 
 		# Initialize figure paths for current participant/session
-		p_dir = "p{0}_{1}".format(P.participant_id, self.exp.created)
+		date = self.exp.created.split("_")[0]
+		p_dir = "p{0}_{1}".format(P.participant_id, date)
+		if P.append_hostname:
+			hostname = get_hostname()
+			p_dir += "-{0}".format(hostname)
 		session_dir = "session_" + str(self.exp.session_number)
 		self.exp.p_dir = os.path.join(P.data_dir, p_dir)
 		self.exp.fig_dir = os.path.join(self.exp.p_dir, session_dir)
