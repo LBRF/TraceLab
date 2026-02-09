@@ -307,7 +307,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.rc.draw_listener.min_samples = 5
 		self.rc.display_callback = self.display_refresh
 
-		if P.demo_mode or self.feedback_type in (FB_DRAW, FB_ALL):
+		if self.feedback_type in (FB_DRAW, FB_ALL):
 			self.rc.draw_listener.render_real_time = True
 
 
