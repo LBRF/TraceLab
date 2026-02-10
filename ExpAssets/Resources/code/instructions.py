@@ -43,12 +43,11 @@ STIM_LOCS = {
     "shape_c3": (1200, 120),
     "text_low": (960, 680), # P.screen_y / 0.63
     "text_midlow": (960, 580), # P.screen_y / 0.54
-    "pointer_start": (1160, 1000),
-    "pointer_pre_origin": (1050, 870), # origin_x + 90, origin_y + 90
-    "pointer_origin": (1050, 880), # origin_x + 90, origin_y + 100
-    "pointer_leaves": (1010, 850), # calculate using pythagoras?
-    "pointer_near_end": (1140, 810), # calculate using pythagoras?
-    "pointer_miss": (950, 900),
+    "pointer_start": (1070, 900),
+    "pointer_pre_origin": (960, 770),
+    "pointer_leaves": (920, 750),
+    "pointer_near_end": (1050, 710),
+    "pointer_miss": (860, 800),
     "not_recording": (960, 340),
     # MI
     "thought_bubble": (1550, 275),
@@ -58,7 +57,7 @@ STIM_LOCS = {
     "mi_shape_c2": (1475, 130),
     "mi_shape_p3": (1700, 200),
     "mi_shape_c3": (1625, 130),
-    "pointer_lifted": (1010, 840),
+    "pointer_lifted": (920, 740),
     # CC
     "text_top": (960, 150),
     "cc_pointer_start": (960, 1080),
@@ -70,14 +69,14 @@ ANIMATIONS = {
     'shape3': [0.78, ('shape_p2', 'shape_p3', 'shape_c3')],
     'shape4': [0.90, ('shape_p3', 'origin')],
     'pointer_begin': [1.0, ('pointer_start', 'pointer_pre_origin')],
-    'pointer_click': [0.2, ('pointer_pre_origin', 'pointer_origin')],
-    'pointer_leaves': [0.5, ('pointer_origin', 'pointer_leaves')],
+    'pointer_click': [0.2, ('pointer_pre_origin', 'origin')],
+    'pointer_leaves': [0.5, ('origin', 'pointer_leaves')],
     # PP-specific animations
     'pointer_to_p1': [0.9, ('pointer_leaves', 'shape_p1')],
     'pointer_nears_end': [0.9, ('shape_p3', 'pointer_near_end')],
-    'pointer_return': [0.5, ('pointer_near_end', 'pointer_origin')],
+    'pointer_return': [0.5, ('pointer_near_end', 'origin')],
     'pointer_miss': [0.5, ('pointer_near_end', 'pointer_miss')],
-    'pointer_recover': [0.5, ('pointer_miss', 'pointer_origin')],
+    'pointer_recover': [0.5, ('pointer_miss', 'origin')],
     # MI-specific animations
     'mi_shape1': [0.90, ('mi_origin', 'mi_shape_p1')],
     'mi_shape2': [0.78, ('mi_shape_p1', 'mi_shape_p2', 'mi_shape_c2')],
@@ -263,7 +262,7 @@ def task_demo_pp(exp):
     run_animations([
         (images['pointer'], Keyframe(locs['pointer_pre_origin'], duration=0.5)),
         (images['pointer'], anims['pointer_click']),
-        (images['pointer'], Keyframe(locs['pointer_origin'], duration=1.0)),
+        (images['pointer'], Keyframe(locs['origin'], duration=1.0)),
     ],
         stim_set=background_stim, audio=voiceover["PP3"]
     )
@@ -318,7 +317,7 @@ def task_demo_pp(exp):
     )
     run_animations(
         # Show origin disappearing after pointer touches it
-        [(images['pointer'], Keyframe(locs['pointer_origin'], duration=1.0))],
+        [(images['pointer'], Keyframe(locs['origin'], duration=1.0))],
         stim_set=[instructions_6]
     )
 
@@ -328,13 +327,13 @@ def task_demo_pp(exp):
         (images['pointer'], anims['pointer_miss']),
         (images['pointer'], Keyframe(locs['pointer_miss'], duration=1.0)),
         (images['pointer'], anims['pointer_recover']),
-        (images['pointer'], Keyframe(locs['pointer_origin'], duration=0.5)),
+        (images['pointer'], Keyframe(locs['origin'], duration=0.5)),
     ],
         stim_set=[(origin_green, locs['origin']), instructions_6]
     )
     run_animations(
         # Show origin disappearing after pointer eventually touches it
-        [(images['pointer'], Keyframe(locs['pointer_origin'], duration=1.4))],
+        [(images['pointer'], Keyframe(locs['origin'], duration=1.4))],
         stim_set=[instructions_6]
     )
 
@@ -353,7 +352,7 @@ def task_demo_pp(exp):
     ], stim_set=[
         instructions_6,
         (origin_red, locs['origin']),
-        (images['pointer'], locs['pointer_origin']),
+        (images['pointer'], locs['origin']),
     ])
 
     # Show final screen of instructions
@@ -419,7 +418,7 @@ def task_demo_mi(exp):
         # last one is 0.8s for MI?
         (images['pointer'], Keyframe(locs['pointer_pre_origin'], duration=0.5)),
         (images['pointer'], anims['pointer_click']),
-        (images['pointer'], Keyframe(locs['pointer_origin'], duration=1.0)),
+        (images['pointer'], Keyframe(locs['origin'], duration=1.0)),
     ],
         stim_set=background_stim, audio=voiceover["MI3"]
     )
@@ -509,7 +508,7 @@ def task_demo_cc(exp):
     txt_top = locs['text_top'][1]
 
     # Generate button bar animations using positions from button bar
-    dx, dy = scale((90, 100), (1920, 1080), center=False)
+    dx, dy = scale((15, 15), (1920, 1080), center=False)
     button2_loc = (buttons[1].location[0] + dx, buttons[1].location[1] + dy)
     button2_loc_pressed = (button2_loc[0], button2_loc[1] + 10)
     button3_loc = (buttons[2].location[0] + dx, buttons[2].location[1] + dy)
