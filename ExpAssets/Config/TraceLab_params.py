@@ -70,7 +70,6 @@ practice_instructions = (
 )
 practice_figure = "heart"
 practice_animation_time = 3500 # ms
-bubble_location = (1550, 275)
 
 #########################################
 # Development Mode Settings
