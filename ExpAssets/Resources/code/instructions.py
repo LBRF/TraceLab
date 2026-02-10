@@ -42,9 +42,9 @@ STIM_LOCS = {
     "shape_p3": (1440, 360),
     "shape_c3": (1200, 120),
     "text_low": (960, 680), # P.screen_y / 0.63
-    "text_midlow": (960, 580), # P.screen_y / 0.54
+    "text_midlow": (960, 620), # P.screen_y / 0.57
     "pointer_start": (1070, 900),
-    "pointer_pre_origin": (960, 770),
+    "pointer_pre_origin": (970, 770),
     "pointer_leaves": (920, 750),
     "pointer_near_end": (1050, 710),
     "pointer_miss": (860, 800),
@@ -57,7 +57,7 @@ STIM_LOCS = {
     "mi_shape_c2": (1475, 130),
     "mi_shape_p3": (1700, 200),
     "mi_shape_c3": (1625, 130),
-    "pointer_lifted": (920, 740),
+    "pointer_lifted": (990, 830),
     # CC
     "text_top": (960, 150),
     "cc_pointer_start": (960, 1080),
@@ -68,11 +68,11 @@ ANIMATIONS = {
     'shape2': [0.78, ('shape_p1', 'shape_p2', 'shape_c2')],
     'shape3': [0.78, ('shape_p2', 'shape_p3', 'shape_c3')],
     'shape4': [0.90, ('shape_p3', 'origin')],
-    'pointer_begin': [1.0, ('pointer_start', 'pointer_pre_origin')],
-    'pointer_click': [0.2, ('pointer_pre_origin', 'origin')],
+    'pointer_begin': [0.5, ('pointer_start', 'pointer_lifted')],
+    'pointer_click': [0.2, ('pointer_lifted', 'origin')],
     'pointer_leaves': [0.5, ('origin', 'pointer_leaves')],
     # PP-specific animations
-    'pointer_to_p1': [0.9, ('pointer_leaves', 'shape_p1')],
+    'pointer_to_p1': [0.9, ('origin', 'shape_p1')],
     'pointer_nears_end': [0.9, ('shape_p3', 'pointer_near_end')],
     'pointer_return': [0.5, ('pointer_near_end', 'origin')],
     'pointer_miss': [0.5, ('pointer_near_end', 'pointer_miss')],
@@ -82,7 +82,7 @@ ANIMATIONS = {
     'mi_shape2': [0.78, ('mi_shape_p1', 'mi_shape_p2', 'mi_shape_c2')],
     'mi_shape3': [0.78, ('mi_shape_p2', 'mi_shape_p3', 'mi_shape_c3')],
     'mi_shape4': [0.90, ('mi_shape_p3', 'mi_origin')],
-    'pointer_lifted': [0.2, ('pointer_leaves', 'pointer_lifted')],
+    'pointer_lifted': [0.2, ('origin', 'pointer_lifted')],
     # CC-specific animations
     'shape1_slow': [2.2, ('origin', 'shape_p1')],
     'shape2_slow': [1.2, ('shape_p1', 'shape_p2', 'shape_c2')],
@@ -218,7 +218,7 @@ def task_demo_pp(exp):
     white_dot = exp.tracker_dot
     origin_red = exp.origin_inactive
     origin_green = exp.origin_active
-    txt_low = locs['text_low'][1]
+    txt_midlow = locs['text_midlow'][1]
 
     # Show initial set of instructions and wait for them to touch the screen
     show_demo_screen(
@@ -245,7 +245,7 @@ def task_demo_pp(exp):
         ("The red circle indicates that you are now able to respond.\n"
          "Note that this is not a reaction time test - you do not need to respond "
          "right away; take your time!"),
-        [(origin_red, locs['origin'])], audio=voiceover["PP2"], msg_y=txt_low
+        [(origin_red, locs['origin'])], audio=voiceover["PP2"], msg_y=txt_midlow
     )
     run_animations([
         (images['pointer'], Keyframe(locs['pointer_start'], duration=0.3)),
@@ -256,23 +256,18 @@ def task_demo_pp(exp):
 
     # Illustrate the hand pointer touching origin to initiate the trial
     background_stim = [
-        (message("Once you touch the circle..."), locs["text_low"]),
+        (message("Once you touch the circle..."), locs['text_midlow']),
         (origin_red, locs['origin'])
     ]
     run_animations([
-        (images['pointer'], Keyframe(locs['pointer_pre_origin'], duration=0.5)),
-        (images['pointer'], anims['pointer_click']),
-        (images['pointer'], Keyframe(locs['origin'], duration=1.0)),
+        (images['pointer'], Keyframe(locs['pointer_lifted'], duration=1.5)),
     ],
         stim_set=background_stim, audio=voiceover["PP3"]
     )
-    show_demo_screen(
-        "...and begin to move...", 
-        stim_set=[
-            (origin_red, locs['origin']),
-            (images['pointer'], anims['pointer_leaves'])
-        ],
-        audio=voiceover["PP4"], duration=2.1, msg_y=txt_low
+    run_animations([
+        (images['pointer'], anims['pointer_click']),
+    ],
+        stim_set=background_stim, audio=voiceover["PP4"]
     )
 
     # Show the hand pointer tracing the figure, stopping before touching origin
@@ -282,9 +277,9 @@ def task_demo_pp(exp):
          "matching the speed."),
         stim_set=[
             (origin_green, locs['origin']),
-            (images['pointer'], locs['pointer_leaves'])
+            (images['pointer'], locs['origin'])
         ],
-        duration=5.6, msg_y=txt_low
+        duration=6.2, msg_y=txt_midlow
     )
     run_animations([
         (images['pointer'], anims['pointer_to_p1']),
@@ -410,35 +405,31 @@ def task_demo_mi(exp):
     )
 
     # Illustrate the hand pointer touching origin to initiate the trial
+    mi_instr_4 = (
+        "Once you touch the red circle, the circle will turn green,\n"
+        "indicating that the computer is now recording."
+    )
     background_stim = [
-        (message("Once you touch the red circle..."), locs['text_midlow']),
+        (message(mi_instr_4, align='center'), locs['text_midlow']),
         (origin_red, locs['origin'])
     ]
     run_animations([
-        # last one is 0.8s for MI?
-        (images['pointer'], Keyframe(locs['pointer_pre_origin'], duration=0.5)),
-        (images['pointer'], anims['pointer_click']),
-        (images['pointer'], Keyframe(locs['origin'], duration=1.0)),
+        (images['pointer'], Keyframe(locs['pointer_lifted'], duration=1.5)),
     ],
         stim_set=background_stim, audio=voiceover["MI3"]
     )
-
-    # Illustrate origin turning green once touched
-    show_demo_screen(
-        stim_set=[
-            (origin_red, locs['origin']),
-            (images['pointer'], anims['pointer_leaves'])
-        ],
-        audio=voiceover["MI4"], duration=1.4, msg_y=txt_midlow
+    run_animations([
+        (images['pointer'], anims['pointer_click']),
+    ],
+        stim_set=background_stim, audio=voiceover["MI4"]
     )
 
-    # Show the hand pointer tracing the figure, stopping before touching origin
-    pointer_during_mi = (images['pointer'], locs['pointer_leaves'])
+    # Show the origin turning green when touched
+    pointer_during_mi = (images['pointer'], locs['origin'])
     show_demo_screen(
-        ("...and begin to move, the circle will turn green,\n"
-         "indicating that the computer is now recording."),
+        mi_instr_4,
         stim_set=[(origin_green, locs['origin']), pointer_during_mi],
-        duration=4.1, msg_y=txt_midlow
+        duration=4.5, msg_y=txt_midlow
     )
 
     # Illustrate performing a trial using motor imagery
