@@ -244,8 +244,8 @@ def task_demo_pp(exp):
     # Explain basics of task, show hand pointer moving to origin
     show_demo_screen(
         ("The red circle indicates that you are now able to respond.\n"
-         "Note that this is not a reaction time test - you do not need to respond "
-         "right away; take your time!"),
+         "Note that this is not a reaction time test, you do not need to respond "
+         "right away. Take your time!"),
         [(origin_red, locs['origin'])], audio=voiceover["PP2"], msg_y=txt_midlow
     )
     run_animations([
@@ -395,8 +395,8 @@ def task_demo_mi(exp):
     # Explain basics of task, show hand pointer moving to origin
     show_demo_screen(
         ("The red circle indicates that you are now able to respond.\n"
-         "Note that this is not a reaction time test; you do not need to respond "
-         "right away\nTake your time!"),
+         "Note that this is not a reaction time test, you do not need to respond "
+         "right away. Take your time!"),
         [(origin_red, locs['origin'])], audio=voiceover["MI2"], msg_y=txt_midlow
     )
     run_animations([
@@ -441,35 +441,43 @@ def task_demo_mi(exp):
         "Just imagine the movement, visualizing what it would look like for "
         "you to do it, and how it would feel."
     )
+    instr_5 = (message(mi_instr_5, align='center'), locs['text_midlow'])
     background_stim = [
-        (message(mi_instr_5, align='center'), locs['text_midlow']),
         (origin_green, locs['origin']),
         pointer_during_mi,
+        thought_bubble
     ]
-    show_demo_screen(stim_set=background_stim, duration=0.7)
     run_animations([
-        (None, Keyframe(None, duration=0.5)),
+        (None, Keyframe(None, duration=1.2)),
         (images['pointer_sml'], Keyframe(locs['mi_origin'], duration=0.5)),
         (images['pointer_sml'], anims['mi_shape1']),
         (images['pointer_sml'], anims['mi_shape2']),
         (images['pointer_sml'], anims['mi_shape3']),
-        (images['pointer_sml'], Keyframe(locs['mi_shape_p3'], duration=8.7)),
-        (images['pointer_sml'], anims['mi_shape4']),
-        (images['pointer_sml'], Keyframe(locs['mi_origin'], duration=2.6)),
+        (images['pointer_sml'], Keyframe(locs['mi_shape_p3'], duration=7.7)),
     ],
-        stim_set = background_stim + [thought_bubble]
+        stim_set = background_stim + [instr_5]
     )
 
     # Illustrate lifting finger off origin to end the trial
-    show_demo_screen(
-        ("When you imagine returning to the starting point - the green circle - "
-         "lift your finger from the screen."),
-        stim_set=[
-            (origin_green, locs['origin']),
-            (images['pointer'], anims['pointer_lifted']),
-        ],
-        duration=1.8, msg_y=txt_midlow
+    mi_instr_6 = (
+        "When you imagine returning to the starting point (the green circle),\n"
+        "lift your finger from the screen."
     )
+    instr_6 = (message(mi_instr_6, align='center'), locs['text_midlow'])
+    run_animations([
+        (images['pointer_sml'], Keyframe(locs['mi_shape_p3'], duration=1.0)),
+        (images['pointer_sml'], anims['mi_shape4']),
+        (images['pointer_sml'], Keyframe(locs['mi_origin'], duration=2.6)),
+    ],
+        stim_set = background_stim + [instr_6]
+    )
+    run_animations([
+        (images['pointer'], anims['pointer_lifted']),
+        (images['pointer'], Keyframe(locs['pointer_lifted'], duration=1.4)),
+    ],
+        stim_set = [(origin_green, locs['origin'])] + [instr_6]
+    )
+
     mi_instr_7 = (
         "This indicates that the trial is over, and the green dot will disappear.\n"
         "Remember, you must try to match the movement AND the speed that you observed."
