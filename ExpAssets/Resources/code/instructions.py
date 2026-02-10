@@ -229,6 +229,7 @@ def task_demo_pp(exp):
          "When you tap the touchscreen to continue, the movement will begin."),
         audio=voiceover["PP1"]
     )
+    any_key()
 
     # Show an example of what the figure animation looks like
     run_animations([
@@ -379,6 +380,7 @@ def task_demo_mi(exp):
          "When you tap the touchscreen to continue, the movement will begin."),
         audio=voiceover["MI1"]
     )
+    any_key()
 
     # Show an example of what the figure animation looks like
     run_animations([
