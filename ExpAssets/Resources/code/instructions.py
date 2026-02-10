@@ -204,6 +204,8 @@ def show_demo_screen(
         for stim, loc in stim_set:
             if isinstance(loc, Animation):
                 blit(stim, 5, loc.position)
+            elif hasattr(stim, 'blit') and not isinstance(stim, NumpySurface):
+                stim.blit()
             else:
                 blit(stim, 5, loc)
         flip()
