@@ -200,7 +200,6 @@ def show_demo_screen(
     t = CountDown(duration) if duration else None
     while (t.counting() if duration else audio.playing):
         fill()
-        blit(txt, 5, (msg_x, msg_y))
         for stim, loc in stim_set:
             if isinstance(loc, Animation):
                 blit(stim, 5, loc.position)
@@ -208,6 +207,7 @@ def show_demo_screen(
                 stim.blit()
             else:
                 blit(stim, 5, loc)
+        blit(txt, 5, (msg_x, msg_y))
         flip()
         if key_pressed('delete'):
             skip_instructions()
