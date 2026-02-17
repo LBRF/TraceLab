@@ -1,4 +1,5 @@
 import aggdraw
+import numpy as np
 import klibs.KLParams as P
 from klibs.KLTime import precise_time
 from klibs.KLBoundary import Boundary
@@ -142,14 +143,36 @@ class DrawingListener(BaseResponseListener):
         return self._timestamp() - self._drawing_start
 
 
-def render_tracing(points, color, thickness=1):
-    surf = aggdraw.Draw("RGBA", P.screen_x_y, (0, 0, 0, 0))
-    surf.setantialias(True)
-    color = rgb_to_rgba(color)
-    if len(points) >= 2:
-        m_str = "M{0},{1}".format(points[0][0], points[0][1])
-        for p in points[1:]:
-            m_str += "L{0},{1}".format(p[0], p[1])
-        s = aggdraw.Symbol(m_str)
-        surf.symbol((0, 0), s, aggdraw.Pen(color[:3], thickness, color[3]))
-    return aggdraw_to_array(surf)
+
+class DrawSurface(object):
+    """An optimized class for rendering live tracings.
+
+    To avoid the need to create a new surface and re-render the whole tracing every
+    frame, this class creates a single surface and updates it with new tracing data
+    as it comes in.
+
+    Necessary to avoid dropped frames when tracing feedback is enabled.
+
+    """
+    def __init__(self, size, color, thickness=1):
+        # Create pen for drawing
+        color = rgb_to_rgba(color)
+        self._pen = aggdraw.Pen(color[:3], thickness, color[3])
+        # Create reusable drawing surface
+        self.surf = aggdraw.Draw("RGBA", P.screen_x_y, (0, 0, 0, 0))
+        self.surf.setantialias(True)
+        self._raw = None # surface bytes, empty until rendered
+
+    def update(self, points):
+        # Adds the line between the last two points to the surface
+        if len(points) >= 2:
+            p1 = "M{0},{1}".format(*points[-2][:2])
+            p2 = "L{0},{1}".format(*points[-1][:2])
+            self.surf.symbol((0, 0), aggdraw.Symbol(p1 + p2), self._pen)
+
+    def render(self):
+        # Get the raw RGBA bytes from the drawing surface
+        self._raw = self.surf.tobytes()
+        # Cast the raw bytes directly to a blittable numpy array
+        arr = np.frombuffer(self._raw, dtype=np.uint8)
+        return arr.reshape(self.surf.size[1], self.surf.size[0], 4)

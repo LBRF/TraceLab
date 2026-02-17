@@ -25,7 +25,7 @@ from TraceLabSession import TraceLabSession
 from TraceLabFigure import TraceLabFigure, save_figure, save_template
 from utils import touchscreen_detected, get_hostname
 from ButtonBar import ButtonBar
-from responselisteners import DrawingListener, render_tracing
+from responselisteners import DrawingListener, DrawSurface
 from instructions import play_tutorial
 
 
@@ -294,6 +294,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		self.figure = None
 		self.drawing = None
 		self.a_frames = [] # figure animation frames
+		self.live_feedback = None
 
 		# Either load a pre-generated figure or generate a new one, depending on trial
 		if self.figure_name == "random":
@@ -465,7 +466,10 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		origin = self.origin_active if self.draw_listener.started else self.origin_inactive
 		blit(origin, 5, self.origin_pos, flip_x=P.flip_x)
 		if P.dm_render_progress or self.feedback_type in (FB_ALL, FB_DRAW):
-			drawing = render_tracing(self.draw_listener.points, TRACE_COLOUR, 1)
+			if not self.live_feedback:
+				self.live_feedback = DrawSurface(P.screen_x_y, TRACE_COLOUR, 1)
+			self.live_feedback.update(self.draw_listener.points)
+			drawing = self.live_feedback.render()
 			blit(drawing, 7, (0, 0))
 		flip()
 
@@ -625,6 +629,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 		outfile = "p{0}_learned_figure_{1}.zip".format(self.filename_id, fig_number)
 		outpath = os.path.join(self.fig_dir, outfile)
+		self.live_feedback = None
 		self.display_refresh()
 		learned = self.draw_listener.collect()[0]
 		save_figure(outpath, tracing=learned)
