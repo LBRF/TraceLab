@@ -3,9 +3,10 @@ import numpy as np
 import klibs.KLParams as P
 from klibs.KLTime import precise_time
 from klibs.KLBoundary import Boundary
-from klibs.KLUserInterface import mouse_pos
 from klibs.KLResponseListeners import BaseResponseListener
 from klibs.KLGraphics.utils import rgb_to_rgba, aggdraw_to_array
+
+from utils import get_touch_coords
 
 
 class DrawingListener(BaseResponseListener):
@@ -29,6 +30,7 @@ class DrawingListener(BaseResponseListener):
         self.points = []
         self._origin_touched = None
         self._drawing_start = None
+        self._was_drawing = False
 
     def _timestamp(self):
         # NOTE: precise_time seems to be more consistent than time.perf_counter here
@@ -62,6 +64,8 @@ class DrawingListener(BaseResponseListener):
         mt: Movement time, defined as the interval between the start of the
             drawing and the end of the drawing (return to origin).
 
+        .. NOTE: Drawing samples are only recorded when actually touching the screen.
+
         Returns:
             tuple: A ``(drawing, rt, it, mt)`` tuple containing the drawing trajectory
             and its reaction time, initiation time, and movement time.
@@ -89,8 +93,13 @@ class DrawingListener(BaseResponseListener):
             response been made, otherwise None.
 
         """
-        loc = mouse_pos()
+        loc = get_touch_coords()
         timestamp = self._timestamp()
+
+        # Check if actually touching the screen, ignore input if not
+        if not loc:
+            self._was_drawing = False
+            return None
 
         # If response not initiated, check if cursor is within origin and start if so
         if not self.started:
@@ -98,7 +107,7 @@ class DrawingListener(BaseResponseListener):
                 self._origin_touched = timestamp
 
         # If within origin after drawing start, end drawing if min duration has elapsed
-        elif self._drawing_start and loc in self.origin_boundary:
+        elif self._drawing_start and loc in self.origin_boundary and self._was_drawing:
             last_timestamp = self.points[-1][-1]
             if last_timestamp > self.min_duration and len(self.points) >= 2:
                 rt = round(self._origin_touched - self._loop_start, 4)
@@ -108,6 +117,7 @@ class DrawingListener(BaseResponseListener):
 
         # Once response is initiated and cursor leaves origin, start recording drawing
         if self.started and not loc in self.origin_boundary:
+            self._was_drawing = True
             if not self._drawing_start:
                 self._drawing_start = timestamp
                 p = (loc[0], loc[1], 0.0)
@@ -125,6 +135,7 @@ class DrawingListener(BaseResponseListener):
         self._loop_start = None
         self._origin_touched = None
         self._drawing_start = None
+        self._was_drawing = False
 
     @property
     def started(self):

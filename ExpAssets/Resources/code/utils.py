@@ -1,5 +1,8 @@
 import socket
+import ctypes
+
 import sdl2
+import klibs.KLParams as P
 
 
 def touchscreen_detected():
@@ -13,6 +16,17 @@ def touchscreen_detected():
 		if devtype == sdl2.SDL_TOUCH_DEVICE_DIRECT:
 			return True
 	return False
+
+
+def get_touch_coords():
+	# Returns the x/y coordinates of the mouse cursor (if finger on screen)
+    sdl2.SDL_PumpEvents()
+    cx, cy = ctypes.c_int(0), ctypes.c_int(0)
+    b_state = sdl2.SDL_GetMouseState(ctypes.byref(cx), ctypes.byref(cy))
+    x = int(cx.value * P.screen_scale_x)
+    y = int(cy.value * P.screen_scale_y)
+    lifted = (b_state & sdl2.SDL_BUTTON(sdl2.SDL_BUTTON_LEFT)) == 0
+    return None if lifted else (x, y)
 
 
 def get_hostname():

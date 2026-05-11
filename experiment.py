@@ -14,7 +14,7 @@ from klibs.KLConstants import STROKE_OUTER
 from klibs.KLBoundary import BoundaryInspector, RectangleBoundary, CircleBoundary
 from klibs.KLTime import CountDown, precise_time
 from klibs.KLUserInterface import any_key, ui_request, show_cursor, hide_cursor, mouse_clicked
-from klibs.KLUtilities import pump, flush, scale, now, mouse_pos, utf8
+from klibs.KLUtilities import pump, flush, scale, now, utf8
 from klibs.KLUtilities import colored_stdout as cso
 from klibs.KLGraphics import blit, fill, flip
 from klibs.KLGraphics.KLDraw import Ellipse, Rectangle
@@ -23,7 +23,7 @@ from klibs.KLCommunication import user_queries, message, query
 
 from TraceLabSession import TraceLabSession
 from TraceLabFigure import TraceLabFigure, save_figure, save_template
-from utils import touchscreen_detected, get_hostname
+from utils import touchscreen_detected, get_hostname, get_touch_coords
 from ButtonBar import ButtonBar
 from responselisteners import DrawingListener, DrawSurface
 from instructions import play_tutorial
@@ -483,9 +483,8 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		start = time.perf_counter()
 		at_origin = False
 		while not at_origin:
-			x, y, button = mouse_pos(return_button_state=True)
-			left_button_down = button == 1
-			if self.within_boundary('origin', (x, y)) and left_button_down:
+			loc = get_touch_coords()
+			if loc and self.within_boundary('origin', loc):
 				at_origin = True
 				self.rt = time.perf_counter() - start
 			ui_request()
@@ -494,9 +493,8 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		flip()
 
 		while at_origin:
-			x, y, button = mouse_pos(return_button_state=True)
-			left_button_down = button == 1
-			if not (self.within_boundary('origin', (x, y)) and left_button_down):
+			loc = get_touch_coords()
+			if not (loc and self.within_boundary('origin', loc)):
 				at_origin = False
 		self.mt = time.perf_counter() - (self.rt + start)
 
