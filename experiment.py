@@ -493,8 +493,9 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 		flip()
 
 		while at_origin:
+			# Wait until finger lifted to end response
 			loc = get_touch_coords()
-			if not (loc and self.within_boundary('origin', loc)):
+			if not loc:
 				at_origin = False
 		self.mt = time.perf_counter() - (self.rt + start)
 
