@@ -93,6 +93,7 @@ class DrawingListener(BaseResponseListener):
             response been made, otherwise None.
 
         """
+        # NOTE: Could be improved further by setting a minimum max dist from origin?
         loc = get_touch_coords()
         timestamp = self._timestamp()
 
