@@ -43,6 +43,9 @@ default_color = (255, 255, 255, 255)
 default_font_size = 18
 default_font_name = 'Hind-Medium'
 
+border_size = 4   # px
+origin_size = 50  # px
+
 next_trial_message = "Tap here to continue."
 experiment_complete_message = (
     "Thanks for participating! "
@@ -87,7 +90,6 @@ dot_size = 5  # diameter in px
 dot_stroke = 4  # width of stroke around tracker dot in px
 dot_color = (255, 255, 255)  # r, g, b
 dot_stroke_col = (255, 255, 255)
-origin_size = 50  # px
 
 ########################################
 # Feedback Controls
