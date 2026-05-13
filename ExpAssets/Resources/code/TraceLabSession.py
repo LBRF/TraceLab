@@ -64,6 +64,7 @@ class TraceLabSession(EnvAgent):
 		if self.user_id is None:
 			self.__generate_user_id()
 
+		P.demographics_collected = True
 		self.init_session()
 
 
