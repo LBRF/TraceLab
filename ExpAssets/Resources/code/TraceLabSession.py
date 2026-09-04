@@ -59,12 +59,12 @@ class TraceLabSession(EnvAgent):
 			if not os.path.exists(devmode_data_dir):
 				os.makedirs(devmode_data_dir)
 			P.data_dir = devmode_data_dir
+			self.user_id = self.create_new_user()
 		else:
-			self.user_id = query(uq.experimental[1])
-		if self.user_id is None:
-			self.__generate_user_id()
+			self.user_id = self.get_user_id()
 
 		P.demographics_collected = True
+		self.restore_session(self.user_id)
 		self.init_session()
 		self.create_session_dirs()
 
@@ -159,7 +159,7 @@ class TraceLabSession(EnvAgent):
 					self.exp.figure_sets[value.name] = value
 
 
-	def __generate_user_id(self):
+	def create_new_user(self):
 
 		# If multiple possible session structures, query user to choose which one to use
 		structure_names = list(P.session_structures.keys())
@@ -192,15 +192,18 @@ class TraceLabSession(EnvAgent):
 
 		# Collect user demographics and retrieve user id from database
 		collect_demographics(P.development_mode)
-		self.user_id = self.db.select('participants', ['user_id'], where={'id': P.p_id})[0][0]
+		user_id = self.db.select('participants', ['user_id'], where={'id': P.p_id})[0][0]
 
 		# Update participant info table with session and figure set info
 		info = {
 			'session_structure': structure_key,
 			'session_count': len(P.session_structures[structure_key]),
-			'figure_set': self.exp.figure_set_name
+			'figure_set': self.exp.figure_set_name,
+			'initialized': 1,
 		}
 		self.db.update('participants', info)
+
+		return user_id
 
 
 	def get_participant_info(self, user_id):
@@ -215,6 +218,30 @@ class TraceLabSession(EnvAgent):
 			return out
 		# If no matching participant, return None
 		return None
+
+
+	def get_user_id(self):
+		user_id = None
+		while not user_id:
+			user_id = query(uq.experimental[1])
+			# If ID provided, see if it exists 
+			if user_id:
+				info = self.get_participant_info(user_id)
+				if not info:
+					user_id = None
+					# If ID doesn't exist and user declines to try another, exit
+					if query(uq.experimental[0]) == "n":
+						fill()
+						msg = message("Thanks for participating!", "default")
+						blit(msg, 5, P.screen_c)
+						flip()
+						any_key()
+						self.exp.quit()
+			# If no ID provided, create a new one
+			else:
+				user_id = self.create_new_user()
+	
+		return user_id
 
 
 	def __check_incomplete_session(self):
@@ -323,23 +350,6 @@ class TraceLabSession(EnvAgent):
 
 	def init_session(self):
 
-		user_info = self.get_participant_info(self.user_id)
-		if user_info:
-			self.restore_session(self.user_id)
-		else:
-			if query(uq.experimental[0]) == "y":
-				self.user_id = query(uq.experimental[1])
-				if self.user_id is None:
-					self.__generate_user_id()
-				return self.init_session()
-			else:
-				fill()
-				msg = message("Thanks for participating!", "default", blit_txt=False)
-				blit(msg, 5, P.screen_c)
-				flip()
-				any_key()
-				self.exp.quit()
-
 		# If any existing trial data for this session+participant, prompt experimenter whether to
 		# delete existing data and redo session, continue from start of last completed block,
 		# or continue to next session
@@ -390,7 +400,6 @@ class TraceLabSession(EnvAgent):
 				runtime_info.log(col, value)
 			self.db.insert(runtime_info)
 
-		self.db.update('participants', {'initialized': 1})
 		self.log_session_init()
 
 
@@ -421,7 +430,7 @@ class TraceLabSession(EnvAgent):
 		P.session_number = self.exp.session_number
 		
 		if P.use_log_file:
-			log_path = os.path.join(P.local_dir, "logs", "P{0}_log_f.txt".format(self.user_id))
+			log_path = os.path.join(P.local_dir, "logs", "P{0}_log_f.txt".format(user_id))
 			self.exp.log_f = io.open(log_path, "w+", encoding='utf-8')
 
 
