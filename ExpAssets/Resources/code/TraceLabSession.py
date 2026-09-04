@@ -66,6 +66,7 @@ class TraceLabSession(EnvAgent):
 
 		P.demographics_collected = True
 		self.init_session()
+		self.create_session_dirs()
 
 
 	def __report_incomplete(self, participant_ids):
@@ -303,6 +304,23 @@ class TraceLabSession(EnvAgent):
 		return blocks
 
 
+	def create_session_dirs(self):
+
+		# Initialize figure paths for current participant/session
+		date = self.exp.created.split("_")[0]
+		p_dir = "p{0}_{1}".format(P.participant_id, date)
+		if P.append_hostname:
+			hostname = get_hostname()
+			p_dir += "-{0}".format(hostname)
+		session_dir = "session_" + str(self.exp.session_number)
+		self.exp.p_dir = os.path.join(P.data_dir, p_dir)
+		self.exp.fig_dir = os.path.join(self.exp.p_dir, session_dir)
+
+		# If needed, create figure folder for session
+		if not os.path.exists(self.exp.fig_dir):
+			os.makedirs(self.exp.fig_dir)
+
+
 	def init_session(self):
 
 		user_info = self.get_participant_info(self.user_id)
@@ -321,16 +339,6 @@ class TraceLabSession(EnvAgent):
 				flip()
 				any_key()
 				self.exp.quit()
-
-		# Initialize figure paths for current participant/session
-		date = self.exp.created.split("_")[0]
-		p_dir = "p{0}_{1}".format(P.participant_id, date)
-		if P.append_hostname:
-			hostname = get_hostname()
-			p_dir += "-{0}".format(hostname)
-		session_dir = "session_" + str(self.exp.session_number)
-		self.exp.p_dir = os.path.join(P.data_dir, p_dir)
-		self.exp.fig_dir = os.path.join(self.exp.p_dir, session_dir)
 
 		# If any existing trial data for this session+participant, prompt experimenter whether to
 		# delete existing data and redo session, continue from start of last completed block,
@@ -372,10 +380,6 @@ class TraceLabSession(EnvAgent):
 			blocks = blocks[(start_block - 1): ] # Drop completed blocks
 			blocks[0] = blocks[0][(start_trial - 1): ] # Drop completed trials
 			self.exp.blocks = [TrialIterator(b) for b in blocks]
-
-		# If needed, create figure folder for session
-		if not os.path.exists(self.exp.fig_dir):
-			os.makedirs(self.exp.fig_dir)
 
 		# If session number > 1, log runtime info for session in runtime_info table
 		if 'session_info' in self.db.table_schemas.keys() and self.exp.session_number > 1:
