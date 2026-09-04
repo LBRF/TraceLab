@@ -202,6 +202,20 @@ class TraceLabSession(EnvAgent):
 		self.db.update('participants', info)
 
 
+	def get_participant_info(self, user_id):
+		# Retrieve all participant info as a dict
+		cols = self.db.get_columns('participants')
+		rows = self.db.select('participants', where={'user_id': user_id})
+		# If participant matching identifier exists, return dict with data
+		if len(rows):
+			out = {}
+			for i in range(len(cols)):
+				out[cols[i]] = rows[0][i]
+			return out
+		# If no matching participant, return None
+		return None
+
+
 	def __check_incomplete_session(self):
 
 		start_block = 1
@@ -291,14 +305,10 @@ class TraceLabSession(EnvAgent):
 
 	def init_session(self):
 
-		try:
-			cols = [
-				'id', 'session_structure', 'session_count', 'sessions_completed',
-				'figure_set', 'handedness', 'created'
-			]
-			user_data = self.db.select('participants', cols, where={'user_id': self.user_id})[0]
-			self.restore_session(user_data)
-		except IndexError as e:
+		user_info = self.get_participant_info(self.user_id)
+		if user_info:
+			self.restore_session(self.user_id)
+		else:
 			if query(uq.experimental[0]) == "y":
 				self.user_id = query(uq.experimental[1])
 				if self.user_id is None:
@@ -393,24 +403,22 @@ class TraceLabSession(EnvAgent):
 		self.exp.log("**************** HEADER END ****************\n")
 
 
-	def restore_session(self, user_data):
+	def restore_session(self, user_id):
 
 		# Reload participant data from database into experiment variables
-		P.participant_id = user_data[0]
-		self.exp.session_structure = user_data[1]
-		self.exp.session_count = user_data[2]
-		self.exp.session_number = user_data[3]
-		self.exp.figure_set_name = user_data[4]
-		self.exp.handedness = user_data[5]
-		self.exp.created = user_data[6]
-
-		self.exp.session_number += 1  # check if last session incomplete and prompt if so?
+		info = self.get_participant_info(user_id)
+		P.participant_id = info['id']
+		self.exp.session_structure = info['session_structure']
+		self.exp.session_count = info['session_count']
+		self.exp.session_number = info['sessions_completed'] + 1
+		self.exp.figure_set_name = info['figure_set']
+		self.exp.handedness = info['handedness']
+		self.exp.created = info['created']
 		P.session_number = self.exp.session_number
+		
 		if P.use_log_file:
 			log_path = os.path.join(P.local_dir, "logs", "P{0}_log_f.txt".format(self.user_id))
 			self.exp.log_f = io.open(log_path, "w+", encoding='utf-8')
-
-		return True
 
 
 	def init_figure_set(self):
