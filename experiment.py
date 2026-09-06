@@ -71,7 +71,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	handedness = None
 	created = None
 	show_practice_display = False  # ie. this session should include the practice display
-	figure_sets = {}  # complete set of available figure sets
 	figure_set_name = "NA"
 	log_f = None
 

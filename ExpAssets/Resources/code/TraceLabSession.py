@@ -17,6 +17,7 @@ from klibs.KLEnvironment import EnvAgent
 from klibs.KLJSON_Object import AttributeDict
 from klibs.KLUtilities import now, utf8
 from klibs.KLRuntimeInfo import runtime_info_init
+from klibs.KLStructure import FactorSet
 from klibs.KLTrialFactory import TrialIterator
 from klibs.KLUserInterface import any_key
 from klibs.KLDatabase import EntryTemplate
@@ -24,7 +25,6 @@ from klibs.KLGraphics import blit, flip, fill
 from klibs.KLCommunication import query, message, collect_demographics
 from klibs.KLCommunication import user_queries as uq
 
-from FigureSet import FigureSet
 from utils import get_hostname
 
 
@@ -43,7 +43,8 @@ class TraceLabSession(EnvAgent):
 
 		self.__user_id__ = None
 		self.__verify_session_structures()
-		self.__import_figure_sets()
+		if P.use_figure_sets:
+			self.validate_figure_sets()
 
 		incomplete = self.db.select('participants', ['id', 'user_id'], where={'initialized': 0})
 		if len(incomplete):
@@ -142,21 +143,23 @@ class TraceLabSession(EnvAgent):
 						self.exp.quit()
 
 
-	def __import_figure_sets(self):
+	def validate_figure_sets(self):
 
-		# Load figure sets for project
-		set_path = os.path.join(P.config_dir, "figure_sets.py")
-		tst = load_source(set_path)
-		for var, value in load_source(set_path).items():
-			if isinstance(value, FigureSet):
-				self.exp.figure_sets[value.name] = value
+		err_txt = (
+			"The figure '{0}' in figure set '{1}' does not exist in the task's "
+			"figures folder. Please check that the name is correct."
+		)
 
-		# Load any local overrides for the figure sets
-		set_path_local = os.path.join(P.local_dir, "figure_sets.py")
-		if os.path.exists(set_path_local) and not P.dm_ignore_local_overrides:
-			for var, value in load_source(set_path_local).items():
-				if isinstance(value, FigureSet):
-					self.exp.figure_sets[value.name] = value
+		# Validate figure sets for project
+		for name, values in P.figure_sets.items():
+			# Validate that it works correctly as a factor override
+			tmp = FactorSet({'figure_name': values})
+			# Ensure all named figures actually exist
+			for f in tmp._factors['figure_name']:
+				figfile = f + ".tlf"
+				f_path = os.path.join(P.resources_dir, "figures", f, figfile)
+				if not os.path.exists(f_path) and f != "random":
+					raise RuntimeError(err_txt.format(f, name))
 
 
 	def create_new_user(self):
@@ -187,8 +190,9 @@ class TraceLabSession(EnvAgent):
 		P.blocks_per_experiment = len(P.session_structures[structure_key][0])
 
 		# Query user whether they want to select a figure set by name for the participant
-		if P.use_figure_sets and query(uq.experimental[2]) == "y":
-			self.exp.figure_set_name = self.__get_figure_set_name()
+		figure_set_name = "NA"
+		if P.use_figure_sets:
+			figure_set_name = self.__get_figure_set_name()
 
 		# Collect user demographics and retrieve user id from database
 		collect_demographics(P.development_mode)
@@ -198,7 +202,7 @@ class TraceLabSession(EnvAgent):
 		info = {
 			'session_structure': structure_key,
 			'session_count': len(P.session_structures[structure_key]),
-			'figure_set': self.exp.figure_set_name,
+			'figure_set': figure_set_name,
 			'initialized': 1,
 		}
 		self.db.update('participants', info)
@@ -297,7 +301,7 @@ class TraceLabSession(EnvAgent):
 		figset_q = AttributeDict({
 		    "title": "figureset name",
 		    "query": "Please enter the name of the figure set to use:",
-		    "accepted": self.exp.figure_sets.keys(),
+		    "accepted": P.figure_sets.keys(),
 		    "allow_null": False,
 		    "format": AttributeDict({
 		        "type": "str",
@@ -379,7 +383,8 @@ class TraceLabSession(EnvAgent):
 			self.exp.block_factors.append({'response_type': resp, 'feedback_type': fb})
 
 		# Generate trials and import the figure set specified earlier
-		self.init_figure_set()
+		if self.exp.figure_set_name != "NA":
+			self.apply_figure_set(self.exp.figure_set_name)
 		blocks = self.__generate_blocks(current_session)
 		self.exp.blocks = [TrialIterator(b) for b in blocks]
 		self.exp.trial_factory.blocks = self.exp.blocks
@@ -434,33 +439,20 @@ class TraceLabSession(EnvAgent):
 			self.exp.log_f = io.open(log_path, "w+", encoding='utf-8')
 
 
-	def init_figure_set(self):
+	def apply_figure_set(self, figure_set):
 
-		if not self.exp.figure_set_name or self.exp.figure_set_name == "NA":
-			return
-
-		if not self.exp.figure_set_name in self.exp.figure_sets:
-			e_msg = "No figure set named '{0}' is registered.".format(self.exp.figure_set_name)
-			raise ValueError(e_msg)
-
-		# Verify that all figures listed in figure set exist, raising error if it doesn't
-		figure_set = self.exp.figure_sets[self.exp.figure_set_name]
-		for f in figure_set.names:
-			f_path = os.path.join(P.resources_dir, "figures", f)
-			if not os.path.exists(f_path + ".zip") and f != "random":
-				fill()
-				e_msg = (
-					"The figure '{0}' listed in the figure set '{1}' wasn't found.\n"
-					"Please check that the file is named correctly and try again. "
-					"TraceLab will now exit.".format(f, self.exp.figure_set_name)
-				)
-				blit(message(e_msg, blit_txt=False), 5, P.screen_c)
-				flip()
-				any_key()
-				self.exp.quit()
+		# If reloading a participant, make sure figure set still exists
+		if not figure_set in P.figure_sets.keys():
+			e = ("Unable to reload participant initialized with figure set '{}', "
+				 "which no longer exists!")
+			raise RuntimeError(e.format(figure_set))
 
 		# Overwrite 'figure_name' trial factor with values defined in chosen figure set
-		self.exp.trial_factory.exp_factors['figure_name'] = figure_set.to_list()
+		tmp = FactorSet({
+			'figure_name': P.figure_sets[figure_set]
+		})
+		self.exp._exp_factors['figure_name'] = tmp._factors['figure_name']
+		self.exp.trial_factory.exp_factors['figure_name'] = tmp._factors['figure_name']
 
 
 	def validate_block_condition(self, condition):
