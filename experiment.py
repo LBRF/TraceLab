@@ -72,7 +72,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	created = None
 	show_practice_display = False  # ie. this session should include the practice display
 	figure_set_name = "NA"
-	log_f = None
 
 	origin_active_color = GREEN
 	origin_inactive_color = RED
@@ -653,19 +652,10 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 				self.__practice__()
 
 
-	def log(self, msg):
-		if self.log_f:
-			self.log_f.write(msg)
-
-
 	def quit(self):
 		# Properly close trigger port for hardware that needs it
 		if self.trigger is not None:
 			self.trigger.close()
-		try:
-			self.log_f.close()
-		except AttributeError:
-			pass
 		super(TraceLab, self).quit()
 
 

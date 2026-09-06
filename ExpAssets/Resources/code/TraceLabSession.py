@@ -41,7 +41,7 @@ class TraceLabSession(EnvAgent):
 
 	def __init__(self):
 
-		self.__user_id__ = None
+		self.user_id = None
 		self.__verify_session_structures()
 		if P.use_figure_sets:
 			self.validate_figure_sets()
@@ -133,8 +133,8 @@ class TraceLabSession(EnvAgent):
 							block = list(block)
 						err_txt1 = e.format(block_num, session_num, structure_key, str(block))
 						err_txt1 += "\n" + error_strings[err]
-						msg1 = message(err_txt1, "error", align="center", blit_txt=False)
-						msg2 = message("Press any key to exit TraceLab.", blit_txt=False)
+						msg1 = message(err_txt1, "error", align="center")
+						msg2 = message("Press any key to exit TraceLab.")
 						fill()
 						blit(msg1, 2, (P.screen_c[0], P.screen_c[1] - 30))
 						blit(msg2, 8, P.screen_c)
@@ -365,8 +365,8 @@ class TraceLabSession(EnvAgent):
 		num_sessions = len(session_structure)
 		if self.exp.session_number > num_sessions:
 			txt1 = "Participant {0} has already completed all {1} sessions of the task."
-			msg1 = message(txt1.format(self.user_id, num_sessions), blit_txt=False)
-			msg2 = message("Press any key to exit TraceLab.", blit_txt=False)
+			msg1 = message(txt1.format(self.user_id, num_sessions))
+			msg2 = message("Press any key to exit TraceLab.")
 			fill()
 			blit(msg1, 2, (P.screen_c[0], P.screen_c[1] - 30))
 			blit(msg2, 8, P.screen_c)
@@ -405,21 +405,6 @@ class TraceLabSession(EnvAgent):
 				runtime_info.log(col, value)
 			self.db.insert(runtime_info)
 
-		self.log_session_init()
-
-
-	def log_session_init(self):
-
-		header = {
-			"session_structure": self.exp.session_structure,
-			"figure_set": self.exp.figure_set_name,
-			"practice_session": self.exp.show_practice_display,
-		}
-		self.exp.log("*************** HEADER START ***************\n")
-		for k in header:
-			self.exp.log("{0}: {1}\n".format(k, header[k]))
-		self.exp.log("**************** HEADER END ****************\n")
-
 
 	def restore_session(self, user_id):
 
@@ -433,10 +418,6 @@ class TraceLabSession(EnvAgent):
 		self.exp.handedness = info['handedness']
 		self.exp.created = info['created']
 		P.session_number = self.exp.session_number
-		
-		if P.use_log_file:
-			log_path = os.path.join(P.local_dir, "logs", "P{0}_log_f.txt".format(user_id))
-			self.exp.log_f = io.open(log_path, "w+", encoding='utf-8')
 
 
 	def apply_figure_set(self, figure_set):
@@ -492,12 +473,3 @@ class TraceLabSession(EnvAgent):
 			fb = "False"
 
 		return [resp, fb]
-
-
-	@property
-	def user_id(self):
-		return self.__user_id__
-
-	@user_id.setter
-	def user_id(self, uid):
-		self.__user_id__ = uid
