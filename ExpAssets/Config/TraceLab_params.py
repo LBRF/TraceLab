@@ -137,7 +137,7 @@ curve_sheer = (0.1, 0.3)  # this is hard to describe, but 1 is again an impossib
 primary_table = "trials"
 unique_identifier = "user_id"
 exclude_data_cols = [
-    'klibs_commit', 'created', 'session_count', 'sessions_completed', 'initialized'
+    'klibs_commit', 'created', 'session_count', 'sessions_completed'
 ]
 append_hostname = False
 

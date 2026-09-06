@@ -44,13 +44,6 @@ class TraceLabSession(EnvAgent):
 		if P.use_figure_sets:
 			self.validate_figure_sets()
 
-		incomplete = self.db.select('participants', ['id', 'user_id'], where={'initialized': 0})
-		if len(incomplete):
-			if query(uq.experimental[5]) == "p":
-				self.__purge_incomplete(incomplete)
-			else:
-				self.__report_incomplete(incomplete)
-
 		if P.development_mode:
 			# Write data to subfolder when in development mode to avoid cluttering
 			# data directory with non-participant data
@@ -66,37 +59,6 @@ class TraceLabSession(EnvAgent):
 		self.restore_session(self.user_id)
 		self.init_session()
 		self.create_session_dirs()
-
-
-	def __report_incomplete(self, participant_ids):
-
-		log_path = os.path.join(P.local_dir, "uninitialized_users_{0}".format(now(True)))
-		log = io.open(log_path, "w+", encoding='utf-8')
-		p_cols = [
-			'user_id', 'session_structure', 'session_count', 'sessions_completed',
-			'figure_set', 'handedness', 'created'
-		]
-		header = p_cols + ["session_rows", "trial_rows"]
-		log.write("\t".join(header))
-		for p in participant_ids:
-			data = self.db.select('participants', p_cols, where={'id': p[0]})[0]
-			num_sessions = len(self.db.select('sessions', ['id'], where={'participant_id': p[0]}))
-			num_trials = len(self.db.select('trials', ['id'], where={'participant_id': p[0]}))
-			data += [num_sessions, num_trials]
-			log.write("\n")
-			log.write("\t".join([utf8(i) for i in data]))
-		log.close()
-		self.exp.quit()
-
-
-	def __purge_incomplete(self, participant_ids):
-
-		for p in participant_ids:
-			self.db.delete(table='participants', where={'id': p[0]})
-			self.db.delete(table='sessions', where={'participant_id': p[0]})
-			self.db.delete(table='trials', where={'participant_id': p[0]})
-
-		self.db.commit()
 
 
 	def __verify_session_structures(self):
@@ -192,18 +154,17 @@ class TraceLabSession(EnvAgent):
 		if P.use_figure_sets:
 			figure_set_name = self.__get_figure_set_name()
 
-		# Collect user demographics and retrieve user id from database
-		collect_demographics(P.development_mode)
-		user_id = self.db.select('participants', ['user_id'], where={'id': P.p_id})[0][0]
-
-		# Update participant info table with session and figure set info
+		# Collect user demographics and store additional info for the participant
 		info = {
 			'session_structure': structure_key,
 			'session_count': len(P.session_structures[structure_key]),
 			'figure_set': figure_set_name,
-			'initialized': 1,
 		}
+		collect_demographics(P.development_mode)
 		self.db.update('participants', info)
+
+		# Retrieve user id from the database
+		user_id = self.db.select('participants', ['user_id'], where={'id': P.p_id})[0][0]
 
 		return user_id
 
