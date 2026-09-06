@@ -12,7 +12,6 @@ import sys
 import shutil
 
 from klibs import P
-from klibs.KLInternal import load_source
 from klibs.KLEnvironment import EnvAgent
 from klibs.KLJSON_Object import AttributeDict
 from klibs.KLUtilities import now, utf8
@@ -20,7 +19,6 @@ from klibs.KLRuntimeInfo import runtime_info_init
 from klibs.KLStructure import FactorSet
 from klibs.KLTrialFactory import TrialIterator
 from klibs.KLUserInterface import any_key
-from klibs.KLDatabase import EntryTemplate
 from klibs.KLGraphics import blit, flip, fill
 from klibs.KLCommunication import query, message, collect_demographics
 from klibs.KLCommunication import user_queries as uq
@@ -252,7 +250,7 @@ class TraceLabSession(EnvAgent):
 
 		start_block = 1
 		start_trial = 1
-		existing = {'participant_id': P.participant_id, 'session_num': self.exp.session_number}
+		existing = {'participant_id': P.participant_id, 'session_num': P.session_number}
 		partial_session = self.db.select('trials', ['block_num'], existing)
 		if len(partial_session):
 			partial_q = AttributeDict({
@@ -288,10 +286,10 @@ class TraceLabSession(EnvAgent):
 				start_block = max_block + 1 if max_trial == P.trials_per_block else max_block
 				start_trial = max_trial + 1 if max_trial < P.trials_per_block else 1
 			elif resp == "a":
-				new_session_dir = "session_" + str(self.exp.session_number + 1)
+				new_session_dir = "session_" + str(P.session_number + 1)
 				self.exp.fig_dir = os.path.join(self.exp.p_dir, new_session_dir)
-				self.db.update('participants', {'sessions_completed': self.exp.session_number})
-				self.exp.session_number += 1
+				self.db.update('participants', {'sessions_completed': P.session_number})
+				P.session_number += 1
 
 		return (start_block, start_trial)
 
@@ -343,7 +341,7 @@ class TraceLabSession(EnvAgent):
 		if P.append_hostname:
 			hostname = get_hostname()
 			p_dir += "-{0}".format(hostname)
-		session_dir = "session_" + str(self.exp.session_number)
+		session_dir = "session_" + str(P.session_number)
 		self.exp.p_dir = os.path.join(P.data_dir, p_dir)
 		self.exp.fig_dir = os.path.join(self.exp.p_dir, session_dir)
 
@@ -363,7 +361,7 @@ class TraceLabSession(EnvAgent):
 		# and quit.
 		session_structure = P.session_structures[self.exp.session_structure]
 		num_sessions = len(session_structure)
-		if self.exp.session_number > num_sessions:
+		if P.session_number > num_sessions:
 			txt1 = "Participant {0} has already completed all {1} sessions of the task."
 			msg1 = message(txt1.format(self.user_id, num_sessions))
 			msg2 = message("Press any key to exit TraceLab.")
@@ -375,7 +373,7 @@ class TraceLabSession(EnvAgent):
 			self.exp.quit()
 
 		# Parse block strings for current session
-		current_session = session_structure[self.exp.session_number - 1]
+		current_session = session_structure[P.session_number - 1]
 		P.blocks_per_experiment = len(current_session)
 		for block in current_session:
 			cond = block if isinstance(block, str) else block[0]
@@ -397,13 +395,9 @@ class TraceLabSession(EnvAgent):
 			self.exp.blocks = [TrialIterator(b) for b in blocks]
 
 		# If session number > 1, log runtime info for session in runtime_info table
-		if 'session_info' in self.db.table_schemas.keys() and self.exp.session_number > 1:
-			runtime_info = EntryTemplate('session_info')
-			for col, value in runtime_info_init().items():
-				if col == 'session_number':
-					value = self.exp.session_number
-				runtime_info.log(col, value)
-			self.db.insert(runtime_info)
+		if P.session_number > 1:
+			runtime_info = runtime_info_init()
+			self.db.insert(runtime_info, "session_info")
 
 
 	def restore_session(self, user_id):
@@ -411,13 +405,12 @@ class TraceLabSession(EnvAgent):
 		# Reload participant data from database into experiment variables
 		info = self.get_participant_info(user_id)
 		P.participant_id = info['id']
+		P.session_number = info['sessions_completed'] + 1
 		self.exp.session_structure = info['session_structure']
 		self.exp.session_count = info['session_count']
-		self.exp.session_number = info['sessions_completed'] + 1
 		self.exp.figure_set_name = info['figure_set']
 		self.exp.handedness = info['handedness']
 		self.exp.created = info['created']
-		P.session_number = self.exp.session_number
 
 
 	def apply_figure_set(self, figure_set):
