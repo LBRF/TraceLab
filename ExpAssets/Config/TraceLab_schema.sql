@@ -51,8 +51,7 @@ CREATE TABLE participants (
 	session_count      INTEGER,
 	sessions_completed INTEGER DEFAULT 0,
 	figure_set         TEXT DEFAULT 'NA',
-	created            TEXT                              NOT NULL,
-	initialized        INTEGER DEFAULT 0
+	created            TEXT                              NOT NULL
 );
 
 CREATE TABLE trials (

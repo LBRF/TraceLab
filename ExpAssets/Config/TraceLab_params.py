@@ -13,7 +13,6 @@ force_show_cursor = False # If False, cursor hidden unless in devmode & no touch
 
 mirror_mode = False
 enable_learned_figures_querying = True
-use_figure_sets = False
 show_figure_at_onset = False
 
 capture_figures_mode = False
@@ -81,7 +80,6 @@ dm_auto_threshold = True
 dm_render_progress = False  # if True, drawing feedback will always be shown in devmode
 dm_ignore_local_overrides = False
 dm_trial_show_mouse = False
-use_log_file = False  # Not sure this is terribly useful
 
 ########################################
 # Dot Controls
@@ -139,9 +137,27 @@ curve_sheer = (0.1, 0.3)  # this is hard to describe, but 1 is again an impossib
 primary_table = "trials"
 unique_identifier = "user_id"
 exclude_data_cols = [
-    'klibs_commit', 'created', 'session_count', 'sessions_completed', 'initialized'
+    'klibs_commit', 'created', 'session_count', 'sessions_completed'
 ]
 append_hostname = False
+
+#########################################
+# Figure Sets
+#########################################
+# Figure sets allow for easy counterbalancing of repeated figures across participants
+# to improve confidence that any findings generalize across different shapes.
+#
+# If figure sets are enabled, the researcher will be prompted to choose a figure set
+# whenever a new user ID is created. Doing this will override the figures presented to
+# the participant across all sessions of the task with one of the sets below.
+figure_sets = {
+    '1': ['random', 'template_31'],
+    '2': ['random', 'template_55'],
+    '3': ['random', 'template_44'],
+    '4': ['random', 'template_26'],
+    '5': ['random', 'template_85'],
+}
+use_figure_sets = False
 
 #########################################
 # Session & Block Structures

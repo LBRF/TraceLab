@@ -71,9 +71,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	handedness = None
 	created = None
 	show_practice_display = False  # ie. this session should include the practice display
-	figure_sets = {}  # complete set of available figure sets
 	figure_set_name = "NA"
-	log_f = None
 
 	origin_active_color = GREEN
 	origin_inactive_color = RED
@@ -356,7 +354,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			return
 
 		return {
-			"session_num": self.session_number,
+			"session_num": P.session_number,
 			"block_num": P.block_number,
 			"trial_num": P.trial_number,
 			"response_type": self.response_type,
@@ -385,7 +383,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 
 	def clean_up(self):
 
-		if self.session_number == self.session_count and P.enable_learned_figures_querying:
+		if P.session_number == self.session_count and P.enable_learned_figures_querying:
 			self.fig_dir = os.path.join(self.p_dir, "learned")
 			if not os.path.exists(self.fig_dir):
 				os.makedirs(self.fig_dir)
@@ -404,13 +402,13 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 						break
 
 		# if the entire experiment is successfully completed, update the sessions_completed column
-		self.db.update('participants', {'sessions_completed': self.session_number})
+		self.db.update('participants', {'sessions_completed': P.session_number})
 
 		# log session data to database
 		session_data = {
 			'participant_id': P.participant_id,
 			'user_id': self.user_id,
-			'session_number': self.session_number,
+			'session_number': P.session_number,
 			'completed': now(True)
 		}
 		self.db.insert(session_data, "sessions")
@@ -654,19 +652,10 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 				self.__practice__()
 
 
-	def log(self, msg):
-		if self.log_f:
-			self.log_f.write(msg)
-
-
 	def quit(self):
 		# Properly close trigger port for hardware that needs it
 		if self.trigger is not None:
 			self.trigger.close()
-		try:
-			self.log_f.close()
-		except AttributeError:
-			pass
 		super(TraceLab, self).quit()
 
 
@@ -674,6 +663,6 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 	def file_name(self):
 		file_name_data = [
 			self.filename_id, P.block_number, P.trial_number,
-			now(True, "%Y-%m-%d"), self.session_number
+			now(True, "%Y-%m-%d"), P.session_number
 		]
 		return "p{0}_s{4}_b{1}_t{2}_{3}".format(*file_name_data)
