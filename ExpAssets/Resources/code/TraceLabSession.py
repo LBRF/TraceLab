@@ -17,7 +17,7 @@ from klibs.KLJSON_Object import AttributeDict
 from klibs.KLUtilities import now, utf8
 from klibs.KLRuntimeInfo import runtime_info_init
 from klibs.KLStructure import FactorSet
-from klibs.KLTrialFactory import TrialIterator
+from klibs.KLTrialFactory import TrialSet, _generate_blocks
 from klibs.KLUserInterface import any_key
 from klibs.KLGraphics import blit, flip, fill
 from klibs.KLCommunication import query, message, collect_demographics
@@ -283,13 +283,13 @@ class TraceLabSession(EnvAgent):
 
 		"""
 		blocks = []
-		exp_factors = self.exp.trial_factory.exp_factors
+		exp_factors = self.exp.exp_factors
 		for block in current_session:
 			trials = P.trials_per_block
 			if type(block) in [tuple, list]:
 				trials = block[1]
 				block = block[0]
-			blocks += self.exp.trial_factory.trial_generator(exp_factors, 1, trials)
+			blocks += _generate_blocks(exp_factors, 1, trials)
 
 		return blocks
 
@@ -345,15 +345,14 @@ class TraceLabSession(EnvAgent):
 		if self.exp.figure_set_name != "NA":
 			self.apply_figure_set(self.exp.figure_set_name)
 		blocks = self.__generate_blocks(current_session)
-		self.exp.blocks = [TrialIterator(b) for b in blocks]
-		self.exp.trial_factory.blocks = self.exp.blocks
-		self.exp.trial_factory.dump()
+		self.exp.blocks = [TrialSet(b) for b in blocks]
+		self.exp.write_trials_txt()
 
 		# If resuming incomplete session, skip ahead to last completed trial
 		if start_block > 1 or start_trial > 1:
 			blocks = blocks[(start_block - 1): ] # Drop completed blocks
 			blocks[0] = blocks[0][(start_trial - 1): ] # Drop completed trials
-			self.exp.blocks = [TrialIterator(b) for b in blocks]
+			self.exp.blocks = [TrialSet(b) for b in blocks]
 
 		# If session number > 1, log runtime info for session in runtime_info table
 		if P.session_number > 1:
@@ -387,7 +386,6 @@ class TraceLabSession(EnvAgent):
 			'figure_name': P.figure_sets[figure_set]
 		})
 		self.exp._exp_factors['figure_name'] = tmp._factors['figure_name']
-		self.exp.trial_factory.exp_factors['figure_name'] = tmp._factors['figure_name']
 
 
 	def validate_block_condition(self, condition):

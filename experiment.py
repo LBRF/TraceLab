@@ -223,7 +223,7 @@ class TraceLab(klibs.Experiment, BoundaryInspector):
 			hide_cursor()
 
 		# Import all pre-generated figures needed for the current session
-		figures = list(set(self.trial_factory.exp_factors["figure_name"]))
+		figures = list(set(self.exp_factors["figure_name"]))
 		figures.append(P.practice_figure)
 		for f in figures:
 			if f != "random":
