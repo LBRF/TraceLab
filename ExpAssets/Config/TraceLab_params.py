@@ -149,7 +149,7 @@ append_hostname = False
 #
 # If figure sets are enabled, the researcher will be prompted to choose a figure set
 # whenever a new user ID is created. Doing this will override the figures presented to
-# the participant across all sessions of the task with one of the sets below.
+# the participant throughout the task with one of the lists of figures below.
 figure_sets = {
     '1': ['random', 'template_31'],
     '2': ['random', 'template_55'],
