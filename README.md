@@ -10,51 +10,41 @@ The task requires participants to execute complex multi-joint upper limb movemen
 
 Instructions on how to install, run, and export data from TraceLab are provided below.
 
+
 ## Requirements
 
-TraceLab is programmed in Python 2.7 (3.4+ compatible) using the [KLibs framework](https://github.com/a-hurst/klibs). It has been developed and tested on macOS (10.9 through 11.0), and has also been tested on recent versions of Linux (Mint 20.1 / Ubuntu 20.04) and Windows 10.
+This study requires the following hardware to work as intended:
 
-TraceLab was originally designed to run on a 24-inch touchscreen (specificaly, a [Planar PCT2485](https://www.amazon.com/Planar-PCT2485-Widescreen-Multi-Touch-Monitor/dp/B00DFB8KRQ)) at a resolution of 1920x1080. However, TraceLab should work on any touchscreen monitor provided that it has a high enough resolution (larger than 1024x768), and that the TraceLab analysis scripts have been modified to plot data properly at the screen's resolution.
+* A computer with Python 3.9 or later installed
+* A touchscreen monitor
+
+However, the task will still run without a touchscreen (in development mode or with `force_show_cursor` set to True in params.py) for testing and demonstration purposes.
+
 
 ## Getting Started
 
-In order to install TraceLab and its prerequisites, there are two main options: a **global install** or a **pipenv install**. A global install will install klibs into your global Python environment, which can be simpler but may interfere with other Python scripts or packages installed on your system. A pipenv install will install klibs into a self-contained virtual environment using the [Pipenv](https://pipenv.pypa.io/en/latest/) package, isolating it from all other Python scripts or packages on your target computer.
+This TraceLab experiment is written in Python 3 (3.9+ compatible) using the [KLibs framework](https://github.com/a-hurst/klibs). It should install and run on any recent version of macOS, Linux, or Windows.
 
-### Prerequisites
 
-For either option, you will need to have [Git](https://git-scm.com/downloads) installed in order for the commands to work. If you are using a Mac and already have Xcode or Homebrew installed, you already have Git. Additionally, on Linux you will need to manually install the SDL2, SDL2\_mixer, and SDL2\_ttf libraries for your distro using your distro's package manager.
+### Installing Dependencies
 
-Once Git has been installed, you can download TraceLab with the following commands (replacing `~/Downloads` with the path to the folder where you would like to install TraceLab):
+#### Option 1: Self-Contained Environment
 
-```bash
-cd ~/Downloads
-git clone https://github.com/LBRF/TraceLab.git
-cd TraceLab
-```
-
-### Installing KLibs
-
-#### Option 1: Global Installation
-
-To install KLibs in your global Python environment, you can use **pip** Python package manager to install it by running the below command in a terminal window (replace `pip` with `pip3` if using Python 3):
+To install all of the task's Python dependencies in a self-contained virtual environment, run the following commands in a terminal window inside the same folder as this README:
 
 ```bash
-pip install git+https://github.com/a-hurst/klibs.git
+pip install uv
+uv sync
 ```
+These commands should create a fresh environment for the TraceLab project with all its dependencies installed inside it. Note that to run commands using this environment, you will need to prefix them with `uv run`, e.g. `uv run klibs run 24`.
 
-#### Option 2: Pipenv Installation
+#### Option 2: Global Installation
 
-To install KLibs in a self-contained virtual environment, navigate to the root of the TraceLab folder you downloaded, then install pipenv and use it to set up an environment for the project:
+Alternatively, to install the dependencies for the task in your global Python environment, run the following commands in a terminal window:
 
 ```bash
-pip3 install pipenv
-pipenv install
+pip install https://github.com/a-hurst/klibs/releases/download/0.7.8b2/klibs-0.7.8b2.tar.gz
 ```
-
-These commands should create a fresh environment for the TraceLab project with all its dependencies installed inside it. Note that to run commands using this environment, you will need to prefix them with `pipenv run`, e.g. `pipenv run klibs run 24`.
-
-Note that this method currently requires Python 3.7 to be installed on your computer, though other versions may work if you modify the `python_version` field of the project's Pipfile.
-
 
 ### Running TraceLab
 
@@ -70,12 +60,12 @@ In TraceLab, some presented figures are randomly generated at the onset of the t
 
 To enter capture figures mode, simply set the parameter `capture_figures_mode` to `True` in the experiment's parameters file (`ExpAssets/Config/TraceLab_params.py`) and launch TraceLab normally. You will be guided through the process of generating and saving your own template figures by the on-screen instructions.
 
-To add template figures you have generated to your TraceLab study, just add the names of the desired template files (minus the ".zip" suffix) to either the "figure_name" factor in the experiment's `_independent_variables.py` file, or add them to a custom figure set defined in the `figure_sets.py` file.
+To add template figures you have generated to your TraceLab study, just add the names of the new template(s) to either the "figure_name" factor in the experiment's `independent_variables.py` file, or add them to a figure set in `params.py`.
 
 
 ## Exporting Data
 
-The data recorded by TraceLab can be split into two groups: **figure & tracing data**, and **participant & trial data**. Various scripts for importing, joining, and analyzing both groups of data can be found in the [TraceLabR](https://github.com/LBRF/TraceLabR/) and [TraceLabAnalysis](https://github.com/LBRF/TraceLabAnalysis/) repositories.
+The data recorded by TraceLab can be split into two groups: **figure & tracing data**, and **participant & trial data**. Various scripts for importing, joining, and analyzing both groups of data can be found in the [TraceLabAnalysis](https://github.com/LBRF/TraceLabAnalysis/) repository.
 
 ### Figure and Tracing Data
 
